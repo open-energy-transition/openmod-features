@@ -1,0 +1,17 @@
+[project]
+authors = ["Bryn Pickering <17178478+brynpickering@users.noreply.github.com>"]
+channels = ["conda-forge"]
+name = "openmod-features"
+platforms = ["win-64", "linux-64", "osx-64", "osx-arm64"]
+version = "0.1.0"
+
+[tasks]
+update-schema = "python schema/schema_generator.py"
+add-tool = "python feature_list.py generate-tool-config"
+
+[dependencies]
+pre-commit = ">=4.2.0,<5"
+ruff = ">=0.12.4,<0.13"
+python = ">=3.13.5,<3.14"
+pydantic = ">=2.11.7,<3"
+click = ">=8.2.1,<9"
