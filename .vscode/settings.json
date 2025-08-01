@@ -1,9 +1,0 @@
-{
-    "python.defaultInterpreterPath": "/Users/brynpickering/OET/Repos/openmod-features/.pixi/envs/default/bin/python",
-    "yaml.schemas": {
-        "file:///Users/brynpickering/OET/Repos/openmod-features/schema/schema.yaml": [
-            "file:///Users/brynpickering/OET/Repos/openmod-features/tools/calliope.yaml",
-            "git:/Users/brynpickering/OET/Repos/openmod-features/tools/pypsa.yaml?%7B%22path%22%3A%22%2FUsers%2Fbrynpickering%2FOET%2FRepos%2Fopenmod-features%2Ftools%2Fpypsa.yaml%22%2C%22ref%22%3A%22%22%7D"
-        ]
-    }
-}
