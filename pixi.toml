@@ -9,12 +9,16 @@ version = "0.2.0.dev"
 cmd = "python schema/schema_generator.py"
 
 [tasks.add-tool]
-args = ["tool_name"]
-cmd = "copier copy gh:open-energy-transition/openmod-features --vcs-ref try-copier tools/{{ tool_name }} -d shortname={{ tool_name }}"
+args = ["tool_name", {"arg" = "version", "default" = "stable"}]
+cmd = """copier copy gh:open-energy-transition/openmod-features {% if version != "stable" %}--vcs-ref {{ version }}{% endif %} tools/{{ tool_name }} -d shortname={{ tool_name }}"""
 
 [tasks.update-tool]
+args = ["tool_name", {"arg" = "version", "default" = "stable"}]
+cmd = """copier update tools/{{ tool_name }} --defaults {% if version != "stable" %}--vcs-ref {{ version }}{% endif %} --answers-file .metadata.yml"""
+
+[tasks.update-tool-metadata]
 args = ["tool_name"]
-cmd = "copier update tools/{{ tool_name }} --defaults --vcs-ref try-copier --answers-file .metadata.yml"
+cmd = "copier update tools/{{ tool_name }} --vcs-ref=:current: --answers-file .metadata.yml"
 
 [dependencies]
 pre-commit = ">=4.2.0,<5"
