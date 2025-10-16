@@ -9,7 +9,7 @@ time__foresight:
   description: "The modelling horizon per optimisation iteration"
   members:
     perfect: "perfect foresight"
-    myopic: "myopic foresight, a.k.a. rolling horizon"
+    myopic: "myopic foresight"
 edge_effects:
   description: "Distortive effects of system boundaries and linearising model components can be mitigated against"
   members:
@@ -22,7 +22,7 @@ time__resolution__simplification:
   members:
     resampling: "temporal up/down-sampling"
     typical_periods: "full timeseries is represented by typical periods (days, weeks, months)"
-    ldc: "full timeseries is represented by load duration curves"
+    load_duration_curves: "full timeseries is represented by load duration curves"
     distortion_mitigation: "methods to manage inter-temporal model features in a temporally simplified model"
 spatial__resolution__simplification:
   description: "Spatial resolution adjustment options"
@@ -35,7 +35,7 @@ asset__candidates:
     generators: "carrier generator, consuming resources from outside the system boundary "
     converters: "carrier generator, consuming other carriers from inside the system boundary. Necessary for coupled carrier optimisation"
     storage: "carrier storage, to delay carrier flows in time"
-    fluid/gas_distribution: "carrier distribution through pressurised pipework"
+    fluid_or_gas_distribution: "carrier distribution through pressurised pipework"
     electricity_transmission: "carrier distribution through electrical transmission lines"
     loads: "carrier consumers, explicitly defined to allow for e.g. demand-side management"
     endogenous: "asset candidates can be constructed, sold, retired, mothballed, and retrofit as the model sees fit"
@@ -54,12 +54,10 @@ asset__operating_representation:
 asset__operating_constraints:
   description: "Upper/lower limits on asset operation"
   members:
-    ramping: "rate limit on changes in carrier in-/out-flows"
-    run_up: "rate limit on time to/from zero carrier in-/out-flow to useful flow"
-    load_rate: "limit on carrier in-/out-flow relative to asset capacity when operating"
-    uptime: "limit on operating timesteps"
-    total: "limit on total asset carrier in-/out-flow over a subset or the entire time horizon. This can represent real contract arrangements."
-    rolling: "limit on asset carrier in-/out-flow over a rolling subset of the entire time horizon. This can represent flexible loads where the flows must be balanced over a pre-specified time period (e.g. daily, weekly, ...)"
+    inter_temporal: "limits that link time periods (e.g., ramping, run up, load shifting)"
+    inter_spatial: "limits that link geographic regions"
+    operating: "limits applied to operating time periods (maintenance schedule) or when operating (load rate). Usually requires unit-level asset capacity representation."
+    total: "limit on total asset carrier in-/out-flow over a subset or the entire time horizon / spatial scope. This can represent real contract arrangements / regulation."
 asset__operating_characteristics:
   description: "Asset operating characteristics representation (e.g. efficiency, resource availability)"
   members:
@@ -67,18 +65,20 @@ asset__operating_characteristics:
     static_dimensional: "asset characteristics are independent of decision variables but dependent on model dimensions (e.g. space, time)"
     linear: "asset characteristics vary linearly with a single decision variable (e.g. resource availability increasing with asset capacity)"
     piecewise: "asset characteristics vary depending on operating decision variables creating a non-linear relationship that can be described by a piecewise linear curve (e.g., part-load efficiency, linked to capacity, storage head effects)"
-    iterative: "asset characteristics vary depending on operating decision variables creating a non-linear relationship that can be converged upon iteratively (e.g. transmission line losses)"
+    iterative: "asset characteristics vary depending on operating decision variables creating a non-linear relationship that can only be converged upon iteratively (e.g. transmission line losses)"
 asset__chaining:
   description: "Options to explicitly chain / link specific assets or asset types such that certain carrier flows can only occur between each other"
   members:
-    stockpiling: "a generation asset can be given storage asset characteristics to stockpile resources/carriers (e.g. CSP heat storage buffer, fuel stocks). Also known as 'heat/tail storage'."
+    stockpiling: "a generation asset can be given storage asset characteristics to stockpile resources/carriers (e.g. CSP heat storage buffer, fuel stocks)."
     asset_linking: "carrier out-flow from one asset can be reserved as an in-flow in a specific subset of other assets (e.g. hydropower cascading, CCGT asset internal steam flow considerations)"
 asset__cost__investment:
   description: "Asset investment cost representation"
   members:
     linear: "initial asset capital cost which varies linearly with asset nameplate capacity (e.g. EUR/MW)"
     unit: "initial asset capital cost which is incurred on asset purchase, irrespective of capacity (e.g. land purchase)."
-    piecewise: "initial asset capital cost which varies non-linearly, represented by a piecewise linear curve (e.g. economies of scale, where cost per capacity decreases with increasing capacity)"
+    piecewise: |
+      initial asset capital cost which varies non-linearly, represented by a piecewise linear curve (e.g. economies of scale, where cost per capacity decreases with increasing capacity).
+      This may be represented by multiple assets of the same class (e.g. "wind turbine") but with different costs and maximum capacities.
     annuitisation: "an asset's capital investment can be annuitised to account for factors linked to its expected economic life and financing arrangements, such as weighted cost of capital, inflation and tax rates, and other sources of depreciation"
     subsidy/penalty: "costs to (dis)incentivise investment above/below given thresholds, representing soft constraints (e.g. rebate for providing firm capacity, penalty for exceeding land use limits)"
 asset__cost__operation:
@@ -91,13 +91,14 @@ asset__cost__operation:
 transmission__opf:
   description: "Transmission network optimal power flow representation"
   members:
-    dc_opf: "linearised DC optimal power flow (a.k.a. energy flow / transport)"
+    transport: "energy transport only (no Kirchhoff's laws defined)"
+    dc_opf: "linearised DC optimal power flow"
     ac_opf: "linearised AC optimal power flow"
     sec_opf: "security-constrained AC optimal power flow"
 transmission__limits:
   description: "Transmission capacity limit representation"
   members:
-    gtc: "grid transfer capacities (a.k.a. net-transfer capacities, in inter-bidding zone transmission)"
+    gtc: "grid transfer capacities"
     ptdf: "power transfer distribution factors"
     thermal: "thermal limits"
     phase_angle: "phase angles"
@@ -147,7 +148,8 @@ postprocessing:
     gtc: "grid transfer capacities between nodes/zones/regions"
     ptdf: "power transfer distribution factors"
     lodf: "line Outage Distribution Factor, used in contingency flow constraints"
-    fcf: "future cost function (water value) used to forecast the marginal cost of hydro and other seasonal storage devices for use in shorter term scheduling, given uncertain input parameters"
+    future_cost_function: "future cost function (water value) used to forecast the marginal cost of hydro and other seasonal storage devices for use in shorter term scheduling, given uncertain input parameters"
+    aggregation: Method to aggregate modelled components into broader classifications for analysis and dissemination (e.g., separately costed "wind turbine" assets aggregated back to "wind turbine")
 interface__input:
   description: "Available options for configuring model inputs and running models"
   members:

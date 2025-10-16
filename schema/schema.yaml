@@ -1,5 +1,6 @@
 $defs:
   AssetCandidatesModel:
+    additionalProperties: false
     properties:
       converters:
         $ref: '#/$defs/FeatureModel'
@@ -28,7 +29,7 @@ $defs:
           value: n
         description: asset candidates construction, sale, retirement, mothballing,
           and retrofit is pre-defined by the user
-      fluid/gas_distribution:
+      fluid_or_gas_distribution:
         $ref: '#/$defs/FeatureModel'
         default:
           source: []
@@ -57,6 +58,7 @@ $defs:
     title: AssetCandidatesModel
     type: object
   AssetCapacityRepresentationModel:
+    additionalProperties: false
     properties:
       grouped:
         $ref: '#/$defs/FeatureModel'
@@ -83,6 +85,7 @@ $defs:
     title: AssetCapacityRepresentationModel
     type: object
   AssetChainingModel:
+    additionalProperties: false
     properties:
       asset_linking:
         $ref: '#/$defs/FeatureModel'
@@ -99,10 +102,10 @@ $defs:
           value: n
         description: a generation asset can be given storage asset characteristics
           to stockpile resources/carriers (e.g. CSP heat storage buffer, fuel stocks).
-          Also known as 'heat/tail storage'.
     title: AssetChainingModel
     type: object
   AssetCostInvestmentModel:
+    additionalProperties: false
     properties:
       annuitisation:
         $ref: '#/$defs/FeatureModel'
@@ -125,9 +128,14 @@ $defs:
         default:
           source: []
           value: n
-        description: initial asset capital cost which varies non-linearly, represented
+        description: 'initial asset capital cost which varies non-linearly, represented
           by a piecewise linear curve (e.g. economies of scale, where cost per capacity
-          decreases with increasing capacity)
+          decreases with increasing capacity).
+
+          This may be represented by multiple assets of the same class (e.g. "wind
+          turbine") but with different costs and maximum capacities.
+
+          '
       subsidy/penalty:
         $ref: '#/$defs/FeatureModel'
         default:
@@ -146,6 +154,7 @@ $defs:
     title: AssetCostInvestmentModel
     type: object
   AssetCostOperationModel:
+    additionalProperties: false
     properties:
       linear:
         $ref: '#/$defs/FeatureModel'
@@ -178,6 +187,7 @@ $defs:
     title: AssetCostOperationModel
     type: object
   AssetOperatingCharacteristicsModel:
+    additionalProperties: false
     properties:
       iterative:
         $ref: '#/$defs/FeatureModel'
@@ -185,7 +195,7 @@ $defs:
           source: []
           value: n
         description: asset characteristics vary depending on operating decision variables
-          creating a non-linear relationship that can be converged upon iteratively
+          creating a non-linear relationship that can only be converged upon iteratively
           (e.g. transmission line losses)
       linear:
         $ref: '#/$defs/FeatureModel'
@@ -220,51 +230,40 @@ $defs:
     title: AssetOperatingCharacteristicsModel
     type: object
   AssetOperatingConstraintsModel:
+    additionalProperties: false
     properties:
-      load_rate:
+      inter_spatial:
         $ref: '#/$defs/FeatureModel'
         default:
           source: []
           value: n
-        description: limit on carrier in-/out-flow relative to asset capacity when
-          operating
-      ramping:
+        description: limits that link geographic regions
+      inter_temporal:
         $ref: '#/$defs/FeatureModel'
         default:
           source: []
           value: n
-        description: rate limit on changes in carrier in-/out-flows
-      rolling:
+        description: limits that link time periods (e.g., ramping, run up, load shifting)
+      operating:
         $ref: '#/$defs/FeatureModel'
         default:
           source: []
           value: n
-        description: limit on asset carrier in-/out-flow over a rolling subset of
-          the entire time horizon. This can represent flexible loads where the flows
-          must be balanced over a pre-specified time period (e.g. daily, weekly, ...)
-      run_up:
-        $ref: '#/$defs/FeatureModel'
-        default:
-          source: []
-          value: n
-        description: rate limit on time to/from zero carrier in-/out-flow to useful
-          flow
+        description: limits applied to operating time periods (maintenance schedule)
+          or when operating (load rate). Usually requires unit-level asset capacity
+          representation.
       total:
         $ref: '#/$defs/FeatureModel'
         default:
           source: []
           value: n
         description: limit on total asset carrier in-/out-flow over a subset or the
-          entire time horizon. This can represent real contract arrangements.
-      uptime:
-        $ref: '#/$defs/FeatureModel'
-        default:
-          source: []
-          value: n
-        description: limit on operating timesteps
+          entire time horizon / spatial scope. This can represent real contract arrangements
+          / regulation.
     title: AssetOperatingConstraintsModel
     type: object
   AssetOperatingRepresentationModel:
+    additionalProperties: false
     properties:
       ed:
         $ref: '#/$defs/FeatureModel'
@@ -283,6 +282,7 @@ $defs:
     title: AssetOperatingRepresentationModel
     type: object
   CompetitionModel:
+    additionalProperties: false
     properties:
       distributed_objectives:
         $ref: '#/$defs/FeatureModel'
@@ -301,6 +301,7 @@ $defs:
     title: CompetitionModel
     type: object
   EdgeEffectsModel:
+    additionalProperties: false
     properties:
       energy_balance:
         $ref: '#/$defs/FeatureModel'
@@ -376,7 +377,7 @@ $defs:
           exogenous:
             source: []
             value: n
-          fluid/gas_distribution:
+          fluid_or_gas_distribution:
             source: []
             value: n
           generators:
@@ -472,22 +473,16 @@ $defs:
       asset__operating_constraints:
         $ref: '#/$defs/AssetOperatingConstraintsModel'
         default:
-          load_rate:
+          inter_spatial:
             source: []
             value: n
-          ramping:
+          inter_temporal:
             source: []
             value: n
-          rolling:
-            source: []
-            value: n
-          run_up:
+          operating:
             source: []
             value: n
           total:
-            source: []
-            value: n
-          uptime:
             source: []
             value: n
         description: Upper/lower limits on asset operation
@@ -592,13 +587,16 @@ $defs:
       postprocessing:
         $ref: '#/$defs/PostprocessingModel'
         default:
+          aggregation:
+            source: []
+            value: n
           curtailment:
             source: []
             value: n
-          fcf:
+          financial:
             source: []
             value: n
-          financial:
+          future_cost_function:
             source: []
             value: n
           gtc:
@@ -744,7 +742,7 @@ $defs:
           distortion_mitigation:
             source: []
             value: n
-          ldc:
+          load_duration_curves:
             source: []
             value: n
           resampling:
@@ -782,10 +780,14 @@ $defs:
           sec_opf:
             source: []
             value: n
+          transport:
+            source: []
+            value: n
         description: Transmission network optimal power flow representation
     title: FeatureSetModel
     type: object
   InterfaceInputModel:
+    additionalProperties: false
     properties:
       cli:
         $ref: '#/$defs/FeatureModel'
@@ -822,6 +824,7 @@ $defs:
     title: InterfaceInputModel
     type: object
   InterfaceOutputModel:
+    additionalProperties: false
     properties:
       gui:
         $ref: '#/$defs/FeatureModel'
@@ -859,6 +862,7 @@ $defs:
     title: InterfaceOutputModel
     type: object
   OptimisationProblemModel:
+    additionalProperties: false
     properties:
       configuration:
         $ref: '#/$defs/FeatureModel'
@@ -910,14 +914,29 @@ $defs:
     title: OptimisationProblemModel
     type: object
   PostprocessingModel:
+    additionalProperties: false
     properties:
+      aggregation:
+        $ref: '#/$defs/FeatureModel'
+        default:
+          source: []
+          value: n
+        description: Method to aggregate modelled components into broader classifications
+          for analysis and dissemination (e.g., separately costed "wind turbine" assets
+          aggregated back to "wind turbine")
       curtailment:
         $ref: '#/$defs/FeatureModel'
         default:
           source: []
           value: n
         description: asset generation curtailment
-      fcf:
+      financial:
+        $ref: '#/$defs/FeatureModel'
+        default:
+          source: []
+          value: n
+        description: financial analyses for business cases
+      future_cost_function:
         $ref: '#/$defs/FeatureModel'
         default:
           source: []
@@ -925,12 +944,6 @@ $defs:
         description: future cost function (water value) used to forecast the marginal
           cost of hydro and other seasonal storage devices for use in shorter term
           scheduling, given uncertain input parameters
-      financial:
-        $ref: '#/$defs/FeatureModel'
-        default:
-          source: []
-          value: n
-        description: financial analyses for business cases
       gtc:
         $ref: '#/$defs/FeatureModel'
         default:
@@ -972,6 +985,7 @@ $defs:
     title: PostprocessingModel
     type: object
   PreprocessingModel:
+    additionalProperties: false
     properties:
       download:
         $ref: '#/$defs/FeatureModel'
@@ -999,6 +1013,7 @@ $defs:
     title: PreprocessingModel
     type: object
   ResourceAdequacyModel:
+    additionalProperties: false
     properties:
       eens:
         $ref: '#/$defs/FeatureModel'
@@ -1033,6 +1048,7 @@ $defs:
     title: ResourceAdequacyModel
     type: object
   RobustnessModel:
+    additionalProperties: false
     properties:
       asset_outages:
         $ref: '#/$defs/FeatureModel'
@@ -1089,6 +1105,7 @@ $defs:
     title: RobustnessModel
     type: object
   SpatialResolutionSimplificationModel:
+    additionalProperties: false
     properties:
       network:
         $ref: '#/$defs/FeatureModel'
@@ -1106,6 +1123,7 @@ $defs:
     title: SpatialResolutionSimplificationModel
     type: object
   SystemCarriersModel:
+    additionalProperties: false
     properties:
       coupled:
         $ref: '#/$defs/FeatureModel'
@@ -1125,6 +1143,7 @@ $defs:
     title: SystemCarriersModel
     type: object
   SystemLimitsModel:
+    additionalProperties: false
     properties:
       capacity:
         $ref: '#/$defs/FeatureModel'
@@ -1143,13 +1162,14 @@ $defs:
     title: SystemLimitsModel
     type: object
   TimeForesightModel:
+    additionalProperties: false
     properties:
       myopic:
         $ref: '#/$defs/FeatureModel'
         default:
           source: []
           value: n
-        description: myopic foresight, a.k.a. rolling horizon
+        description: myopic foresight
       perfect:
         $ref: '#/$defs/FeatureModel'
         default:
@@ -1159,6 +1179,7 @@ $defs:
     title: TimeForesightModel
     type: object
   TimeHorizonModel:
+    additionalProperties: false
     properties:
       multi_year:
         $ref: '#/$defs/FeatureModel'
@@ -1187,6 +1208,7 @@ $defs:
     title: TimeHorizonModel
     type: object
   TimeResolutionSimplificationModel:
+    additionalProperties: false
     properties:
       distortion_mitigation:
         $ref: '#/$defs/FeatureModel'
@@ -1195,7 +1217,7 @@ $defs:
           value: n
         description: methods to manage inter-temporal model features in a temporally
           simplified model
-      ldc:
+      load_duration_curves:
         $ref: '#/$defs/FeatureModel'
         default:
           source: []
@@ -1217,14 +1239,14 @@ $defs:
     title: TimeResolutionSimplificationModel
     type: object
   TransmissionLimitsModel:
+    additionalProperties: false
     properties:
       gtc:
         $ref: '#/$defs/FeatureModel'
         default:
           source: []
           value: n
-        description: grid transfer capacities (a.k.a. net-transfer capacities, in
-          inter-bidding zone transmission)
+        description: grid transfer capacities
       phase_angle:
         $ref: '#/$defs/FeatureModel'
         default:
@@ -1246,6 +1268,7 @@ $defs:
     title: TransmissionLimitsModel
     type: object
   TransmissionOpfModel:
+    additionalProperties: false
     properties:
       ac_opf:
         $ref: '#/$defs/FeatureModel'
@@ -1258,13 +1281,19 @@ $defs:
         default:
           source: []
           value: n
-        description: linearised DC optimal power flow (a.k.a. energy flow / transport)
+        description: linearised DC optimal power flow
       sec_opf:
         $ref: '#/$defs/FeatureModel'
         default:
           source: []
           value: n
         description: security-constrained AC optimal power flow
+      transport:
+        $ref: '#/$defs/FeatureModel'
+        default:
+          source: []
+          value: n
+        description: energy transport only (no Kirchhoff's laws defined)
     title: TransmissionOpfModel
     type: object
 additionalProperties: false
@@ -1285,7 +1314,7 @@ properties:
         exogenous:
           source: []
           value: n
-        fluid/gas_distribution:
+        fluid_or_gas_distribution:
           source: []
           value: n
         generators:
@@ -1360,22 +1389,16 @@ properties:
           source: []
           value: n
       asset__operating_constraints:
-        load_rate:
+        inter_spatial:
           source: []
           value: n
-        ramping:
+        inter_temporal:
           source: []
           value: n
-        rolling:
-          source: []
-          value: n
-        run_up:
+        operating:
           source: []
           value: n
         total:
-          source: []
-          value: n
-        uptime:
           source: []
           value: n
       asset__operating_representation:
@@ -1457,13 +1480,16 @@ properties:
           source: []
           value: n
       postprocessing:
+        aggregation:
+          source: []
+          value: n
         curtailment:
           source: []
           value: n
-        fcf:
+        financial:
           source: []
           value: n
-        financial:
+        future_cost_function:
           source: []
           value: n
         gtc:
@@ -1580,7 +1606,7 @@ properties:
         distortion_mitigation:
           source: []
           value: n
-        ldc:
+        load_duration_curves:
           source: []
           value: n
         resampling:
@@ -1610,6 +1636,9 @@ properties:
           source: []
           value: n
         sec_opf:
+          source: []
+          value: n
+        transport:
           source: []
           value: n
     description: Tool feature set.
