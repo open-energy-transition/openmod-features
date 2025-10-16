@@ -1,4 +1,5 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/0a8f24a/schema/schema.yaml?token=GHSAT0AAAAAADLG5JL3CQUGZ4YBPD2T5U522HQ5WBA
+# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/25f71a4/schema/schema.yaml
+features:
   asset__candidates:
     convertors:
       source: []

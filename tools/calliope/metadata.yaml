@@ -1,7 +1,0 @@
-# Changes here will be overwritten by Copier
-# DO NOT MANUALLY MODIFY THIS FILE
-maintainers: ['brynpickering', 'foo']
-name: calliope
-shortname: calliope
-source_code: https://github.com/calliope-project/calliopedocs: https://calliope.readthedocs.io
-feature_list_version: "a3044ec"
