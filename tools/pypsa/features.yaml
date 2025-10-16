@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/966397c/schema/schema.yaml
+# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/5387176/schema/schema.yaml
 features:
   asset__candidates:
     converters:
@@ -13,7 +13,7 @@ features:
     exogenous:
       source: []
       value: n
-    fluid/gas_distribution:
+    fluid_or_gas_distribution:
       source: []
       value: n
     generators:
@@ -91,29 +91,23 @@ features:
       source: []
       value: n
   asset__operating_constraints:
-    load_rate:
-      value: y
-      source:
-        - https://pypsa.readthedocs.io/en/latest/examples/unit-commitment.html#Minimum-part-load-demonstration
-    ramping:
+    inter_spatial:
+      source: []
+      value: n
+    inter_temporal:
       value: y
       source:
         - https://pypsa.readthedocs.io/en/latest/user-guide/optimal-power-flow.html#ramping-constraints
         - https://pypsa.readthedocs.io/en/latest/examples/unit-commitment.html#Ramp-rate-limits
-    rolling:
-      source: []
-      value: n
-    run_up:
-      source: []
-      value: n
+    operating:
+      value: y
+      source:
+        - https://pypsa.readthedocs.io/en/latest/examples/unit-commitment.html#Minimum-part-load-demonstration
+        - https://pypsa.readthedocs.io/en/latest/examples/unit-commitment.html#Minimum-up-time-demonstration
+        - https://pypsa.readthedocs.io/en/latest/examples/unit-commitment.html#Minimum-down-time-demonstration
     total:
       source: []
       value: n
-    uptime:
-      value: y
-      source:
-        - https://pypsa.readthedocs.io/en/latest/examples/unit-commitment.html#Minimum-up-time-demonstration
-        - https://pypsa.readthedocs.io/en/latest/examples/unit-commitment.html#Minimum-down-time-demonstration
   asset__operating_representation:
     ed:
       source: []
@@ -197,14 +191,17 @@ features:
       source:
         - https://pypsa.readthedocs.io/en/latest/user-guide/optimal-power-flow.html#custom-constraints
   postprocessing:
+    aggregation:
+      source: []
+      value: n
     curtailment:
       value: y
       source:
         - https://pypsa.readthedocs.io/en/latest/api/_source/pypsa.statistics.StatisticsAccessor.curtailment.html
-    fcf:
+    financial:
       source: []
       value: n
-    financial:
+    future_cost_function:
       source: []
       value: n
     gtc:
@@ -335,7 +332,7 @@ features:
     distortion_mitigation:
       source: []
       value: n
-    ldc:
+    load_duration_curves:
       source: []
       value: n
     resampling:
@@ -370,3 +367,6 @@ features:
       value: y
       source:
        - https://pypsa.readthedocs.io/en/latest/examples/scigrid-sclopf.html
+    transport:
+      source: []
+      value: n
