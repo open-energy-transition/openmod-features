@@ -71,7 +71,9 @@ def create_feature_model() -> type[pydantic.BaseModel]:
             for feature, desc in grp_info["members"].items()
         }
         group_model = create_model(
-            grp.replace("_", " ").title().replace(" ", "") + "Model", **member_model
+            grp.replace("_", " ").title().replace(" ", "") + "Model",
+            __config__={"extra": "forbid"},
+            **member_model,
         )
         feature_models[grp] = (
             group_model,
@@ -80,7 +82,7 @@ def create_feature_model() -> type[pydantic.BaseModel]:
     feature_set = create_model("FeatureSetModel", **feature_models)
     return create_model(
         "ToolFeatureModel",
-        __config__={"extra": "forbid", "use_attribute_docstrings": True},
+        __config__={"extra": "forbid"},
         features=(
             feature_set,
             Field(default=feature_set(), description="Tool feature set."),
