@@ -1,7 +1,7 @@
 $defs:
   AssetCandidatesModel:
     properties:
-      convertors:
+      converters:
         $ref: '#/$defs/FeatureModel'
         default:
           source: []
@@ -46,7 +46,7 @@ $defs:
         default:
           source: []
           value: n
-        description: carrier consumers, explictly defined to allow for e.g. demand-side
+        description: carrier consumers, explicitly defined to allow for e.g. demand-side
           management
       storage:
         $ref: '#/$defs/FeatureModel'
@@ -338,8 +338,8 @@ $defs:
       source:
         description: 'Link(s) to source to validate the given value.
 
-          This is usually used to validate a `y` but can feasibly be used to validate
-          an `n`.'
+          This is usually used to validate a `y` (documentation link) or `dev` (issue
+          or pull request link) but can feasibly be used to validate an `n`.'
         items:
           format: uri
           maxLength: 2083
@@ -349,10 +349,12 @@ $defs:
         type: array
       value:
         default: n
-        description: Whether a feature exists (`y`) or not (`n`) in the tool.
+        description: Whether a feature exists (`y`) or not (`n`), or is in development
+          (`dev`) in the tool.
         enum:
         - y
         - n
+        - dev
         title: Value
         type: string
     title: FeatureModel
@@ -362,7 +364,7 @@ $defs:
       asset__candidates:
         $ref: '#/$defs/AssetCandidatesModel'
         default:
-          convertors:
+          converters:
             source: []
             value: n
           electricity_transmission:
@@ -871,11 +873,10 @@ $defs:
           source: []
           value: n
         description: decompose the problem into different stages that can be optimised
-          in parallell with outputs of one stage acting as inputs to another. The
-          different stages tend to represent the same system at different levels of
-          complexity (higher/lower temporal resolution, unit commitment vs.  continuous
-          dispatch). The process is iterated until solutions converge within a pre-defined
-          tolerance.
+          in parallel with outputs of one stage acting as inputs to another. The different
+          stages tend to represent the same system at different levels of complexity
+          (higher/lower temporal resolution, unit commitment vs.  continuous dispatch).
+          The process is iterated until solutions converge within a pre-defined tolerance.
       near_optimal:
         $ref: '#/$defs/FeatureModel'
         default:
@@ -1272,7 +1273,7 @@ properties:
     $ref: '#/$defs/FeatureSetModel'
     default:
       asset__candidates:
-        convertors:
+        converters:
           source: []
           value: n
         electricity_transmission:

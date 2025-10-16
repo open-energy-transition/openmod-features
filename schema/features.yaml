@@ -33,11 +33,11 @@ asset__candidates:
   description: "Asset types and whether or not assets capacity decisions are decision variables in the model"
   members:
     generators: "carrier generator, consuming resources from outside the system boundary "
-    convertors: "carrier generator, consuming other carriers from inside the system boundary. Necessary for coupled carrier optimisation"
+    converters: "carrier generator, consuming other carriers from inside the system boundary. Necessary for coupled carrier optimisation"
     storage: "carrier storage, to delay carrier flows in time"
     fluid/gas_distribution: "carrier distribution through pressurised pipework"
     electricity_transmission: "carrier distribution through electrical transmission lines"
-    loads: "carrier consumers, explictly defined to allow for e.g. demand-side management"
+    loads: "carrier consumers, explicitly defined to allow for e.g. demand-side management"
     endogenous: "asset candidates can be constructed, sold, retired, mothballed, and retrofit as the model sees fit"
     exogenous: "asset candidates construction, sale, retirement, mothballing, and retrofit is pre-defined by the user"
 asset__capacity_representation:
@@ -172,7 +172,7 @@ competition:
 optimisation_problem:
   description: "Available options for interacting with the optimisation problem"
   members:
-    decomposition: "decompose the problem into different stages that can be optimised in parallell with outputs of one stage acting as inputs to another. The different stages tend to represent the same system at different levels of complexity (higher/lower temporal resolution, unit commitment vs.  continuous dispatch). The process is iterated until solutions converge within a pre-defined tolerance."
+    decomposition: "decompose the problem into different stages that can be optimised in parallel with outputs of one stage acting as inputs to another. The different stages tend to represent the same system at different levels of complexity (higher/lower temporal resolution, unit commitment vs.  continuous dispatch). The process is iterated until solutions converge within a pre-defined tolerance."
     sim + opt: "iterate between a simulation and optimisation phase until convergence with respect to operational constraints (e.g. competitive market simulation, optimal power flow)."
     near_optimal: "generate a near-optimal solution set by relaxing constraints / objectives in the optimisation problem. Includes Modelling to Generate Alternatives (MGA)"
     user_defined_constraints: "users can define their own constraints to the optimisation problem, applied to existing decision variables."

@@ -12,13 +12,12 @@
 
 ## Add your tool
 
-You can generate a configuration file for your tool using `pixi run add-tool`.
+You can generate a configuration file for your tool using `pixi run add-tool <tool-shortname>`.
 You will be prompted to add in your tool name, source code URL, and list of maintainers.
-You can also provide a shortname and documentation site URL using option flags.
-Call `pixi run add-tool --help` to find out more.
+You can also optionally provide a documentation site URL.
 
-Once your tool config file has been generated, you will find it under `tools/<shortname|name>.yaml`.
-The tool `shortname` will be used if given, the tool `name` if not.
+Once your tool config file has been generated, you will find it under `tools/<tool-shortname>/`.
+You will then be able to update your tool's feature list at `tools/<tool-shortname>/features.yaml`.
 
 All tool features default to values of `n`, i.e., not available in your tool.
 You should update each to a value of `y` if that feature is available and add a `source` key pointing to URL (e.g. in your documentation) in which that feature is explicitly referenced.

@@ -50,12 +50,12 @@ class FeatureModel(pydantic.BaseModel):
     """Feature-level fields."""
 
     model_config = {"extra": "forbid", "use_attribute_docstrings": True}
-    value: Literal["y", "n"] = "n"
-    """Whether a feature exists (`y`) or not (`n`) in the tool."""
+    value: Literal["y", "n", "dev"] = "n"
+    """Whether a feature exists (`y`) or not (`n`), or is in development (`dev`) in the tool."""
 
     source: list[HttpsUrl] = Field(default_factory=list)
     """Link(s) to source to validate the given value.
-    This is usually used to validate a `y` but can feasibly be used to validate an `n`."""
+    This is usually used to validate a `y` (documentation link) or `dev` (issue or pull request link) but can feasibly be used to validate an `n`."""
 
 
 def create_feature_model() -> type[pydantic.BaseModel]:
@@ -93,8 +93,14 @@ def cli():
     """Create a schema YAML file from the current state of the schema model."""
     feature_model_schema = create_feature_model()
     (Path(__file__).parent / "schema.yaml").write_text(
-        yaml.safe_dump(feature_model_schema.model_json_schema(mode="serialization"))
+        yaml.safe_dump(feature_model_schema.model_json_schema())
     )
+
+    tool_feature_dict = feature_model_schema().model_dump(mode="json")
+
+    tool_feature_path = Path("template/features.yaml.jinja")
+    header = "# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/{{ _copier_answers._commit }}/schema/schema.yaml"
+    tool_feature_path.write_text(f"{header}\n{yaml.safe_dump(tool_feature_dict)}")
 
 
 if __name__ == "__main__":
