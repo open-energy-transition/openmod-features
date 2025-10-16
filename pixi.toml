@@ -3,7 +3,7 @@ authors = ["Bryn Pickering <17178478+brynpickering@users.noreply.github.com>"]
 channels = ["conda-forge"]
 name = "openmod-features"
 platforms = ["win-64", "linux-64", "osx-64", "osx-arm64"]
-version = "0.1.0"
+version = "0.2.0.dev"
 
 [tasks]
 update-schema = "python schema/schema_generator.py"
