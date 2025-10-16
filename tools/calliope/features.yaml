@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/966397c/schema/schema.yaml
+# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/5387176/schema/schema.yaml
 features:
   asset__candidates:
     converters:
@@ -13,7 +13,7 @@ features:
     exogenous:
       source: []
       value: n
-    fluid/gas_distribution:
+    fluid_or_gas_distribution:
       source: []
       value: n
     generators:
@@ -88,22 +88,16 @@ features:
       source: []
       value: n
   asset__operating_constraints:
-    load_rate:
+    inter_spatial:
       source: []
       value: n
-    ramping:
+    inter_temporal:
       source: []
       value: n
-    rolling:
-      source: []
-      value: n
-    run_up:
+    operating:
       source: []
       value: n
     total:
-      source: []
-      value: n
-    uptime:
       source: []
       value: n
   asset__operating_representation:
@@ -185,13 +179,16 @@ features:
       source: []
       value: n
   postprocessing:
+    aggregation:
+      source: []
+      value: n
     curtailment:
       source: []
       value: n
-    fcf:
+    financial:
       source: []
       value: n
-    financial:
+    future_cost_function:
       source: []
       value: n
     gtc:
@@ -308,7 +305,7 @@ features:
     distortion_mitigation:
       source: []
       value: n
-    ldc:
+    load_duration_curves:
       source: []
       value: n
     resampling:
@@ -338,5 +335,8 @@ features:
       source: []
       value: n
     sec_opf:
+      source: []
+      value: n
+    transport:
       source: []
       value: n

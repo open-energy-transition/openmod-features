@@ -20,10 +20,11 @@ repos:
           "--skip=*.csv"
         ]
 
-  - repo: https://github.com/jmlrt/check-yamlschema
-    rev: v0.0.6
-    hooks:
-      - id: check-yamlschema
+  # Bring back once https://github.com/jmlrt/check-yamlschema/pull/18 is merged
+  #- repo: https://github.com/jmlrt/check-yamlschema
+  #  rev: v0.0.6
+  #  hooks:
+  #    - id: check-yamlschema
 
 ci: # https://pre-commit.ci/
   autofix_prs: false
