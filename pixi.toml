@@ -14,7 +14,7 @@ cmd = "copier copy gh:open-energy-transition/openmod-features --vcs-ref try-copi
 
 [tasks.update-tool]
 args = ["tool_name"]
-cmd = "copier update tools/{{ tool_name }} --defaults --vcs-ref try-copier"
+cmd = "copier update tools/{{ tool_name }} --defaults --vcs-ref try-copier --answers-file .metadata.yml"
 
 [dependencies]
 pre-commit = ">=4.2.0,<5"
