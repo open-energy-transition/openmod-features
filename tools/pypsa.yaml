@@ -17,7 +17,7 @@ features:
     loads:
       value: n
     storage:
-      value: n
+      value: y
       source:
         - https://pypsa.readthedocs.io/en/latest/user-guide/optimal-power-flow.html#storage-unit-constraints
   asset__capacity_representation:
@@ -29,7 +29,7 @@ features:
       value: n
   asset__chaining:
     asset_linking:
-      value: n
+      value: y
       source:
         - https://pypsa.readthedocs.io/en/latest/examples/chained-hydro-reservoirs.html
     stockpiling:
@@ -53,7 +53,7 @@ features:
     subsidy/penalty:
       value: n
     unit:
-      value: n
+      value: y
       source:
         - https://pypsa.readthedocs.io/en/latest/examples/unit-commitment.html#Start-up-and-shut-down-costs
   asset__operating_characteristics:
@@ -69,11 +69,11 @@ features:
       value: n
   asset__operating_constraints:
     load_rate:
-      value: n
+      value: y
       source:
         - https://pypsa.readthedocs.io/en/latest/examples/unit-commitment.html#Minimum-part-load-demonstration
     ramping:
-      value: n
+      value: y
       source:
         - https://pypsa.readthedocs.io/en/latest/user-guide/optimal-power-flow.html#ramping-constraints
         - https://pypsa.readthedocs.io/en/latest/examples/unit-commitment.html#Ramp-rate-limits
@@ -84,7 +84,7 @@ features:
     total:
       value: n
     uptime:
-      value: n
+      value: y
       source:
         - https://pypsa.readthedocs.io/en/latest/examples/unit-commitment.html#Minimum-up-time-demonstration
         - https://pypsa.readthedocs.io/en/latest/examples/unit-commitment.html#Minimum-down-time-demonstration
@@ -92,7 +92,7 @@ features:
     ed:
       value: n
     uced:
-      value: n
+      value: y
       source:
         - https://pypsa.readthedocs.io/en/latest/examples/unit-commitment.html
   competition:
@@ -117,7 +117,7 @@ features:
     no_code:
       value: n
     scripting:
-      value: n
+      value: y
       source:
         - https://pypsa.readthedocs.io/en/latest/references/api-reference.html
     standardised:
@@ -143,16 +143,16 @@ features:
     sim + opt:
       value: n
     user_defined_constraints:
-      value: n
+      value: y
       source:
         - https://pypsa.readthedocs.io/en/latest/user-guide/optimal-power-flow.html#custom-constraints
     user_defined_variables:
-      value: n
+      value: y
       source:
         - https://pypsa.readthedocs.io/en/latest/user-guide/optimal-power-flow.html#custom-constraints
   postprocessing:
     curtailment:
-      value: n
+      value: y
       source:
         - https://pypsa.readthedocs.io/en/latest/api/_source/pypsa.statistics.StatisticsAccessor.curtailment.html
     fcf:
@@ -166,7 +166,7 @@ features:
     lcoe:
       value: n
     lodf:
-      value: n
+      value: y
       source:
         - https://pypsa.readthedocs.io/en/latest/api/_source/pypsa.SubNetwork.calculate_BODF.html
     ptdf:
@@ -231,7 +231,7 @@ features:
     forecasting:
       value: n
     spatial_distribution:
-      value: n
+      value: y
       source:
         - https://pypsa.readthedocs.io/en/latest/examples/experimental-components-class.html#Calculate-line-length-from-attached-buses
   resource_adequacy:
@@ -257,56 +257,56 @@ features:
     ram:
       value: n
     reserve_limit:
-      value: n
+      value: y
       source:
         - https://pypsa.readthedocs.io/en/latest/examples/reserve-power.html
     two_stage_stochastic:
-      value: n
+      value: y
       source:
         - https://pypsa.readthedocs.io/en/latest/examples/stochastic-problem.html
     voll:
-      value: n
+      value: y
       source:
         - https://pypsa.readthedocs.io/en/latest/api/_source/pypsa.optimization.optimize.OptimizationAccessor.add_load_shedding.html
   spatial__resolution__simplification:
     network:
       value: n
     resampling:
-      value: n
+      value: y
       source:
         - https://pypsa.readthedocs.io/en/latest/api/clustering.html
         - https://pypsa.readthedocs.io/en/latest/examples/spatial-clustering.html
   system__carriers:
     coupled:
-      value: n
+      value: y
       source:
         - https://pypsa.readthedocs.io/en/latest/examples-index/sector-coupling.html
     decoupled:
       value: n
   system__limits:
     capacity:
-      value: n
+      value: y
       source:
         - https://pypsa.readthedocs.io/en/latest/examples/capacity-constraint-per-bus.html
     operation:
-      value: n
+      value: y
       source:
         - https://pypsa.readthedocs.io/en/latest/user-guide/optimal-power-flow.html#operational-limit
   time__foresight:
     myopic:
-      value: n
+      value: y
       source:
           - https://pypsa.readthedocs.io/en/latest/examples/unit-commitment.html#Rolling-horizon-example
           - https://pypsa.readthedocs.io/en/latest/user-guide/optimal-power-flow.html#rolling-horizon-optimization
     perfect:
-      value: n
+      value: y
       source:
           - https://pypsa.readthedocs.io/en/latest/user-guide/optimal-power-flow.html#overview
   time__horizon:
     instantaneous:
       value: n
     multi_year:
-      value: n
+      value: y
       source:
           - https://pypsa.readthedocs.io/en/latest/examples/multi-investment-optimisation.html
     single_year:
@@ -321,7 +321,7 @@ features:
     ldc:
       value: n
     resampling:
-      value: n
+      value: y
       source:
         - https://github.com/PyPSA/PyPSA/blob/c5346226ad01de2a9157f8aa198cd14e9fbcfa92/pypsa/common.py#L771
     typical_periods:
@@ -332,7 +332,7 @@ features:
     phase_angle:
       value: n
     ptdf:
-      value: n
+      value: y
       source:
         - https://pypsa.readthedocs.io/en/latest/api/_source/pypsa.SubNetwork.calculate_PTDF.html
     thermal:
@@ -348,7 +348,7 @@ features:
     dc_opf:
       value: n
     sec_opf:
-      value: n
+      value: y
       source:
        - https://pypsa.readthedocs.io/en/latest/examples/scigrid-sclopf.html
 maintainers:
