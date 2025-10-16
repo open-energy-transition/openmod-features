@@ -1,0 +1,8 @@
+# Changes here will be overwritten by Copier
+# DO NOT MANUALLY MODIFY THIS FILE
+maintainers: {{ maintainers.split(',') | map('trim') | list }}
+name: {{ name }}
+shortname: {{ shortname }}
+source_code: {{ source }}
+{%- if docs != "none" %}docs: {{ docs }}{% endif %}
+feature_list_version: "{{ _copier_answers._commit }}"

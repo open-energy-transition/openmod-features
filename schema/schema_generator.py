@@ -1,6 +1,5 @@
 """Tool feature schema generator."""
 
-import subprocess
 from collections.abc import Hashable
 from pathlib import Path
 from typing import Annotated, Any, Literal, TypeVar
@@ -9,7 +8,7 @@ import click
 import pydantic
 import yaml
 from annotated_types import Len
-from pydantic import AfterValidator, Field, computed_field, create_model
+from pydantic import AfterValidator, Field, create_model
 from pydantic_core import PydanticCustomError, Url
 
 HttpsUrl = Annotated[
@@ -59,41 +58,7 @@ class FeatureModel(pydantic.BaseModel):
     This is usually used to validate a `y` but can feasibly be used to validate an `n`."""
 
 
-class ToolFeatureModel(pydantic.BaseModel):
-    """Top-level tool feature fields."""
-
-    model_config = {"extra": "forbid", "use_attribute_docstrings": True}
-    name: str
-    """Tool full name (i.e. not abbreviated)."""
-
-    shortname: str
-    """Tool short name (i.e. abbreviated), often used when referencing the tool when scripting or in the CLI."""
-
-    source_code: HttpsUrl
-    """Tool source code git repository URL."""
-
-    docs: HttpsUrl | None = None
-    """Tool documentation URL, if available."""
-
-    maintainers: NonEmptyUniqueList
-    """
-    Feature list maintainers.
-    These must be given as valid git host usernames.
-    List maintainers need not be the same as tool maintainers.
-    """
-
-    @computed_field
-    @property
-    def feature_list_version(self) -> str:
-        """The version of the schema used to validate this tool feature file."""
-        return (
-            subprocess.check_output(["pixi", "project", "version", "get"])
-            .decode()
-            .strip()
-        )
-
-
-def create_feature_model() -> type[ToolFeatureModel]:
+def create_feature_model() -> type[pydantic.BaseModel]:
     """Create a Pydantic model to describe the tool feature schema.
 
     Returns:
@@ -115,7 +80,7 @@ def create_feature_model() -> type[ToolFeatureModel]:
     feature_set = create_model("FeatureSetModel", **feature_models)
     return create_model(
         "ToolFeatureModel",
-        __base__=ToolFeatureModel,
+        __config__={"extra": "forbid", "use_attribute_docstrings": True},
         features=(
             feature_set,
             Field(default=feature_set(), description="Tool feature set."),

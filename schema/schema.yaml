@@ -1268,21 +1268,6 @@ $defs:
     type: object
 additionalProperties: false
 properties:
-  docs:
-    anyOf:
-    - format: uri
-      maxLength: 2083
-      minLength: 1
-      type: string
-    - type: 'null'
-    default: null
-    description: Tool documentation URL, if available.
-    title: Docs
-  feature_list_version:
-    description: The version of the schema used to validate this tool feature file.
-    readOnly: true
-    title: Feature List Version
-    type: string
   features:
     $ref: '#/$defs/FeatureSetModel'
     default:
@@ -1627,40 +1612,5 @@ properties:
           source: []
           value: n
     description: Tool feature set.
-  maintainers:
-    description: 'Feature list maintainers.
-
-      These must be given as valid git host usernames.
-
-      List maintainers need not be the same as tool maintainers.'
-    items:
-      items: {}
-      type: array
-    minItems: 1
-    title: Maintainers
-    type: array
-    uniqueItems: true
-  name:
-    description: Tool full name (i.e. not abbreviated).
-    title: Name
-    type: string
-  shortname:
-    description: Tool short name (i.e. abbreviated), often used when referencing the
-      tool when scripting or in the CLI.
-    title: Shortname
-    type: string
-  source_code:
-    description: Tool source code git repository URL.
-    format: uri
-    maxLength: 2083
-    minLength: 1
-    title: Source Code
-    type: string
-required:
-- name
-- shortname
-- source_code
-- maintainers
-- feature_list_version
 title: ToolFeatureModel
 type: object
