@@ -167,7 +167,7 @@ $defs:
           source: []
           value: n
         description: costs to (dis)incentivise operating above/below given thresholds,
-          representing soft constraints (e.g. feed-in tariff, line contingency, emissions)
+          representing soft constraints (e.g. feed-in tariff, emissions)
       unit:
         $ref: '#/$defs/FeatureModel'
         default:
@@ -619,94 +619,6 @@ $defs:
             value: n
         description: Postprocessing analyses that can be triggered by the tool based
           on model outputs, on a per-asset or system-wide basis.
-      power_flow__contingency_analysis:
-        $ref: '#/$defs/PowerFlowContingencyAnalysisModel'
-        default:
-          cascading:
-            source: []
-            value: n
-          parallelisation:
-            source: []
-            value: n
-        description: Power flow contingency analysis options
-      power_flow__controls:
-        $ref: '#/$defs/PowerFlowControlsModel'
-        default:
-          facts:
-            source: []
-            value: n
-          hvdc:
-            source: []
-            value: n
-          local_controls:
-            source: []
-            value: n
-          multi_terminal_dc:
-            source: []
-            value: n
-          phase_shifting_transformers:
-            source: []
-            value: n
-          pq_diagrams:
-            source: []
-            value: n
-          shunt_compensators:
-            source: []
-            value: n
-          svc:
-            source: []
-            value: n
-        description: Power flow controls that can be modelled in detail
-      power_flow__dynamic_simulations:
-        $ref: '#/$defs/PowerFlowDynamicSimulationsModel'
-        default:
-          co_sim_across_time:
-            source: []
-            value: n
-          distributed_params:
-            source: []
-            value: n
-          eigenvalue_analysis:
-            source: []
-            value: n
-          emt_sim:
-            source: []
-            value: n
-          encrypt_controller:
-            source: []
-            value: n
-          qss_sim:
-            source: []
-            value: n
-          rms_sim:
-            source: []
-            value: n
-          sim_scan:
-            source: []
-            value: n
-          std_controller:
-            source: []
-            value: n
-          std_interfaces:
-            source: []
-            value: n
-          unbalanced_sim:
-            source: []
-            value: n
-          user_def_controller:
-            source: []
-            value: n
-        description: Power flow dynamic simulations options
-      power_flow__sensitivity_analysis:
-        $ref: '#/$defs/PowerFlowSensitivityAnalysisModel'
-        default:
-          ptdf:
-            source: []
-            value: n
-          voltage_control:
-            source: []
-            value: n
-        description: Power flow sensitivity analysis options
       preprocessing:
         $ref: '#/$defs/PreprocessingModel'
         default:
@@ -811,9 +723,6 @@ $defs:
       time__horizon:
         $ref: '#/$defs/TimeHorizonModel'
         default:
-          instantaneous:
-            source: []
-            value: n
           multi_year:
             source: []
             value: n
@@ -859,16 +768,6 @@ $defs:
             source: []
             value: n
         description: Transmission capacity limit representation
-      transmission__network:
-        $ref: '#/$defs/TransmissionNetworkModel'
-        default:
-          standardised:
-            source: []
-            value: n
-          topology:
-            source: []
-            value: n
-        description: Transmission network representation
       transmission__opf:
         $ref: '#/$defs/TransmissionOpfModel'
         default:
@@ -917,8 +816,7 @@ $defs:
         default:
           source: []
           value: n
-        description: standardised I/O data format for programmatically linking it
-          with other tools and data processing steps
+        description: accepts data in an ISO standard input data format.
     title: InterfaceInputModel
     type: object
   InterfaceOutputModel:
@@ -947,8 +845,8 @@ $defs:
         default:
           source: []
           value: n
-        description: standardised I/O data format for programmatically linking it
-          with other tools and data processing steps
+        description: outputs are in an ISO standard output data format, for regulatory
+          reporting or for frictionless data transfer with a downstream process.
       tables:
         $ref: '#/$defs/FeatureModel'
         default:
@@ -1071,173 +969,6 @@ $defs:
         description: optimisation problem shadow prices (e.g. to approximate wholesale
           market prices)
     title: PostprocessingModel
-    type: object
-  PowerFlowContingencyAnalysisModel:
-    properties:
-      cascading:
-        $ref: '#/$defs/FeatureModel'
-        default:
-          source: []
-          value: n
-        description: the post-contingency state can be calculated at different horizons,
-          considering curative remedial action activation (and their activation times)
-          and cascading events, also including those leading to islanding
-      parallelisation:
-        $ref: '#/$defs/FeatureModel'
-        default:
-          source: []
-          value: n
-        description: simulations can be accelerated in cases where a large number
-          of contingency simulations are based on the same base case
-    title: PowerFlowContingencyAnalysisModel
-    type: object
-  PowerFlowControlsModel:
-    properties:
-      facts:
-        $ref: '#/$defs/FeatureModel'
-        default:
-          source: []
-          value: n
-        description: FACTS is modelled in detail
-      hvdc:
-        $ref: '#/$defs/FeatureModel'
-        default:
-          source: []
-          value: n
-        description: HVDC is modelled in detail
-      local_controls:
-        $ref: '#/$defs/FeatureModel'
-        default:
-          source: []
-          value: n
-        description: local controls is modelled in detail
-      multi_terminal_dc:
-        $ref: '#/$defs/FeatureModel'
-        default:
-          source: []
-          value: n
-        description: multi-terminal DC is modelled in detail
-      phase_shifting_transformers:
-        $ref: '#/$defs/FeatureModel'
-        default:
-          source: []
-          value: n
-        description: phase shifting transformers is modelled in detail
-      pq_diagrams:
-        $ref: '#/$defs/FeatureModel'
-        default:
-          source: []
-          value: n
-        description: PQ-diagrams and local controls is modelled in detail
-      shunt_compensators:
-        $ref: '#/$defs/FeatureModel'
-        default:
-          source: []
-          value: n
-        description: shunt compensators is modelled in detail
-      svc:
-        $ref: '#/$defs/FeatureModel'
-        default:
-          source: []
-          value: n
-        description: SVC is modelled in detail
-    title: PowerFlowControlsModel
-    type: object
-  PowerFlowDynamicSimulationsModel:
-    properties:
-      co_sim_across_time:
-        $ref: '#/$defs/FeatureModel'
-        default:
-          source: []
-          value: n
-        description: supports co-simulation across time domains (RMS-EMT, balanced-unbalanced)
-          and with external solvers
-      distributed_params:
-        $ref: '#/$defs/FeatureModel'
-        default:
-          source: []
-          value: n
-        description: lumped and distributed parameter representation of lines
-      eigenvalue_analysis:
-        $ref: '#/$defs/FeatureModel'
-        default:
-          source: []
-          value: n
-        description: allows to perform eigenvalue analysis to evaluate small-signal
-          stability
-      emt_sim:
-        $ref: '#/$defs/FeatureModel'
-        default:
-          source: []
-          value: n
-        description: allows electromagnetic transients (EMT) simulation
-      encrypt_controller:
-        $ref: '#/$defs/FeatureModel'
-        default:
-          source: []
-          value: n
-        description: encrypt controllers and simulated third-party encrypted controllers
-      qss_sim:
-        $ref: '#/$defs/FeatureModel'
-        default:
-          source: []
-          value: n
-        description: allow quasi-steady-state (QSS) simulation
-      rms_sim:
-        $ref: '#/$defs/FeatureModel'
-        default:
-          source: []
-          value: n
-        description: allows root-mean-square (RMS) quasi-stationary simulation
-      sim_scan:
-        $ref: '#/$defs/FeatureModel'
-        default:
-          source: []
-          value: n
-        description: allows to define variables for the simulation to scan during
-          runtime, with the possibility to stop the simulation if the variables go
-          out of range
-      std_controller:
-        $ref: '#/$defs/FeatureModel'
-        default:
-          source: []
-          value: n
-        description: standard controllers (e.g. IEEE) are supported
-      std_interfaces:
-        $ref: '#/$defs/FeatureModel'
-        default:
-          source: []
-          value: n
-        description: standard interfaces are supported
-      unbalanced_sim:
-        $ref: '#/$defs/FeatureModel'
-        default:
-          source: []
-          value: n
-        description: balanced and unbalanced simulations
-      user_def_controller:
-        $ref: '#/$defs/FeatureModel'
-        default:
-          source: []
-          value: n
-        description: can define control diagrams or equations for controllers
-    title: PowerFlowDynamicSimulationsModel
-    type: object
-  PowerFlowSensitivityAnalysisModel:
-    properties:
-      ptdf:
-        $ref: '#/$defs/FeatureModel'
-        default:
-          source: []
-          value: n
-        description: injections and withdrawals at nodal and zonal granularity
-      voltage_control:
-        $ref: '#/$defs/FeatureModel'
-        default:
-          source: []
-          value: n
-        description: e.g. tap changes
-    title: PowerFlowSensitivityAnalysisModel
     type: object
   PreprocessingModel:
     properties:
@@ -1428,12 +1159,6 @@ $defs:
     type: object
   TimeHorizonModel:
     properties:
-      instantaneous:
-        $ref: '#/$defs/FeatureModel'
-        default:
-          source: []
-          value: n
-        description: instantaneous snapshots
       multi_year:
         $ref: '#/$defs/FeatureModel'
         default:
@@ -1519,22 +1244,6 @@ $defs:
         description: thermal limits
     title: TransmissionLimitsModel
     type: object
-  TransmissionNetworkModel:
-    properties:
-      standardised:
-        $ref: '#/$defs/FeatureModel'
-        default:
-          source: []
-          value: n
-        description: all elements in the CIM/CGMES and related standards are supported
-      topology:
-        $ref: '#/$defs/FeatureModel'
-        default:
-          source: []
-          value: n
-        description: support for bus-branch, node-breaker and hybrid topologies
-    title: TransmissionNetworkModel
-    type: object
   TransmissionOpfModel:
     properties:
       ac_opf:
@@ -1569,6 +1278,11 @@ properties:
     default: null
     description: Tool documentation URL, if available.
     title: Docs
+  feature_list_version:
+    description: The version of the schema used to validate this tool feature file.
+    readOnly: true
+    title: Feature List Version
+    type: string
   features:
     $ref: '#/$defs/FeatureSetModel'
     default:
@@ -1784,82 +1498,6 @@ properties:
         shadow_prices:
           source: []
           value: n
-      power_flow__contingency_analysis:
-        cascading:
-          source: []
-          value: n
-        parallelisation:
-          source: []
-          value: n
-      power_flow__controls:
-        facts:
-          source: []
-          value: n
-        hvdc:
-          source: []
-          value: n
-        local_controls:
-          source: []
-          value: n
-        multi_terminal_dc:
-          source: []
-          value: n
-        phase_shifting_transformers:
-          source: []
-          value: n
-        pq_diagrams:
-          source: []
-          value: n
-        shunt_compensators:
-          source: []
-          value: n
-        svc:
-          source: []
-          value: n
-      power_flow__dynamic_simulations:
-        co_sim_across_time:
-          source: []
-          value: n
-        distributed_params:
-          source: []
-          value: n
-        eigenvalue_analysis:
-          source: []
-          value: n
-        emt_sim:
-          source: []
-          value: n
-        encrypt_controller:
-          source: []
-          value: n
-        qss_sim:
-          source: []
-          value: n
-        rms_sim:
-          source: []
-          value: n
-        sim_scan:
-          source: []
-          value: n
-        std_controller:
-          source: []
-          value: n
-        std_interfaces:
-          source: []
-          value: n
-        unbalanced_sim:
-          source: []
-          value: n
-        user_def_controller:
-          source: []
-          value: n
-      power_flow__sensitivity_analysis:
-        ptdf:
-          source: []
-          value: n
-        voltage_control:
-          source: []
-          value: n
       preprocessing:
         download:
           source: []
@@ -1940,9 +1578,6 @@ properties:
           source: []
           value: n
       time__horizon:
-        instantaneous:
-          source: []
-          value: n
         multi_year:
           source: []
           value: n
@@ -1981,13 +1616,6 @@ properties:
         thermal:
           source: []
           value: n
-      transmission__network:
-        standardised:
-          source: []
-          value: n
-        topology:
-          source: []
-          value: n
       transmission__opf:
         ac_opf:
           source: []
@@ -2006,10 +1634,8 @@ properties:
 
       List maintainers need not be the same as tool maintainers.'
     items:
-      anyOf:
-      - {}
-      - items: {}
-        type: array
+      items: {}
+      type: array
     minItems: 1
     title: Maintainers
     type: array
@@ -2035,5 +1661,6 @@ required:
 - shortname
 - source_code
 - maintainers
+- feature_list_version
 title: ToolFeatureModel
 type: object

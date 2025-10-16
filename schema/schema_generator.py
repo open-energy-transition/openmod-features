@@ -1,5 +1,6 @@
 """Tool feature schema generator."""
 
+import subprocess
 from collections.abc import Hashable
 from pathlib import Path
 from typing import Annotated, Any, Literal, TypeVar
@@ -8,7 +9,7 @@ import click
 import pydantic
 import yaml
 from annotated_types import Len
-from pydantic import AfterValidator, Field, create_model
+from pydantic import AfterValidator, Field, computed_field, create_model
 from pydantic_core import PydanticCustomError, Url
 
 HttpsUrl = Annotated[
@@ -81,6 +82,16 @@ class ToolFeatureModel(pydantic.BaseModel):
     List maintainers need not be the same as tool maintainers.
     """
 
+    @computed_field
+    @property
+    def feature_list_version(self) -> str:
+        """The version of the schema used to validate this tool feature file."""
+        return (
+            subprocess.check_output(["pixi", "project", "version", "get"])
+            .decode()
+            .strip()
+        )
+
 
 def create_feature_model() -> type[ToolFeatureModel]:
     """Create a Pydantic model to describe the tool feature schema.
@@ -117,7 +128,7 @@ def cli():
     """Create a schema YAML file from the current state of the schema model."""
     feature_model_schema = create_feature_model()
     (Path(__file__).parent / "schema.yaml").write_text(
-        yaml.safe_dump(feature_model_schema.model_json_schema())
+        yaml.safe_dump(feature_model_schema.model_json_schema(mode="serialization"))
     )
 
 

@@ -5,7 +5,6 @@ time__horizon:
     single_year: "single year"
     sub_year: "between one day and one year"
     sub_day: "less than one day"
-    instantaneous: "instantaneous snapshots"
 time__foresight:
   description: "The modelling horizon per optimisation iteration"
   members:
@@ -88,7 +87,7 @@ asset__cost__operation:
     linear: "operating costs which vary linearly with unit in-/out-flow (e.g. EUR/MWh)"
     unit: "operating costs which are incurred on unit commitment (e.g. start-up costs)"
     piecewise: "operating costs which vary non-linearly, represented by a piecewise linear curve (e.g. generation bid increment / decrement levels)"
-    subsidy/penalty: "costs to (dis)incentivise operating above/below given thresholds, representing soft constraints (e.g. feed-in tariff, line contingency, emissions)"
+    subsidy/penalty: "costs to (dis)incentivise operating above/below given thresholds, representing soft constraints (e.g. feed-in tariff, emissions)"
 transmission__opf:
   description: "Transmission network optimal power flow representation"
   members:
@@ -102,11 +101,6 @@ transmission__limits:
     ptdf: "power transfer distribution factors"
     thermal: "thermal limits"
     phase_angle: "phase angles"
-transmission__network:
-  description: "Transmission network representation"
-  members:
-    standardised: "all elements in the CIM/CGMES and related standards are supported"
-    topology: "support for bus-branch, node-breaker and hybrid topologies"
 system__carriers:
   description: "Energy carrier representation"
   members:
@@ -161,7 +155,7 @@ interface__input:
     no_code: "configurable without knowledge of the programming language in which the tool has been written."
     cli: "command line interface"
     scripting: "can be configured and run using scripting specific to the tool programming language."
-    standardised: "standardised I/O data format for programmatically linking it with other tools and data processing steps"
+    standardised: "accepts data in an ISO standard input data format."
 interface__output:
   description: "Available options for interacting with model outputs"
   members:
@@ -169,7 +163,7 @@ interface__output:
     reports: "static reports consolidating model outputs"
     tables: "pre-prepared tables that can be analysed in a spreadsheet application such as Excel."
     logs: "run logs available in text files, for use in debugging failing model runs"
-    standardised: "standardised I/O data format for programmatically linking it with other tools and data processing steps"
+    standardised: "outputs are in an ISO standard output data format, for regulatory reporting or for frictionless data transfer with a downstream process."
 competition:
   description: "Asset-owning agents (e.g. private utility companies) can be represented in the model with their own constraints and/or objectives"
   members:
@@ -184,39 +178,3 @@ optimisation_problem:
     user_defined_constraints: "users can define their own constraints to the optimisation problem, applied to existing decision variables."
     user_defined_variables: "users can define their own decision variables to the optimisation problem."
     configuration: "optimiser parameters can be directly configured, including convergence parameters & warm-starting options"
-power_flow__controls:
-  description: "Power flow controls that can be modelled in detail"
-  members:
-    hvdc: "HVDC is modelled in detail"
-    multi_terminal_dc: "multi-terminal DC is modelled in detail"
-    phase_shifting_transformers: "phase shifting transformers is modelled in detail"
-    svc: "SVC is modelled in detail"
-    facts: "FACTS is modelled in detail"
-    shunt_compensators: "shunt compensators is modelled in detail"
-    pq_diagrams: "PQ-diagrams and local controls is modelled in detail"
-    local_controls: "local controls is modelled in detail"
-power_flow__contingency_analysis:
-  description: "Power flow contingency analysis options"
-  members:
-    cascading: "the post-contingency state can be calculated at different horizons, considering curative remedial action activation (and their activation times) and cascading events, also including those leading to islanding"
-    parallelisation: "simulations can be accelerated in cases where a large number of contingency simulations are based on the same base case"
-power_flow__sensitivity_analysis:
-  description: "Power flow sensitivity analysis options"
-  members:
-    voltage_control: "e.g. tap changes"
-    ptdf: "injections and withdrawals at nodal and zonal granularity"
-power_flow__dynamic_simulations:
-  description: "Power flow dynamic simulations options"
-  members:
-    unbalanced_sim: "balanced and unbalanced simulations"
-    distributed_params: "lumped and distributed parameter representation of lines"
-    qss_sim: "allow quasi-steady-state (QSS) simulation"
-    rms_sim: "allows root-mean-square (RMS) quasi-stationary simulation"
-    emt_sim: "allows electromagnetic transients (EMT) simulation"
-    std_controller: "standard controllers (e.g. IEEE) are supported"
-    user_def_controller: "can define control diagrams or equations for controllers"
-    std_interfaces: "standard interfaces are supported"
-    encrypt_controller: "encrypt controllers and simulated third-party encrypted controllers"
-    sim_scan: "allows to define variables for the simulation to scan during runtime, with the possibility to stop the simulation if the variables go out of range"
-    co_sim_across_time: "supports co-simulation across time domains (RMS-EMT, balanced-unbalanced) and with external solvers"
-    eigenvalue_analysis: "allows to perform eigenvalue analysis to evaluate small-signal stability"
