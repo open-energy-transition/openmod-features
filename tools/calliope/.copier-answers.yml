@@ -1,0 +1,9 @@
+# Changes here will be overwritten by Copier
+# DO NOT MANUALLY MODIFY THIS FILE
+_commit: a3044ec
+_src_path: gh:open-energy-transition/openmod-features
+docs: https://calliope.readthedocs.io
+maintainers: brynpickering,foo
+name: calliope
+shortname: calliope
+source: https://github.com/calliope-project/calliope

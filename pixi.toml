@@ -12,6 +12,10 @@ cmd = "python schema/schema_generator.py"
 args = ["tool_name"]
 cmd = "copier copy gh:open-energy-transition/openmod-features --vcs-ref try-copier tools/{{ tool_name }} -d shortname={{ tool_name }}"
 
+[tasks.update-tool]
+args = ["tool_name"]
+cmd = "copier update tools/{{ tool_name }} --defaults"
+
 [dependencies]
 pre-commit = ">=4.2.0,<5"
 ruff = ">=0.12.4,<0.13"

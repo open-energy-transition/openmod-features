@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/{{ _copier_conf.vcs_ref_hash }}/schema/schema.yaml
+# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/a3044ec/schema/schema.yaml
 features:
   asset__candidates:
     convertors:

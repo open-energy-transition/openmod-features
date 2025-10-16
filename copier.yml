@@ -43,4 +43,4 @@ _message_after_copy: |
 # Template settings
 _templates_suffix: .jinja
 _subdirectory: template
-_answers_file: .copier-answers.yml
+_answers_file: .metadata.yml
