@@ -50,39 +50,15 @@ class FeatureModel(pydantic.BaseModel):
     """Feature-level fields."""
 
     model_config = {"extra": "forbid", "use_attribute_docstrings": True}
-    value: Literal["y", "n"] = "n"
-    """Whether a feature exists (`y`) or not (`n`) in the tool."""
+    value: Literal["y", "n", "dev"] = "n"
+    """Whether a feature exists (`y`) or not (`n`), or is in development (`dev`) in the tool."""
 
     source: list[HttpsUrl] = Field(default_factory=list)
     """Link(s) to source to validate the given value.
-    This is usually used to validate a `y` but can feasibly be used to validate an `n`."""
+    This is usually used to validate a `y` (documentation link) or `dev` (issue or pull request link) but can feasibly be used to validate an `n`."""
 
 
-class ToolFeatureModel(pydantic.BaseModel):
-    """Top-level tool feature fields."""
-
-    model_config = {"extra": "forbid", "use_attribute_docstrings": True}
-    name: str
-    """Tool full name (i.e. not abbreviated)."""
-
-    shortname: str
-    """Tool short name (i.e. abbreviated), often used when referencing the tool when scripting or in the CLI."""
-
-    source_code: HttpsUrl
-    """Tool source code git repository URL."""
-
-    docs: HttpsUrl | None = None
-    """Tool documentation URL, if available."""
-
-    maintainers: NonEmptyUniqueList
-    """
-    Feature list maintainers.
-    These must be given as valid git host usernames.
-    List maintainers need not be the same as tool maintainers.
-    """
-
-
-def create_feature_model() -> type[ToolFeatureModel]:
+def create_feature_model() -> type[pydantic.BaseModel]:
     """Create a Pydantic model to describe the tool feature schema.
 
     Returns:
@@ -95,7 +71,9 @@ def create_feature_model() -> type[ToolFeatureModel]:
             for feature, desc in grp_info["members"].items()
         }
         group_model = create_model(
-            grp.replace("_", " ").title().replace(" ", "") + "Model", **member_model
+            grp.replace("_", " ").title().replace(" ", "") + "Model",
+            __config__={"extra": "forbid"},
+            **member_model,
         )
         feature_models[grp] = (
             group_model,
@@ -104,7 +82,7 @@ def create_feature_model() -> type[ToolFeatureModel]:
     feature_set = create_model("FeatureSetModel", **feature_models)
     return create_model(
         "ToolFeatureModel",
-        __base__=ToolFeatureModel,
+        __config__={"extra": "forbid"},
         features=(
             feature_set,
             Field(default=feature_set(), description="Tool feature set."),
@@ -119,6 +97,12 @@ def cli():
     (Path(__file__).parent / "schema.yaml").write_text(
         yaml.safe_dump(feature_model_schema.model_json_schema())
     )
+
+    tool_feature_dict = feature_model_schema().model_dump(mode="json")
+
+    tool_feature_path = Path("template/features.yaml.jinja")
+    header = "# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/{{ _copier_answers._commit }}/schema/schema.yaml"
+    tool_feature_path.write_text(f"{header}\n{yaml.safe_dump(tool_feature_dict)}")
 
 
 if __name__ == "__main__":

@@ -3,11 +3,22 @@ authors = ["Bryn Pickering <17178478+brynpickering@users.noreply.github.com>"]
 channels = ["conda-forge"]
 name = "openmod-features"
 platforms = ["win-64", "linux-64", "osx-64", "osx-arm64"]
-version = "0.1.0"
+version = "0.2.0.dev"
 
-[tasks]
-update-schema = "python schema/schema_generator.py"
-add-tool = "python feature_list.py generate-tool-config"
+[tasks.update-schema]
+cmd = "python schema/schema_generator.py"
+
+[tasks.add-tool]
+args = ["tool_name", {"arg" = "version", "default" = "stable"}]
+cmd = """copier copy gh:open-energy-transition/openmod-features {% if version != "stable" %}--vcs-ref {{ version }}{% endif %} tools/{{ tool_name }} -d shortname={{ tool_name }}"""
+
+[tasks.update-tool]
+args = ["tool_name", {"arg" = "version", "default" = "stable"}]
+cmd = """copier update tools/{{ tool_name }} --defaults {% if version != "stable" %}--vcs-ref {{ version }}{% endif %} --answers-file .metadata.yml"""
+
+[tasks.update-tool-metadata]
+args = ["tool_name"]
+cmd = "copier update tools/{{ tool_name }} --vcs-ref=:current: --answers-file .metadata.yml"
 
 [dependencies]
 pre-commit = ">=4.2.0,<5"
@@ -15,3 +26,4 @@ ruff = ">=0.12.4,<0.13"
 python = ">=3.13.5,<3.14"
 pydantic = ">=2.11.7,<3"
 click = ">=8.2.1,<9"
+copier = ">=9.10.2,<10"

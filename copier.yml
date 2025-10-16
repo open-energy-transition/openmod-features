@@ -1,0 +1,46 @@
+# Copier template configuration
+_min_copier_version: "9.0.0"
+
+# Questions to ask when generating a project
+
+_message_before_copy: |
+  Welcome to energy system modelling tool template generator
+
+name:
+  type: str
+  help: Tool full name (i.e. not abbreviated).
+
+shortname:
+  type: str
+  help: Tool short name (i.e. abbreviated), often used when referencing the tool when scripting or in the CLI.
+  default: "{{ name }}"
+
+source:
+  type: str
+  help: Tool source code git repository URL.
+  validator: >-
+    {% if not (source | regex_search('^https://\w+(\.\w+)+.*$')) %}
+    Source code must be hosted at a valid HTTPS URL
+    {% endif %}
+
+docs:
+  type: str
+  default: "none"
+  validator: >-
+    {% if docs != "none" and not (docs | regex_search('^https://\w+(\.\w+)+.*$')) %}
+    Documentation must be hosted at a valid HTTPS URL
+    {% endif %}
+
+maintainers:
+  type: str
+  help: >-
+    Feature list maintainers as a comma separated list of valid git host usernames.
+    List maintainers need not be the same as tool maintainers.
+
+_message_after_copy: |
+  🎉 Project feature list generated! 🎉
+
+# Template settings
+_templates_suffix: .jinja
+_subdirectory: template
+_answers_file: .metadata.yml
