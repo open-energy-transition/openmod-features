@@ -18,6 +18,9 @@ You can generate a configuration file for your tool using:
 pixi run add-tool <tool-shortname>
 ```
 
+>[!NOTE]
+>We cannot accept dashes (`-`) in tool shortnames.
+
 You will be prompted to add in your tool name, source code URL, and list of maintainers.
 You can also optionally provide a documentation site URL.
 
@@ -55,10 +58,16 @@ To update your project's current list to the newest stable feature release you c
 pixi run update-tool <tool-shortname>
 ```
 
-If you have a specific version of the feature list you want to update to, you can refer to that version in your call:
+If you have a specific git tag/commit hash/branch of the feature list you want to update to, you can refer to that version in your call:
 
 ```sh
 pixi run update-tool <tool-shortname> <version>
+```
+
+For instance:
+
+```sh
+pixi run update-tool my_tool v0.3.0
 ```
 
 >[!NOTE]
