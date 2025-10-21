@@ -42,11 +42,12 @@ You should update each to a value of `y` if that feature is available, or `dev` 
 For each, add a `source` key pointing to URL (e.g. in your documentation, a Pull Request, a test) in which that feature is explicitly referenced.
 The `source` key is not _required_ but your feature will show as unvalidated if it is missing.
 
-#### Adding tooltips to your configuration
+#### Understanding each feature
 
-You may find it useful to have descriptions for each of the features in your config.
-We have referenced the config file schema as a comment at the top of the file using the [YAML language server](https://github.com/redhat-developer/yaml-language-server) syntax.
-[Many IDEs have extensions](https://github.com/redhat-developer/yaml-language-server?tab=readme-ov-file#clients) to leverage this syntax to activate schema validation and support.
+All feature descriptions are in `schema/features.yaml`.
+However, you may find it more useful to have descriptions for each of the features directly when working in your tool's features file.
+You can access them as tooltips [in your favourite IDE](https://github.com/redhat-developer/yaml-language-server?tab=readme-ov-file#clients).
+Activating tooltips will also provide schema validation highlighting.
 
 ### Updating tool metadata
 
@@ -81,7 +82,6 @@ pixi run update-tool my_tool v0.3.0
 >You will likely find that on updating your feature list that there are merge conflicts that you will have to resolve.
 >This could happen when we change a feature name or reorganise the feature levels.
 >Check the project [changelog](./CHANGELOG.md) to help decipher any merge conflicts that are unclear.
-
 
 ## License
 
