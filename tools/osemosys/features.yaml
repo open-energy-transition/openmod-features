@@ -9,7 +9,7 @@ features:
       value: n
     endogenous:
       source: []
-      value: n
+      value: y
     exogenous:
       source: []
       value: n
@@ -27,21 +27,21 @@ features:
       value: n
   asset__capacity_representation:
     grouped:
-      source: []
-      value: n
+      source: [https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capacity-adequacy-a]
+      value: y
     partial_grouped:
       source: []
       value: n
     units:
-      source: []
-      value: n
+      source: [https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capacity-adequacy-a]
+      value: y
   asset__chaining:
     asset_linking:
-      source: []
-      value: n
+      source: [https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#cascaded-water-storage]
+      value: y
     stockpiling:
-      source: []
-      value: n
+      source: [https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#short-term-planning]
+      value: y
   asset__cost__investment:
     annuitisation:
       source: []
