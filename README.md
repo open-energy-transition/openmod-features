@@ -32,7 +32,8 @@ Once your tool config file has been generated, you will find it under `tools/<to
 You will then be able to update your tool's feature list at `tools/<tool-shortname>/features.yaml`.
 
 All tool features default to values of `n`, i.e., not available in your tool.
-You should update each to a value of `y` if that feature is available and add a `source` key pointing to URL (e.g. in your documentation) in which that feature is explicitly referenced.
+You should update each to a value of `y` if that feature is available, or `dev` if it is actively in development.
+For each, add a `source` key pointing to URL (e.g. in your documentation, a Pull Request, a test) in which that feature is explicitly referenced.
 The `source` key is not _required_ but your feature will show as unvalidated if it is missing.
 
 #### Adding tooltips to your configuration
