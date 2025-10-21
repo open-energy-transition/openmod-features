@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: openmod-features contributors
+#
+# SPDX-License-Identifier: MIT
+
+# See https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+# Each line is a file pattern followed by one or more owners.
+
+# These owners will be the default owners for everything in the repo.
+*       @brynpickering
+
+
+# These owners will be the owners for their respective feature lists.
+/tools/calliope/       @brynpickering
+/tools/pypsa/       @brynpickering

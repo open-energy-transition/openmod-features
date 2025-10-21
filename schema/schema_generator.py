@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: openmod-features contributors
+#
+# SPDX-License-Identifier: MIT
+
 """Tool feature schema generator."""
 
 from pathlib import Path

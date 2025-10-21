@@ -1,0 +1,19 @@
+version = 1
+SPDX-PackageName = "openmod-features"
+SPDX-PackageSupplier = "Open Energy Transition gGmbH <info@openenergytransition.org>"
+SPDX-PackageDownloadLocation = "https://github.com/open-energy-transition/openmod-features"
+
+[[annotations]]
+path = [
+    ".github/pull_request_template.md",
+    "schema/schema.yaml"
+]
+SPDX-FileCopyrightText = "openmod-features contributors"
+SPDX-License-Identifier = "CC-BY-4.0"
+
+[[annotations]]
+path = [
+    "pixi.lock",
+]
+SPDX-FileCopyrightText = "openmod-features contributors"
+SPDX-License-Identifier = "CC0-1.0"

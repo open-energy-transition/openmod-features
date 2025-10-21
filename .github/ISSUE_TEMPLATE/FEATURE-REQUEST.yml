@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: openmod-feature contributors
+#
+# SPDX-License-Identifier: CC0-1.0
+
+name: Feature Request
+description: Suggest an idea for the openmod-features.
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for letting us know about your idea!
+  - type: textarea
+    id: description
+    attributes:
+      label: What can be improved?
+      placeholder: Tell us what you would like to see!
+      value: "openmod-features should cover power flow models!"
+    validations:
+      required: true
+  - type: textarea
+    id: version
+    attributes:
+      label: Version
+      description: What version / commit hash of openmod-features are you using?
+      placeholder: "v0.1.0"
+    validations:
+      required: true

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: openmod-feature contributors
+SPDX-FileCopyrightText: openmod-features contributors
 
 SPDX-License-Identifier: MIT
 -->

@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: openmod-features contributors
+
+SPDX-License-Identifier: MIT
+-->
+
 # Open Energy Modelling Tool Feature Inventory
 
 ## Installation
@@ -75,3 +81,15 @@ pixi run update-tool my_tool v0.3.0
 >You will likely find that on updating your feature list that there are merge conflicts that you will have to resolve.
 >This could happen when we change a feature name or reorganise the feature levels.
 >Check the project [changelog](./CHANGELOG.md) to help decipher any merge conflicts that are unclear.
+
+
+## License
+
+This project uses [REUSE](https://reuse.software/) to manage its licensing.
+
+For a list of all `openmod-features contributors`, see [AUTHORS.md](AUTHORS.md).
+For a list of all additional tool-level feature list contributors, see the file headers in `tools/**/features.yaml`.
+
+The software in this repository is licensed under the [MIT license](LICENSES/MIT.txt).
+The generated output data (`tools/*`, `schema/schema.yaml`) are licensed under the [Creative Commons Attribution 4.0 license](LICENSES/CC-BY-4.0.txt) for easier reuse.
+Individual configuration or generic files may be licensed [CC0 1.0 Universal](LICENSES/CC0-1.0.txt) and [Creative Commons Attribution ShareAlike 4.0](LICENSES/CC-BY-SA-4.0.txt); these files are marked explicitly either in the file header or in the [REUSE.toml](REUSE.toml) file.
