@@ -88,7 +88,7 @@ pixi run update-tool my_tool v0.3.0
 This project uses [REUSE](https://reuse.software/) to manage its licensing.
 
 For a list of all `openmod-features contributors`, see [AUTHORS.md](AUTHORS.md).
-For a list of all additional tool-level feature list contributors, see the file headers in `tools/**/features.yaml`.
+For a list of all additional tool-level feature list (`tools/**/features.yaml`) contributors, see the GitHub tags linked to each file in `.github/CODEOWNERS`.
 
 The software in this repository is licensed under the [MIT license](LICENSES/MIT.txt).
 The generated output data (`tools/*`, `schema/schema.yaml`) are licensed under the [Creative Commons Attribution 4.0 license](LICENSES/CC-BY-4.0.txt) for easier reuse.
