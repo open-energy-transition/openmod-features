@@ -6,7 +6,7 @@ SPDX-PackageDownloadLocation = "https://github.com/open-energy-transition/openmo
 [[annotations]]
 path = [
     ".github/pull_request_template.md",
-    "schema/schema.yaml"
+    "schema/*schema.yaml"
 ]
 SPDX-FileCopyrightText = "openmod-features contributors"
 SPDX-License-Identifier = "CC-BY-4.0"
