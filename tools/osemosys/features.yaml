@@ -61,6 +61,7 @@ features:
     asset_linking:
       source:
         - https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#cascaded-water-storage
+        - https://doi.org/10.1088/2515-7620/ad8ca4
       value: y
     stockpiling:
       source: 
