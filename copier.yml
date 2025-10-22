@@ -36,7 +36,7 @@ source:
     {% if not (source | regex_search('^https://\w+(\.\w+)+.*$')) %}
     Source code must be hosted at a valid HTTPS URL
     {% endif %}
-  when: {{ list_type == 'tool' }}
+  when: "{{ list_type == 'tool' }}"
 
 docs:
   type: str
@@ -46,13 +46,17 @@ docs:
     {% if docs != "none" and not (docs | regex_search('^https://\w+(\.\w+)+.*$')) %}
     Documentation must be hosted at a valid HTTPS URL
     {% endif %}
-  when: {{ list_type == 'tool' }}
+  when: "{{ list_type == 'tool' }}"
 
 maintainers:
   type: str
   help: >-
     {{ list_type | title }} feature list maintainers as a comma separated list of valid git host usernames.
     List maintainers need not be the same as {{ list_type }} maintainers.
+  validator: >-
+    {% if not (maintainers | regex_search('^[\w\-\,].+$')) %}
+    Use only GitHub usernames without the leading `@`, separated by commas (`,`).
+    {% endif %}
 
 _message_after_copy: |
   🎉 Project feature list generated! 🎉
