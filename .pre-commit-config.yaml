@@ -45,11 +45,12 @@ repos:
       - id: end-of-file-fixer
         exclude: "^tools/.+/(features.yaml|.metadata.yml)$"
 
-  - repo: https://github.com/lycheeverse/lychee
-    rev: nightly
-    hooks:
-      - id: lychee
-        files: \.md$
+  # Bring back once stable release with pre-commit fix is available
+  #- repo: https://github.com/lycheeverse/lychee
+  #  rev: nightly
+  #  hooks:
+  #    - id: lychee
+  #      files: \.md$
 
   # Bring back once https://github.com/jmlrt/check-yamlschema/pull/18 is merged
   #- repo: https://github.com/jmlrt/check-yamlschema
