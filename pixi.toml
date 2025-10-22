@@ -18,7 +18,7 @@ cmd = """copier copy gh:open-energy-transition/openmod-features {% if version !=
 
 [tasks.update-tool]
 args = ["tool_name", {"arg" = "version", "default" = "stable"}]
-cmd = """copier update tools/{{ tool_name }} --defaults {% if version != "stable" %}--vcs-ref {{ version }}{% endif %} --answers-file .metadata.yml"""
+cmd = """copier update tools/{{ tool_name }} --defaults {% if version != "stable" %}--vcs-ref {{ version }}{% endif %} --answers-file .metadata.yml -d list_type='tool'"""
 
 [tasks.update-tool-metadata]
 args = ["tool_name"]
@@ -30,7 +30,7 @@ cmd = """copier copy gh:open-energy-transition/openmod-features {% if version !=
 
 [tasks.update-use-case]
 args = ["use_case_name", {"arg" = "version", "default" = "stable"}]
-cmd = """copier update use-cases/{{ use_case_name }} --defaults {% if version != "stable" %}--vcs-ref {{ version }}{% endif %} --answers-file .metadata.yml"""
+cmd = """copier update use-cases/{{ use_case_name }} --defaults {% if version != "stable" %}--vcs-ref {{ version }}{% endif %} --answers-file .metadata.yml -d list_type='use-case'"""
 
 [tasks.update-use-case-metadata]
 args = ["use_case_name"]
