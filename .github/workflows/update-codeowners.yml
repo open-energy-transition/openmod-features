@@ -30,8 +30,8 @@ jobs:
 
       - name: Generate CODEOWNERS
         run: |
-          # Extract existing header from CODEOWNERS file (everything up to and including the "respective feature lists" comment)
-          sed -n '1,/# These owners will be the owners for their respective feature lists./p' .github/CODEOWNERS > .github/CODEOWNERS.tmp
+          # Extract existing header from CODEOWNERS file (everything up to and including the BEGIN AUTO-GENERATED marker)
+          sed -n '1,/# BEGIN AUTO-GENERATED/p' .github/CODEOWNERS > .github/CODEOWNERS.tmp
 
           # Find all .metadata.yml files and extract maintainers
           find tools -name '.metadata.yml' -type f | sort | while read -r metadata_file; do
