@@ -24,6 +24,10 @@ cmd = """copier update tools/{{ tool_name }} --defaults {% if version != "stable
 args = ["tool_name"]
 cmd = "copier update tools/{{ tool_name }} --vcs-ref=:current: --answers-file .metadata.yml"
 
+[tasks.check-links]
+args = [{"arg" = "tool_name", "default" = "**"}]
+cmd = "lychee --no-progress tools/{{ tool_name }}/*"
+
 [dependencies]
 pre-commit = ">=4.2.0,<5"
 ruff = ">=0.12.4,<0.13"
@@ -31,3 +35,4 @@ python = ">=3.13.5,<3.14"
 pydantic = ">=2.11.7,<3"
 click = ">=8.2.1,<9"
 copier = ">=9.10.2,<10"
+lychee = ">=0.20.1,<0.21"

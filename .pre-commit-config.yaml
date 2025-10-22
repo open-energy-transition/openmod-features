@@ -7,7 +7,7 @@ default_language_version:
 
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.12.2
+    rev: v0.14.1
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
@@ -25,7 +25,7 @@ repos:
         ]
 
   - repo: https://github.com/fsfe/reuse-tool
-    rev: v6.0.0
+    rev: v6.1.2
     hooks:
       - id: reuse
 
@@ -44,6 +44,13 @@ repos:
         exclude: "^tools/.+/(features.yaml|.metadata.yml)$"
       - id: end-of-file-fixer
         exclude: "^tools/.+/(features.yaml|.metadata.yml)$"
+
+  # Bring back once stable release with pre-commit fix is available
+  #- repo: https://github.com/lycheeverse/lychee
+  #  rev: nightly
+  #  hooks:
+  #    - id: lychee
+  #      files: \.md$
 
   # Bring back once https://github.com/jmlrt/check-yamlschema/pull/18 is merged
   #- repo: https://github.com/jmlrt/check-yamlschema

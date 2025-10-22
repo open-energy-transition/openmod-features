@@ -1,0 +1,46 @@
+# SPDX-FileCopyrightText: openmod-tracker contributors
+#
+# SPDX-License-Identifier: CC0-1.0
+
+name: Link check
+
+on:
+  pull_request:
+    branches:
+      - "main"
+    paths:
+      - "tools/**/*.yaml"
+      - "tools/**/*.yml"
+  workflow_dispatch:
+
+jobs:
+  linkChecker:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write # required for thollander/actions-comment-pull-request
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Get all changed YAML files to check
+        id: changed-files
+        uses: tj-actions/changed-files@v47
+        with:
+          files: |
+            tools/**/*.yaml
+            tools/**/*.yml
+
+      - name: Link Checker
+        id: lychee
+        env:
+          CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --verbose --no-progress ${CHANGED_FILES}
+          fail: false
+
+      - name: PR comment with reactions
+        if: steps.lychee.outputs.exit_code != 0
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          file-path: ./lychee/out.md
+          comment-tag: link-check
