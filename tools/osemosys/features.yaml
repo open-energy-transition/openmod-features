@@ -97,8 +97,9 @@ features:
         - https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#short-term-operational-constraints-of-power-plants
       value: dev
     subsidy/penalty:
-      source: []
-      value: n
+      source: 
+        - https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#short-term-planning
+      value: dev
     unit:
       source: []
       value: n
@@ -183,10 +184,8 @@ features:
         - https://github.com/OSeMOSYS/MUIO/blob/master/README.md
       value: y
     scripting:
-      source:
-        - https://otoole.readthedocs.io/en/latest/functionality.html#
-        - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg
-      value: y
+      source: []
+      value: n
     standardised:
       source: []
       value: n
