@@ -93,8 +93,9 @@ features:
         - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#operating-costs
       value: y
     piecewise:
-      source: []
-      value: n
+      source:
+        - https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#short-term-operational-constraints-of-power-plants
+      value: dev
     subsidy/penalty:
       source: []
       value: n
@@ -255,8 +256,9 @@ features:
       source: []
       value: n
     shadow_prices:
-      source: []
-      value: n
+      source:
+        - https://github.com/KTH-dESA/dual_values
+      value: y
   preprocessing:
     download:
       source: []
@@ -269,8 +271,9 @@ features:
       value: n
   resource_adequacy:
     eens:
-      source: []
-      value: n
+      source:
+        - https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#stochastic-modelling-of-energy-security-assessment
+      value: dev
     lolp:
       source: []
       value: n
@@ -292,9 +295,8 @@ features:
       source: []
       value: n
     eens_limit:
-      source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#stochastic-modelling-of-energy-security-assessment
-      value: dev
+      source: []
+      value: n
     lolp_limit:
       source: []
       value: n
@@ -330,8 +332,9 @@ features:
         - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#sets
       value: y
     decoupled:
-      source: []
-      value: n
+      source:
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#sets
+      value: y
   system__limits:
     capacity:
       source:
@@ -385,9 +388,8 @@ features:
       source: []
       value: n
     typical_periods:
-      source:
-        - https://doi.org/10.1016/j.enpol.2011.06.033
-      value: y
+      source: []
+      value: n
   transmission__limits:
     gtc:
       source: []
@@ -412,5 +414,6 @@ features:
       source: []
       value: n
     transport:
-      source: []
+      source:
+        - https://osemosys.readthedocs.io/en/latest/manual/Introduction.html
       value: y
