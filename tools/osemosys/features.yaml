@@ -64,9 +64,8 @@ features:
         - https://doi.org/10.1088/2515-7620/ad8ca4
       value: y
     stockpiling:
-      source: 
-        - https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#short-term-planning
-      value: y
+      source: []
+      value: n
   asset__cost__investment:
     annuitisation:
       source:
