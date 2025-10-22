@@ -172,7 +172,7 @@ features:
   interface__input:
     cli:
       source:
-        - https://otoole.readthedocs.io/en/latest/
+        - https://otoole.readthedocs.io/en/latest/functionality.html#
       value: y
     gui:
       source:
