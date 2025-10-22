@@ -34,14 +34,17 @@ features:
       source: []
       value: n
     units:
-      source: [https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capacity-adequacy-a]
+      source:
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capacity-adequacy-a
       value: y
   asset__chaining:
     asset_linking:
-      source: [https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#cascaded-water-storage]
+      source:
+        - https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#cascaded-water-storage
       value: y
     stockpiling:
-      source: [https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#short-term-planning]
+      source: 
+        - https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#short-term-planning
       value: y
   asset__cost__investment:
     annuitisation:
