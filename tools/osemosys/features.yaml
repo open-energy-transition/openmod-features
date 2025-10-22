@@ -230,8 +230,9 @@ features:
       value: n
   postprocessing:
     aggregation:
-      source: []
-      value: n
+      source:
+        - https://github.com/OSeMOSYS/osemosys2iamc/blob/main/README.md
+      value: y
     curtailment:
       source: []
       value: n
