@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: openmod-features contributors
+#
+# SPDX-License-Identifier: CC0-1.0
+
+name: Report a missing or incorrectly included tool
+description: Missing or incorrectly represented tools in the feature lists? Report them here.
+labels:
+  - tools
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: >-
+        Please describe the tool you believe is missing and / or the tool that is included that you believe to be misrepresented.
+    validations:
+      required: true
+
+  - type: textarea
+    id: git-link
+    attributes:
+      label: Git repo link
+      description: >-
+        If requesting for a tool to be added, a link to a public git repository is needed (e.g. hosted on GitHub, GitLab, BitBucket, etc.).

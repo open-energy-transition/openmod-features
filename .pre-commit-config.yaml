@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: openmod-features contributors
+#
+# SPDX-License-Identifier: CC0-1.0
+
 default_language_version:
   python: python3
 
@@ -19,6 +23,27 @@ repos:
           "--skip=inventory/*.yaml",
           "--skip=*.csv"
         ]
+
+  - repo: https://github.com/fsfe/reuse-tool
+    rev: v6.0.0
+    hooks:
+      - id: reuse
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      # Check for debugger imports and py37+ breakpoint() calls
+      - id: debug-statements
+      - id: check-yaml
+        args: [--unsafe]
+      - id: check-merge-conflict
+      - id: check-illegal-windows-names
+      - id: check-added-large-files
+        args: [--enforce-all --maxkb=1000]
+      - id: trailing-whitespace
+        exclude: "^tools/.+/(features.yaml|.metadata.yml)$"
+      - id: end-of-file-fixer
+        exclude: "^tools/.+/(features.yaml|.metadata.yml)$"
 
   # Bring back once https://github.com/jmlrt/check-yamlschema/pull/18 is merged
   #- repo: https://github.com/jmlrt/check-yamlschema
