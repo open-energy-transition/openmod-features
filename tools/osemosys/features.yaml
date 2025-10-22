@@ -176,15 +176,15 @@ features:
       value: y
     gui:
       source:
-        - https://github.com/OSeMOSYS/MUIO
+        - https://github.com/OSeMOSYS/MUIO/blob/master/README.md
       value: y
     no_code:
       source:
-        - https://github.com/OSeMOSYS/MUIO
+        - https://github.com/OSeMOSYS/MUIO/blob/master/README.md
       value: y
     scripting:
       source:
-        - https://otoole.readthedocs.io/en/latest/
+        - https://otoole.readthedocs.io/en/latest/functionality.html#
         - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg
       value: y
     standardised:
@@ -193,7 +193,7 @@ features:
   interface__output:
     gui:
       source:
-      - https://github.com/OSeMOSYS/MUIO
+      - https://github.com/OSeMOSYS/MUIO/blob/master/README.md
       value: y
     logs:
       source:
@@ -207,7 +207,7 @@ features:
       value: n
     tables:
       source: 
-        - https://otoole.readthedocs.io/en/latest/
+        - https://otoole.readthedocs.io/en/latest/functionality.html#result-processing
       value: y
   optimisation_problem:
     configuration:
@@ -259,7 +259,7 @@ features:
       value: n
     shadow_prices:
       source:
-        - https://github.com/KTH-dESA/dual_values
+        - https://github.com/KTH-dESA/dual_values/blob/main/README.md
       value: y
   preprocessing:
     download:
