@@ -107,8 +107,9 @@ features:
       source: []
       value: n
     linear:
-      source: []
-      value: n
+      source:
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#performance
+      value: y
     piecewise:
       source: []
       value: n
@@ -158,8 +159,9 @@ features:
       source: []
       value: n
     spatial:
-      source: []
-      value: n
+      source:
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#activity-variables
+      value: y
     time_financial:
       source:
         - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#salvage-value
