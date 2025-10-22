@@ -49,6 +49,19 @@ However, you may find it more useful to have descriptions for each of the featur
 You can access them as tooltips [in your favourite IDE](https://github.com/redhat-developer/yaml-language-server?tab=readme-ov-file#clients).
 Activating tooltips will also provide schema validation highlighting.
 
+#### Checking source links
+
+You can check that all your source links are valid before you commit your changes by running:
+
+```sh
+pixi run check-links <tool-shortname>
+```
+
+Omitting `<tool-shortname>` will check source links in all tools in our inventory.
+
+>[!NOTE]
+>We will also check these links as a Pull Request action, so it isn't mandatory for you to check links locally before committing.
+
 ### Updating tool metadata
 
 If you change your mind about any of the answers you gave when [adding your tool](#add-your-tool), you can update them by calling:
@@ -92,4 +105,4 @@ For a list of all additional tool-level feature list (`tools/**/features.yaml`) 
 
 The software in this repository is licensed under the [MIT license](LICENSES/MIT.txt).
 The generated output data (`tools/*`, `schema/schema.yaml`) are licensed under the [Creative Commons Attribution 4.0 license](LICENSES/CC-BY-4.0.txt) for easier reuse.
-Individual configuration or generic files may be licensed [CC0 1.0 Universal](LICENSES/CC0-1.0.txt) and [Creative Commons Attribution ShareAlike 4.0](LICENSES/CC-BY-SA-4.0.txt); these files are marked explicitly either in the file header or in the [REUSE.toml](REUSE.toml) file.
+Individual configuration or generic files may be licensed [CC0 1.0 Universal](LICENSES/CC0-1.0.txt); these files are marked explicitly either in the file header or in the [REUSE.toml](REUSE.toml) file.

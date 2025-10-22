@@ -39,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added source link checker in CI and as a local, optional `pixi` task.
 - Added `asset__operating_constraints.inter_spatial` to capture operating constraints that span spatial regions.
 - Added `transmission__opf.transport` to clearly differentiate energy transport flows from DC power flow.
 - Added `postprocessing.aggregation` for methods to aggregate model components into broader classifications for dissemination.
