@@ -14,7 +14,7 @@ cmd = "python schema/schema_generator.py"
 
 [tasks.add-tool]
 args = ["tool_name", {"arg" = "version", "default" = "stable"}]
-cmd = """copier copy gh:open-energy-transition/openmod-features {% if version != "stable" %}--vcs-ref {{ version }}{% endif %} tools/{{ tool_name }} -d shortname={{ tool_name }}"""
+cmd = """copier copy gh:open-energy-transition/openmod-features {% if version != "stable" %}--vcs-ref {{ version }}{% endif %} tools/{{ tool_name }} -d shortname={{ tool_name }} -d list_type=tool"""
 
 [tasks.update-tool]
 args = ["tool_name", {"arg" = "version", "default" = "stable"}]
@@ -23,6 +23,10 @@ cmd = """copier update tools/{{ tool_name }} --defaults {% if version != "stable
 [tasks.update-tool-metadata]
 args = ["tool_name"]
 cmd = "copier update tools/{{ tool_name }} --vcs-ref=:current: --answers-file .metadata.yml"
+
+[tasks.add-use-case]
+args = ["use_case_name", {"arg" = "version", "default" = "stable"}]
+cmd = """copier copy gh:open-energy-transition/openmod-features {% if version != "stable" %}--vcs-ref {{ version }}{% endif %} 'use_cases/{{ use_case_name }}' -d shortname='{{ use_case_name }}' -d list_type=use_case"""
 
 [tasks.check-links]
 args = [{"arg" = "tool_name", "default" = "**"}]
