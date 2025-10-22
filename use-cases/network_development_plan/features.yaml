@@ -1,9 +1,9 @@
-# SPDX-FileCopyrightText: tools/{{ shortname }}/features.yaml CODEOWNERS
+# SPDX-FileCopyrightText: tools/network_development_plan/features.yaml CODEOWNERS
 # SPDX-FileCopyrightText: openmod-features contributors
 #
 # SPDX-License-Identifier: CC-BY-4.0
 
-# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/{{ _copier_answers._commit }}/schema/schema.yaml
+# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/0e5b7c7/schema/schema.yaml
 features:
   asset__candidates:
     converters:
@@ -11,29 +11,29 @@ features:
       value: n
     electricity_transmission:
       source: []
-      value: n
+      value: y
     endogenous:
       source: []
-      value: n
+      value: y
     exogenous:
       source: []
-      value: n
+      value: y
     fluid_or_gas_distribution:
       source: []
       value: n
     generators:
       source: []
-      value: n
+      value: y
     loads:
       source: []
-      value: n
+      value: y
     storage:
       source: []
-      value: n
+      value: y
   asset__capacity_representation:
     grouped:
       source: []
-      value: n
+      value: y
     partial_grouped:
       source: []
       value: n
@@ -46,33 +46,33 @@ features:
       value: n
     stockpiling:
       source: []
-      value: n
+      value: y
   asset__cost__investment:
     annuitisation:
       source: []
-      value: n
+      value: y
     linear:
       source: []
-      value: n
+      value: y
     piecewise:
       source: []
       value: n
     subsidy/penalty:
       source: []
-      value: n
+      value: y
     unit:
       source: []
       value: n
   asset__cost__operation:
     linear:
       source: []
-      value: n
+      value: y
     piecewise:
       source: []
       value: n
     subsidy/penalty:
       source: []
-      value: n
+      value: y
     unit:
       source: []
       value: n
@@ -82,33 +82,33 @@ features:
       value: n
     linear:
       source: []
-      value: n
+      value: y
     piecewise:
       source: []
-      value: n
+      value: y
     static non_dimensional:
       source: []
-      value: n
+      value: y
     static_dimensional:
       source: []
-      value: n
+      value: y
   asset__operating_constraints:
     inter_spatial:
       source: []
       value: n
     inter_temporal:
       source: []
-      value: n
+      value: y
     operating:
       source: []
       value: n
     total:
       source: []
-      value: n
+      value: y
   asset__operating_representation:
     ed:
       source: []
-      value: n
+      value: y
     uced:
       source: []
       value: n
@@ -125,7 +125,7 @@ features:
       value: n
     spatial:
       source: []
-      value: n
+      value: y
     time_financial:
       source: []
       value: n
@@ -138,7 +138,7 @@ features:
       value: n
     gui:
       source: []
-      value: n
+      value: y
     no_code:
       source: []
       value: n
@@ -147,27 +147,27 @@ features:
       value: n
     standardised:
       source: []
-      value: n
+      value: y
   interface__output:
     gui:
       source: []
-      value: n
+      value: y
     logs:
       source: []
       value: n
     reports:
       source: []
-      value: n
+      value: y
     standardised:
       source: []
-      value: n
+      value: y
     tables:
       source: []
-      value: n
+      value: y
   optimisation_problem:
     configuration:
       source: []
-      value: n
+      value: y
     decomposition:
       source: []
       value: n
@@ -179,32 +179,32 @@ features:
       value: n
     user_defined_constraints:
       source: []
-      value: n
+      value: y
     user_defined_variables:
       source: []
-      value: n
+      value: y
   postprocessing:
     aggregation:
       source: []
-      value: n
+      value: y
     curtailment:
       source: []
-      value: n
+      value: y
     financial:
       source: []
-      value: n
+      value: y
     future_cost_function:
       source: []
       value: n
     gtc:
       source: []
-      value: n
+      value: y
     impact_assessment:
       source: []
-      value: n
+      value: y
     lcoe:
       source: []
-      value: n
+      value: y
     lodf:
       source: []
       value: n
@@ -217,20 +217,20 @@ features:
   preprocessing:
     download:
       source: []
-      value: n
+      value: y
     forecasting:
       source: []
-      value: n
+      value: y
     spatial_distribution:
       source: []
-      value: n
+      value: y
   resource_adequacy:
     eens:
       source: []
-      value: n
+      value: y
     lolp:
       source: []
-      value: n
+      value: y
     maintenance_scheduling:
       source: []
       value: n
@@ -243,13 +243,13 @@ features:
   robustness:
     asset_outages:
       source: []
-      value: n
+      value: y
     eens_limit:
       source: []
-      value: n
+      value: y
     lolp_limit:
       source: []
-      value: n
+      value: y
     multi_stage_stochastic:
       source: []
       value: n
@@ -258,13 +258,13 @@ features:
       value: n
     reserve_limit:
       source: []
-      value: n
+      value: y
     two_stage_stochastic:
       source: []
       value: n
     voll:
       source: []
-      value: n
+      value: y
   spatial__resolution__simplification:
     network:
       source: []
@@ -278,31 +278,31 @@ features:
       value: n
     decoupled:
       source: []
-      value: n
+      value: y
   system__limits:
     capacity:
       source: []
       value: n
     operation:
       source: []
-      value: n
+      value: y
   time__foresight:
     myopic:
       source: []
       value: n
     perfect:
       source: []
-      value: n
+      value: y
   time__horizon:
     multi_year:
       source: []
-      value: n
+      value: y
     single_year:
       source: []
       value: n
     sub_day:
       source: []
-      value: n
+      value: y
     sub_year:
       source: []
       value: n
@@ -315,14 +315,14 @@ features:
       value: n
     resampling:
       source: []
-      value: n
+      value: y
     typical_periods:
       source: []
       value: n
   transmission__limits:
     gtc:
       source: []
-      value: n
+      value: y
     phase_angle:
       source: []
       value: n
@@ -335,7 +335,7 @@ features:
   transmission__opf:
     ac_opf:
       source: []
-      value: n
+      value: y
     dc_opf:
       source: []
       value: n

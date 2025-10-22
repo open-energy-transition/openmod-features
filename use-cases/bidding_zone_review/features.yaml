@@ -1,0 +1,347 @@
+# SPDX-FileCopyrightText: tools/bidding_zone_review/features.yaml CODEOWNERS
+# SPDX-FileCopyrightText: openmod-features contributors
+#
+# SPDX-License-Identifier: CC-BY-4.0
+
+# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/0e5b7c7/schema/schema.yaml
+features:
+  asset__candidates:
+    converters:
+      source: []
+      value: y
+    electricity_transmission:
+      source: []
+      value: y
+    endogenous:
+      source: []
+      value: n
+    exogenous:
+      source: []
+      value: y
+    fluid_or_gas_distribution:
+      source: []
+      value: n
+    generators:
+      source: []
+      value: y
+    loads:
+      source: []
+      value: y
+    storage:
+      source: []
+      value: y
+  asset__capacity_representation:
+    grouped:
+      source: []
+      value: n
+    partial_grouped:
+      source: []
+      value: n
+    units:
+      source: []
+      value: y
+  asset__chaining:
+    asset_linking:
+      source: []
+      value: n
+    stockpiling:
+      source: []
+      value: y
+  asset__cost__investment:
+    annuitisation:
+      source: []
+      value: n
+    linear:
+      source: []
+      value: n
+    piecewise:
+      source: []
+      value: n
+    subsidy/penalty:
+      source: []
+      value: n
+    unit:
+      source: []
+      value: n
+  asset__cost__operation:
+    linear:
+      source: []
+      value: y
+    piecewise:
+      source: []
+      value: y
+    subsidy/penalty:
+      source: []
+      value: y
+    unit:
+      source: []
+      value: y
+  asset__operating_characteristics:
+    iterative:
+      source: []
+      value: n
+    linear:
+      source: []
+      value: y
+    piecewise:
+      source: []
+      value: y
+    static non_dimensional:
+      source: []
+      value: y
+    static_dimensional:
+      source: []
+      value: y
+  asset__operating_constraints:
+    inter_spatial:
+      source: []
+      value: y
+    inter_temporal:
+      source: []
+      value: y
+    operating:
+      source: []
+      value: y
+    total:
+      source: []
+      value: y
+  asset__operating_representation:
+    ed:
+      source: []
+      value: n
+    uced:
+      source: []
+      value: y
+  competition:
+    distributed_objectives:
+      source: []
+      value: n
+    portfolio:
+      source: []
+      value: y
+  edge_effects:
+    energy_balance:
+      source: []
+      value: y
+    spatial:
+      source: []
+      value: y
+    time_financial:
+      source: []
+      value: n
+    time_operational:
+      source: []
+      value: y
+  interface__input:
+    cli:
+      source: []
+      value: n
+    gui:
+      source: []
+      value: y
+    no_code:
+      source: []
+      value: n
+    scripting:
+      source: []
+      value: n
+    standardised:
+      source: []
+      value: n
+  interface__output:
+    gui:
+      source: []
+      value: y
+    logs:
+      source: []
+      value: y
+    reports:
+      source: []
+      value: y
+    standardised:
+      source: []
+      value: n
+    tables:
+      source: []
+      value: y
+  optimisation_problem:
+    configuration:
+      source: []
+      value: y
+    decomposition:
+      source: []
+      value: y
+    near_optimal:
+      source: []
+      value: n
+    sim + opt:
+      source: []
+      value: y
+    user_defined_constraints:
+      source: []
+      value: y
+    user_defined_variables:
+      source: []
+      value: y
+  postprocessing:
+    aggregation:
+      source: []
+      value: n
+    curtailment:
+      source: []
+      value: y
+    financial:
+      source: []
+      value: y
+    future_cost_function:
+      source: []
+      value: n
+    gtc:
+      source: []
+      value: n
+    impact_assessment:
+      source: []
+      value: y
+    lcoe:
+      source: []
+      value: y
+    lodf:
+      source: []
+      value: n
+    ptdf:
+      source: []
+      value: n
+    shadow_prices:
+      source: []
+      value: y
+  preprocessing:
+    download:
+      source: []
+      value: y
+    forecasting:
+      source: []
+      value: y
+    spatial_distribution:
+      source: []
+      value: y
+  resource_adequacy:
+    eens:
+      source: []
+      value: y
+    lolp:
+      source: []
+      value: y
+    maintenance_scheduling:
+      source: []
+      value: n
+    monte_carlo:
+      source: []
+      value: n
+    sampling:
+      source: []
+      value: n
+  robustness:
+    asset_outages:
+      source: []
+      value: y
+    eens_limit:
+      source: []
+      value: y
+    lolp_limit:
+      source: []
+      value: y
+    multi_stage_stochastic:
+      source: []
+      value: y
+    ram:
+      source: []
+      value: n
+    reserve_limit:
+      source: []
+      value: y
+    two_stage_stochastic:
+      source: []
+      value: n
+    voll:
+      source: []
+      value: y
+  spatial__resolution__simplification:
+    network:
+      source: []
+      value: n
+    resampling:
+      source: []
+      value: y
+  system__carriers:
+    coupled:
+      source: []
+      value: n
+    decoupled:
+      source: []
+      value: y
+  system__limits:
+    capacity:
+      source: []
+      value: n
+    operation:
+      source: []
+      value: y
+  time__foresight:
+    myopic:
+      source: []
+      value: y
+    perfect:
+      source: []
+      value: n
+  time__horizon:
+    multi_year:
+      source: []
+      value: n
+    single_year:
+      source: []
+      value: y
+    sub_day:
+      source: []
+      value: y
+    sub_year:
+      source: []
+      value: y
+  time__resolution__simplification:
+    distortion_mitigation:
+      source: []
+      value: n
+    load_duration_curves:
+      source: []
+      value: n
+    resampling:
+      source: []
+      value: n
+    typical_periods:
+      source: []
+      value: y
+  transmission__limits:
+    gtc:
+      source: []
+      value: n
+    phase_angle:
+      source: []
+      value: n
+    ptdf:
+      source: []
+      value: y
+    thermal:
+      source: []
+      value: n
+  transmission__opf:
+    ac_opf:
+      source: []
+      value: n
+    dc_opf:
+      source: []
+      value: n
+    sec_opf:
+      source: []
+      value: y
+    transport:
+      source: []
+      value: n
