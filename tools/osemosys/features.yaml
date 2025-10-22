@@ -27,7 +27,8 @@ features:
       value: n
   asset__capacity_representation:
     grouped:
-      source: [https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capacity-adequacy-a]
+      source: 
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capacity-adequacy-a
       value: y
     partial_grouped:
       source: []
@@ -44,11 +45,15 @@ features:
       value: y
   asset__cost__investment:
     annuitisation:
-      source: []
-      value: n
+      source:
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capital-costs
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#total-discounted-costs
+      value: y
     linear:
-      source: []
-      value: n
+      source: 
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#technology-costs
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capital-costs
+      value: y
     piecewise:
       source: []
       value: n
@@ -60,8 +65,10 @@ features:
       value: n
   asset__cost__operation:
     linear:
-      source: []
-      value: n
+      source:
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#technology-costs
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#operating-costs
+      value: y
     piecewise:
       source: []
       value: n
@@ -85,8 +92,9 @@ features:
       source: []
       value: n
     static_dimensional:
-      source: []
-      value: n
+      source:
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#performance
+      value: y
   asset__operating_constraints:
     inter_spatial:
       source: []
