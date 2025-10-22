@@ -89,8 +89,9 @@ features:
       source: []
       value: n
     static non_dimensional:
-      source: []
-      value: n
+      source:
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#performance
+      value: y
     static_dimensional:
       source:
         - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#performance
@@ -100,18 +101,24 @@ features:
       source: []
       value: n
     inter_temporal:
-      source: []
-      value: n
+      source:
+        - https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#short-term-operational-constraints-of-power-plants
+        - https://doi.org/10.1016/j.apenergy.2014.08.072
+      value: dev
     operating:
       source: []
       value: n
     total:
-      source: []
-      value: n
+      source:
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#activity-constraints
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#annual-activity-constraints
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#total-activity-constraints
+      value: y
   asset__operating_representation:
     ed:
-      source: []
-      value: n
+      source:
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#activity-variables
+      value: y
     uced:
       source: []
       value: n
@@ -130,34 +137,42 @@ features:
       source: []
       value: n
     time_financial:
-      source: []
-      value: n
+      source:
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#salvage-value
+      value: y
     time_operational:
       source: []
       value: n
   interface__input:
     cli:
-      source: []
-      value: n
+      source:
+        - https://otoole.readthedocs.io/en/latest/
+      value: y
     gui:
-      source: []
-      value: n
+      source:
+        - https://github.com/OSeMOSYS/MUIO
+      value: y
     no_code:
-      source: []
-      value: n
+      source:
+        - https://github.com/OSeMOSYS/MUIO
+      value: y
     scripting:
-      source: []
-      value: n
+      source:
+        - https://otoole.readthedocs.io/en/latest/
+        - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg
+      value: y
     standardised:
       source: []
       value: n
   interface__output:
     gui:
-      source: []
-      value: n
+      source:
+      - https://github.com/OSeMOSYS/MUIO
+      value: y
     logs:
-      source: []
-      value: n
+      source:
+        - https://en.wikibooks.org/wiki/GLPK/Using_GLPSOL
+      value: y
     reports:
       source: []
       value: n
@@ -165,8 +180,9 @@ features:
       source: []
       value: n
     tables:
-      source: []
-      value: n
+      source: 
+        - https://otoole.readthedocs.io/en/latest/
+      value: y
   optimisation_problem:
     configuration:
       source: []
@@ -181,8 +197,9 @@ features:
       source: []
       value: n
     user_defined_constraints:
-      source: []
-      value: n
+      source:
+        - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/pull/75
+      value: dev
     user_defined_variables:
       source: []
       value: n
@@ -238,18 +255,23 @@ features:
       source: []
       value: n
     monte_carlo:
-      source: []
-      value: n
+      source:
+        - https://github.com/KTH-dESA/esom_gsa
+        - https://open-research-europe.ec.europa.eu/articles/3-30/v1
+      value: dev
     sampling:
-      source: []
-      value: n
+      source:
+        - https://github.com/KTH-dESA/esom_gsa
+        - https://open-research-europe.ec.europa.eu/articles/3-30/v1
+      value: dev
   robustness:
     asset_outages:
       source: []
       value: n
     eens_limit:
-      source: []
-      value: n
+      source:
+        - https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#stochastic-modelling-of-energy-security-assessment
+      value: dev
     lolp_limit:
       source: []
       value: n
@@ -260,8 +282,10 @@ features:
       source: []
       value: n
     reserve_limit:
-      source: []
-      value: n
+      source:
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#reserve-margin
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#reserve-margin-constraints
+      value: y
     two_stage_stochastic:
       source: []
       value: n
@@ -273,42 +297,60 @@ features:
       source: []
       value: n
     resampling:
-      source: []
-      value: n
+      source: 
+        - https://github.com/KTH-dESA/GSA_Spatial_temporal
+        - https://doi.org/10.1016/j.isci.2025.111792
+      value: dev
   system__carriers:
     coupled:
-      source: []
-      value: n
+      source:
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#sets
+      value: y
     decoupled:
       source: []
       value: n
   system__limits:
     capacity:
-      source: []
-      value: n
+      source:
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#new-capacity-constraints
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#total-capacity-constraints
+      value: y
     operation:
-      source: []
-      value: n
+      source:
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#annual-activity-constraints
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#total-activity-constraints
+      value: y
   time__foresight:
     myopic:
-      source: []
-      value: n
+      source:
+        - https://github.com/KTH-dESA/OSeMOSYS_step
+        - https://doi.org/10.1186/s13705-024-00469-w
+      value: dev
     perfect:
-      source: []
-      value: n
+      source:
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#objective-function
+      value: y
   time__horizon:
     multi_year:
-      source: []
-      value: n
+      source:
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#sets
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#global-parameters
+      value: y
     single_year:
-      source: []
-      value: n
+      source:
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#sets
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#global-parameters
+      value: y
     sub_day:
-      source: []
-      value: n
+      source:
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#sets
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#global-parameters
+      value: y
     sub_year:
-      source: []
-      value: n
+      source:
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#sets
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#global-parameters
+      value: y
   time__resolution__simplification:
     distortion_mitigation:
       source: []
@@ -320,12 +362,13 @@ features:
       source: []
       value: n
     typical_periods:
-      source: []
-      value: n
+      source:
+        - https://doi.org/10.1016/j.enpol.2011.06.033
+      value: y
   transmission__limits:
     gtc:
       source: []
-      value: n
+      value: y
     phase_angle:
       source: []
       value: n
@@ -347,4 +390,4 @@ features:
       value: n
     transport:
       source: []
-      value: n
+      value: y
