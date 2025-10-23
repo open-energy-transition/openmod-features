@@ -10,36 +10,53 @@ _min_copier_version: "9.0.0"
 _message_before_copy: |
   Welcome to energy system modelling tool template generator
 
-name:
+list_type:
   type: str
-  help: Tool full name (i.e. not abbreviated).
+  choices:
+    - tool
+    - use-case
 
 shortname:
   type: str
-  help: Tool short name (i.e. abbreviated), often used when referencing the tool when scripting or in the CLI.
+  help: "{{ list_type | title }} short name (i.e. abbreviated), often used when referencing the {{ list_type }} when scripting or in the CLI."
   default: "{{ name }}"
+
+name:
+  type: str
+  help: "{{ list_type | title }} full name (i.e. not abbreviated)."
+
+description:
+  type: str
+  help: "{{ list_type | title }} short description."
 
 source:
   type: str
-  help: Tool source code git repository URL.
+  help: "{{ list_type | title }} source code git repository URL."
   validator: >-
     {% if not (source | regex_search('^https://\w+(\.\w+)+.*$')) %}
     Source code must be hosted at a valid HTTPS URL
     {% endif %}
+  when: "{{ list_type == 'tool' }}"
 
 docs:
   type: str
   default: "none"
+  help: "{{ list_type | title }} documentation URL."
   validator: >-
     {% if docs != "none" and not (docs | regex_search('^https://\w+(\.\w+)+.*$')) %}
     Documentation must be hosted at a valid HTTPS URL
     {% endif %}
+  when: "{{ list_type == 'tool' }}"
 
 maintainers:
   type: str
   help: >-
-    Feature list maintainers as a comma separated list of valid git host usernames.
-    List maintainers need not be the same as tool maintainers.
+    {{ list_type | title }} feature list maintainers as a comma separated list of valid git host usernames.
+    List maintainers need not be the same as {{ list_type }} maintainers.
+  validator: >-
+    {% if not (maintainers | regex_search('^[\w\-\,].+$')) %}
+    Use only GitHub usernames without the leading `@`, separated by commas (`,`).
+    {% endif %}
 
 _message_after_copy: |
   🎉 Project feature list generated! 🎉

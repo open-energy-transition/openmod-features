@@ -6,15 +6,28 @@ SPDX-License-Identifier: MIT
 
 # Open Energy Modelling Tool Feature Inventory
 
+This is a repository containing:
+
+- feature lists for open-source energy system modelling tools.
+- feature requirements for typical energy system modelling use-cases.
+
+By matching tool feature lists to use-cases, it is possible to see how well open energy system modelling tools are meeting decision-making needs and to highlight feature gaps.
+
+This repository is community-driven - we rely on tool users and developers to contribute feature lists.
+It is also continually evolving as we refine the feature taxonomy and use-cases through stakeholder engagement.
+We welcome all contributions, whether to [add](#add-your-tool) or [update](#updating-your-tool) a tool feature list, or to [contribute use-cases](#add-a-use-case).
+
+Some key features of our repository are:
+
+1. A versioned feature taxonomy, with feature lists explicitly linked to a taxonomy version at all times.
+1. Tool feature validation, through per-feature URL references to tool documentation, studies, or source code.
+1. Explicit feature list maintainers - we distribute responsibility to maintain lists to ensure they can be kept up-to-date.
+1. (WIP) Automated pipeline to update feature lists to new taxonomy versions and notify list maintainers of the need to review those changes.
+
 ## Installation
 
 1. Clone this repository
 1. Install [pixi](https://pixi.sh/latest/).
-1. Install all project dependencies:
-
-   ```sh
-   pixi install
-   ```
 
 ## Add your tool
 
@@ -27,8 +40,11 @@ pixi run add-tool <tool-shortname>
 >[!NOTE]
 >We cannot accept dashes (`-`) in tool shortnames.
 
-You will be prompted to add in your tool name, source code URL, and list of maintainers.
-You can also optionally provide a documentation site URL.
+You will be prompted to add in your tool name, source code URL, and _feature list_ maintainers.
+You can also optionally provide a documentation site URL and a longer description.
+
+>[!NOTE]
+>`maintainers` are _not_ the tool maintainers, but those who will be assigned responsibility to review future changes to the feature list in this repository.
 
 ## Updating your tool
 
@@ -96,6 +112,32 @@ pixi run update-tool my_tool v0.3.0
 >This could happen when we change a feature name or reorganise the feature levels.
 >Check the project [changelog](./CHANGELOG.md) to help decipher any merge conflicts that are unclear.
 
+## Add a use-case
+
+You can generate a configuration file for your use-case using:
+
+```sh
+pixi run add-use-case <use-case-shortname>
+```
+
+>[!NOTE]
+>We cannot accept dashes (`-`) in shortnames.
+
+You will be prompted to add in your use-case name, description, and _feature list_ maintainers.
+You can also optionally provide a documentation site URL.
+
+### Updating your use-case
+
+Updating use-case metadata or feature list version is identical to [updating a tool feature list](#updating-your-tool), except that you run the following `pixi` tasks:
+
+```sh
+pixi run update-use-case-metadata <use-case-shortname>
+```
+
+```sh
+pixi run update-use-case <use-case-shortname>
+```
+
 ## License
 
 This project uses [REUSE](https://reuse.software/) to manage its licensing.
@@ -104,5 +146,5 @@ For a list of all `openmod-features contributors`, see [AUTHORS.md](AUTHORS.md).
 For a list of all additional tool-level feature list (`tools/**/features.yaml`) contributors, see the GitHub tags linked to each file in `.github/CODEOWNERS`.
 
 The software in this repository is licensed under the [MIT license](LICENSES/MIT.txt).
-The generated output data (`tools/*`, `schema/schema.yaml`) are licensed under the [Creative Commons Attribution 4.0 license](LICENSES/CC-BY-4.0.txt) for easier reuse.
+The generated output data (`tools/*`, `use-cases/*`, `schema/schema.yaml`) are licensed under the [Creative Commons Attribution 4.0 license](LICENSES/CC-BY-4.0.txt) for easier reuse.
 Individual configuration or generic files may be licensed [CC0 1.0 Universal](LICENSES/CC0-1.0.txt); these files are marked explicitly either in the file header or in the [REUSE.toml](REUSE.toml) file.
