@@ -39,6 +39,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- README preamble.
+- Use-cases and a specific template and schema for them (#16).
 - CI workflow to keep CODEOWNERS file up-to-date when changes are made to feature list metadata (#8).
 - Added source link checker in CI and as a local, optional `pixi` task.
 - Added `asset__operating_constraints.inter_spatial` to capture operating constraints that span spatial regions.
