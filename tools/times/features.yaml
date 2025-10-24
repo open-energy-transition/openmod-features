@@ -9,57 +9,76 @@
 features:
   asset__candidates:
     converters:
-      source: []
-      value: n
+      source:
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+      value: y
     electricity_transmission:
-      source: []
-      value: n
+      source:
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+      value: y
     endogenous:
-      source: []
-      value: n
+      source:
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+      value: y
     exogenous:
-      source: []
-      value: n
+      source:
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+      value: y
     fluid_or_gas_distribution:
-      source: []
-      value: n
+      source:
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+      - https://link.springer.com/article/10.1007/s10666-024-09976-8
+      value: y
     generators:
-      source: []
-      value: n
+      source:
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+      value: y
     loads:
-      source: []
-      value: n
+      source:
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+      value: y
     storage:
-      source: []
-      value: n
+      source:
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+      value: y
   asset__capacity_representation:
     grouped:
+      source:
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_model-Part-I.docx
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+      value: y
+    partial_grouped: #??? (see Lumpy Investment extension in Part-I)
       source: []
       value: n
-    partial_grouped:
-      source: []
-      value: n
-    units:
+    units: #??? (see Lumpy Investment extension in Part-I)
       source: []
       value: n
   asset__chaining:
     asset_linking:
-      source: []
-      value: n
+      source:
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+      value: y
     stockpiling:
-      source: []
-      value: n
+      source:
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+      value: y
   asset__cost__investment:
     annuitisation:
-      source: []
-      value: n
+      source:
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_model-Part-I.docx
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+      value: y
     linear:
-      source: []
-      value: n
+      source:
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_model-Part-I.docx
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+      value: y
     piecewise:
-      source: []
-      value: n
-    subsidy/penalty:
+      source:
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_model-Part-I.docx
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+      value: y
+    subsidy/penalty: #??? Does tax and subs per unit energy/investment count here?
       source: []
       value: n
     unit:
@@ -67,50 +86,61 @@ features:
       value: n
   asset__cost__operation:
     linear:
-      source: []
-      value: n
+      source:
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_model-Part-I.docx
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+      value: y
     piecewise:
       source: []
       value: n
-    subsidy/penalty:
+    subsidy/penalty: #??? Does tax and subs per unit energy/investment count here?
       source: []
       value: n
     unit:
-      source: []
-      value: n
+      source:
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+      value: y
   asset__operating_characteristics:
     iterative:
       source: []
       value: n
     linear:
-      source: []
-      value: n
+      source:
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+      value: y
     piecewise:
       source: []
       value: n
     static non_dimensional:
-      source: []
-      value: n
+      source:
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+      value: y
     static_dimensional:
-      source: []
-      value: n
+      source:
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+      value: y
   asset__operating_constraints:
     inter_spatial:
-      source: []
-      value: n
+      source:
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+      value: y
     inter_temporal:
-      source: []
-      value: n
+      source:
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+      value: y
     operating:
-      source: []
-      value: n
+      source:
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+      value: y
     total:
-      source: []
-      value: n
+      source:
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+      value: y
   asset__operating_representation:
     ed:
-      source: []
-      value: n
+      source:
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+      value: y
     uced:
       source: []
       value: n
@@ -122,16 +152,18 @@ features:
       source: []
       value: n
   edge_effects:
-    energy_balance:
+    energy_balance: #??? UCL unintended storage cycling?
       source: []
       value: n
-    spatial:
+    spatial: #??? Dummy processes?
       source: []
       value: n
     time_financial:
-      source: []
-      value: n
-    time_operational:
+      source:
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_model-Part-I.docx
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+      value: y
+    time_operational: #??? Don't undertand
       source: []
       value: n
   interface__input:
