@@ -1,0 +1,36 @@
+# SPDX-FileCopyrightText: openmod-tracker contributors
+#
+# SPDX-License-Identifier: CC0-1.0
+
+name: Run tests.
+
+on:
+  pull_request: # or runs on merges into main
+    branches:
+      - "main"
+    paths:
+      - schema/**
+      - template/**
+      - tests/**
+      - copier.yml
+      - pixi.toml
+      - ruff.toml
+      - .github/workflows/run-tests.yml
+
+jobs:
+  get-stats:
+    runs-on: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          # For PRs, we need to fetch the full history to commit back
+          fetch-depth: 0
+          # Use a token that can create PRs and push to branches
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Pixi
+        uses: prefix-dev/setup-pixi@v0.9.1
+
+      - name: Run tests
+        run: pixi run tests -v
