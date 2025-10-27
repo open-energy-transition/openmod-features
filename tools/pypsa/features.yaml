@@ -133,7 +133,7 @@ features:
       value: y
     piecewise:
       source:
-        - https://docs.pypsa.org/latest/examples/demand-elasticity/piecewise-linear-demand-curve
+        - https://docs.pypsa.org/latest/examples/demand-elasticity/#piecewise-linear-demand-curve
       value: dev
     static non_dimensional:
       source:
@@ -253,7 +253,7 @@ features:
   optimisation_problem:
     configuration:
       source:
-        - https://docs.pypsa.org/latest/api/networks/optimize/pypsa.Network.optimize.solve_model
+        - https://docs.pypsa.org/latest/api/networks/optimize/#pypsa.Network.optimize.solve_model
       value: y
     decomposition:
       source: []
@@ -261,7 +261,7 @@ features:
     near_optimal:
       source:
         - https://docs.pypsa.org/latest/examples/mga/
-        - https://docs.pypsa.org/latest/api/networks/optimize/pypsa.Network.optimize.solve_model
+        - https://docs.pypsa.org/latest/api/networks/optimize/#pypsa.Network.optimize.solve_model
       value: y
     sim + opt:
       source: []
@@ -282,8 +282,8 @@ features:
     curtailment:
       value: y
       source:
-        - https://docs.pypsa.org/latest/api/networks/statistics/pypsa.statistics.StatisticsAccessor.curtailment
-        - https://docs.pypsa.org/latest/examples/scigrid-lopf-then-pf/curtailment
+        - https://docs.pypsa.org/latest/api/networks/statistics/#pypsa.statistics.StatisticsAccessor.curtailment
+        - https://docs.pypsa.org/latest/examples/scigrid-lopf-then-pf/#curtailment
     financial:
       source:
         - https://docs.pypsa.org/latest/user-guide/statistics/
@@ -299,7 +299,7 @@ features:
     impact_assessment:
       source:
         - https://docs.pypsa.org/latest/user-guide/statistics/
-        - https://docs.pypsa.org/latest/api/components/types/global-constraints/pypsa.components.GlobalConstraints.add
+        - https://docs.pypsa.org/latest/api/components/types/global-constraints/#pypsa.components.GlobalConstraints.add
       value: n
     lcoe:
       source: []
@@ -307,16 +307,16 @@ features:
     lodf:
       value: y
       source:
-        - https://docs.pypsa.org/latest/api/networks/subnetwork/pypsa.SubNetwork.calculate_BODF
+        - https://docs.pypsa.org/latest/api/networks/subnetwork/#pypsa.SubNetwork.calculate_BODF
     ptdf:
       source:
         - https://docs.pypsa.org/latest/api/networks/subnetwork/#pypsa.SubNetwork.calculate_PTDF
       value: y
     shadow_prices:
       source:
-        - https://docs.pypsa.org/latest/home/features/analysis-and-usability
-        - https://docs.pypsa.org/latest/examples/scigrid-lopf-then-pf/locational-marginal-prices
-        - https://docs.pypsa.org/latest/user-guide/faq/can-i-model-endogenous-fuel-prices-in-pypsa
+        - https://docs.pypsa.org/latest/home/features/#analysis-and-usability
+        - https://docs.pypsa.org/latest/examples/scigrid-lopf-then-pf/#locational-marginal-prices
+        - https://docs.pypsa.org/latest/user-guide/faq/#can-i-model-endogenous-fuel-prices-in-pypsa
       value: n
   preprocessing:
     download:
@@ -328,7 +328,7 @@ features:
     spatial_distribution:
       value: y
       source:
-        - https://docs.pypsa.org/latest/api/components/types/lines/?h=line#pypsa.components.Lines.calculate_line_length
+        - https://docs.pypsa.org/latest/api/components/types/lines/#pypsa.components.Lines.calculate_line_length
   resource_adequacy:
     eens:
       source: []
@@ -341,12 +341,12 @@ features:
       value: n
     monte_carlo:
       source:
-        - https://docs.pypsa.org/latest/user-guide/faq/can-you-do-generation-adequacy-studies-with-monte-carlo-unplanned-outages
+        - https://docs.pypsa.org/latest/user-guide/faq/#can-you-do-generation-adequacy-studies-with-monte-carlo-unplanned-outages
         - https://pypsa-earth.readthedocs.io/en/latest/monte_carlo.html
       value: dev
     sampling:
       source:
-        - https://docs.pypsa.org/latest/examples/stochastic-optimization/
+        - https://docs.pypsa.org/latest/examples/#stochastic-optimization/
       value: y
   robustness:
     asset_outages:
@@ -375,7 +375,7 @@ features:
     voll:
       value: y
       source:
-        - https://docs.pypsa.org/latest/api/networks/optimize/pypsa.Network.optimize.add_load_shedding
+        - https://docs.pypsa.org/latest/api/networks/optimize/#pypsa.Network.optimize.add_load_shedding
   spatial__resolution__simplification:
     network:
       source: []
@@ -406,17 +406,17 @@ features:
     myopic:
       value: y
       source:
-        - https://pypsa.readthedocs.io/en/latest/examples/unit-commitment.html#Rolling-horizon-example
+        - https://docs.pypsa.org/latest/examples/unit-commitment/#rolling-horizon
         - https://pypsa.readthedocs.io/en/latest/user-guide/optimal-power-flow.html#rolling-horizon-optimization
     perfect:
       value: y
       source:
-        - https://pypsa.readthedocs.io/en/latest/user-guide/optimal-power-flow.html#overview
+        - https://docs.pypsa.org/latest/user-guide/optimization/overview/
   time__horizon:
     multi_year:
       value: y
       source:
-        - https://pypsa.readthedocs.io/en/latest/examples/multi-investment-optimisation.html
+        - https://docs.pypsa.org/latest/user-guide/faq/?h=multi+investment#can-investments-be-modelled-for-different-years-over-multiple-decades
     single_year:
       source:
         - https://docs.pypsa.org/latest/user-guide/design/#snapshots
