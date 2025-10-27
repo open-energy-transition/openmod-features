@@ -163,14 +163,14 @@ features:
     inter_temporal:
       value: y
       source:
-        - https://pypsa.readthedocs.io/en/latest/user-guide/optimal-power-flow.html#ramping-constraints
-        - https://pypsa.readthedocs.io/en/latest/examples/unit-commitment.html#Ramp-rate-limits
+        - https://docs.pypsa.org/latest/user-guide/optimization/unit-commitment/#ramping
+        - https://docs.pypsa.org/latest/examples/unit-commitment/#ramp-rate-limits
     operating:
       value: y
       source:
-        - https://pypsa.readthedocs.io/en/latest/examples/unit-commitment.html#Minimum-part-load-demonstration
-        - https://pypsa.readthedocs.io/en/latest/examples/unit-commitment.html#Minimum-up-time-demonstration
-        - https://pypsa.readthedocs.io/en/latest/examples/unit-commitment.html#Minimum-down-time-demonstration
+        - https://docs.pypsa.org/latest/examples/unit-commitment/#minimum-part-load
+        - https://docs.pypsa.org/latest/examples/unit-commitment/#minimum-up-time
+        - https://docs.pypsa.org/latest/examples/unit-commitment/#minimum-down-time
     total:
       source:
         - https://docs.pypsa.org/latest/examples/simple-electricity-market-examples/
@@ -241,8 +241,8 @@ features:
       value: y
     reports:
       source:
-        - https://docs.pypsa.org/latest/user-guide/import-export/excel
-        - https://docs.pypsa.org/latest/user-guide/import-export/csv-files
+        - https://docs.pypsa.org/latest/user-guide/import-export/#excel
+        - https://docs.pypsa.org/latest/user-guide/import-export/#csv-files
       value: y
     standardised:
       source: []
@@ -346,7 +346,7 @@ features:
       value: dev
     sampling:
       source:
-        - https://docs.pypsa.org/latest/examples/#stochastic-optimization/
+        - https://docs.pypsa.org/latest/examples/stochastic-optimization/
       value: y
   robustness:
     asset_outages:
@@ -367,7 +367,7 @@ features:
     reserve_limit:
       value: y
       source:
-        - https://pypsa.readthedocs.io/en/latest/examples/reserve-power.html
+        - https://docs.pypsa.org/latest/examples/reserve-power/
     two_stage_stochastic:
       value: y
       source:
@@ -457,7 +457,7 @@ features:
     ptdf:
       value: y
       source:
-        - https://pypsa.readthedocs.io/en/latest/api/_source/pypsa.SubNetwork.calculate_PTDF.html
+        - https://docs.pypsa.org/latest/api/networks/subnetwork/#pypsa.SubNetwork.calculate_PTDF
     thermal:
       source: []
       value: n
@@ -473,7 +473,7 @@ features:
     sec_opf:
       value: y
       source:
-        - https://pypsa.readthedocs.io/en/latest/examples/scigrid-sclopf.html
+        - https://docs.pypsa.org/latest/user-guide/optimization/contingencies/#n-1-security-constraints-for-sclopf
     transport:
       source: []
       value: n
