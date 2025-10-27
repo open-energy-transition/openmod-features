@@ -117,7 +117,7 @@ features:
     unit:
       value: y
       source:
-        - https://pypsa.readthedocs.io/en/latest/examples/unit-commitment.html#Start-up-and-shut-down-costs
+        - https://docs.pypsa.org/latest/user-guide/optimization/unit-commitment/#start-up-and-shut-down
   asset__operating_characteristics:
     iterative:
       source: []
@@ -186,7 +186,7 @@ features:
     uced:
       value: y
       source:
-        - https://pypsa.readthedocs.io/en/latest/examples/unit-commitment.html
+        - https://docs.pypsa.org/latest/user-guide/optimization/unit-commitment/
   competition:
     distributed_objectives:
       source: []
@@ -371,7 +371,7 @@ features:
     two_stage_stochastic:
       value: y
       source:
-        - https://pypsa.readthedocs.io/en/latest/examples/stochastic-problem.html
+        - https://docs.pypsa.org/latest/examples/stochastic-optimization/
     voll:
       value: y
       source:
@@ -401,13 +401,13 @@ features:
     operation:
       value: y
       source:
-        - https://pypsa.readthedocs.io/en/latest/user-guide/optimal-power-flow.html#operational-limit
+        - https://docs.pypsa.org/latest/user-guide/optimization/global-constraints/#operational-limit
   time__foresight:
     myopic:
       value: y
       source:
         - https://docs.pypsa.org/latest/examples/unit-commitment/#rolling-horizon
-        - https://pypsa.readthedocs.io/en/latest/user-guide/optimal-power-flow.html#rolling-horizon-optimization
+        - https://docs.pypsa.org/latest/examples/rolling-horizon/#rolling-horizon-optimization
     perfect:
       value: y
       source:
