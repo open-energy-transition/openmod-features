@@ -33,7 +33,7 @@ source:
   type: str
   help: "{{ list_type | title }} source code git repository URL."
   validator: >-
-    {% if not (source | regex_search('^https://\w+(\.\w+)+.*$')) %}
+    {% if not (source | regex_search('^https://.+$')) %}
     Source code must be hosted at a valid HTTPS URL
     {% endif %}
   when: "{{ list_type == 'tool' }}"
@@ -43,7 +43,7 @@ docs:
   default: "none"
   help: "{{ list_type | title }} documentation URL."
   validator: >-
-    {% if docs != "none" and not (docs | regex_search('^https://\w+(\.\w+)+.*$')) %}
+    {% if docs != "none" and not (docs | regex_search('^https://.+$')) %}
     Documentation must be hosted at a valid HTTPS URL
     {% endif %}
   when: "{{ list_type == 'tool' }}"
@@ -54,7 +54,7 @@ maintainers:
     {{ list_type | title }} feature list maintainers as a comma separated list of valid git host usernames.
     List maintainers need not be the same as {{ list_type }} maintainers.
   validator: >-
-    {% if not (maintainers | regex_search('^[\w\-\,].+$')) %}
+    {% if not (maintainers | regex_search('^[\\w\\-\\,].+$')) %}
     Use only GitHub usernames without the leading `@`, separated by commas (`,`).
     {% endif %}
 
