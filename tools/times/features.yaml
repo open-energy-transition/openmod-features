@@ -281,7 +281,7 @@ features:
       value: y
   preprocessing:
     download:
-      source: # Raw data on energy balance and statistics base years downloaded and processed from online UN data broswer
+      source: # Raw data on energy balance and statistics base years downloaded and processed from online UN data browser
       - https://github.com/MaREI-EPMG/TIMES-GEO
       value: y
     forecasting:
