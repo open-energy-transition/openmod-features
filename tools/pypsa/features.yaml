@@ -74,11 +74,11 @@ features:
   asset__cost__investment:
     annuitisation:
       source:
-        - https://docs.pypsa.org/latest/user-guide/optimization/objective/investment-costs
+        - https://docs.pypsa.org/latest/user-guide/optimization/objective/#investment-costs
       value: y
     linear:
       source:
-        - https://docs.pypsa.org/latest/user-guide/optimization/objective/investment-costs
+        - https://docs.pypsa.org/latest/user-guide/optimization/objective/#investment-costs
         - https://docs.pypsa.org/latest/user-guide/components/generators/
         - https://docs.pypsa.org/latest/user-guide/components/links/
         - https://docs.pypsa.org/latest/user-guide/components/stores/
@@ -91,7 +91,7 @@ features:
       value: n
     subsidy/penalty:
       source:
-        - https://docs.pypsa.org/latest/user-guide/optimization/custom-constraints/custom-constraints
+        - https://docs.pypsa.org/latest/user-guide/optimization/custom-constraints/#custom-constraints
       value: dev
     unit:
       source: []
@@ -112,7 +112,7 @@ features:
       value: n
     subsidy/penalty:
       source:
-        - https://docs.pypsa.org/latest/user-guide/optimization/custom-constraints/custom-constraints
+        - https://docs.pypsa.org/latest/user-guide/optimization/custom-constraints/#custom-constraints
       value: dev
     unit:
       value: y
@@ -177,7 +177,7 @@ features:
         - https://docs.pypsa.org/latest/user-guide/design/#buses
         - https://docs.pypsa.org/latest/user-guide/components/lines/
         - https://docs.pypsa.org/latest/user-guide/components/links/
-        - https://docs.pypsa.org/latest/user-guide/optimization/custom-constraints/custom-constraints
+        - https://docs.pypsa.org/latest/user-guide/optimization/custom-constraints/#custom-constraints
       value: y
   asset__operating_representation:
     ed:
@@ -207,7 +207,7 @@ features:
       value: n
     time_operational:
       source:
-        - https://docs.pypsa.org/latest/user-guide/optimization/pathway-planning/examples
+        - https://docs.pypsa.org/latest/user-guide/optimization/pathway-planning/#examples
       value: y
   interface__input:
     cli:
@@ -230,7 +230,7 @@ features:
   interface__output:
     gui:
       source:
-        - https://docs.pypsa.org/latest/user-guide/plotting/charts/interactive-plots
+        - https://docs.pypsa.org/latest/user-guide/plotting/charts/#interactive-plots
         - https://github.com/PyPSA/pypsa-server
         - https://github.com/PriyeshGosai/pypsa_network_viewer
         - https://www.bayesian.energy/convexity
