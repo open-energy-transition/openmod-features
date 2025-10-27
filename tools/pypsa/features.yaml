@@ -223,7 +223,7 @@ features:
     scripting:
       value: y
       source:
-        - https://pypsa.readthedocs.io/en/latest/references/api-reference.html
+        - https://docs.pypsa.org/latest/api/networks/network/
     standardised:
       source: []
       value: n
@@ -269,11 +269,11 @@ features:
     user_defined_constraints:
       value: y
       source:
-        - https://pypsa.readthedocs.io/en/latest/user-guide/optimal-power-flow.html#custom-constraints
+        - https://docs.pypsa.org/latest/user-guide/optimization/custom-constraints/#custom-constraints
     user_defined_variables:
       value: y
       source:
-        - https://pypsa.readthedocs.io/en/latest/user-guide/optimal-power-flow.html#custom-constraints
+        - https://docs.pypsa.org/latest/user-guide/optimization/custom-constraints/#custom-constraints
   postprocessing:
     aggregation:
       source:
