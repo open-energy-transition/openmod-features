@@ -7,7 +7,7 @@
 # DO NOT MANUALLY MODIFY THIS FILE
 _commit: 31f3f3e
 _src_path: gh:open-energy-transition/openmod-features
-docs: https://github.com/etsap-TIMES/TIMES_model
+docs: https://iea-etsap.org/index.php/documentation
 list_type: tool
 maintainers: gianvicolux, willu47
 name: The Integrated MARKAL-EFOM System
