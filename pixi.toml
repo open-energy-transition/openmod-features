@@ -40,6 +40,9 @@ cmd = "copier update use-cases/{{ use_case_name }} --vcs-ref=:current: --answers
 args = [{"arg" = "tool_name", "default" = "**"}]
 cmd = "lychee --no-progress tools/{{ tool_name }}/*"
 
+[tasks.test]
+cmd = "pytest tests -nauto"
+
 [dependencies]
 pre-commit = ">=4.2.0,<5"
 ruff = ">=0.12.4,<0.13"
@@ -48,3 +51,6 @@ pydantic = ">=2.11.7,<3"
 click = ">=8.2.1,<9"
 copier = ">=9.10.2,<10"
 lychee = ">=0.20.1,<0.21"
+pytest = ">=8.3.4,<9"
+pyyaml = ">=6.0.2,<7"
+pytest-xdist = ">=3.8.0,<4"
