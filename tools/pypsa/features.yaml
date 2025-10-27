@@ -66,7 +66,7 @@ features:
     asset_linking:
       value: y
       source:
-        - https://pypsa.readthedocs.io/en/latest/examples/chained-hydro-reservoirs.html
+        - https://docs.pypsa.org/latest/examples/chained-hydro-reservoirs/
     stockpiling:
       source:
         - https://docs.pypsa.org/latest/user-guide/components/stores/
@@ -74,11 +74,11 @@ features:
   asset__cost__investment:
     annuitisation:
       source:
-        - https://docs.pypsa.org/latest/user-guide/optimization/objective/?h=annualised#investment-costs
+        - https://docs.pypsa.org/latest/user-guide/optimization/objective/investment-costs
       value: y
     linear:
       source:
-        - https://docs.pypsa.org/latest/user-guide/optimization/objective/?h=annualised#investment-costs
+        - https://docs.pypsa.org/latest/user-guide/optimization/objective/investment-costs
         - https://docs.pypsa.org/latest/user-guide/components/generators/
         - https://docs.pypsa.org/latest/user-guide/components/links/
         - https://docs.pypsa.org/latest/user-guide/components/stores/
@@ -91,7 +91,7 @@ features:
       value: n
     subsidy/penalty:
       source:
-        - https://docs.pypsa.org/latest/user-guide/optimization/custom-constraints/?h=custom_#custom-constraints
+        - https://docs.pypsa.org/latest/user-guide/optimization/custom-constraints/custom-constraints
       value: dev
     unit:
       source: []
@@ -112,7 +112,7 @@ features:
       value: n
     subsidy/penalty:
       source:
-        - https://docs.pypsa.org/latest/user-guide/optimization/custom-constraints/?h=custom_#custom-constraints
+        - https://docs.pypsa.org/latest/user-guide/optimization/custom-constraints/custom-constraints
       value: dev
     unit:
       value: y
@@ -133,7 +133,7 @@ features:
       value: y
     piecewise:
       source:
-        - https://docs.pypsa.org/latest/examples/demand-elasticity/?h=piecewise#piecewise-linear-demand-curve
+        - https://docs.pypsa.org/latest/examples/demand-elasticity/piecewise-linear-demand-curve
       value: dev
     static non_dimensional:
       source:
@@ -177,7 +177,7 @@ features:
         - https://docs.pypsa.org/latest/user-guide/design/#buses
         - https://docs.pypsa.org/latest/user-guide/components/lines/
         - https://docs.pypsa.org/latest/user-guide/components/links/
-        - https://docs.pypsa.org/latest/user-guide/optimization/custom-constraints/?h=custom_#custom-constraints
+        - https://docs.pypsa.org/latest/user-guide/optimization/custom-constraints/custom-constraints
       value: y
   asset__operating_representation:
     ed:
@@ -197,7 +197,7 @@ features:
   edge_effects:
     energy_balance:
       source:
-        - https://docs.pypsa.org/latest/user-guide/optimization/energy-balance/?h=energy
+        - https://docs.pypsa.org/latest/user-guide/optimization/energy-balance/
       value: y
     spatial:
       source: []
@@ -207,7 +207,7 @@ features:
       value: n
     time_operational:
       source:
-        - https://docs.pypsa.org/latest/user-guide/optimization/pathway-planning/?h=cyclic#examples
+        - https://docs.pypsa.org/latest/user-guide/optimization/pathway-planning/examples
       value: y
   interface__input:
     cli:
@@ -230,19 +230,19 @@ features:
   interface__output:
     gui:
       source:
-        - https://docs.pypsa.org/latest/user-guide/plotting/charts/?h=plots#interactive-plots
+        - https://docs.pypsa.org/latest/user-guide/plotting/charts/interactive-plots
         - https://github.com/PyPSA/pypsa-server
         - https://github.com/PriyeshGosai/pypsa_network_viewer
         - https://www.bayesian.energy/convexity
       value: y
     logs:
       source:
-        - https://docs.pypsa.org/latest/user-guide/logging/?h=logging
+        - https://docs.pypsa.org/latest/user-guide/logging/
       value: y
     reports:
       source:
-        - https://docs.pypsa.org/latest/user-guide/import-export/?h=excel#excel
-        - https://docs.pypsa.org/latest/user-guide/import-export/?h=csv#csv-files
+        - https://docs.pypsa.org/latest/user-guide/import-export/excel
+        - https://docs.pypsa.org/latest/user-guide/import-export/csv-files
       value: y
     standardised:
       source: []
@@ -253,15 +253,15 @@ features:
   optimisation_problem:
     configuration:
       source:
-        - https://docs.pypsa.org/latest/api/networks/optimize/?h=optimize#pypsa.Network.optimize.solve_model
+        - https://docs.pypsa.org/latest/api/networks/optimize/pypsa.Network.optimize.solve_model
       value: y
     decomposition:
       source: []
       value: n
     near_optimal:
       source:
-        - https://docs.pypsa.org/latest/examples/mga/?h=mga
-        - https://docs.pypsa.org/latest/api/networks/optimize/?h=optimize#pypsa.Network.optimize.solve_model
+        - https://docs.pypsa.org/latest/examples/mga/
+        - https://docs.pypsa.org/latest/api/networks/optimize/pypsa.Network.optimize.solve_model
       value: y
     sim + opt:
       source: []
@@ -277,15 +277,16 @@ features:
   postprocessing:
     aggregation:
       source:
-        - https://docs.pypsa.org/latest/user-guide/statistics/?h=statistics
+        - https://docs.pypsa.org/latest/user-guide/statistics/
       value: y
     curtailment:
       value: y
       source:
-        - https://pypsa.readthedocs.io/en/latest/api/_source/pypsa.statistics.StatisticsAccessor.curtailment.html
+        - https://docs.pypsa.org/latest/api/networks/statistics/pypsa.statistics.StatisticsAccessor.curtailment
+        - https://docs.pypsa.org/latest/examples/scigrid-lopf-then-pf/curtailment
     financial:
       source:
-        - https://docs.pypsa.org/latest/user-guide/statistics/?h=statistics
+        - https://docs.pypsa.org/latest/user-guide/statistics/
       value: y
     future_cost_function:
       source: []
@@ -297,8 +298,8 @@ features:
       value: y
     impact_assessment:
       source:
-        - https://docs.pypsa.org/latest/user-guide/statistics/?h=statistics
-        - https://docs.pypsa.org/latest/api/components/types/global-constraints/?h=constraint#pypsa.components.GlobalConstraints.add
+        - https://docs.pypsa.org/latest/user-guide/statistics/
+        - https://docs.pypsa.org/latest/api/components/types/global-constraints/pypsa.components.GlobalConstraints.add
       value: n
     lcoe:
       source: []
@@ -306,16 +307,16 @@ features:
     lodf:
       value: y
       source:
-        - https://pypsa.readthedocs.io/en/latest/api/_source/pypsa.SubNetwork.calculate_BODF.html
+        - https://docs.pypsa.org/latest/api/networks/subnetwork/pypsa.SubNetwork.calculate_BODF
     ptdf:
       source:
-        - https://docs.pypsa.org/latest/api/networks/subnetwork/?h=ptdf#pypsa.SubNetwork.calculate_PTDF
+        - https://docs.pypsa.org/latest/api/networks/subnetwork/#pypsa.SubNetwork.calculate_PTDF
       value: y
     shadow_prices:
       source:
-        - https://docs.pypsa.org/latest/home/features/?h=shadow+prices#analysis-and-usability
-        - https://docs.pypsa.org/latest/examples/scigrid-lopf-then-pf/?h=prices#locational-marginal-prices
-        - https://docs.pypsa.org/latest/user-guide/faq/?h=prices#can-i-model-endogenous-fuel-prices-in-pypsa
+        - https://docs.pypsa.org/latest/home/features/analysis-and-usability
+        - https://docs.pypsa.org/latest/examples/scigrid-lopf-then-pf/locational-marginal-prices
+        - https://docs.pypsa.org/latest/user-guide/faq/can-i-model-endogenous-fuel-prices-in-pypsa
       value: n
   preprocessing:
     download:
@@ -327,7 +328,7 @@ features:
     spatial_distribution:
       value: y
       source:
-        - https://pypsa.readthedocs.io/en/latest/examples/experimental-components-class.html#Calculate-line-length-from-attached-buses
+        - https://docs.pypsa.org/latest/api/components/types/lines/?h=line#pypsa.components.Lines.calculate_line_length
   resource_adequacy:
     eens:
       source: []
@@ -340,12 +341,12 @@ features:
       value: n
     monte_carlo:
       source:
-        - https://docs.pypsa.org/latest/user-guide/faq/?h=monte+carlo#can-you-do-generation-adequacy-studies-with-monte-carlo-unplanned-outages
+        - https://docs.pypsa.org/latest/user-guide/faq/can-you-do-generation-adequacy-studies-with-monte-carlo-unplanned-outages
         - https://pypsa-earth.readthedocs.io/en/latest/monte_carlo.html
       value: dev
     sampling:
       source:
-        - https://docs.pypsa.org/latest/examples/stochastic-optimization/?h=uncertainty
+        - https://docs.pypsa.org/latest/examples/stochastic-optimization/
       value: y
   robustness:
     asset_outages:
@@ -374,7 +375,7 @@ features:
     voll:
       value: y
       source:
-        - https://pypsa.readthedocs.io/en/latest/api/_source/pypsa.optimization.optimize.OptimizationAccessor.add_load_shedding.html
+        - https://docs.pypsa.org/latest/api/networks/optimize/pypsa.Network.optimize.add_load_shedding
   spatial__resolution__simplification:
     network:
       source: []
@@ -382,13 +383,13 @@ features:
     resampling:
       value: y
       source:
-        - https://pypsa.readthedocs.io/en/latest/api/clustering.html
-        - https://pypsa.readthedocs.io/en/latest/examples/spatial-clustering.html
+        - https://docs.pypsa.org/latest/user-guide/clustering/
+        - https://docs.pypsa.org/latest/api/networks/cluster/?h=clustering#pypsa.clustering.ClusteringAccessor
   system__carriers:
     coupled:
       value: y
       source:
-        - https://pypsa.readthedocs.io/en/latest/examples-index/sector-coupling.html
+        - https://docs.pypsa.org/latest/examples/sector-coupling-single-node/
     decoupled:
       source: []
       value: n
@@ -396,7 +397,7 @@ features:
     capacity:
       value: y
       source:
-        - https://pypsa.readthedocs.io/en/latest/examples/capacity-constraint-per-bus.html
+        - https://docs.pypsa.org/latest/examples/reserve-power/#basic-model
     operation:
       value: y
       source:
@@ -438,11 +439,11 @@ features:
     resampling:
       value: y
       source:
-        - https://docs.pypsa.org/latest/examples/time-series-aggregation/?h=time
+        - https://docs.pypsa.org/latest/examples/time-series-aggregation/
         - https://github.com/PyPSA/PyPSA/blob/c5346226ad01de2a9157f8aa198cd14e9fbcfa92/pypsa/common.py#L771
     typical_periods:
       source:
-        - https://docs.pypsa.org/latest/examples/time-series-aggregation/?h=time
+        - https://docs.pypsa.org/latest/examples/time-series-aggregation/
       value: y
   transmission__limits:
     gtc:
