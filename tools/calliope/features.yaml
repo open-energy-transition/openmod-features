@@ -1,347 +1,349 @@
+
 # SPDX-FileCopyrightText: tools/calliope/features.yaml CODEOWNERS
 # SPDX-FileCopyrightText: openmod-features contributors
 #
 # SPDX-License-Identifier: CC-BY-4.0
 
-# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/6fd6237/schema/schema.yaml
+# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/e363e40/schema/tool-schema.yaml
+
 features:
   asset__candidates:
     converters:
       source: []
-      value: n
+      value: null
     electricity_transmission:
       source: []
-      value: n
+      value: null
     endogenous:
       source: []
-      value: n
+      value: null
     exogenous:
       source: []
-      value: n
+      value: null
     fluid_or_gas_distribution:
       source: []
-      value: n
+      value: null
     generators:
       source: []
-      value: n
+      value: null
     loads:
       source: []
-      value: n
+      value: null
     storage:
       source: []
-      value: n
+      value: null
   asset__capacity_representation:
     grouped:
       source: []
-      value: n
+      value: null
     partial_grouped:
       source: []
-      value: n
+      value: null
     units:
       source: []
-      value: n
+      value: null
   asset__chaining:
     asset_linking:
       source: []
-      value: n
+      value: null
     stockpiling:
       source: []
-      value: n
+      value: null
   asset__cost__investment:
     annuitisation:
       source: []
-      value: n
+      value: null
     linear:
       source: []
-      value: n
+      value: null
     piecewise:
       source: []
-      value: n
+      value: null
     subsidy/penalty:
       source: []
-      value: n
+      value: null
     unit:
       source: []
-      value: n
+      value: null
   asset__cost__operation:
     linear:
       source: []
-      value: n
+      value: null
     piecewise:
       source: []
-      value: n
+      value: null
     subsidy/penalty:
       source: []
-      value: n
+      value: null
     unit:
       source: []
-      value: n
+      value: null
   asset__operating_characteristics:
     iterative:
       source: []
-      value: n
+      value: null
     linear:
       source: []
-      value: n
+      value: null
     piecewise:
       source: []
-      value: n
+      value: null
     static non_dimensional:
       source: []
-      value: n
+      value: null
     static_dimensional:
       source: []
-      value: n
+      value: null
   asset__operating_constraints:
     inter_spatial:
       source: []
-      value: n
+      value: null
     inter_temporal:
       source: []
-      value: n
+      value: null
     operating:
       source: []
-      value: n
+      value: null
     total:
       source: []
-      value: n
+      value: null
   asset__operating_representation:
     ed:
       source: []
-      value: n
+      value: null
     uced:
       source: []
-      value: n
+      value: null
   competition:
     distributed_objectives:
       source: []
-      value: n
+      value: null
     portfolio:
       source: []
-      value: n
+      value: null
   edge_effects:
     energy_balance:
       source: []
-      value: n
+      value: null
     spatial:
       source: []
-      value: n
+      value: null
     time_financial:
       source: []
-      value: n
+      value: null
     time_operational:
       source: []
-      value: n
+      value: null
   interface__input:
     cli:
       source: []
-      value: n
+      value: null
     gui:
       source: []
-      value: n
+      value: null
     no_code:
       source: []
-      value: n
+      value: null
     scripting:
       source: []
-      value: n
+      value: null
     standardised:
       source: []
-      value: n
+      value: null
   interface__output:
     gui:
       source: []
-      value: n
+      value: null
     logs:
       source: []
-      value: n
+      value: null
     reports:
       source: []
-      value: n
+      value: null
     standardised:
       source: []
-      value: n
+      value: null
     tables:
       source: []
-      value: n
+      value: null
   optimisation_problem:
     configuration:
       source: []
-      value: n
+      value: null
     decomposition:
       source: []
-      value: n
+      value: null
     near_optimal:
       source: []
-      value: n
+      value: null
     sim + opt:
       source: []
-      value: n
+      value: null
     user_defined_constraints:
       source: []
-      value: n
+      value: null
     user_defined_variables:
       source: []
-      value: n
+      value: null
   postprocessing:
     aggregation:
       source: []
-      value: n
+      value: null
     curtailment:
       source: []
-      value: n
+      value: null
     financial:
       source: []
-      value: n
+      value: null
     future_cost_function:
       source: []
-      value: n
+      value: null
     gtc:
       source: []
-      value: n
+      value: null
     impact_assessment:
       source: []
-      value: n
+      value: null
     lcoe:
       source: []
-      value: n
+      value: null
     lodf:
       source: []
-      value: n
+      value: null
     ptdf:
       source: []
-      value: n
+      value: null
     shadow_prices:
       source: []
-      value: n
+      value: null
   preprocessing:
     download:
       source: []
-      value: n
+      value: null
     forecasting:
       source: []
-      value: n
+      value: null
     spatial_distribution:
       source: []
-      value: n
+      value: null
   resource_adequacy:
     eens:
       source: []
-      value: n
+      value: null
     lolp:
       source: []
-      value: n
+      value: null
     maintenance_scheduling:
       source: []
-      value: n
+      value: null
     monte_carlo:
       source: []
-      value: n
+      value: null
     sampling:
       source: []
-      value: n
+      value: null
   robustness:
     asset_outages:
       source: []
-      value: n
+      value: null
     eens_limit:
       source: []
-      value: n
+      value: null
     lolp_limit:
       source: []
-      value: n
+      value: null
     multi_stage_stochastic:
       source: []
-      value: n
+      value: null
     ram:
       source: []
-      value: n
+      value: null
     reserve_limit:
       source: []
-      value: n
+      value: null
     two_stage_stochastic:
       source: []
-      value: n
+      value: null
     voll:
       source: []
-      value: n
+      value: null
   spatial__resolution__simplification:
     network:
       source: []
-      value: n
+      value: null
     resampling:
       source: []
-      value: n
+      value: null
   system__carriers:
     coupled:
       source: []
-      value: n
+      value: null
     decoupled:
       source: []
-      value: n
+      value: null
   system__limits:
     capacity:
       source: []
-      value: n
+      value: null
     operation:
       source: []
-      value: n
+      value: null
   time__foresight:
     myopic:
       source: []
-      value: n
+      value: null
     perfect:
       source: []
-      value: n
+      value: null
   time__horizon:
     multi_year:
       source: []
-      value: n
+      value: null
     single_year:
       source: []
-      value: n
+      value: null
     sub_day:
       source: []
-      value: n
+      value: null
     sub_year:
       source: []
-      value: n
+      value: null
   time__resolution__simplification:
     distortion_mitigation:
       source: []
-      value: n
+      value: null
     load_duration_curves:
       source: []
-      value: n
+      value: null
     resampling:
       source: []
-      value: n
+      value: null
     typical_periods:
       source: []
-      value: n
+      value: null
   transmission__limits:
     gtc:
       source: []
-      value: n
+      value: null
     phase_angle:
       source: []
-      value: n
+      value: null
     ptdf:
       source: []
-      value: n
+      value: null
     thermal:
       source: []
-      value: n
+      value: null
   transmission__opf:
     ac_opf:
       source: []
-      value: n
+      value: null
     dc_opf:
       source: []
-      value: n
+      value: null
     sec_opf:
       source: []
-      value: n
+      value: null
     transport:
       source: []
-      value: n
+      value: null
