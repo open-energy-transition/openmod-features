@@ -5,47 +5,47 @@ $defs:
       converters:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: carrier generator, consuming other carriers from inside the system
           boundary. Necessary for coupled carrier optimisation
       electricity_transmission:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: carrier distribution through electrical transmission lines
       endogenous:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: asset candidates can be constructed, sold, retired, mothballed,
           and retrofit as the model sees fit
       exogenous:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: asset candidates construction, sale, retirement, mothballing,
           and retrofit is pre-defined by the user
       fluid_or_gas_distribution:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: carrier distribution through pressurised pipework
       generators:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: 'carrier generator, consuming resources from outside the system
           boundary '
       loads:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: carrier consumers, explicitly defined to allow for e.g. demand-side
           management
       storage:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: carrier storage, to delay carrier flows in time
     title: AssetCandidatesModel
     type: object
@@ -55,20 +55,20 @@ $defs:
       grouped:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: assets are grouped; if asset candidates are endogenous, their
           purchase is a continuous decision variable
       partial_grouped:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: assets are grouped for some of the time horizon, individually
           defined otherwise; the decision variable switches from continuous to integer
           between these phases.
       units:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: assets are individually defined; if asset candidates are endogenous,
           their purchase is an integer decision variable
     title: AssetCapacityRepresentationModel
@@ -79,14 +79,14 @@ $defs:
       asset_linking:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: carrier out-flow from one asset can be reserved as an in-flow
           in a specific subset of other assets (e.g. hydropower cascading, CCGT asset
           internal steam flow considerations)
       stockpiling:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: a generation asset can be given storage asset characteristics
           to stockpile resources/carriers (e.g. CSP heat storage buffer, fuel stocks).
     title: AssetChainingModel
@@ -97,7 +97,7 @@ $defs:
       annuitisation:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: an asset's capital investment can be annuitised to account for
           factors linked to its expected economic life and financing arrangements,
           such as weighted cost of capital, inflation and tax rates, and other sources
@@ -105,13 +105,13 @@ $defs:
       linear:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: initial asset capital cost which varies linearly with asset nameplate
           capacity (e.g. EUR/MW)
       piecewise:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: 'initial asset capital cost which varies non-linearly, represented
           by a piecewise linear curve (e.g. economies of scale, where cost per capacity
           decreases with increasing capacity).
@@ -123,14 +123,14 @@ $defs:
       subsidy/penalty:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: costs to (dis)incentivise investment above/below given thresholds,
           representing soft constraints (e.g. rebate for providing firm capacity,
           penalty for exceeding land use limits)
       unit:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: initial asset capital cost which is incurred on asset purchase,
           irrespective of capacity (e.g. land purchase).
     title: AssetCostInvestmentModel
@@ -141,25 +141,25 @@ $defs:
       linear:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: operating costs which vary linearly with unit in-/out-flow (e.g.
           EUR/MWh)
       piecewise:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: operating costs which vary non-linearly, represented by a piecewise
           linear curve (e.g. generation bid increment / decrement levels)
       subsidy/penalty:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: costs to (dis)incentivise operating above/below given thresholds,
           representing soft constraints (e.g. feed-in tariff, emissions)
       unit:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: operating costs which are incurred on unit commitment (e.g. start-up
           costs)
     title: AssetCostOperationModel
@@ -170,20 +170,20 @@ $defs:
       iterative:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: asset characteristics vary depending on operating decision variables
           creating a non-linear relationship that can only be converged upon iteratively
           (e.g. transmission line losses)
       linear:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: asset characteristics vary linearly with a single decision variable
           (e.g. resource availability increasing with asset capacity)
       piecewise:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: asset characteristics vary depending on operating decision variables
           creating a non-linear relationship that can be described by a piecewise
           linear curve (e.g., part-load efficiency, linked to capacity, storage head
@@ -191,13 +191,13 @@ $defs:
       static non_dimensional:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: asset characteristics are independent of decision variables and
           model dimensions (e.g. space, time)
       static_dimensional:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: asset characteristics are independent of decision variables but
           dependent on model dimensions (e.g. space, time)
     title: AssetOperatingCharacteristicsModel
@@ -208,24 +208,24 @@ $defs:
       inter_spatial:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: limits that link geographic regions
       inter_temporal:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: limits that link time periods (e.g., ramping, run up, load shifting)
       operating:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: limits applied to operating time periods (maintenance schedule)
           or when operating (load rate). Usually requires unit-level asset capacity
           representation.
       total:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: limit on total asset carrier in-/out-flow over a subset or the
           entire time horizon / spatial scope. This can represent real contract arrangements
           / regulation.
@@ -237,13 +237,13 @@ $defs:
       ed:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: assets can only be economically dispatched. This is possible
           with unit-level or grouped asset capacity representation
       uced:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: assets can be committed as units and then economically dispatched.
           This requires unit-level asset capacity representation
     title: AssetOperatingRepresentationModel
@@ -260,13 +260,13 @@ $defs:
       distributed_objectives:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: per-agent profit maximising / risk minimising bidding in day-ahead
           / intra-day markets
       portfolio:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: agent asset portfolios and associated constraints and cost considerations
           (e.g. limited cross-portfolio capital investment, risk appetite)
     title: CompetitionModel
@@ -277,24 +277,24 @@ $defs:
       energy_balance:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: energy 'destruction' caused by simultaneous in- & out-flow from
           a lossy transmission/storage asset
       spatial:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: energy flows into/out of the modelled region
       time_financial:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: start/end-of-horizon financial effects (e.g. asset investment
           annuitisation)
       time_operational:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: start/end-of-horizon operational effects (e.g. storage level
           wrapping)
     title: EdgeEffectsModel
@@ -305,318 +305,318 @@ $defs:
         $ref: '#/$defs/AssetCandidatesModel'
         default:
           converters:
-            value: null
+            value: '?'
           electricity_transmission:
-            value: null
+            value: '?'
           endogenous:
-            value: null
+            value: '?'
           exogenous:
-            value: null
+            value: '?'
           fluid_or_gas_distribution:
-            value: null
+            value: '?'
           generators:
-            value: null
+            value: '?'
           loads:
-            value: null
+            value: '?'
           storage:
-            value: null
+            value: '?'
         description: Asset types and whether or not assets capacity decisions are
           decision variables in the model
       asset__capacity_representation:
         $ref: '#/$defs/AssetCapacityRepresentationModel'
         default:
           grouped:
-            value: null
+            value: '?'
           partial_grouped:
-            value: null
+            value: '?'
           units:
-            value: null
+            value: '?'
         description: The resolution of asset capacity representation in the model
       asset__chaining:
         $ref: '#/$defs/AssetChainingModel'
         default:
           asset_linking:
-            value: null
+            value: '?'
           stockpiling:
-            value: null
+            value: '?'
         description: Options to explicitly chain / link specific assets or asset types
           such that certain carrier flows can only occur between each other
       asset__cost__investment:
         $ref: '#/$defs/AssetCostInvestmentModel'
         default:
           annuitisation:
-            value: null
+            value: '?'
           linear:
-            value: null
+            value: '?'
           piecewise:
-            value: null
+            value: '?'
           subsidy/penalty:
-            value: null
+            value: '?'
           unit:
-            value: null
+            value: '?'
         description: Asset investment cost representation
       asset__cost__operation:
         $ref: '#/$defs/AssetCostOperationModel'
         default:
           linear:
-            value: null
+            value: '?'
           piecewise:
-            value: null
+            value: '?'
           subsidy/penalty:
-            value: null
+            value: '?'
           unit:
-            value: null
+            value: '?'
         description: Asset operating cost representation
       asset__operating_characteristics:
         $ref: '#/$defs/AssetOperatingCharacteristicsModel'
         default:
           iterative:
-            value: null
+            value: '?'
           linear:
-            value: null
+            value: '?'
           piecewise:
-            value: null
+            value: '?'
           static non_dimensional:
-            value: null
+            value: '?'
           static_dimensional:
-            value: null
+            value: '?'
         description: Asset operating characteristics representation (e.g. efficiency,
           resource availability)
       asset__operating_constraints:
         $ref: '#/$defs/AssetOperatingConstraintsModel'
         default:
           inter_spatial:
-            value: null
+            value: '?'
           inter_temporal:
-            value: null
+            value: '?'
           operating:
-            value: null
+            value: '?'
           total:
-            value: null
+            value: '?'
         description: Upper/lower limits on asset operation
       asset__operating_representation:
         $ref: '#/$defs/AssetOperatingRepresentationModel'
         default:
           ed:
-            value: null
+            value: '?'
           uced:
-            value: null
+            value: '?'
         description: The resolution of asset operation representation in the model
       competition:
         $ref: '#/$defs/CompetitionModel'
         default:
           distributed_objectives:
-            value: null
+            value: '?'
           portfolio:
-            value: null
+            value: '?'
         description: Asset-owning agents (e.g. private utility companies) can be represented
           in the model with their own constraints and/or objectives
       edge_effects:
         $ref: '#/$defs/EdgeEffectsModel'
         default:
           energy_balance:
-            value: null
+            value: '?'
           spatial:
-            value: null
+            value: '?'
           time_financial:
-            value: null
+            value: '?'
           time_operational:
-            value: null
+            value: '?'
         description: Distortive effects of system boundaries and linearising model
           components can be mitigated against
       interface__input:
         $ref: '#/$defs/InterfaceInputModel'
         default:
           cli:
-            value: null
+            value: '?'
           gui:
-            value: null
+            value: '?'
           no_code:
-            value: null
+            value: '?'
           scripting:
-            value: null
+            value: '?'
           standardised:
-            value: null
+            value: '?'
         description: Available options for configuring model inputs and running models
       interface__output:
         $ref: '#/$defs/InterfaceOutputModel'
         default:
           gui:
-            value: null
+            value: '?'
           logs:
-            value: null
+            value: '?'
           reports:
-            value: null
+            value: '?'
           standardised:
-            value: null
+            value: '?'
           tables:
-            value: null
+            value: '?'
         description: Available options for interacting with model outputs
       optimisation_problem:
         $ref: '#/$defs/OptimisationProblemModel'
         default:
           configuration:
-            value: null
+            value: '?'
           decomposition:
-            value: null
+            value: '?'
           near_optimal:
-            value: null
+            value: '?'
           sim + opt:
-            value: null
+            value: '?'
           user_defined_constraints:
-            value: null
+            value: '?'
           user_defined_variables:
-            value: null
+            value: '?'
         description: Available options for interacting with the optimisation problem
       postprocessing:
         $ref: '#/$defs/PostprocessingModel'
         default:
           aggregation:
-            value: null
+            value: '?'
           curtailment:
-            value: null
+            value: '?'
           financial:
-            value: null
+            value: '?'
           future_cost_function:
-            value: null
+            value: '?'
           gtc:
-            value: null
+            value: '?'
           impact_assessment:
-            value: null
+            value: '?'
           lcoe:
-            value: null
+            value: '?'
           lodf:
-            value: null
+            value: '?'
           ptdf:
-            value: null
+            value: '?'
           shadow_prices:
-            value: null
+            value: '?'
         description: Postprocessing analyses that can be triggered by the tool based
           on model outputs, on a per-asset or system-wide basis.
       preprocessing:
         $ref: '#/$defs/PreprocessingModel'
         default:
           download:
-            value: null
+            value: '?'
           forecasting:
-            value: null
+            value: '?'
           spatial_distribution:
-            value: null
+            value: '?'
         description: Options to generate parameters derived from user-defined input
           data before running the model.
       resource_adequacy:
         $ref: '#/$defs/ResourceAdequacyModel'
         default:
           eens:
-            value: null
+            value: '?'
           lolp:
-            value: null
+            value: '?'
           maintenance_scheduling:
-            value: null
+            value: '?'
           monte_carlo:
-            value: null
+            value: '?'
           sampling:
-            value: null
+            value: '?'
         description: Methods to quantify resource adequacy / system robustness
       robustness:
         $ref: '#/$defs/RobustnessModel'
         default:
           asset_outages:
-            value: null
+            value: '?'
           eens_limit:
-            value: null
+            value: '?'
           lolp_limit:
-            value: null
+            value: '?'
           multi_stage_stochastic:
-            value: null
+            value: '?'
           ram:
-            value: null
+            value: '?'
           reserve_limit:
-            value: null
+            value: '?'
           two_stage_stochastic:
-            value: null
+            value: '?'
           voll:
-            value: null
+            value: '?'
         description: Methods to embed robustness into system design & operation
       spatial__resolution__simplification:
         $ref: '#/$defs/SpatialResolutionSimplificationModel'
         default:
           network:
-            value: null
+            value: '?'
           resampling:
-            value: null
+            value: '?'
         description: Spatial resolution adjustment options
       system__carriers:
         $ref: '#/$defs/SystemCarriersModel'
         default:
           coupled:
-            value: null
+            value: '?'
           decoupled:
-            value: null
+            value: '?'
         description: Energy carrier representation
       system__limits:
         $ref: '#/$defs/SystemLimitsModel'
         default:
           capacity:
-            value: null
+            value: '?'
           operation:
-            value: null
+            value: '?'
         description: System-wide limits to represent physical or policy constraints
       time__foresight:
         $ref: '#/$defs/TimeForesightModel'
         default:
           myopic:
-            value: null
+            value: '?'
           perfect:
-            value: null
+            value: '?'
         description: The modelling horizon per optimisation iteration
       time__horizon:
         $ref: '#/$defs/TimeHorizonModel'
         default:
           multi_year:
-            value: null
+            value: '?'
           single_year:
-            value: null
+            value: '?'
           sub_day:
-            value: null
+            value: '?'
           sub_year:
-            value: null
+            value: '?'
         description: The modelled time horizon
       time__resolution__simplification:
         $ref: '#/$defs/TimeResolutionSimplificationModel'
         default:
           distortion_mitigation:
-            value: null
+            value: '?'
           load_duration_curves:
-            value: null
+            value: '?'
           resampling:
-            value: null
+            value: '?'
           typical_periods:
-            value: null
+            value: '?'
         description: Temporal resolution adjustment options
       transmission__limits:
         $ref: '#/$defs/TransmissionLimitsModel'
         default:
           gtc:
-            value: null
+            value: '?'
           phase_angle:
-            value: null
+            value: '?'
           ptdf:
-            value: null
+            value: '?'
           thermal:
-            value: null
+            value: '?'
         description: Transmission capacity limit representation
       transmission__opf:
         $ref: '#/$defs/TransmissionOpfModel'
         default:
           ac_opf:
-            value: null
+            value: '?'
           dc_opf:
-            value: null
+            value: '?'
           sec_opf:
-            value: null
+            value: '?'
           transport:
-            value: null
+            value: '?'
         description: Transmission network optimal power flow representation
     title: FeatureSetModel
     type: object
@@ -626,29 +626,29 @@ $defs:
       cli:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: command line interface
       gui:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: graphical user interface
       no_code:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: configurable without knowledge of the programming language in
           which the tool has been written.
       scripting:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: can be configured and run using scripting specific to the tool
           programming language.
       standardised:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: accepts data in an ISO standard input data format.
     title: InterfaceInputModel
     type: object
@@ -658,29 +658,29 @@ $defs:
       gui:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: graphical user interface
       logs:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: run logs available in text files, for use in debugging failing
           model runs
       reports:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: static reports consolidating model outputs
       standardised:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: outputs are in an ISO standard output data format, for regulatory
           reporting or for frictionless data transfer with a downstream process.
       tables:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: pre-prepared tables that can be analysed in a spreadsheet application
           such as Excel.
     title: InterfaceOutputModel
@@ -691,13 +691,13 @@ $defs:
       configuration:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: optimiser parameters can be directly configured, including convergence
           parameters & warm-starting options
       decomposition:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: decompose the problem into different stages that can be optimised
           in parallel with outputs of one stage acting as inputs to another. The different
           stages tend to represent the same system at different levels of complexity
@@ -706,27 +706,27 @@ $defs:
       near_optimal:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: generate a near-optimal solution set by relaxing constraints
           / objectives in the optimisation problem. Includes Modelling to Generate
           Alternatives (MGA)
       sim + opt:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: iterate between a simulation and optimisation phase until convergence
           with respect to operational constraints (e.g. competitive market simulation,
           optimal power flow).
       user_defined_constraints:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: users can define their own constraints to the optimisation problem,
           applied to existing decision variables.
       user_defined_variables:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: users can define their own decision variables to the optimisation
           problem.
     title: OptimisationProblemModel
@@ -737,57 +737,57 @@ $defs:
       aggregation:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: Method to aggregate modelled components into broader classifications
           for analysis and dissemination (e.g., separately costed "wind turbine" assets
           aggregated back to "wind turbine")
       curtailment:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: asset generation curtailment
       financial:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: financial analyses for business cases
       future_cost_function:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: future cost function (water value) used to forecast the marginal
           cost of hydro and other seasonal storage devices for use in shorter term
           scheduling, given uncertain input parameters
       gtc:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: grid transfer capacities between nodes/zones/regions
       impact_assessment:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: auxiliary impacts (e.g., GHG emissions, water consumption, job
           creation)
       lcoe:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: levelised cost of electricity (or other carriers)
       lodf:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: line Outage Distribution Factor, used in contingency flow constraints
       ptdf:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: power transfer distribution factors
       shadow_prices:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: optimisation problem shadow prices (e.g. to approximate wholesale
           market prices)
     title: PostprocessingModel
@@ -798,20 +798,20 @@ $defs:
       download:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: data can be downloaded directly within the tool from an open
           or proprietary source rather than being specified by the user
       forecasting:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: a user-defined generation / load profile can be automatically
           updated given user-defined forecasting parameters (e.g. change in total
           or peak)
       spatial_distribution:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: a user-defined parameter can be automatically distributed spatially
           using other spatial parameters (e.g. nodal demand distribution, transmission
           line distances, distributed slack)
@@ -823,27 +823,27 @@ $defs:
       eens:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: expected energy not served calculated in postprocessing
       lolp:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: loss of load probability calculated in postprocessing
       maintenance_scheduling:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: model-derived asset maintenance schedule
       monte_carlo:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: uncertainty space explored with Monte Carlo analysis
       sampling:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: techniques to sample the uncertainty space
     title: ResourceAdequacyModel
     type: object
@@ -853,45 +853,45 @@ $defs:
       asset_outages:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: asset outages represented by fixed downtime periods or capacity
           derating
       eens_limit:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: expected energy not served limit
       lolp_limit:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: loss of load probability limit
       multi_stage_stochastic:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: multi-stage stochastic optimisation; used in UCED decision making
           under uncertainty
       ram:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: remaining Available Margins over an element or a corridor
       reserve_limit:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: minimum requirement on firm capacity available in reserve
       two_stage_stochastic:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: two-stage stochastic optimisation; used in investment decision
           making under uncertainty
       voll:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: value of lost load, to place a soft constraint on load shedding
           that will be included in the optimisation
     title: RobustnessModel
@@ -902,12 +902,12 @@ $defs:
       network:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: network element equivalencing
       resampling:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: spatial zone aggregation/disaggregation. Usually from nodal (bus)
           level to regional/bidding zone level
     title: SpatialResolutionSimplificationModel
@@ -918,14 +918,14 @@ $defs:
       coupled:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: multiple energy carriers represented with the ability to interact
           via carrier converting assets. Usually used in multi-vector/sector co-optimisation
           (e.g. power & gas systems; power, transport, & building sectors)
       decoupled:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: only one energy carrier (e.g. electricity, gas, water) represented
           at a time or, if represented simultaneously, do not interact.
     title: SystemCarriersModel
@@ -936,13 +936,13 @@ $defs:
       capacity:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: limit multi-asset capacity decisions  (e.g. land availability,
           procurement plans)
       operation:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: limit multi-asset operational factors  (e.g. max emissions, fuel
           availability, capacity factor)
     title: SystemLimitsModel
@@ -953,12 +953,12 @@ $defs:
       myopic:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: myopic foresight
       perfect:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: perfect foresight
     title: TimeForesightModel
     type: object
@@ -968,22 +968,22 @@ $defs:
       multi_year:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: multiple years
       single_year:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: single year
       sub_day:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: less than one day
       sub_year:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: between one day and one year
     title: TimeHorizonModel
     type: object
@@ -993,23 +993,23 @@ $defs:
       distortion_mitigation:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: methods to manage inter-temporal model features in a temporally
           simplified model
       load_duration_curves:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: full timeseries is represented by load duration curves
       resampling:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: temporal up/down-sampling
       typical_periods:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: full timeseries is represented by typical periods (days, weeks,
           months)
     title: TimeResolutionSimplificationModel
@@ -1020,22 +1020,22 @@ $defs:
       gtc:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: grid transfer capacities
       phase_angle:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: phase angles
       ptdf:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: power transfer distribution factors
       thermal:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: thermal limits
     title: TransmissionLimitsModel
     type: object
@@ -1045,22 +1045,22 @@ $defs:
       ac_opf:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: linearised AC optimal power flow
       dc_opf:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: linearised DC optimal power flow
       sec_opf:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: security-constrained AC optimal power flow
       transport:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
-          value: null
+          value: '?'
         description: energy transport only (no Kirchhoff's laws defined)
     title: TransmissionOpfModel
     type: object
@@ -1069,15 +1069,16 @@ $defs:
     description: Feature-level fields.
     properties:
       value:
-        default: null
+        default: '?'
         description: 'Whether a feature is required (`y`) or not (`n`) in the use-case.
 
-          Defaults to unknown (None/null).'
+          Defaults to unknown (`?`).'
         enum:
         - y
         - n
-        - null
+        - '?'
         title: Value
+        type: string
     title: UseCaseFeatureModel
     type: object
 additionalProperties: false
@@ -1091,239 +1092,239 @@ properties:
     default:
       asset__candidates:
         converters:
-          value: null
+          value: '?'
         electricity_transmission:
-          value: null
+          value: '?'
         endogenous:
-          value: null
+          value: '?'
         exogenous:
-          value: null
+          value: '?'
         fluid_or_gas_distribution:
-          value: null
+          value: '?'
         generators:
-          value: null
+          value: '?'
         loads:
-          value: null
+          value: '?'
         storage:
-          value: null
+          value: '?'
       asset__capacity_representation:
         grouped:
-          value: null
+          value: '?'
         partial_grouped:
-          value: null
+          value: '?'
         units:
-          value: null
+          value: '?'
       asset__chaining:
         asset_linking:
-          value: null
+          value: '?'
         stockpiling:
-          value: null
+          value: '?'
       asset__cost__investment:
         annuitisation:
-          value: null
+          value: '?'
         linear:
-          value: null
+          value: '?'
         piecewise:
-          value: null
+          value: '?'
         subsidy/penalty:
-          value: null
+          value: '?'
         unit:
-          value: null
+          value: '?'
       asset__cost__operation:
         linear:
-          value: null
+          value: '?'
         piecewise:
-          value: null
+          value: '?'
         subsidy/penalty:
-          value: null
+          value: '?'
         unit:
-          value: null
+          value: '?'
       asset__operating_characteristics:
         iterative:
-          value: null
+          value: '?'
         linear:
-          value: null
+          value: '?'
         piecewise:
-          value: null
+          value: '?'
         static non_dimensional:
-          value: null
+          value: '?'
         static_dimensional:
-          value: null
+          value: '?'
       asset__operating_constraints:
         inter_spatial:
-          value: null
+          value: '?'
         inter_temporal:
-          value: null
+          value: '?'
         operating:
-          value: null
+          value: '?'
         total:
-          value: null
+          value: '?'
       asset__operating_representation:
         ed:
-          value: null
+          value: '?'
         uced:
-          value: null
+          value: '?'
       competition:
         distributed_objectives:
-          value: null
+          value: '?'
         portfolio:
-          value: null
+          value: '?'
       edge_effects:
         energy_balance:
-          value: null
+          value: '?'
         spatial:
-          value: null
+          value: '?'
         time_financial:
-          value: null
+          value: '?'
         time_operational:
-          value: null
+          value: '?'
       interface__input:
         cli:
-          value: null
+          value: '?'
         gui:
-          value: null
+          value: '?'
         no_code:
-          value: null
+          value: '?'
         scripting:
-          value: null
+          value: '?'
         standardised:
-          value: null
+          value: '?'
       interface__output:
         gui:
-          value: null
+          value: '?'
         logs:
-          value: null
+          value: '?'
         reports:
-          value: null
+          value: '?'
         standardised:
-          value: null
+          value: '?'
         tables:
-          value: null
+          value: '?'
       optimisation_problem:
         configuration:
-          value: null
+          value: '?'
         decomposition:
-          value: null
+          value: '?'
         near_optimal:
-          value: null
+          value: '?'
         sim + opt:
-          value: null
+          value: '?'
         user_defined_constraints:
-          value: null
+          value: '?'
         user_defined_variables:
-          value: null
+          value: '?'
       postprocessing:
         aggregation:
-          value: null
+          value: '?'
         curtailment:
-          value: null
+          value: '?'
         financial:
-          value: null
+          value: '?'
         future_cost_function:
-          value: null
+          value: '?'
         gtc:
-          value: null
+          value: '?'
         impact_assessment:
-          value: null
+          value: '?'
         lcoe:
-          value: null
+          value: '?'
         lodf:
-          value: null
+          value: '?'
         ptdf:
-          value: null
+          value: '?'
         shadow_prices:
-          value: null
+          value: '?'
       preprocessing:
         download:
-          value: null
+          value: '?'
         forecasting:
-          value: null
+          value: '?'
         spatial_distribution:
-          value: null
+          value: '?'
       resource_adequacy:
         eens:
-          value: null
+          value: '?'
         lolp:
-          value: null
+          value: '?'
         maintenance_scheduling:
-          value: null
+          value: '?'
         monte_carlo:
-          value: null
+          value: '?'
         sampling:
-          value: null
+          value: '?'
       robustness:
         asset_outages:
-          value: null
+          value: '?'
         eens_limit:
-          value: null
+          value: '?'
         lolp_limit:
-          value: null
+          value: '?'
         multi_stage_stochastic:
-          value: null
+          value: '?'
         ram:
-          value: null
+          value: '?'
         reserve_limit:
-          value: null
+          value: '?'
         two_stage_stochastic:
-          value: null
+          value: '?'
         voll:
-          value: null
+          value: '?'
       spatial__resolution__simplification:
         network:
-          value: null
+          value: '?'
         resampling:
-          value: null
+          value: '?'
       system__carriers:
         coupled:
-          value: null
+          value: '?'
         decoupled:
-          value: null
+          value: '?'
       system__limits:
         capacity:
-          value: null
+          value: '?'
         operation:
-          value: null
+          value: '?'
       time__foresight:
         myopic:
-          value: null
+          value: '?'
         perfect:
-          value: null
+          value: '?'
       time__horizon:
         multi_year:
-          value: null
+          value: '?'
         single_year:
-          value: null
+          value: '?'
         sub_day:
-          value: null
+          value: '?'
         sub_year:
-          value: null
+          value: '?'
       time__resolution__simplification:
         distortion_mitigation:
-          value: null
+          value: '?'
         load_duration_curves:
-          value: null
+          value: '?'
         resampling:
-          value: null
+          value: '?'
         typical_periods:
-          value: null
+          value: '?'
       transmission__limits:
         gtc:
-          value: null
+          value: '?'
         phase_angle:
-          value: null
+          value: '?'
         ptdf:
-          value: null
+          value: '?'
         thermal:
-          value: null
+          value: '?'
       transmission__opf:
         ac_opf:
-          value: null
+          value: '?'
         dc_opf:
-          value: null
+          value: '?'
         sec_opf:
-          value: null
+          value: '?'
         transport:
-          value: null
+          value: '?'
     description: Use-case feature requirements.
 title: UseCaseFeatureModel
 type: object
