@@ -34,16 +34,20 @@ class UseCaseFeatureModel(pydantic.BaseModel):
     """Feature-level fields."""
 
     model_config = {"extra": "forbid", "use_attribute_docstrings": True}
-    value: Literal["y", "n"] = "n"
-    """Whether a feature is required (`y`) or not (`n`) in the use-case."""
+    value: Literal["y", "n", None] = None
+    """Whether a feature is required (`y`) or not (`n`) in the use-case.
+    Defaults to unknown (None/null).
+    """
 
 
 class ToolFeatureModel(pydantic.BaseModel):
     """Feature-level fields."""
 
     model_config = {"extra": "forbid", "use_attribute_docstrings": True}
-    value: Literal["y", "n", "dev"] = "n"
-    """Whether a feature exists (`y`) or not (`n`), or is in development (`dev`) in the tool."""
+    value: Literal["y", "n", "dev", None] = None
+    """Whether a feature exists (`y`) or not (`n`), or is in development (`dev`) in the tool.
+    Defaults to unknown (None/null).
+    """
 
     source: list[HttpsUrl] = Field(default_factory=list)
     """Link(s) to source to validate the given value.
