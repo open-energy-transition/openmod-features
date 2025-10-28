@@ -18,8 +18,12 @@ on:
       - .github/workflows/run-tests.yml
 
 jobs:
-  get-stats:
-    runs-on: [ubuntu-latest, macos-latest, windows-latest]
+  run-test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
