@@ -317,7 +317,7 @@ features:
         - https://docs.pypsa.org/latest/home/features/#analysis-and-usability
         - https://docs.pypsa.org/latest/examples/scigrid-lopf-then-pf/#locational-marginal-prices
         - https://docs.pypsa.org/latest/user-guide/faq/#can-i-model-endogenous-fuel-prices-in-pypsa
-      value: n
+      value: y
   preprocessing:
     download:
       source:
