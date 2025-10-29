@@ -320,11 +320,17 @@ features:
       value: n
   preprocessing:
     download:
-      source: []
-      value: n
+      source:
+        - https://pypsa-eur.readthedocs.io/en/latest/retrieve.html
+        - https://pypsa-earth.readthedocs.io/en/latest/data_workflow.html
+      # Ecosystem feature
+      value: dev
     forecasting:
-      source: []
-      value: n
+      source:
+        - https://atlite.readthedocs.io/en/latest/
+        - https://pypsa-eur.readthedocs.io/en/latest/configuration.html#solar
+      # Ecosystem feature
+      value: dev
     spatial_distribution:
       value: y
       source:
