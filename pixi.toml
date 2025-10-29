@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: CC0-1.0
 
-[project]
+[workspace]
 authors = ["Bryn Pickering <17178478+brynpickering@users.noreply.github.com>"]
 channels = ["conda-forge"]
 name = "openmod-features"

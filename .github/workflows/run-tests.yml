@@ -37,4 +37,4 @@ jobs:
         uses: prefix-dev/setup-pixi@v0.9.1
 
       - name: Run tests
-        run: pixi run tests -v
+        run: pixi run test -v
