@@ -1,347 +1,349 @@
+
 # SPDX-FileCopyrightText: tools/calliope/features.yaml CODEOWNERS
 # SPDX-FileCopyrightText: openmod-features contributors
 #
 # SPDX-License-Identifier: CC-BY-4.0
 
-# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/6fd6237/schema/schema.yaml
+# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/c87f4ce/schema/tool-schema.yaml
+
 features:
   asset__candidates:
     converters:
       source: []
-      value: n
+      value: '?'
     electricity_transmission:
       source: []
-      value: n
+      value: '?'
     endogenous:
       source: []
-      value: n
+      value: '?'
     exogenous:
       source: []
-      value: n
+      value: '?'
     fluid_or_gas_distribution:
       source: []
-      value: n
+      value: '?'
     generators:
       source: []
-      value: n
+      value: '?'
     loads:
       source: []
-      value: n
+      value: '?'
     storage:
       source: []
-      value: n
+      value: '?'
   asset__capacity_representation:
     grouped:
       source: []
-      value: n
+      value: '?'
     partial_grouped:
       source: []
-      value: n
+      value: '?'
     units:
       source: []
-      value: n
+      value: '?'
   asset__chaining:
     asset_linking:
       source: []
-      value: n
+      value: '?'
     stockpiling:
       source: []
-      value: n
+      value: '?'
   asset__cost__investment:
     annuitisation:
       source: []
-      value: n
+      value: '?'
     linear:
       source: []
-      value: n
+      value: '?'
     piecewise:
       source: []
-      value: n
+      value: '?'
     subsidy/penalty:
       source: []
-      value: n
+      value: '?'
     unit:
       source: []
-      value: n
+      value: '?'
   asset__cost__operation:
     linear:
       source: []
-      value: n
+      value: '?'
     piecewise:
       source: []
-      value: n
+      value: '?'
     subsidy/penalty:
       source: []
-      value: n
+      value: '?'
     unit:
       source: []
-      value: n
+      value: '?'
   asset__operating_characteristics:
     iterative:
       source: []
-      value: n
+      value: '?'
     linear:
       source: []
-      value: n
+      value: '?'
     piecewise:
       source: []
-      value: n
+      value: '?'
     static non_dimensional:
       source: []
-      value: n
+      value: '?'
     static_dimensional:
       source: []
-      value: n
+      value: '?'
   asset__operating_constraints:
     inter_spatial:
       source: []
-      value: n
+      value: '?'
     inter_temporal:
       source: []
-      value: n
+      value: '?'
     operating:
       source: []
-      value: n
+      value: '?'
     total:
       source: []
-      value: n
+      value: '?'
   asset__operating_representation:
     ed:
       source: []
-      value: n
+      value: '?'
     uced:
       source: []
-      value: n
+      value: '?'
   competition:
     distributed_objectives:
       source: []
-      value: n
+      value: '?'
     portfolio:
       source: []
-      value: n
+      value: '?'
   edge_effects:
     energy_balance:
       source: []
-      value: n
+      value: '?'
     spatial:
       source: []
-      value: n
+      value: '?'
     time_financial:
       source: []
-      value: n
+      value: '?'
     time_operational:
       source: []
-      value: n
+      value: '?'
   interface__input:
     cli:
       source: []
-      value: n
+      value: '?'
     gui:
       source: []
-      value: n
+      value: '?'
     no_code:
       source: []
-      value: n
+      value: '?'
     scripting:
       source: []
-      value: n
+      value: '?'
     standardised:
       source: []
-      value: n
+      value: '?'
   interface__output:
     gui:
       source: []
-      value: n
+      value: '?'
     logs:
       source: []
-      value: n
+      value: '?'
     reports:
       source: []
-      value: n
+      value: '?'
     standardised:
       source: []
-      value: n
+      value: '?'
     tables:
       source: []
-      value: n
+      value: '?'
   optimisation_problem:
     configuration:
       source: []
-      value: n
+      value: '?'
     decomposition:
       source: []
-      value: n
+      value: '?'
     near_optimal:
       source: []
-      value: n
+      value: '?'
     sim + opt:
       source: []
-      value: n
+      value: '?'
     user_defined_constraints:
       source: []
-      value: n
+      value: '?'
     user_defined_variables:
       source: []
-      value: n
+      value: '?'
   postprocessing:
     aggregation:
       source: []
-      value: n
+      value: '?'
     curtailment:
       source: []
-      value: n
+      value: '?'
     financial:
       source: []
-      value: n
+      value: '?'
     future_cost_function:
       source: []
-      value: n
+      value: '?'
     gtc:
       source: []
-      value: n
+      value: '?'
     impact_assessment:
       source: []
-      value: n
+      value: '?'
     lcoe:
       source: []
-      value: n
+      value: '?'
     lodf:
       source: []
-      value: n
+      value: '?'
     ptdf:
       source: []
-      value: n
+      value: '?'
     shadow_prices:
       source: []
-      value: n
+      value: '?'
   preprocessing:
     download:
       source: []
-      value: n
+      value: '?'
     forecasting:
       source: []
-      value: n
+      value: '?'
     spatial_distribution:
       source: []
-      value: n
+      value: '?'
   resource_adequacy:
     eens:
       source: []
-      value: n
+      value: '?'
     lolp:
       source: []
-      value: n
+      value: '?'
     maintenance_scheduling:
       source: []
-      value: n
+      value: '?'
     monte_carlo:
       source: []
-      value: n
+      value: '?'
     sampling:
       source: []
-      value: n
+      value: '?'
   robustness:
     asset_outages:
       source: []
-      value: n
+      value: '?'
     eens_limit:
       source: []
-      value: n
+      value: '?'
     lolp_limit:
       source: []
-      value: n
+      value: '?'
     multi_stage_stochastic:
       source: []
-      value: n
+      value: '?'
     ram:
       source: []
-      value: n
+      value: '?'
     reserve_limit:
       source: []
-      value: n
+      value: '?'
     two_stage_stochastic:
       source: []
-      value: n
+      value: '?'
     voll:
       source: []
-      value: n
+      value: '?'
   spatial__resolution__simplification:
     network:
       source: []
-      value: n
+      value: '?'
     resampling:
       source: []
-      value: n
+      value: '?'
   system__carriers:
     coupled:
       source: []
-      value: n
+      value: '?'
     decoupled:
       source: []
-      value: n
+      value: '?'
   system__limits:
     capacity:
       source: []
-      value: n
+      value: '?'
     operation:
       source: []
-      value: n
+      value: '?'
   time__foresight:
     myopic:
       source: []
-      value: n
+      value: '?'
     perfect:
       source: []
-      value: n
+      value: '?'
   time__horizon:
     multi_year:
       source: []
-      value: n
+      value: '?'
     single_year:
       source: []
-      value: n
+      value: '?'
     sub_day:
       source: []
-      value: n
+      value: '?'
     sub_year:
       source: []
-      value: n
+      value: '?'
   time__resolution__simplification:
     distortion_mitigation:
       source: []
-      value: n
+      value: '?'
     load_duration_curves:
       source: []
-      value: n
+      value: '?'
     resampling:
       source: []
-      value: n
+      value: '?'
     typical_periods:
       source: []
-      value: n
+      value: '?'
   transmission__limits:
     gtc:
       source: []
-      value: n
+      value: '?'
     phase_angle:
       source: []
-      value: n
+      value: '?'
     ptdf:
       source: []
-      value: n
+      value: '?'
     thermal:
       source: []
-      value: n
+      value: '?'
   transmission__opf:
     ac_opf:
       source: []
-      value: n
+      value: '?'
     dc_opf:
       source: []
-      value: n
+      value: '?'
     sec_opf:
       source: []
-      value: n
+      value: '?'
     transport:
       source: []
-      value: n
+      value: '?'

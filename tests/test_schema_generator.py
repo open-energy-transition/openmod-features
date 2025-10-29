@@ -257,7 +257,7 @@ class TestTemplateValidation:
                     if isinstance(feature_data, dict):
                         assert "value" in feature_data
                         assert "source" in feature_data
-                        assert feature_data["value"] in ["y", "n", "dev"]
+                        assert feature_data["value"] == "?"
 
     def test_use_case_project_features_file_exists(
         self, use_case_project_from_generated_template: Path
@@ -301,4 +301,4 @@ class TestTemplateValidation:
                 for feature_data in group.values():
                     if isinstance(feature_data, dict):
                         assert "value" in feature_data
-                        assert feature_data["value"] in ["y", "n"]
+                        assert feature_data["value"] == "?"
