@@ -33,8 +33,9 @@ features:
         - https://docs.pypsa.org/latest/user-guide/components/transformers/
       value: y
     fluid_or_gas_distribution:
-      source: []
-      value: n
+      source:
+        - https://docs.pypsa.org/latest/user-guide/components/links/
+      value: y
     generators:
       source:
         - https://docs.pypsa.org/latest/user-guide/components/generators/
@@ -181,8 +182,9 @@ features:
       value: y
   asset__operating_representation:
     ed:
-      source: []
-      value: n
+      source:
+        - https://docs.pypsa.org/latest/user-guide/optimization/overview/
+      value: y
     uced:
       value: y
       source:
@@ -240,15 +242,15 @@ features:
         - https://docs.pypsa.org/latest/user-guide/logging/
       value: y
     reports:
-      source:
-        - https://docs.pypsa.org/latest/user-guide/import-export/#excel
-        - https://docs.pypsa.org/latest/user-guide/import-export/#csv-files
-      value: y
+      source: []
+      value: n
     standardised:
       source: []
       value: n
     tables:
-      source: []
+      source:
+        - https://docs.pypsa.org/latest/user-guide/import-export/#excel
+        - https://docs.pypsa.org/latest/user-guide/import-export/#csv-files
       value: y
   optimisation_problem:
     configuration:
@@ -292,10 +294,8 @@ features:
       source: []
       value: n
     gtc:
-      source:
-        - https://docs.pypsa.org/latest/user-guide/components/lines/
-        - https://docs.pypsa.org/latest/user-guide/components/links/
-      value: y
+      source: []
+      value: n
     impact_assessment:
       source:
         - https://docs.pypsa.org/latest/user-guide/statistics/
@@ -331,8 +331,10 @@ features:
         - https://docs.pypsa.org/latest/api/components/types/lines/#pypsa.components.Lines.calculate_line_length
   resource_adequacy:
     eens:
-      source: []
-      value: n
+      source:
+        - https://docs.pypsa.org/latest/api/networks/optimize/?h=load+shedding#pypsa.Network.optimize.add_load_shedding
+        - https://docs.pypsa.org/latest/user-guide/statistics/?h=statistics
+      value: y
     lolp:
       source: []
       value: n
@@ -350,8 +352,10 @@ features:
       value: y
   robustness:
     asset_outages:
-      source: []
-      value: n
+      source:
+        - https://docs.pypsa.org/latest/user-guide/optimization/dispatch-limits/
+        - https://docs.pypsa.org/latest/examples/unit-commitment/#ramp-rate-limits
+      value: y
     eens_limit:
       source: []
       value: n
@@ -391,8 +395,10 @@ features:
       source:
         - https://docs.pypsa.org/latest/examples/sector-coupling-single-node/
     decoupled:
-      source: []
-      value: n
+      source:
+        - https://docs.pypsa.org/latest/examples/simple-electricity-market-examples/
+        - https://docs.pypsa.org/latest/examples/islanded-methanol-production/
+      value: y
   system__limits:
     capacity:
       value: y
