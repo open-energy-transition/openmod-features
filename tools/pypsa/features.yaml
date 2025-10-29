@@ -443,8 +443,10 @@ features:
       value: y
   time__resolution__simplification:
     distortion_mitigation:
-      source: []
-      value: n
+      source:
+        - https://docs.pypsa.org/latest/examples/time-series-aggregation/?h=tsam
+      # Ecosystem feature
+      value: dev
     load_duration_curves:
       source: []
       value: n
@@ -471,8 +473,10 @@ features:
       source:
         - https://docs.pypsa.org/latest/api/networks/subnetwork/#pypsa.SubNetwork.calculate_PTDF
     thermal:
-      source: []
-      value: n
+      source:
+        - https://github.com/PyPSA/pypsa-eur/blob/3679dc5b49aefd082ca36ebfc0c1df4ce4bbd435/scripts/build_line_rating.py#L72
+      # Ecosystem feature
+      value: dev
   transmission__opf:
     ac_opf:
       source:
@@ -487,5 +491,6 @@ features:
       source:
         - https://docs.pypsa.org/latest/user-guide/optimization/contingencies/#n-1-security-constraints-for-sclopf
     transport:
-      source: []
-      value: n
+      source:
+        - https://docs.pypsa.org/latest/user-guide/components/links/
+      value: y
