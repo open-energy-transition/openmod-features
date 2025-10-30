@@ -203,7 +203,7 @@ features:
       value: y
     spatial:
       source: []
-      value: n
+      value: y
     time_financial:
       source: []
       value: n
@@ -337,9 +337,7 @@ features:
         - https://docs.pypsa.org/latest/api/components/types/lines/#pypsa.components.Lines.calculate_line_length
   resource_adequacy:
     eens:
-      source:
-        - https://docs.pypsa.org/latest/api/networks/optimize/?h=load+shedding#pypsa.Network.optimize.add_load_shedding
-        - https://docs.pypsa.org/latest/user-guide/statistics/?h=statistics
+      source: []
       value: y
     lolp:
       source: []
