@@ -1,0 +1,42 @@
+# SPDX-FileCopyrightText: openmod-tracker contributors
+#
+# SPDX-License-Identifier: CC0-1.0
+
+name: Run pre-commit
+
+on:
+  pull_request:
+    branches:
+      - "main"
+  workflow_dispatch:
+
+jobs:
+  linkChecker:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write # required for thollander/actions-comment-pull-request
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Get all changed YAML files to check
+        id: changed-files
+        uses: tj-actions/changed-files@v47
+
+      - name: Setup Pixi
+        uses: prefix-dev/setup-pixi@v0.9.1
+
+      - id: run-pre-commit
+        name: Run pre-commit
+        env:
+          CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+        run: pixi run pre-commit run --file ${CHANGED_FILES} > ./pre-commit-out.log
+
+      - name: PR comment with reactions
+        if: steps.run-pre-commit.outputs.exit_code != 0
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          file-path: ./pre-commit-out.log
+          comment-tag: pre-commit-check
+
+      - uses: pre-commit-ci/lite-action@v1.1.0
+        if: always()

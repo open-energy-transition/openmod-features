@@ -50,7 +50,7 @@ repos:
       - id: validate-yaml-schemas
         name: Validate YAML schemas
         entry: pixi run python .pre-commit-hooks/validate-yaml-schemas.py
-        language: python
+        language: system
         files: ^(tools|use-cases)/.+/features\.yaml$
         pass_filenames: true
       - id: validate-md-links
@@ -65,7 +65,3 @@ repos:
         language: system
         files: ^(tools|use-cases)/.+/(features.yaml|.metadata.yml)$
         pass_filenames: true
-
-ci: # https://pre-commit.ci/
-  autofix_prs: false
-  autoupdate_schedule: monthly
