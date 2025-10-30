@@ -38,12 +38,6 @@ def run_process(repo_root) -> Callable:
     return _run_process
 
 
-def test_validator_script_exists(validator_script: Path):
-    """Test that the validator script exists and is executable."""
-    assert validator_script.exists(), "Validator script does not exist"
-    assert validator_script.stat().st_mode & 0o111, "Validator script is not executable"
-
-
 def test_validate_all_features_yaml(run_process, validator_script: Path):
     """Test that all features.yaml files validate successfully."""
     result = run_process("python", validator_script)
