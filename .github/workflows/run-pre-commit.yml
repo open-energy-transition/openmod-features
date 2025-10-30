@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  linkChecker:
+  run-pre-commit:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write # required for thollander/actions-comment-pull-request
@@ -32,7 +32,6 @@ jobs:
         run: pixi run pre-commit run --file ${CHANGED_FILES} > ./pre-commit-out.log
 
       - name: PR comment with reactions
-        if: steps.run-pre-commit.outputs.exit_code != 0
         uses: thollander/actions-comment-pull-request@v3
         with:
           file-path: ./pre-commit-out.log
