@@ -63,7 +63,7 @@ def test_validate_specific_file(run_process, repo_root: Path, validator_script: 
     assert result.returncode == 0, (
         f"Validation failed:\n{result.stdout}\n{result.stderr}"
     )
-    assert "✓" in result.stdout
+    assert "[OK]" in result.stdout or "validated successfully" in result.stdout
 
 
 def test_validate_invalid_file(run_process, tmp_path: Path, validator_script: Path):

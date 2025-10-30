@@ -26,6 +26,12 @@ jobs:
 
       - name: Setup Pixi
         uses: prefix-dev/setup-pixi@v0.9.1
+        with:
+          cache: true
+          cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
+
+      - name: Install pre-commit
+        run: pixi run pre-commit install
 
       - id: run-pre-commit
         name: Run pre-commit

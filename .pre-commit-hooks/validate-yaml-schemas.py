@@ -134,9 +134,9 @@ def main(files: tuple[Path, ...]):
         success, error_msg = validate_yaml_file(yaml_file)
 
         if success:
-            click.echo(" ✓")
+            click.echo(click.style(" [OK]", fg="green"))
         else:
-            click.echo(" ✗")
+            click.echo(click.style(" [FAILED]", fg="red"))
             errors.append(error_msg)
 
     # Report results
