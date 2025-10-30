@@ -31,7 +31,7 @@ jobs:
           cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
 
       - name: Install pre-commit
-        run: pixi run pre-commit install
+        run: pixi run pre-commit install --install-hooks
 
       - id: run-pre-commit
         name: Run pre-commit
