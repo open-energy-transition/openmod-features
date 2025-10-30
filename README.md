@@ -28,6 +28,7 @@ Some key features of our repository are:
 
 1. Clone this repository
 1. Install [pixi](https://pixi.sh/latest/).
+1. Install pre-commit: `pixi run pre-commit install`
 
 ## Add your tool
 
@@ -67,16 +68,12 @@ Activating tooltips will also provide schema validation highlighting.
 
 #### Checking source links
 
-You can check that all your source links are valid before you commit your changes by running:
+Your source links will be checked by a [pre-commit](https://pre-commit.com/) hook when you commit your changes.
+To check these as you go, you can also run:
 
 ```sh
 pixi run check-links <tool-shortname>
 ```
-
-Omitting `<tool-shortname>` will check source links in all tools in our inventory.
-
->[!NOTE]
->We will also check these links as a Pull Request action, so it isn't mandatory for you to check links locally before committing.
 
 ### Updating tool metadata
 

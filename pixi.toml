@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: CC0-1.0
 
-[project]
+[workspace]
 authors = ["Bryn Pickering <17178478+brynpickering@users.noreply.github.com>"]
 channels = ["conda-forge"]
 name = "openmod-features"
@@ -38,7 +38,7 @@ cmd = "copier update use-cases/{{ use_case_name }} --vcs-ref=:current: --answers
 
 [tasks.check-links]
 args = [{"arg" = "tool_name", "default" = "**"}]
-cmd = "lychee --no-progress tools/{{ tool_name }}/*"
+cmd = "pixi run pre-commit run validate-yaml-links --file tools/{{ tool_name }}/*"
 
 [tasks.test]
 cmd = "pytest tests -nauto"
@@ -54,3 +54,5 @@ lychee = ">=0.20.1,<0.21"
 pytest = ">=8.3.4,<9"
 pyyaml = ">=6.0.2,<7"
 pytest-xdist = ">=3.8.0,<4"
+jsonschema = ">=4.23.0,<5"
+requests = ">=2.32.0,<3"
