@@ -12,3 +12,4 @@ It also does not list those who have contributed tool feature lists; those are r
 For a full contributor list, see <https://github.com/open-energy-transition/openmod-features/graphs/contributors>.
 
 - Bryn Pickering, Open Energy Transition <bryn.pickering@openenergytransition.org>
+- 
