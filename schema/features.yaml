@@ -1,7 +1,6 @@
-# SPDX-FileCopyrightText: tools/times/features.yaml CODEOWNERS
 # SPDX-FileCopyrightText: openmod-features contributors
 #
-# SPDX-License-Identifier: CC-BY-4.0
+# SPDX-License-Identifier: MIT
 
 time__horizon:
   description: "The modelled time horizon"
