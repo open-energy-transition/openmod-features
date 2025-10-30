@@ -21,6 +21,8 @@ jobs:
       - name: Get all changed YAML files to check
         id: changed-files
         uses: tj-actions/changed-files@v47
+        with:
+          safe_output: true
 
       - name: Setup Pixi
         uses: prefix-dev/setup-pixi@v0.9.1
@@ -29,12 +31,18 @@ jobs:
         name: Run pre-commit
         env:
           CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
-        run: pixi run pre-commit run --file ${CHANGED_FILES} > ./pre-commit-out.log
+        run: |
+          {
+            echo '```console'
+            pixi run pre-commit run --show-diff-on-failure --files ${CHANGED_FILES} 2>&1 || true
+            echo '```'
+          } > ./pre-commit-out.md
+        continue-on-error: true
 
       - name: PR comment with reactions
         uses: thollander/actions-comment-pull-request@v3
         with:
-          file-path: ./pre-commit-out.log
+          file-path: ./pre-commit-out.md
           comment-tag: pre-commit-check
 
       - uses: pre-commit-ci/lite-action@v1.1.0
