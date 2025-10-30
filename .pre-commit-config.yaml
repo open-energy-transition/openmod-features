@@ -45,18 +45,26 @@ repos:
       - id: end-of-file-fixer
         exclude: "^tools/.+/(features.yaml|.metadata.yml)$"
 
-  # Bring back once stable release with pre-commit fix is available
-  #- repo: https://github.com/lycheeverse/lychee
-  #  rev: nightly
-  #  hooks:
-  #    - id: lychee
-  #      files: \.md$
-
-  # Bring back once https://github.com/jmlrt/check-yamlschema/pull/18 is merged
-  #- repo: https://github.com/jmlrt/check-yamlschema
-  #  rev: v0.0.6
-  #  hooks:
-  #    - id: check-yamlschema
+  - repo: local
+    hooks:
+      - id: validate-yaml-schemas
+        name: Validate YAML schemas
+        entry: pixi run python .pre-commit-hooks/validate-yaml-schemas.py
+        language: python
+        files: ^(tools|use-cases)/.+/features\.yaml$
+        pass_filenames: true
+      - id: validate-md-links
+        name: Validate links in markdown files
+        entry: pixi run lychee --verbose
+        language: system
+        files: \.md$
+        pass_filenames: true
+      - id: validate-yaml-links
+        name: Validate links in YAML feature files
+        entry: pixi run lychee --verbose
+        language: system
+        files: ^(tools|use-cases)/.+/(features.yaml|.metadata.yml)$
+        pass_filenames: true
 
 ci: # https://pre-commit.ci/
   autofix_prs: false
