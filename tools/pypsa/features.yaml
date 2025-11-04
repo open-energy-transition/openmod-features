@@ -224,7 +224,7 @@ features:
       source:
         - https://model.energy/
         - https://model.energy/scenarios/
-      value: y
+      value: dev
     scripting:
       value: y
       source:
