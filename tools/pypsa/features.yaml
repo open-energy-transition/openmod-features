@@ -148,13 +148,8 @@ features:
       value: y
     static_dimensional:
       source:
-        - https://docs.pypsa.org/latest/user-guide/components/generators/
-        - https://docs.pypsa.org/latest/user-guide/components/links/
-        - https://docs.pypsa.org/latest/user-guide/components/stores/
-        - https://docs.pypsa.org/latest/user-guide/components/storage-units/
-        - https://docs.pypsa.org/latest/user-guide/components/lines/
-        - https://docs.pypsa.org/latest/user-guide/components/transformers/
-      value: y
+        - https://github.com/PyPSA/pypsa-eur/blob/3679dc5b49aefd082ca36ebfc0c1df4ce4bbd435/scripts/solve_network.py#L589-L590
+      value: dev
   asset__operating_constraints:
     inter_spatial:
       source:
@@ -389,7 +384,7 @@ features:
         - https://docs.pypsa.org/latest/api/networks/optimize/#pypsa.Network.optimize.add_load_shedding
   spatial__resolution__simplification:
     network:
-      source: 
+      source:
         - https://docs.pypsa.org/latest/examples/scigrid-redispatch/?h=redispatch
       value: y
     resampling:
