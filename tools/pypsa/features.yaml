@@ -202,7 +202,7 @@ features:
       value: y
     time_financial:
       source: []
-      value: n
+      value: y
     time_operational:
       source:
         - https://docs.pypsa.org/latest/user-guide/optimization/pathway-planning/#examples
