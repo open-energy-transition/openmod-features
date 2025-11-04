@@ -219,7 +219,7 @@ features:
     gui:
       source:
         - https://www.bayesian.energy/convexity
-      value: y
+      value: n
     no_code:
       source:
         - https://model.energy/
