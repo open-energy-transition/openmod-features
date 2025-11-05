@@ -5,10 +5,10 @@
 
 # Changes here will be overwritten by Copier
 # DO NOT MANUALLY MODIFY THIS FILE
-_commit: 6fd6237
+_commit: 000bf8a
 _src_path: gh:open-energy-transition/openmod-features
 docs: https://docs.pypsa.org/latest/
-maintainers: brynpickering
+maintainers: euronion,SermishaNarayana
 name: Python for Power System Analysis
 shortname: pypsa
 source: https://github.com/PyPSA/pypsa
