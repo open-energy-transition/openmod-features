@@ -14,7 +14,7 @@ assumptions:
 - >-
   No timeseries simplification is undertaken because the spatial and generator scope is limited to cover only the assets in the portfolio.
 - >-
-  The rest of the system develops according to the scenarios set out by WF#1 and WF#2 and is resolved coarsely.
+  The rest of the system develops according to the scenarios set out by the integrated resource plan (IRP) and network development plan (NDP) and is resolved coarsely.
 - >-
   Portfolio assets are resolved individually with unit commitment characteristics (ramp rate, up/down-time, etc.) and non-linear operating and financial considerations that are piecewise linearised.
 - >-

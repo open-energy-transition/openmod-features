@@ -10,11 +10,11 @@ assumptions:
 - >-
   The optimization will be run with perfect foresight over the full model horizon, which spans multiple years/decades.
 - >-
-  Generator capacities are fixed by WF#1 at each of the model investment years.
+  Generator capacities are fixed by the integrated resource plan (IRP) at each of the model investment years.
 - >-
   Assets are grouped and only their dispatch, not their unit commitment is represented.
 - >-
-  Contracted operating arrangements and regulated limits (e.g. on emissions) defined in WF#1 are applied.
+  Contracted operating arrangements and regulated limits (e.g. on emissions) defined in the IRP are applied.
 - >-
   Non-linear transmission characteristics need to be defined, using piecewise linearisation.
 - >-
