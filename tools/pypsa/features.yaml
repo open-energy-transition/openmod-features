@@ -62,8 +62,9 @@ features:
       source: []
       value: n
     units:
-      source: []
-      value: n
+      source:
+        - https://docs.pypsa.org/latest/user-guide/optimization/capacity-limits/#modularity-constraints
+      value: y
   asset__chaining:
     asset_linking:
       value: y
