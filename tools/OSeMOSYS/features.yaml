@@ -296,8 +296,9 @@ features:
       value: dev
   robustness:
     asset_outages:
-      source: []
-      value: n
+      source:
+        - https://osemosys.readthedocs.io/en/latest/manual/Debugging%20a%20model.html#capacity-factors
+      value: y
     eens_limit:
       source: []
       value: n
