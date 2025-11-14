@@ -383,8 +383,10 @@ features:
       - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf #2.2.2
       value: y
     sub_day:
-      source: []
-      value: n
+      source:
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf #2.2
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf #2.2.2
+      value: y
     sub_year:
       source:
       - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf #2.2
