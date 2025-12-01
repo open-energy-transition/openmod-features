@@ -16,7 +16,7 @@ jobs:
     permissions:
       pull-requests: write # required for thollander/actions-comment-pull-request
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Get all changed YAML files to check
         id: changed-files
@@ -25,7 +25,7 @@ jobs:
           safe_output: true
 
       - name: Setup Pixi
-        uses: prefix-dev/setup-pixi@v0.9.2
+        uses: prefix-dev/setup-pixi@v0.9.3
         with:
           cache: true
           cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
