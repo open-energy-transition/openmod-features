@@ -4,13 +4,18 @@ SPDX-FileCopyrightText: openmod-features contributors
 SPDX-License-Identifier: CC-BY-4.0
 -->
 
-# Project Governance
+# openmod-features Governance
 
-## Project Overview
+## openmod-features Overview
 
 This repository maintains a comprehensive feature inventory for open-source energy system modelling tools and use-cases.
 The project is governed by a distributed maintainer model with both project-level maintainers and entry-specific maintainers (for individual tools and use-cases).
 We operate on consensus-based decision making with clear processes for contribution and taxonomy evolution.
+
+## openmod-features mission
+
+Our mission is to support the _selection_ and _feature gap filling_ of open-source energy system modelling tools.
+We aim to achieve this by providing a comprehensive and objective overview of open-source energy system modelling tools and the modelling workflows in which they are used.
 
 ## Team Structure
 
@@ -84,6 +89,9 @@ The process for appointing a new project maintainer is:
 
 ## Decision Making Process
 
+Entry and project maintainers should not represent other organisations or open-source projects when contributing to decision-making. Instead, discussion contributions should be based on individual and neutral expertise.
+Any potential conflicts of interest should be highlighted when contributing to discussions.
+
 ### Consensus Decisions (All project maintainers + participating entry maintainers must agree)
 
 **Feature Taxonomy Changes:**
@@ -102,7 +110,7 @@ The process for appointing a new project maintainer is:
 #### Consensus decisions process
 
 1. **Proposal**: Any contributor opens an issue or discussion proposing the change
-1. **Discussion Period**: 2-week minimum discussion period
+1. **Discussion Period**: 2-week discussion period unless consensus is reached earlier.
 1. **Notification**: All entry maintainers are notified by the project maintainers
 1. **Decision**: Project maintainers and entry maintainers discuss and refine.
    If consensus is reached by those participating in the discussion in the minimum period, change is approved
