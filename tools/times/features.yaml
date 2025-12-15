@@ -79,8 +79,10 @@ features:
       - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf #3.1, #6.2
       value: y
     subsidy/penalty:
-      source: []
-      value: n
+      source:
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf #5.3
+      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf #3.1, #6.2
+      value: y
     unit:
       source: []
       value: n
@@ -181,6 +183,7 @@ features:
       source:
       - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf #1
       - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-IV.pdf #2
+      - https://github.com/GAMS-dev/TIMES_MIRO
       value: y
     no_code:
       source:
@@ -188,8 +191,10 @@ features:
       - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-IV.pdf #2
       value: y
     scripting:
-      source: []
-      value: n
+      source:
+      - https://github.com/etsap-TIMES/xl2times?tab=readme-ov-file
+      - https://github.com/olejandro/times-dk_gams
+      value: dev
     standardised:
       source: []
       value: n
@@ -198,6 +203,7 @@ features:
       source:
       - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf #1
       - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-IV.pdf #2
+      - https://github.com/GAMS-dev/TIMES_MIRO
       value: y
     logs:
       source:
