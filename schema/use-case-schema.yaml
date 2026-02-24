@@ -325,11 +325,13 @@ $defs:
       asset__capacity_representation:
         $ref: '#/$defs/AssetCapacityRepresentationModel'
         default:
-          grouped:
+          exogenous:
             value: '?'
-          partial_grouped:
+          continuous_capacity:
             value: '?'
-          units:
+          integer_investment_exogenous_capacity:
+            value: '?'
+          binary_investment_continuous_capacity:
             value: '?'
         description: The resolution of asset capacity representation in the model
       asset__chaining:
@@ -1108,11 +1110,13 @@ properties:
         storage:
           value: '?'
       asset__capacity_representation:
-        grouped:
+        exogenous:
           value: '?'
-        partial_grouped:
+        continuous_capacity:
           value: '?'
-        units:
+        integer_investment_exogenous_capacity:
+          value: '?'
+        binary_investment_continuous_capacity:
           value: '?'
       asset__chaining:
         asset_linking:

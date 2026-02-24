@@ -42,17 +42,18 @@ features:
       - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf #2.2, #4.3, #5
       value: y
   asset__capacity_representation:
-    grouped:
-      source:
-      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf #5.4
-      - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf #2.2, #5, #6
-      value: y
-    partial_grouped:
-      source: [] 
-      value: n
-    units:
+    exogenous:
       source: []
-      value: n
+      value: '?'
+    continuous_capacity:
+      source: []
+      value: '?'
+    integer_investment_exogenous_capacity:
+      source: []
+      value: '?'
+    binary_investment_continuous_capacity:
+      source: []
+      value: '?'
   asset__chaining:
     asset_linking:
       source:

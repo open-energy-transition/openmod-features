@@ -366,13 +366,16 @@ $defs:
       asset__capacity_representation:
         $ref: '#/$defs/AssetCapacityRepresentationModel'
         default:
-          grouped:
+          exogenous:
             source: []
             value: '?'
-          partial_grouped:
+          continuous_capacity:
             source: []
             value: '?'
-          units:
+          integer_investment_exogenous_capacity:
+            source: []
+            value: '?'
+          binary_investment_continuous_capacity:
             source: []
             value: '?'
         description: The resolution of asset capacity representation in the model
@@ -1330,13 +1333,16 @@ properties:
           source: []
           value: '?'
       asset__capacity_representation:
-        grouped:
+        exogenous:
           source: []
           value: '?'
-        partial_grouped:
+        continuous_capacity:
           source: []
           value: '?'
-        units:
+        integer_investment_exogenous_capacity:
+          source: []
+          value: '?'
+        binary_investment_continuous_capacity:
           source: []
           value: '?'
       asset__chaining:

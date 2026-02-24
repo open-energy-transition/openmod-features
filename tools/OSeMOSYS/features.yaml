@@ -48,17 +48,18 @@ features:
         - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#storage-investments
       value: y
   asset__capacity_representation:
-    grouped:
-      source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capacity-adequacy-a
-      value: y
-    partial_grouped:
+    exogenous:
       source: []
-      value: n
-    units:
-      source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capacity-adequacy-a
-      value: y
+      value: '?'
+    continuous_capacity:
+      source: []
+      value: '?'
+    integer_investment_exogenous_capacity:
+      source: []
+      value: '?'
+    binary_investment_continuous_capacity:
+      source: []
+      value: '?'
   asset__chaining:
     asset_linking:
       source:

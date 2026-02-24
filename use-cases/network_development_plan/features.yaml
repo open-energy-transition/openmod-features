@@ -56,12 +56,14 @@ features:
     storage:
       value: y
   asset__capacity_representation:
-    grouped:
-      value: y
-    partial_grouped:
-      value: n
-    units:
-      value: n
+    exogenous:
+      value: '?'
+    continuous_capacity:
+      value: '?'
+    integer_investment_exogenous_capacity:
+      value: '?'
+    binary_investment_continuous_capacity:
+      value: '?'
   asset__chaining:
     asset_linking:
       value: n

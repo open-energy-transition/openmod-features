@@ -47,9 +47,10 @@ asset__candidates:
 asset__capacity_representation:
   description: "The resolution of asset capacity representation in the model"
   members:
-    units: "assets are individually defined; if asset candidates are endogenous, their purchase is an integer decision variable"
-    grouped: "assets are grouped; if asset candidates are endogenous, their purchase is a continuous decision variable"
-    partial_grouped: "assets are grouped for some of the time horizon, individually defined otherwise; the decision variable switches from continuous to integer between these phases."
+    exogenous: "asset capacity is fixed and fully defined in the input data"
+    continuous_capacity: "asset capacity is fully endogenous and modeled as a continuous (linear) decision variable; an optional maximum capacity can be specified in the input data"
+    integer_investment_exogenous_capacity: "asset capacity magnitude is fixed in the input data; investment is endogenous and modeled as a discrete (e.g., integer) decision variable"
+    binary_investment_continuous_capacity: "asset capacity magnitude is endogenous and modeled as a continuous (linear) decision variable; investment is also endogenous and represented by a binary decision variable; an optional maximum capacity can be specified in the input data"
 asset__operating_representation:
   description: "The resolution of asset operation representation in the model"
   members:

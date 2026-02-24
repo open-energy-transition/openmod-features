@@ -50,21 +50,18 @@ features:
         - https://docs.pypsa.org/latest/user-guide/components/stores/
       value: y
   asset__capacity_representation:
-    grouped:
-      source:
-        - https://docs.pypsa.org/latest/user-guide/components/generators/
-        - https://docs.pypsa.org/latest/user-guide/components/lines/
-        - https://docs.pypsa.org/latest/user-guide/components/links/
-        - https://docs.pypsa.org/latest/user-guide/components/storage-units/
-        - https://docs.pypsa.org/latest/user-guide/components/stores/
-      value: y
-    partial_grouped:
+    exogenous:
       source: []
-      value: n
-    units:
-      source:
-        - https://docs.pypsa.org/latest/user-guide/optimization/capacity-limits/#modularity-constraints
-      value: y
+      value: '?'
+    continuous_capacity:
+      source: []
+      value: '?'
+    integer_investment_exogenous_capacity:
+      source: []
+      value: '?'
+    binary_investment_continuous_capacity:
+      source: []
+      value: '?'
   asset__chaining:
     asset_linking:
       value: y
