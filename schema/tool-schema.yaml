@@ -60,28 +60,36 @@ $defs:
   AssetCapacityRepresentationModel:
     additionalProperties: false
     properties:
-      grouped:
+      binary_investment_continuous_capacity:
         $ref: '#/$defs/ToolFeatureModel'
         default:
           source: []
           value: '?'
-        description: assets are grouped; if asset candidates are endogenous, their
-          purchase is a continuous decision variable
-      partial_grouped:
+        description: asset capacity magnitude is endogenous and modeled as a continuous
+          (linear) decision variable; investment is also endogenous and represented
+          by a binary decision variable; an optional maximum capacity can be specified
+          in the input data
+      continuous_capacity:
         $ref: '#/$defs/ToolFeatureModel'
         default:
           source: []
           value: '?'
-        description: assets are grouped for some of the time horizon, individually
-          defined otherwise; the decision variable switches from continuous to integer
-          between these phases.
-      units:
+        description: asset capacity is fully endogenous and modeled as a continuous
+          (linear) decision variable; an optional maximum capacity can be specified
+          in the input data
+      exogenous:
         $ref: '#/$defs/ToolFeatureModel'
         default:
           source: []
           value: '?'
-        description: assets are individually defined; if asset candidates are endogenous,
-          their purchase is an integer decision variable
+        description: asset capacity is fixed and fully defined in the input data
+      integer_investment_exogenous_capacity:
+        $ref: '#/$defs/ToolFeatureModel'
+        default:
+          source: []
+          value: '?'
+        description: asset capacity magnitude is fixed in the input data; investment
+          is endogenous and modeled as a discrete (e.g., integer) decision variable
     title: AssetCapacityRepresentationModel
     type: object
   AssetChainingModel:
@@ -366,16 +374,16 @@ $defs:
       asset__capacity_representation:
         $ref: '#/$defs/AssetCapacityRepresentationModel'
         default:
-          exogenous:
+          binary_investment_continuous_capacity:
             source: []
             value: '?'
           continuous_capacity:
             source: []
             value: '?'
-          integer_investment_exogenous_capacity:
+          exogenous:
             source: []
             value: '?'
-          binary_investment_continuous_capacity:
+          integer_investment_exogenous_capacity:
             source: []
             value: '?'
         description: The resolution of asset capacity representation in the model
@@ -1333,16 +1341,16 @@ properties:
           source: []
           value: '?'
       asset__capacity_representation:
-        exogenous:
+        binary_investment_continuous_capacity:
           source: []
           value: '?'
         continuous_capacity:
           source: []
           value: '?'
-        integer_investment_exogenous_capacity:
+        exogenous:
           source: []
           value: '?'
-        binary_investment_continuous_capacity:
+        integer_investment_exogenous_capacity:
           source: []
           value: '?'
       asset__chaining:
