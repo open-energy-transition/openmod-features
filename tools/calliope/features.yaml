@@ -49,18 +49,16 @@ features:
         - https://calliope.readthedocs.io/en/latest/basic/techs/#base-techs
       value: y
   asset__capacity_representation:
-    exogenous:
+    grouped:
       source: []
-      value: '?'
-    continuous_capacity:
+      value: y
+    partial_grouped:
       source: []
-      value: '?'
-    integer_investment_exogenous_capacity:
-      source: []
-      value: '?'
-    binary_investment_continuous_capacity:
-      source: []
-      value: '?'
+      value: n
+    units:
+      source:
+        - https://calliope.readthedocs.io/en/latest/examples/milp/#purchased-units
+      value: y
   asset__chaining:
     asset_linking:
       source: []
