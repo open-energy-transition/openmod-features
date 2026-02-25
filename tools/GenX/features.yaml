@@ -1,0 +1,349 @@
+
+# SPDX-FileCopyrightText: tools/GenX/features.yaml CODEOWNERS
+# SPDX-FileCopyrightText: openmod-features contributors
+#
+# SPDX-License-Identifier: CC-BY-4.0
+
+# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/99da3cd/schema/tool-schema.yaml
+
+features:
+  asset__candidates:
+    converters:
+      source: []
+      value: '?'
+    electricity_transmission:
+      source: []
+      value: '?'
+    endogenous:
+      source: []
+      value: '?'
+    exogenous:
+      source: []
+      value: '?'
+    fluid_or_gas_distribution:
+      source: []
+      value: '?'
+    generators:
+      source: []
+      value: '?'
+    loads:
+      source: []
+      value: '?'
+    storage:
+      source: []
+      value: '?'
+  asset__capacity_representation:
+    grouped:
+      source: []
+      value: '?'
+    partial_grouped:
+      source: []
+      value: '?'
+    units:
+      source: []
+      value: '?'
+  asset__chaining:
+    asset_linking:
+      source: []
+      value: '?'
+    stockpiling:
+      source: []
+      value: '?'
+  asset__cost__investment:
+    annuitisation:
+      source: []
+      value: '?'
+    linear:
+      source: []
+      value: '?'
+    piecewise:
+      source: []
+      value: '?'
+    subsidy/penalty:
+      source: []
+      value: '?'
+    unit:
+      source: []
+      value: '?'
+  asset__cost__operation:
+    linear:
+      source: []
+      value: '?'
+    piecewise:
+      source: []
+      value: '?'
+    subsidy/penalty:
+      source: []
+      value: '?'
+    unit:
+      source: []
+      value: '?'
+  asset__operating_characteristics:
+    iterative:
+      source: []
+      value: '?'
+    linear:
+      source: []
+      value: '?'
+    piecewise:
+      source: []
+      value: '?'
+    static non_dimensional:
+      source: []
+      value: '?'
+    static_dimensional:
+      source: []
+      value: '?'
+  asset__operating_constraints:
+    inter_spatial:
+      source: []
+      value: '?'
+    inter_temporal:
+      source: []
+      value: '?'
+    operating:
+      source: []
+      value: '?'
+    total:
+      source: []
+      value: '?'
+  asset__operating_representation:
+    ed:
+      source: []
+      value: '?'
+    uced:
+      source: []
+      value: '?'
+  competition:
+    distributed_objectives:
+      source: []
+      value: '?'
+    portfolio:
+      source: []
+      value: '?'
+  edge_effects:
+    energy_balance:
+      source: []
+      value: '?'
+    spatial:
+      source: []
+      value: '?'
+    time_financial:
+      source: []
+      value: '?'
+    time_operational:
+      source: []
+      value: '?'
+  interface__input:
+    cli:
+      source: []
+      value: '?'
+    gui:
+      source: []
+      value: '?'
+    no_code:
+      source: []
+      value: '?'
+    scripting:
+      source: []
+      value: '?'
+    standardised:
+      source: []
+      value: '?'
+  interface__output:
+    gui:
+      source: []
+      value: '?'
+    logs:
+      source: []
+      value: '?'
+    reports:
+      source: []
+      value: '?'
+    standardised:
+      source: []
+      value: '?'
+    tables:
+      source: []
+      value: '?'
+  optimisation_problem:
+    configuration:
+      source: []
+      value: '?'
+    decomposition:
+      source: []
+      value: '?'
+    near_optimal:
+      source: []
+      value: '?'
+    sim + opt:
+      source: []
+      value: '?'
+    user_defined_constraints:
+      source: []
+      value: '?'
+    user_defined_variables:
+      source: []
+      value: '?'
+  postprocessing:
+    aggregation:
+      source: []
+      value: '?'
+    curtailment:
+      source: []
+      value: '?'
+    financial:
+      source: []
+      value: '?'
+    future_cost_function:
+      source: []
+      value: '?'
+    gtc:
+      source: []
+      value: '?'
+    impact_assessment:
+      source: []
+      value: '?'
+    lcoe:
+      source: []
+      value: '?'
+    lodf:
+      source: []
+      value: '?'
+    ptdf:
+      source: []
+      value: '?'
+    shadow_prices:
+      source: []
+      value: '?'
+  preprocessing:
+    download:
+      source: []
+      value: '?'
+    forecasting:
+      source: []
+      value: '?'
+    spatial_distribution:
+      source: []
+      value: '?'
+  resource_adequacy:
+    eens:
+      source: []
+      value: '?'
+    lolp:
+      source: []
+      value: '?'
+    maintenance_scheduling:
+      source: []
+      value: '?'
+    monte_carlo:
+      source: []
+      value: '?'
+    sampling:
+      source: []
+      value: '?'
+  robustness:
+    asset_outages:
+      source: []
+      value: '?'
+    eens_limit:
+      source: []
+      value: '?'
+    lolp_limit:
+      source: []
+      value: '?'
+    multi_stage_stochastic:
+      source: []
+      value: '?'
+    ram:
+      source: []
+      value: '?'
+    reserve_limit:
+      source: []
+      value: '?'
+    two_stage_stochastic:
+      source: []
+      value: '?'
+    voll:
+      source: []
+      value: '?'
+  spatial__resolution__simplification:
+    network:
+      source: []
+      value: '?'
+    resampling:
+      source: []
+      value: '?'
+  system__carriers:
+    coupled:
+      source: []
+      value: '?'
+    decoupled:
+      source: []
+      value: '?'
+  system__limits:
+    capacity:
+      source: []
+      value: '?'
+    operation:
+      source: []
+      value: '?'
+  time__foresight:
+    myopic:
+      source: []
+      value: '?'
+    perfect:
+      source: []
+      value: '?'
+  time__horizon:
+    multi_year:
+      source: []
+      value: '?'
+    single_year:
+      source: []
+      value: '?'
+    sub_day:
+      source: []
+      value: '?'
+    sub_year:
+      source: []
+      value: '?'
+  time__resolution__simplification:
+    distortion_mitigation:
+      source: []
+      value: '?'
+    load_duration_curves:
+      source: []
+      value: '?'
+    resampling:
+      source: []
+      value: '?'
+    typical_periods:
+      source: []
+      value: '?'
+  transmission__limits:
+    gtc:
+      source: []
+      value: '?'
+    phase_angle:
+      source: []
+      value: '?'
+    ptdf:
+      source: []
+      value: '?'
+    thermal:
+      source: []
+      value: '?'
+  transmission__opf:
+    ac_opf:
+      source: []
+      value: '?'
+    dc_opf:
+      source: []
+      value: '?'
+    sec_opf:
+      source: []
+      value: '?'
+    transport:
+      source: []
+      value: '?'

@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: tools/GenX/features.yaml CODEOWNERS
+# SPDX-FileCopyrightText: openmod-features contributors
+#
+# SPDX-License-Identifier: CC-BY-4.0
+
+# Changes here will be overwritten by Copier
+# DO NOT MANUALLY MODIFY THIS FILE
+_commit: 99da3cd
+_src_path: gh:open-energy-transition/openmod-features
+description: GenX is a highly-configurable, open source electricity resource capacity
+    expansion model that incorporates several state-of-the-art practices in electricity
+    system planning to offer improved decision support for a changing electricity
+    landscape
+docs: https://genxproject.github.io/GenX.jl/
+list_type: tool
+maintainers: sambuddhac, cfe316, nspatank, lbonaldo, JesseJenkins, xuqingyu
+name: GenX.jl
+shortname: GenX
+source: https://github.com/GenXProject/GenX.jl
