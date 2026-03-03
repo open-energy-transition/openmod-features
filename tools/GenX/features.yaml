@@ -1,0 +1,419 @@
+
+# SPDX-FileCopyrightText: tools/GenX/features.yaml CODEOWNERS
+# SPDX-FileCopyrightText: openmod-features contributors
+#
+# SPDX-License-Identifier: CC-BY-4.0
+
+# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/99da3cd/schema/tool-schema.yaml
+
+features:
+  asset__candidates:
+    converters:
+      source: []
+      value: '?'
+    electricity_transmission:
+      source: 
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.2-Network.csv
+      value: y
+    endogenous:
+      source: 
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.4-Resources-input-files
+      value: y
+    exogenous:
+      source: 
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.4-Resources-input-files
+      value: y
+    fluid_or_gas_distribution:
+      source: []
+      value: n
+    generators:
+      source: 
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.4-Resources-input-files
+      value: y
+    loads:
+      source: 
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.3-Demand_data.csv-(Load_data.csv)
+      value: y
+    storage:
+      source: 
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.4-Resources-input-files
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#Table-9a:-Additional-columns-in-the-Storage.csv-file
+      value: y
+  asset__capacity_representation:
+    grouped:
+      source: []
+      value: '?'
+    partial_grouped:
+      source: []
+      value: n
+    units:
+      source: []
+      value: '?'
+  asset__chaining:
+    asset_linking:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/resource/
+      value: '?'
+    stockpiling:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/resource/
+      value: '?'
+  asset__cost__investment:
+    annuitisation:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/multi_stage_input/
+      value: y
+    linear:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/limitations_genx/#2.-Cost
+      value: y
+    piecewise:
+      source: []
+      value: n
+    subsidy/penalty:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/Model_Reference/write_outputs/#Write-Subsidy-Revenue
+      value: '?'
+    unit:
+      source: []
+      value: n
+  asset__cost__operation:
+    linear:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.4-Resources-input-files
+      value: y
+    piecewise:
+      source: []
+      value: n
+    subsidy/penalty:
+      source: []
+      value: '?'
+    unit:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.4-Resources-input-files
+      value: y
+  asset__operating_characteristics:
+    iterative:
+      source: []
+      value: n
+    linear:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.1-Fuels_data.csv
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.5-Generator_variability.csv
+      value: y
+    piecewise:
+      source: []
+      value: '?'
+    static non_dimensional:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.1-Fuels_data.csv
+      value: y
+    static_dimensional:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.5-Generator_variability.csv
+      value: y
+  asset__operating_constraints:
+    inter_spatial:
+      source: []
+      value: '?'
+    inter_temporal:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/thermal_commit/
+      value: y
+    operating:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/maintenance/
+      value: y
+    total:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/multi_stage_input/
+      value: y
+  asset__operating_representation:
+    ed:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/Model_Concept_Overview/objective_function/
+      value: y
+    uced:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/thermal_commit/
+      value: y
+  competition:
+    distributed_objectives:
+      source: []
+      value: n
+    portfolio:
+      source: []
+      value: n
+  edge_effects:
+    energy_balance:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/Model_Concept_Overview/power_balance/
+      value: y
+    spatial:
+      source: []
+      value: '?'
+    time_financial:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/limitations_genx/#2.-Cost
+      value: n
+    time_operational:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/hydro_inter_period_linkage/
+      - https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/long_duration_storage/
+      value: '?'
+  interface__input:
+    cli:
+      source:
+      - https://github.com/danielolsen/pygenx
+      value: y
+    gui:
+      source: []
+      value: n
+    no_code:
+      source: []
+      value: n
+    scripting:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/Tutorials/Tutorials_intro/
+      - https://genxproject.github.io/GenX.jl/stable/Getting_Started/examples_casestudies/
+      value: y
+    standardised:
+      source: []
+      value: n
+  interface__output:
+    gui:
+      source: []
+      value: n
+    logs:
+      source: []
+      value: n
+    reports:
+      source: []
+      value: n
+    standardised:
+      source: []
+      value: n
+    tables:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_output/
+      value: y
+  optimisation_problem:
+    configuration:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_configuration/#6.-Solver-relate
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/solver_configuration/
+      value: y
+    decomposition:
+      source: []
+      value: n
+    near_optimal:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/generate_alternatives/
+      value: y
+    sim + opt:
+      source: []
+      value: n
+    user_defined_constraints:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/Tutorials/Tutorial_1_configuring_settings/
+      value: y
+    user_defined_variables:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/Tutorials/Tutorial_1_configuring_settings/
+      value: y
+  postprocessing:
+    aggregation:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/Tutorials/Tutorial_8_outputs/
+      value: y
+    curtailment:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/Model_Reference/write_outputs/#Write-Curtailment
+      value: y
+    financial:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/Model_Reference/write_outputs/
+      value: y
+    future_cost_function:
+      source: []
+      value: n
+    gtc:
+      source: []
+      value: n
+    impact_assessment:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_output/#1.3-emissions.csv
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_output/#1.6-reliability.csv
+      value: y
+    lcoe:
+      source: []
+      value: n
+    lodf:
+      source: []
+      value: n
+    ptdf:
+      source: []
+      value: n
+    shadow_prices:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_output/
+      value: y
+  preprocessing:
+    download:
+      source: []
+      value: '?'
+    forecasting:
+      source: []
+      value: '?'
+    spatial_distribution:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.2-Network.csv
+      - https://genxproject.github.io/GenX.jl/stable/Tutorials/Tutorial_2_network_visualization/
+      value: y
+  resource_adequacy:
+    eens:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_output/#1.6-reliability.csv
+      value: y
+    lolp:
+      source: []
+      value: '?'
+    maintenance_scheduling:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/maintenance/
+      value: y
+    monte_carlo:
+      source: []
+      value: n
+    sampling:
+      source: []
+      value: n
+  robustness:
+    asset_outages:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.3-Demand_data.csv-(Load_data.csv)
+      value: y
+    eens_limit:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.3-Demand_data.csv-(Load_data.csv)
+      value: y
+    lolp_limit:
+      source: []
+      value: n
+    multi_stage_stochastic:
+      source: []
+      value: n
+    ram:
+      source: []
+      value: '?'
+    reserve_limit:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#2.4-Capacity_reserve_margin.csv
+      value: y
+    two_stage_stochastic:
+      source: []
+      value: n
+    voll:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.3-Demand_data.csv-(Load_data.csv)
+      value: y
+  spatial__resolution__simplification:
+    network:
+      source: []
+      value: n
+    resampling:
+      source: []
+      value: n
+  system__carriers:
+    coupled:
+      source: []
+      value: n
+    decoupled:
+      source: []
+      value: n
+  system__limits:
+    capacity:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_configuration/#3.-Policy-related
+      value: y
+    operation:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#2.1-Operational_reserves.csv
+      value: y
+  time__foresight:
+    myopic:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/multi_stage_input/
+      value: y
+    perfect:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/multi_stage_input/
+      value: '?'
+  time__horizon:
+    multi_year:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/multi_stage_input/
+      value: y
+    single_year:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/Model_Concept_Overview/model_introduction/
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/TDR_input/
+      value: y
+    sub_day:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/Model_Concept_Overview/model_introduction/
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/TDR_input/
+      value: y
+    sub_year:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/Model_Concept_Overview/model_introduction/
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/TDR_input/
+      value: y
+  time__resolution__simplification:
+    distortion_mitigation:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/TDR_input/
+      value: y
+    load_duration_curves:
+      source: []
+      value: n
+    resampling:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/TDR_input/
+      - https://genxproject.github.io/GenX.jl/stable/Model_Reference/write_outputs/#GenX.write_full_time_series_reconstruction-Tuple{AbstractString,%20Dict,%20DataFrames.DataFrame,%20String}
+      value: y
+    typical_periods:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/TDR_input/
+      value: y
+  transmission__limits:
+    gtc:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.2-Network.csv
+      value: y
+    phase_angle:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/Model_Reference/core/#Transmission
+      value: '?'
+    ptdf:
+      source: []
+      value: '?'
+    thermal:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.4-Resources-input-files
+      value: y
+  transmission__opf:
+    ac_opf:
+      source: []
+      value: n
+    dc_opf:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/Model_Reference/core/#Transmission
+      value: y
+    sec_opf:
+      source: []
+      value: n
+    transport:
+      source:
+      - https://genxproject.github.io/GenX.jl/stable/Model_Concept_Overview/model_introduction/
+      value: y
