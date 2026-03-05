@@ -13,7 +13,7 @@ description: GenX is a highly-configurable, open source electricity resource cap
     landscape
 docs: https://genxproject.github.io/GenX.jl/
 list_type: tool
-maintainers: sambuddhac, cfe316, nspatank, lbonaldo, JesseJenkins, xuqingyu
+maintainers: virio-andreyana
 name: GenX.jl
 shortname: GenX
 source: https://github.com/GenXProject/GenX.jl
