@@ -52,7 +52,8 @@ maintainers:
   type: str
   help: >-
     {{ list_type | title }} feature list maintainers as a comma separated list of valid git host usernames.
-    List maintainers need not be the same as {{ list_type }} maintainers.
+    ❗️NOTE❗️ Feature list maintainers are not the same as {{ list_type }} maintainers, although they may overlap.
+    Use your own github username here if you are unsure.
   validator: >-
     {% if not (maintainers | regex_search('^[\\w\\-\\,].+$')) %}
     Use only GitHub usernames without the leading `@`, separated by commas (`,`).

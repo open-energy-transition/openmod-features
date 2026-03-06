@@ -1,0 +1,83 @@
+# SPDX-FileCopyrightText: openmod-features contributors
+#
+# SPDX-License-Identifier: CC0-1.0
+
+name: Check New Maintainers
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - "tools/**/.metadata.yml"
+      - "use-cases/**/.metadata.yml"
+
+jobs:
+  check-maintainers:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Check for new maintainers
+        id: check
+        env:
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          BASE_REF: ${{ github.event.pull_request.base.sha }}
+        run: |
+          new_maintainers=""
+          for file in $(git diff --name-only $BASE_REF HEAD | grep -E '^(tools|use-cases)/.*/.metadata.yml$'); do
+            old=$(git show $BASE_REF:$file 2>/dev/null | grep '^maintainers:' | sed 's/maintainers: *//' || echo "")
+            new=$(grep '^maintainers:' $file | sed 's/maintainers: *//' || echo "")
+
+            # Convert comma-separated to space-separated and normalize
+            old_list=$(echo "$old" | tr ',' '\n' | tr -d ' ' | sort | uniq)
+            new_list=$(echo "$new" | tr ',' '\n' | tr -d ' ' | sort | uniq)
+
+            # Find added maintainers (in new but not in old)
+            for maintainer in $new_list; do
+              if ! echo "$old_list" | grep -qx "$maintainer"; then
+                if [ "$maintainer" != "$PR_AUTHOR" ]; then
+                  new_maintainers="${new_maintainers}${file}:${maintainer}"$'\n'
+                fi
+              fi
+            done
+          done
+
+          if [ -n "$new_maintainers" ]; then
+            echo "new_maintainers<<EOF" >> $GITHUB_OUTPUT
+            echo -n "$new_maintainers" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Comment on PR if new maintainers need approval
+        if: steps.check.outputs.new_maintainers != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const newMaintainers = process.env.NEW_MAINTAINERS.split('\n').filter(line => line.trim());
+
+            let comment = '## ⚠️ New Maintainer Approval Required\n\n';
+            comment += 'The following maintainers have been added to metadata files and need to explicitly approve their inclusion as maintainers:\n\n';
+
+            for (const entry of newMaintainers) {
+              const [file, maintainer] = entry.split(':', 2);
+              comment += `- @${maintainer.trim()} for \`${file.trim()}\`\n`;
+            }
+
+            comment += '\n**Action Required:** Each new maintainer listed above must comment on this PR confirming they approve being added as a maintainer.\n';
+            comment += '\nThis is part of the contributor checklist: "All new list maintainers have commented on the PR to approve their inclusion."';
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+        env:
+          NEW_MAINTAINERS: ${{ steps.check.outputs.new_maintainers }}
