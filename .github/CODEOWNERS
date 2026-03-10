@@ -11,7 +11,7 @@
 
 # These owners will be the owners for their respective feature lists.
 # BEGIN AUTO-GENERATED
-/tools/GenX/                   @sambuddhac @cfe316 @nspatank @lbonaldo @JesseJenkins @xuqingyu
+/tools/GenX/                   @virio-andreyana
 /tools/OSeMOSYS/               @willu47
 /tools/calliope/               @brynpickering
 /tools/pypsa/                  @euronion @SermishaNarayana
