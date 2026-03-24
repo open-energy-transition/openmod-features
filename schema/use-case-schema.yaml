@@ -52,14 +52,6 @@ $defs:
   AssetCapacityRepresentationModel:
     additionalProperties: false
     properties:
-      binary_investment_continuous_capacity:
-        $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
-        description: asset capacity magnitude is endogenous and modeled as a continuous
-          (linear) decision variable; investment is also endogenous and represented
-          by a binary decision variable; an optional maximum capacity can be specified
-          in the input data
       continuous_capacity:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
@@ -67,17 +59,25 @@ $defs:
         description: asset capacity is fully endogenous and modeled as a continuous
           (linear) decision variable; an optional maximum capacity can be specified
           in the input data
-      exogenous:
+      exogenous_capacity:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
           value: '?'
         description: asset capacity is fixed and fully defined in the input data
+      integer_investment_continuous_capacity:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        default:
+          value: '?'
+        description: asset capacity magnitude is endogenous and modeled as a continuous
+          (linear) decision variable; investment is also endogenous and represented
+          by a binary decision variable; an optional maximum capacity can be specified
+          in the input data
       integer_investment_exogenous_capacity:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
           value: '?'
         description: asset capacity magnitude is fixed in the input data; investment
-          is endogenous and modeled as a discrete (e.g., integer) decision variable
+          is modeled as a discrete (e.g., integer) decision variable
     title: AssetCapacityRepresentationModel
     type: object
   AssetChainingModel:
@@ -255,6 +255,28 @@ $defs:
           This requires unit-level asset capacity representation
     title: AssetOperatingRepresentationModel
     type: object
+  AssetResolutionModel:
+    additionalProperties: false
+    properties:
+      grouped:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        default:
+          value: '?'
+        description: physical assets are aggregated into asset groups when modelled.
+      mixed:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        default:
+          value: '?'
+        description: in a multi-year optimisation, physical assets can be aggregated
+          in some years and discretised in others.
+      units:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        default:
+          value: '?'
+        description: assets are modelled as discrete units which reflect physical
+          assets 1-to-1
+    title: AssetResolutionModel
+    type: object
   AssumptionsModel:
     description: Feature-level fields.
     items:
@@ -332,11 +354,11 @@ $defs:
       asset__capacity_representation:
         $ref: '#/$defs/AssetCapacityRepresentationModel'
         default:
-          binary_investment_continuous_capacity:
-            value: '?'
           continuous_capacity:
             value: '?'
-          exogenous:
+          exogenous_capacity:
+            value: '?'
+          integer_investment_continuous_capacity:
             value: '?'
           integer_investment_exogenous_capacity:
             value: '?'
@@ -411,6 +433,15 @@ $defs:
           uced:
             value: '?'
         description: The resolution of asset operation representation in the model
+      asset__resolution:
+        $ref: '#/$defs/AssetResolutionModel'
+        default:
+          grouped:
+            value: '?'
+          mixed:
+            value: '?'
+          units:
+            value: '?'
       competition:
         $ref: '#/$defs/CompetitionModel'
         default:
@@ -1117,11 +1148,11 @@ properties:
         storage:
           value: '?'
       asset__capacity_representation:
-        binary_investment_continuous_capacity:
-          value: '?'
         continuous_capacity:
           value: '?'
-        exogenous:
+        exogenous_capacity:
+          value: '?'
+        integer_investment_continuous_capacity:
           value: '?'
         integer_investment_exogenous_capacity:
           value: '?'
@@ -1174,6 +1205,13 @@ properties:
         ed:
           value: '?'
         uced:
+          value: '?'
+      asset__resolution:
+        grouped:
+          value: '?'
+        mixed:
+          value: '?'
+        units:
           value: '?'
       competition:
         distributed_objectives:
