@@ -42,8 +42,6 @@ asset__candidates:
     fluid_or_gas_distribution: "carrier distribution through pressurised pipework"
     electricity_transmission: "carrier distribution through electrical transmission lines"
     loads: "carrier consumers, explicitly defined to allow for e.g. demand-side management"
-    endogenous: "asset candidates can be constructed, sold, retired, mothballed, and retrofit as the model sees fit"
-    exogenous: "asset candidates construction, sale, retirement, mothballing, and retrofit is pre-defined by the user"
 asset__capacity_representation:
   description: "Asset capacity representation (e.g. fixed or endogenous, discrete or continuous)"
   members:

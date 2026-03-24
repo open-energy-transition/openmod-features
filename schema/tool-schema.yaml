@@ -15,20 +15,6 @@ $defs:
           source: []
           value: '?'
         description: carrier distribution through electrical transmission lines
-      endogenous:
-        $ref: '#/$defs/ToolFeatureModel'
-        default:
-          source: []
-          value: '?'
-        description: asset candidates can be constructed, sold, retired, mothballed,
-          and retrofit as the model sees fit
-      exogenous:
-        $ref: '#/$defs/ToolFeatureModel'
-        default:
-          source: []
-          value: '?'
-        description: asset candidates construction, sale, retirement, mothballing,
-          and retrofit is pre-defined by the user
       fluid_or_gas_distribution:
         $ref: '#/$defs/ToolFeatureModel'
         default:
@@ -380,12 +366,6 @@ $defs:
             source: []
             value: '?'
           electricity_transmission:
-            source: []
-            value: '?'
-          endogenous:
-            source: []
-            value: '?'
-          exogenous:
             source: []
             value: '?'
           fluid_or_gas_distribution:
@@ -1365,12 +1345,6 @@ properties:
           source: []
           value: '?'
         electricity_transmission:
-          source: []
-          value: '?'
-        endogenous:
-          source: []
-          value: '?'
-        exogenous:
           source: []
           value: '?'
         fluid_or_gas_distribution:

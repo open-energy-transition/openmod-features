@@ -13,18 +13,6 @@ $defs:
         default:
           value: '?'
         description: carrier distribution through electrical transmission lines
-      endogenous:
-        $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
-        description: asset candidates can be constructed, sold, retired, mothballed,
-          and retrofit as the model sees fit
-      exogenous:
-        $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
-        description: asset candidates construction, sale, retirement, mothballing,
-          and retrofit is pre-defined by the user
       fluid_or_gas_distribution:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
@@ -342,10 +330,6 @@ $defs:
           converters:
             value: '?'
           electricity_transmission:
-            value: '?'
-          endogenous:
-            value: '?'
-          exogenous:
             value: '?'
           fluid_or_gas_distribution:
             value: '?'
@@ -1142,10 +1126,6 @@ properties:
         converters:
           value: '?'
         electricity_transmission:
-          value: '?'
-        endogenous:
-          value: '?'
-        exogenous:
           value: '?'
         fluid_or_gas_distribution:
           value: '?'
