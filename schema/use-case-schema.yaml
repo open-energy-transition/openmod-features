@@ -13,18 +13,6 @@ $defs:
         default:
           value: '?'
         description: carrier distribution through electrical transmission lines
-      endogenous:
-        $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
-        description: asset candidates can be constructed, sold, retired, mothballed,
-          and retrofit as the model sees fit
-      exogenous:
-        $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
-        description: asset candidates construction, sale, retirement, mothballing,
-          and retrofit is pre-defined by the user
       fluid_or_gas_distribution:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
@@ -52,25 +40,38 @@ $defs:
   AssetCapacityRepresentationModel:
     additionalProperties: false
     properties:
-      grouped:
+      continuous_capacity:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
           value: '?'
-        description: assets are grouped; if asset candidates are endogenous, their
-          purchase is a continuous decision variable
-      partial_grouped:
+        description: asset capacity is fully endogenous and modeled as a continuous
+          (linear) decision variable; an optional maximum capacity can be specified
+          in the input data (e.g. PV capacity that can be installed at any capacity
+          from zero to a maximum defined by land-use constraints)
+      exogenous_capacity:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
           value: '?'
-        description: assets are grouped for some of the time horizon, individually
-          defined otherwise; the decision variable switches from continuous to integer
-          between these phases.
-      units:
+        description: asset capacity is fixed and fully defined in the input data (e.g.
+          for modelling dispatch only)
+      integer_investment_continuous_capacity:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
           value: '?'
-        description: assets are individually defined; if asset candidates are endogenous,
-          their purchase is an integer decision variable
+        description: asset capacity magnitude is endogenous and modeled as a continuous
+          (linear) decision variable; investment is also endogenous and represented
+          by a binary decision variable; an optional maximum capacity can be specified
+          in the input data (e.g. gas turbines that you want to track as individual
+          units (to which other constraints will apply) and whose capacity is not
+          fixed by the manufacturer)
+      integer_investment_exogenous_capacity:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        default:
+          value: '?'
+        description: asset capacity magnitude is fixed in the input data; investment
+          is modeled as a discrete (e.g., integer) decision variable (e.g. nuclear
+          power plants whose capacity is fixed & indivisible due to external constraints
+          but the decision to invest in this capacity is as-yet undecided)
     title: AssetCapacityRepresentationModel
     type: object
   AssetChainingModel:
@@ -248,6 +249,28 @@ $defs:
           This requires unit-level asset capacity representation
     title: AssetOperatingRepresentationModel
     type: object
+  AssetResolutionModel:
+    additionalProperties: false
+    properties:
+      grouped:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        default:
+          value: '?'
+        description: physical assets are aggregated into asset groups when modelled.
+      mixed:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        default:
+          value: '?'
+        description: in a multi-year optimisation, physical assets can be aggregated
+          in some years and discretised in others.
+      units:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        default:
+          value: '?'
+        description: assets are modelled as discrete units which reflect physical
+          assets 1-to-1
+    title: AssetResolutionModel
+    type: object
   AssumptionsModel:
     description: Feature-level fields.
     items:
@@ -308,10 +331,6 @@ $defs:
             value: '?'
           electricity_transmission:
             value: '?'
-          endogenous:
-            value: '?'
-          exogenous:
-            value: '?'
           fluid_or_gas_distribution:
             value: '?'
           generators:
@@ -325,13 +344,16 @@ $defs:
       asset__capacity_representation:
         $ref: '#/$defs/AssetCapacityRepresentationModel'
         default:
-          grouped:
+          continuous_capacity:
             value: '?'
-          partial_grouped:
+          exogenous_capacity:
             value: '?'
-          units:
+          integer_investment_continuous_capacity:
             value: '?'
-        description: The resolution of asset capacity representation in the model
+          integer_investment_exogenous_capacity:
+            value: '?'
+        description: Asset capacity representation (e.g. fixed or endogenous, discrete
+          or continuous)
       asset__chaining:
         $ref: '#/$defs/AssetChainingModel'
         default:
@@ -402,6 +424,16 @@ $defs:
           uced:
             value: '?'
         description: The resolution of asset operation representation in the model
+      asset__resolution:
+        $ref: '#/$defs/AssetResolutionModel'
+        default:
+          grouped:
+            value: '?'
+          mixed:
+            value: '?'
+          units:
+            value: '?'
+        description: The level of physical detail at which assets are represented
       competition:
         $ref: '#/$defs/CompetitionModel'
         default:
@@ -1095,10 +1127,6 @@ properties:
           value: '?'
         electricity_transmission:
           value: '?'
-        endogenous:
-          value: '?'
-        exogenous:
-          value: '?'
         fluid_or_gas_distribution:
           value: '?'
         generators:
@@ -1108,11 +1136,13 @@ properties:
         storage:
           value: '?'
       asset__capacity_representation:
-        grouped:
+        continuous_capacity:
           value: '?'
-        partial_grouped:
+        exogenous_capacity:
           value: '?'
-        units:
+        integer_investment_continuous_capacity:
+          value: '?'
+        integer_investment_exogenous_capacity:
           value: '?'
       asset__chaining:
         asset_linking:
@@ -1163,6 +1193,13 @@ properties:
         ed:
           value: '?'
         uced:
+          value: '?'
+      asset__resolution:
+        grouped:
+          value: '?'
+        mixed:
+          value: '?'
+        units:
           value: '?'
       competition:
         distributed_objectives:

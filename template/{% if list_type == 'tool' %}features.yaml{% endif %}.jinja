@@ -14,12 +14,6 @@ features:
     electricity_transmission:
       source: []
       value: '?'
-    endogenous:
-      source: []
-      value: '?'
-    exogenous:
-      source: []
-      value: '?'
     fluid_or_gas_distribution:
       source: []
       value: '?'
@@ -33,13 +27,16 @@ features:
       source: []
       value: '?'
   asset__capacity_representation:
-    grouped:
+    continuous_capacity:
       source: []
       value: '?'
-    partial_grouped:
+    exogenous_capacity:
       source: []
       value: '?'
-    units:
+    integer_investment_continuous_capacity:
+      source: []
+      value: '?'
+    integer_investment_exogenous_capacity:
       source: []
       value: '?'
   asset__chaining:
@@ -112,6 +109,16 @@ features:
       source: []
       value: '?'
     uced:
+      source: []
+      value: '?'
+  asset__resolution:
+    grouped:
+      source: []
+      value: '?'
+    mixed:
+      source: []
+      value: '?'
+    units:
       source: []
       value: '?'
   competition:
