@@ -368,7 +368,8 @@ $defs:
             value: '?'
           integer_investment_exogenous_capacity:
             value: '?'
-        description: The resolution of asset capacity representation in the model
+        description: Asset capacity representation (e.g. fixed or endogenous, discrete
+          or continuous)
       asset__chaining:
         $ref: '#/$defs/AssetChainingModel'
         default:
@@ -448,6 +449,7 @@ $defs:
             value: '?'
           units:
             value: '?'
+        description: The level of physical detail at which assets are represented
       competition:
         $ref: '#/$defs/CompetitionModel'
         default:
