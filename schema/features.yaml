@@ -47,10 +47,10 @@ asset__candidates:
 asset__capacity_representation:
   description: "The resolution of asset capacity representation in the model"
   members:
-    exogenous_capacity: "asset capacity is fixed and fully defined in the input data"
-    continuous_capacity: "asset capacity is fully endogenous and modeled as a continuous (linear) decision variable; an optional maximum capacity can be specified in the input data"
-    integer_investment_exogenous_capacity: "asset capacity magnitude is fixed in the input data; investment is modeled as a discrete (e.g., integer) decision variable"
-    integer_investment_continuous_capacity: "asset capacity magnitude is endogenous and modeled as a continuous (linear) decision variable; investment is also endogenous and represented by a binary decision variable; an optional maximum capacity can be specified in the input data"
+    exogenous_capacity: "asset capacity is fixed and fully defined in the input data (e.g. for modelling dispatch only)"
+    continuous_capacity: "asset capacity is fully endogenous and modeled as a continuous (linear) decision variable; an optional maximum capacity can be specified in the input data (e.g. PV capacity that can be installed at any capacity from zero to a maximum defined by land-use constraints)"
+    integer_investment_exogenous_capacity: "asset capacity magnitude is fixed in the input data; investment is modeled as a discrete (e.g., integer) decision variable (e.g. nuclear power plants whose capacity is fixed & indivisible due to external constraints but the decision to invest in this capacity is as-yet undecided)"
+    integer_investment_continuous_capacity: "asset capacity magnitude is endogenous and modeled as a continuous (linear) decision variable; investment is also endogenous and represented by a binary decision variable; an optional maximum capacity can be specified in the input data (e.g. gas turbines that you want to track as individual units (to which other constraints will apply) and whose capacity is not fixed by the manufacturer)"
 asset__resolution:
   description:
   members:
