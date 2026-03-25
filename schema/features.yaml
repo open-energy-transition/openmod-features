@@ -78,7 +78,7 @@ asset__operating_characteristics:
 asset__chaining:
   description: "Options to explicitly chain / link specific assets or asset types such that certain carrier flows can only occur between each other"
   members:
-    stockpiling: "a storage asset can be assigned to the inflow of a specific generation asset to reflect stockpiling of an input energy carrier prior to use for generation (e.g. CSP heat storage buffer, fuel stocks, reservoir hydropower)."
+    stockpiling: "storage of a specific generation asset's input material energy carrier (e.g., fuel, biomass, water) before conversion"
     asset_linking: "carrier out-flow from one asset can be reserved as an in-flow in a specific subset of other assets (e.g. hydropower cascading, CCGT asset internal steam flow considerations)"
 asset__cost__investment:
   description: "Asset investment cost representation"
