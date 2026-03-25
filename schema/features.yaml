@@ -7,398 +7,399 @@ time__horizon:
   members:
     multi_year:
       description: "multiple years"
-      baseline: '?'
+      baseline: n
     single_year:
       description: "single year"
-      baseline: '?'
+      baseline: y
     sub_year:
       description: "between one day and one year"
-      baseline: '?'
+      baseline: y
     sub_day:
       description: "less than one day"
-      baseline: '?'
+      baseline: n
 time__foresight:
   description: "The modelling horizon per optimisation iteration"
   members:
     perfect:
       description: "perfect foresight"
-      baseline: '?'
+      baseline: n
     myopic:
       description: "myopic foresight"
-      baseline: '?'
+      baseline: n
 edge_effects:
   description: "Distortive effects of system boundaries and linearising model components can be mitigated against"
   members:
     time_operational:
       description: "start/end-of-horizon operational effects (e.g. storage level wrapping)"
-      baseline: '?'
+      baseline: n
     time_financial:
       description: "start/end-of-horizon financial effects (e.g. asset investment annuitisation)"
-      baseline: '?'
+      baseline: n
     spatial:
       description: "energy flows into/out of the modelled region"
-      baseline: '?'
+      baseline: y
     energy_balance:
       description: "energy 'destruction' caused by simultaneous in- & out-flow from a lossy transmission/storage asset"
-      baseline: '?'
+      baseline: n
 time__resolution__simplification:
   description: "Temporal resolution adjustment options"
   members:
     resampling:
       description: "temporal up/down-sampling"
-      baseline: '?'
+      baseline: n
     typical_periods:
       description: "full timeseries is represented by typical periods (days, weeks, months)"
-      baseline: '?'
+      baseline: n
     load_duration_curves:
       description: "full timeseries is represented by load duration curves"
-      baseline: '?'
+      baseline: n
     distortion_mitigation:
       description: "methods to manage inter-temporal model features in a temporally simplified model"
-      baseline: '?'
+      baseline: n
 spatial__resolution__simplification:
   description: "Spatial resolution adjustment options"
   members:
     resampling:
       description: "spatial zone aggregation/disaggregation. Usually from nodal (bus) level to regional/bidding zone level"
-      baseline: '?'
+      baseline: n
     network:
       description: "network element equivalencing"
-      baseline: '?'
+      baseline: n
 asset__candidates:
   description: "Asset types and whether or not assets capacity decisions are decision variables in the model"
   members:
     generators:
       description: "carrier generator, consuming resources from outside the system boundary "
-      baseline: '?'
+      baseline: y
     converters:
       description: "carrier generator, consuming other carriers from inside the system boundary. Necessary for coupled carrier optimisation"
-      baseline: '?'
+      baseline: n
     storage:
       description: "carrier storage, to delay carrier flows in time"
-      baseline: '?'
+      baseline: n
     fluid_or_gas_distribution:
       description: "carrier distribution through pressurised pipework"
-      baseline: '?'
+      baseline: n
     electricity_transmission:
       description: "carrier distribution through electrical transmission lines"
-      baseline: '?'
+      baseline: y
     loads:
       description: "carrier consumers, explicitly defined to allow for e.g. demand-side management"
-      baseline: '?'
+      baseline: y
 asset__capacity_representation:
   description: "Asset capacity representation (e.g. fixed or endogenous, discrete or continuous)"
   members:
     exogenous_capacity:
       description: "asset capacity is fixed and fully defined in the input data (e.g. for modelling dispatch only)"
-      baseline: '?'
+      baseline: y
     continuous_capacity:
       description: "asset capacity is fully endogenous and modeled as a continuous (linear) decision variable; an optional maximum capacity can be specified in the input data (e.g. PV capacity that can be installed at any capacity from zero to a maximum defined by land-use constraints)"
-      baseline: '?'
+      baseline: n
     integer_investment_exogenous_capacity:
       description: "asset capacity magnitude is fixed in the input data; investment is modeled as a discrete (e.g., integer) decision variable (e.g. nuclear power plants whose capacity is fixed & indivisible due to external constraints but the decision to invest in this capacity is as-yet undecided)"
-      baseline: '?'
+      baseline: n
     integer_investment_continuous_capacity:
       description: "asset capacity magnitude is endogenous and modeled as a continuous (linear) decision variable; investment is also endogenous and represented by a binary decision variable; an optional maximum capacity can be specified in the input data (e.g. gas turbines that you want to track as individual units (to which other constraints will apply) and whose capacity is not fixed by the manufacturer)"
-      baseline: '?'
+      baseline: n
 asset__resolution:
   description: "The level of physical detail at which assets are represented"
   members:
     units:
       description: "assets are modelled as discrete units which reflect physical assets 1-to-1"
-      baseline: '?'
+      baseline: y
     grouped:
       description: "physical assets are aggregated into asset groups when modelled."
-      baseline: '?'
+      baseline: n
     mixed:
       description: "in a multi-year optimisation, physical assets can be aggregated in some years and discretised in others."
-      baseline: '?'
+      baseline: n
 asset__operating_representation:
   description: "The resolution of asset operation representation in the model"
   members:
     uced:
       description: "assets can be committed as units and then economically dispatched. This requires unit-level asset capacity representation"
-      baseline: '?'
+      baseline: n
     ed:
       description: "assets can only be economically dispatched. This is possible with unit-level or grouped asset capacity representation"
-      baseline: '?'
+      baseline: y
 asset__operating_constraints:
   description: "Upper/lower limits on asset operation"
   members:
     inter_temporal:
       description: "limits that link time periods (e.g., ramping, run up, load shifting)"
-      baseline: '?'
+      baseline: n
     inter_spatial:
       description: "limits that link geographic regions"
-      baseline: '?'
+      baseline: n
     operating:
       description: "limits applied to operating time periods (maintenance schedule) or when operating (load rate). Usually requires unit-level asset capacity representation."
-      baseline: '?'
+      baseline: n
     total:
       description: "limit on total asset carrier in-/out-flow over a subset or the entire time horizon / spatial scope. This can represent real contract arrangements / regulation."
-      baseline: '?'
+      baseline: y
 asset__operating_characteristics:
   description: "Asset operating characteristics representation (e.g. efficiency, resource availability)"
   members:
     static non_dimensional:
       description: "asset characteristics are independent of decision variables and model dimensions (e.g. space, time)"
-      baseline: '?'
+      baseline: y
     static_dimensional:
       description: "asset characteristics are independent of decision variables but dependent on model dimensions (e.g. space, time)"
-      baseline: '?'
+      baseline: y
     linear:
       description: "asset characteristics vary linearly with a single decision variable (e.g. resource availability increasing with asset capacity)"
-      baseline: '?'
+      baseline: y
     piecewise:
       description: "asset characteristics vary depending on operating decision variables creating a non-linear relationship that can be described by a piecewise linear curve (e.g., part-load efficiency, linked to capacity, storage head effects)"
-      baseline: '?'
+      baseline: n
     iterative:
       description: "asset characteristics vary depending on operating decision variables creating a non-linear relationship that can only be converged upon iteratively (e.g. transmission line losses)"
-      baseline: '?'
+      baseline: n
 asset__chaining:
   description: "Options to explicitly chain / link specific assets or asset types such that certain carrier flows can only occur between each other"
   members:
     stockpiling:
       description: "a generation asset can be given storage asset characteristics to stockpile resources/carriers (e.g. CSP heat storage buffer, fuel stocks)."
-      baseline: '?'
+      baseline: n
     asset_linking:
       description: "carrier out-flow from one asset can be reserved as an in-flow in a specific subset of other assets (e.g. hydropower cascading, CCGT asset internal steam flow considerations)"
-      baseline: '?'
+      baseline: n
 asset__cost__investment:
   description: "Asset investment cost representation"
   members:
     linear:
       description: "initial asset capital cost which varies linearly with asset nameplate capacity (e.g. EUR/MW)"
-      baseline: '?'
+      baseline: y
     unit:
       description: "initial asset capital cost which is incurred on asset purchase, irrespective of capacity (e.g. land purchase)."
-      baseline: '?'
+      baseline: n
     piecewise:
       description: |
         initial asset capital cost which varies non-linearly, represented by a piecewise linear curve (e.g. economies of scale, where cost per capacity decreases with increasing capacity).
         This may be represented by multiple assets of the same class (e.g. "wind turbine") but with different costs and maximum capacities.
-      baseline: '?'
+      baseline: n
     annuitisation:
       description: "an asset's capital investment can be annuitised to account for factors linked to its expected economic life and financing arrangements, such as weighted cost of capital, inflation and tax rates, and other sources of depreciation"
-      baseline: '?'
+      baseline: n
     subsidy/penalty:
       description: "costs to (dis)incentivise investment above/below given thresholds, representing soft constraints (e.g. rebate for providing firm capacity, penalty for exceeding land use limits)"
-      baseline: '?'
+      baseline: n
 asset__cost__operation:
   description: "Asset operating cost representation"
   members:
     linear:
       description: "operating costs which vary linearly with unit in-/out-flow (e.g. EUR/MWh)"
-      baseline: '?'
+      baseline: y
     unit:
       description: "operating costs which are incurred on unit commitment (e.g. start-up costs)"
-      baseline: '?'
+      baseline: n
     piecewise:
       description: "operating costs which vary non-linearly, represented by a piecewise linear curve (e.g. generation bid increment / decrement levels)"
-      baseline: '?'
+      baseline: n
     subsidy/penalty:
       description: "costs to (dis)incentivise operating above/below given thresholds, representing soft constraints (e.g. feed-in tariff, emissions)"
-      baseline: '?'
+      baseline: n
 transmission__opf:
   description: "Transmission network optimal power flow representation"
   members:
     transport:
       description: "energy transport only (no Kirchhoff's laws defined)"
-      baseline: '?'
+      baseline: y
     dc_opf:
       description: "linearised DC optimal power flow"
-      baseline: '?'
+      baseline: n
     ac_opf:
       description: "linearised AC optimal power flow"
-      baseline: '?'
+      baseline: n
     sec_opf:
       description: "security-constrained AC optimal power flow"
-      baseline: '?'
+      baseline: n
 transmission__limits:
   description: "Transmission capacity limit representation"
   members:
     gtc:
       description: "grid transfer capacities"
-      baseline: '?'
+      baseline: y
     ptdf:
       description: "power transfer distribution factors"
-      baseline: '?'
+      baseline: n
     thermal:
       description: "thermal limits"
-      baseline: '?'
+      baseline: n
     phase_angle:
       description: "phase angles"
-      baseline: '?'
+      baseline: n
 system__carriers:
   description: "Energy carrier representation"
   members:
     decoupled:
       description: "only one energy carrier (e.g. electricity, gas, water) represented at a time or, if represented simultaneously, do not interact."
-      baseline: '?'
+      baseline: y
     coupled:
       description: "multiple energy carriers represented with the ability to interact via carrier converting assets. Usually used in multi-vector/sector co-optimisation (e.g. power & gas systems; power, transport, & building sectors)"
-      baseline: '?'
+      baseline: n
 system__limits:
   description: "System-wide limits to represent physical or policy constraints"
   members:
     capacity:
       description: "limit multi-asset capacity decisions  (e.g. land availability, procurement plans)"
-      baseline: '?'
+      baseline: n
     operation:
       description: "limit multi-asset operational factors  (e.g. max emissions, fuel availability, capacity factor)"
+      baseline: n
 robustness:
   description: "Methods to embed robustness into system design & operation"
   members:
     asset_outages:
       description: "asset outages represented by fixed downtime periods or capacity derating"
-      baseline: '?'
+      baseline: n
     reserve_limit:
       description: "minimum requirement on firm capacity available in reserve"
-      baseline: '?'
+      baseline: n
     lolp_limit:
       description: "loss of load probability limit"
-      baseline: '?'
+      baseline: n
     eens_limit:
       description: "expected energy not served limit"
-      baseline: '?'
+      baseline: n
     voll:
       description: "value of lost load, to place a soft constraint on load shedding that will be included in the optimisation"
-      baseline: '?'
+      baseline: n
     ram:
       description: "remaining Available Margins over an element or a corridor"
-      baseline: '?'
+      baseline: n
     two_stage_stochastic:
       description: "two-stage stochastic optimisation; used in investment decision making under uncertainty"
-      baseline: '?'
+      baseline: n
     multi_stage_stochastic:
       description: "multi-stage stochastic optimisation; used in UCED decision making under uncertainty"
-      baseline: '?'
+      baseline: n
 resource_adequacy:
   description: "Methods to quantify resource adequacy / system robustness"
   members:
     maintenance_scheduling:
       description: "model-derived asset maintenance schedule"
-      baseline: '?'
+      baseline: n
     lolp:
       description: "loss of load probability calculated in postprocessing"
-      baseline: '?'
+      baseline: n
     eens:
       description: "expected energy not served calculated in postprocessing"
-      baseline: '?'
+      baseline: n
     monte_carlo:
       description: "uncertainty space explored with Monte Carlo analysis"
-      baseline: '?'
+      baseline: n
     sampling:
       description: "techniques to sample the uncertainty space"
-      baseline: '?'
+      baseline: n
 preprocessing:
   description: "Options to generate parameters derived from user-defined input data before running the model."
   members:
     forecasting:
       description: "a user-defined generation / load profile can be automatically updated given user-defined forecasting parameters (e.g. change in total or peak)"
-      baseline: '?'
+      baseline: n
     spatial_distribution:
       description: "a user-defined parameter can be automatically distributed spatially using other spatial parameters (e.g. nodal demand distribution, transmission line distances, distributed slack)"
-      baseline: '?'
+      baseline: n
     download:
       description: "data can be downloaded directly within the tool from an open or proprietary source rather than being specified by the user"
-      baseline: '?'
+      baseline: n
 postprocessing:
   description: "Postprocessing analyses that can be triggered by the tool based on model outputs, on a per-asset or system-wide basis."
   members:
     impact_assessment:
       description: "auxiliary impacts (e.g., GHG emissions, water consumption, job creation)"
-      baseline: '?'
+      baseline: n
     lcoe:
       description: "levelised cost of electricity (or other carriers)"
-      baseline: '?'
+      baseline: n
     curtailment:
       description: "asset generation curtailment"
-      baseline: '?'
+      baseline: n
     shadow_prices:
       description: "optimisation problem shadow prices (e.g. to approximate wholesale market prices)"
-      baseline: '?'
+      baseline: n
     financial:
       description: "financial analyses for business cases"
-      baseline: '?'
+      baseline: n
     gtc:
       description: "grid transfer capacities between nodes/zones/regions"
-      baseline: '?'
+      baseline: n
     ptdf:
       description: "power transfer distribution factors"
-      baseline: '?'
+      baseline: n
     lodf:
       description: "line Outage Distribution Factor, used in contingency flow constraints"
-      baseline: '?'
+      baseline: n
     future_cost_function:
       description: "future cost function (water value) used to forecast the marginal cost of hydro and other seasonal storage devices for use in shorter term scheduling, given uncertain input parameters"
-      baseline: '?'
+      baseline: n
     aggregation:
       description: "Method to aggregate modelled components into broader classifications for analysis and dissemination (e.g., separately costed \"wind turbine\" assets aggregated back to \"wind turbine\")"
-      baseline: '?'
+      baseline: n
 interface__input:
   description: "Available options for configuring model inputs and running models"
   members:
     gui:
       description: "graphical user interface"
-      baseline: '?'
+      baseline: n
     no_code:
       description: "configurable without knowledge of the programming language in which the tool has been written."
-      baseline: '?'
+      baseline: n
     cli:
       description: "command line interface"
-      baseline: '?'
+      baseline: n
     scripting:
       description: "can be configured and run using scripting specific to the tool programming language."
-      baseline: '?'
+      baseline: n
     standardised:
       description: "accepts data in an ISO standard input data format."
-      baseline: '?'
+      baseline: n
 interface__output:
   description: "Available options for interacting with model outputs"
   members:
     gui:
       description: "graphical user interface"
-      baseline: '?'
+      baseline: n
     reports:
       description: "static reports consolidating model outputs"
-      baseline: '?'
+      baseline: n
     tables:
       description: "pre-prepared tables that can be analysed in a spreadsheet application such as Excel."
-      baseline: '?'
+      baseline: n
     logs:
       description: "run logs available in text files, for use in debugging failing model runs"
-      baseline: '?'
+      baseline: n
     standardised:
       description: "outputs are in an ISO standard output data format, for regulatory reporting or for frictionless data transfer with a downstream process."
-      baseline: '?'
+      baseline: n
 competition:
   description: "Asset-owning agents (e.g. private utility companies) can be represented in the model with their own constraints and/or objectives"
   members:
     portfolio:
       description: "agent asset portfolios and associated constraints and cost considerations (e.g. limited cross-portfolio capital investment, risk appetite)"
-      baseline: '?'
+      baseline: n
     distributed_objectives:
       description: "per-agent profit maximising / risk minimising bidding in day-ahead / intra-day markets"
-      baseline: '?'
+      baseline: n
 optimisation_problem:
   description: "Available options for interacting with the optimisation problem"
   members:
     decomposition:
       description: "decompose the problem into different stages that can be optimised in parallel with outputs of one stage acting as inputs to another. The different stages tend to represent the same system at different levels of complexity (higher/lower temporal resolution, unit commitment vs.  continuous dispatch). The process is iterated until solutions converge within a pre-defined tolerance."
-      baseline: '?'
+      baseline: n
     sim + opt:
       description: "iterate between a simulation and optimisation phase until convergence with respect to operational constraints (e.g. competitive market simulation, optimal power flow)."
-      baseline: '?'
+      baseline: n
     near_optimal:
       description: "generate a near-optimal solution set by relaxing constraints / objectives in the optimisation problem. Includes Modelling to Generate Alternatives (MGA)"
-      baseline: '?'
+      baseline: n
     user_defined_constraints:
       description: "users can define their own constraints to the optimisation problem, applied to existing decision variables."
-      baseline: '?'
+      baseline: n
     user_defined_variables:
       description: "users can define their own decision variables to the optimisation problem."
-      baseline: '?'
+      baseline: n
     configuration:
       description: "optimiser parameters can be directly configured, including convergence parameters & warm-starting options"
-      baseline: '?'
+      baseline: n
