@@ -106,10 +106,10 @@ asset__resolution:
   members:
     units:
       description: "assets are modelled as discrete units which reflect physical assets 1-to-1"
-      baseline: y
+      baseline: n
     grouped:
       description: "physical assets are aggregated into asset groups when modelled."
-      baseline: n
+      baseline: y
     mixed:
       description: "in a multi-year optimisation, physical assets can be aggregated in some years and discretised in others."
       baseline: n
@@ -136,7 +136,7 @@ asset__operating_constraints:
       baseline: n
     total:
       description: "limit on total asset carrier in-/out-flow over a subset or the entire time horizon / spatial scope. This can represent real contract arrangements / regulation."
-      baseline: y
+      baseline: n
 asset__operating_characteristics:
   description: "Asset operating characteristics representation (e.g. efficiency, resource availability)"
   members:

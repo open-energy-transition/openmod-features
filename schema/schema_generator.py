@@ -67,9 +67,11 @@ def create_feature_model(
         member_model: dict[str, Any] = {
             feature: (
                 feature_model,
-                Field(default=feature_model(), description=desc["description"]),
+                Field(
+                    default=feature_model(), description=feature_config["description"]
+                ),
             )
-            for feature, desc in grp_info["members"].items()
+            for feature, feature_config in grp_info["members"].items()
         }
         group_model = create_model(
             grp.replace("_", " ").title().replace(" ", "") + "Model",
