@@ -159,7 +159,7 @@ asset__chaining:
   description: "Options to explicitly chain / link specific assets or asset types such that certain carrier flows can only occur between each other"
   members:
     stockpiling:
-      description: "a generation asset can be given storage asset characteristics to stockpile resources/carriers (e.g. CSP heat storage buffer, fuel stocks)."
+      description: "storage of a specific generation asset's input material energy carrier (e.g., fuel, biomass, water) before conversion"
       baseline: n
     asset_linking:
       description: "carrier out-flow from one asset can be reserved as an in-flow in a specific subset of other assets (e.g. hydropower cascading, CCGT asset internal steam flow considerations)"
