@@ -88,8 +88,8 @@ $defs:
         $ref: '#/$defs/UseCaseFeatureModel'
         default:
           value: '?'
-        description: a generation asset can be given storage asset characteristics
-          to stockpile resources/carriers (e.g. CSP heat storage buffer, fuel stocks).
+        description: storage of a specific generation asset's input material energy
+          carrier (e.g., fuel, biomass, water) before conversion
     title: AssetChainingModel
     type: object
   AssetCostInvestmentModel:

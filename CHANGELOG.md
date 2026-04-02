@@ -43,6 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added `baseline` for every feature value to differentiate between fundamental and advance feature.
 - Pull request template checklist item, to remind contributors to update the changelog.
 - README preamble.
 - Use-cases and a specific template and schema for them (#16).
