@@ -12,10 +12,10 @@ time__horizon:
 time__foresight:
   description: "The modelling horizon per optimisation iteration"
   members:
-    perfect: "perfect foresight"
-    myopic: "myopic foresight"
+    perfect: "perfect foresight: model has complete knowledge of all future conditions"
+    myopic: "myopic foresight: model optimises over a limited future window, without knowledge of conditions beyond that window"
 edge_effects:
-  description: "Distortive effects of system boundaries and linearising model components can be mitigated against"
+  description: "Methods to mitigate artifacts that occur at model boundaries (temporal, spatial, or physical) or from mathematical simplifications"
   members:
     time_operational: "start/end-of-horizon operational effects (e.g. storage level wrapping)"
     time_financial: "start/end-of-horizon financial effects (e.g. asset investment annuitisation)"
@@ -27,7 +27,7 @@ time__resolution__simplification:
     resampling: "temporal up/down-sampling"
     typical_periods: "full timeseries is represented by typical periods (days, weeks, months)"
     load_duration_curves: "full timeseries is represented by load duration curves"
-    distortion_mitigation: "methods to manage inter-temporal model features in a temporally simplified model"
+    distortion_mitigation: "techniques to preserve inter-temporal constraints (e.g., storage cycling, ramping) when using simplified time representations"
 spatial__resolution__simplification:
   description: "Spatial resolution adjustment options"
   members:
@@ -39,9 +39,9 @@ asset__candidates:
     generators: "energy conversion assets transforming energy forms into electrical energy from resources outside the system boundary"
     converters: "energy transformation assets converting between different energy carrier types within the system boundary (e.g., electrolysers, heat pumps). Necessary for coupled carrier optimisation"
     storage: "energy storage assets that store and release energy of the same type at different times"
-    fluid_or_gas_distribution: "carrier distribution through pressurised pipework"
-    electricity_transmission: "carrier distribution through electrical transmission lines"
-    loads: "carrier consumers, explicitly defined to allow for e.g. demand-side management"
+    fluid_or_gas_distribution: "energy distribution infrastructure using pressurised pipework (e.g., gas pipelines, district heating networks)"
+    electricity_transmission: "energy distribution infrastructure using electrical transmission lines and cables"
+    loads: "energy-consuming entities (e.g., buildings, industrial facilities) that can be explicitly modelled for demand-side management"
 asset__capacity_representation:
   description: "Asset capacity representation (e.g. fixed or endogenous, discrete or continuous)"
   members:
@@ -65,12 +65,12 @@ asset__operating_constraints:
   members:
     inter_temporal: "limits that link time periods (e.g., ramping, run up, load shifting)"
     inter_spatial: "limits that link geographic regions"
-    operating: "limits applied to operating time periods (maintenance schedule) or when operating (load rate). Usually requires unit-level asset capacity representation."
+    operating: "constraints on when assets can operate (e.g., scheduled maintenance outages) or how they operate (e.g., minimum/maximum load levels). Usually requires unit-level asset capacity representation."
     total: "limit on total asset carrier in-/out-flow over a subset or the entire time horizon / spatial scope. This can represent real contract arrangements / regulation."
 asset__operating_characteristics:
   description: "Asset operating characteristics representation (e.g. efficiency, resource availability)"
   members:
-    static non_dimensional: "asset characteristics are independent of decision variables and model dimensions (e.g. space, time)"
+    static_non_dimensional: "asset characteristics are independent of decision variables and model dimensions (e.g. space, time)"
     static_dimensional: "asset characteristics are independent of decision variables but dependent on model dimensions (e.g. space, time)"
     linear: "asset characteristics vary linearly with a single decision variable (e.g. resource availability increasing with asset capacity)"
     piecewise: "asset characteristics vary depending on operating decision variables creating a non-linear relationship that can be described by a piecewise linear curve (e.g., part-load efficiency, linked to capacity, storage head effects)"
@@ -119,25 +119,25 @@ system__carriers:
 system__limits:
   description: "System-wide limits to represent physical or policy constraints"
   members:
-    capacity: "limit multi-asset capacity decisions  (e.g. land availability, procurement plans)"
-    operation: "limit multi-asset operational factors  (e.g. max emissions, fuel availability, capacity factor)"
+    capacity: "constraints on total installed capacity across multiple assets (e.g., total renewable capacity limited by land availability, annual deployment limits)"
+    operation: "constraints on aggregate operational metrics across multiple assets (e.g., system-wide emissions cap, total fuel availability, minimum renewable generation share)"
 robustness:
-  description: "Methods to embed robustness into system design & operation"
+  description: "Methods to incorporate reliability considerations directly into the optimisation (constraints or objectives)"
   members:
     asset_outages: "asset outages represented by fixed downtime periods or capacity derating"
     reserve_limit: "minimum requirement on firm capacity available in reserve"
-    lolp_limit: "loss of load probability limit"
-    eens_limit: "expected energy not served limit"
-    voll: "value of lost load, to place a soft constraint on load shedding that will be included in the optimisation"
-    ram: "remaining Available Margins over an element or a corridor"
+    lolp_limit: "Loss of Load Probability (LOLP) limit"
+    eens_limit: "Expected Energy Not Served (EENS) limit"
+    voll: "Value of Lost Load (VOLL): monetary penalty for unserved demand, creating a soft constraint on load shedding in the optimisation"
+    ram: "Remaining Available Margin (RAM) over an element or a corridor"
     two_stage_stochastic: "two-stage stochastic optimisation; used in investment decision making under uncertainty"
-    multi_stage_stochastic: "multi-stage stochastic optimisation; used in UCED decision making under uncertainty"
+    multi_stage_stochastic: "multi-stage stochastic optimisation; used in Unit Commitment and Economic Dispatch (UCED) decision making under uncertainty"
 resource_adequacy:
-  description: "Methods to quantify resource adequacy / system robustness"
+  description: "Methods to assess system reliability and robustness after the optimisation (postprocessing analysis)"
   members:
     maintenance_scheduling: "model-derived asset maintenance schedule"
-    lolp: "loss of load probability calculated in postprocessing"
-    eens: "expected energy not served calculated in postprocessing"
+    lolp: "Loss of Load Probability (LOLP) calculated in postprocessing"
+    eens: "Expected Energy Not Served (EENS) calculated in postprocessing"
     monte_carlo: "uncertainty space explored with Monte Carlo analysis"
     sampling: "techniques to sample the uncertainty space"
 preprocessing:
@@ -145,20 +145,20 @@ preprocessing:
   members:
     forecasting: "a user-defined generation / load profile can be automatically updated given user-defined forecasting parameters (e.g. change in total or peak)"
     spatial_distribution: "a user-defined parameter can be automatically distributed spatially using other spatial parameters (e.g. nodal demand distribution, transmission line distances, distributed slack)"
-    download: "data can be downloaded directly within the tool from an open or proprietary source rather than being specified by the user"
+    download: "automatic data retrieval from external sources (e.g., weather data, fuel prices) without manual user input"
 postprocessing:
   description: "Postprocessing analyses that can be triggered by the tool based on model outputs, on a per-asset or system-wide basis."
   members:
     impact_assessment: "auxiliary impacts (e.g., GHG emissions, water consumption, job creation)"
-    lcoe: "levelised cost of electricity (or other carriers)"
+    lcoe: "Levelised Cost of Energy (LCOE) for electricity or other carriers"
     curtailment: "asset generation curtailment"
     shadow_prices: "optimisation problem shadow prices (e.g. to approximate wholesale market prices)"
     financial: "financial analyses for business cases"
-    gtc: "grid transfer capacities between nodes/zones/regions"
-    ptdf: "power transfer distribution factors"
-    lodf: "line Outage Distribution Factor, used in contingency flow constraints"
+    gtc: "Grid Transfer Capacities (GTC): maximum power transfer between nodes/zones/regions"
+    ptdf: "Power Transfer Distribution Factors (PTDF): sensitivity of line flows to nodal injections"
+    lodf: "Line Outage Distribution Factors (LODF): redistribution of power flows when transmission lines fail"
     future_cost_function: "future cost function (water value) used to forecast the marginal cost of hydro and other seasonal storage devices for use in shorter term scheduling, given uncertain input parameters"
-    aggregation: Method to aggregate modelled components into broader classifications for analysis and dissemination (e.g., separately costed "wind turbine" assets aggregated back to "wind turbine")
+    aggregation: "method to aggregate modelled components into broader classifications for analysis and dissemination (e.g., separately costed 'wind turbine' assets aggregated back to 'wind turbine')"
 interface__input:
   description: "Available options for configuring model inputs and running models"
   members:
@@ -184,7 +184,7 @@ optimisation_problem:
   description: "Available options for interacting with the optimisation problem"
   members:
     decomposition: "decompose the problem into different stages that can be optimised in parallel with outputs of one stage acting as inputs to another. The different stages tend to represent the same system at different levels of complexity (higher/lower temporal resolution, unit commitment vs.  continuous dispatch). The process is iterated until solutions converge within a pre-defined tolerance."
-    sim + opt: "iterate between a simulation and optimisation phase until convergence with respect to operational constraints (e.g. competitive market simulation, optimal power flow)."
+    simulation_optimisation: "iterate between simulation and optimisation phases until convergence with respect to operational constraints (e.g., market simulation with optimal power flow)"
     near_optimal: "generate a near-optimal solution set by relaxing constraints / objectives in the optimisation problem. Includes Modelling to Generate Alternatives (MGA)"
     user_defined_constraints: "users can define their own constraints to the optimisation problem, applied to existing decision variables."
     user_defined_variables: "users can define their own decision variables to the optimisation problem."
