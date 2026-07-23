@@ -158,6 +158,11 @@ venv.bak/
 # mkdocs documentation
 /site
 
+# Node website dashboard
+.pnpm-store/
+website/node_modules/
+website/dist/
+
 # mypy
 .mypy_cache/
 .dmypy.json

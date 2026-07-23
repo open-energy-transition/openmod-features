@@ -1,0 +1,6049 @@
+{
+  "generatedAt": "2026-07-23T16:39:16.472Z",
+  "taxonomy": [
+    {
+      "id": "time__horizon",
+      "label": "time > horizon",
+      "description": "The modelled time horizon",
+      "members": [
+        {
+          "id": "multi_year",
+          "label": "multi year",
+          "description": "multiple years",
+          "baseline": "n"
+        },
+        {
+          "id": "single_year",
+          "label": "single year",
+          "description": "single year",
+          "baseline": "y"
+        },
+        {
+          "id": "sub_year",
+          "label": "sub year",
+          "description": "between one day and one year",
+          "baseline": "y"
+        },
+        {
+          "id": "sub_day",
+          "label": "sub day",
+          "description": "less than one day",
+          "baseline": "n"
+        }
+      ]
+    },
+    {
+      "id": "time__foresight",
+      "label": "time > foresight",
+      "description": "The modelling horizon per optimisation iteration",
+      "members": [
+        {
+          "id": "perfect",
+          "label": "perfect",
+          "description": "perfect foresight",
+          "baseline": "n"
+        },
+        {
+          "id": "myopic",
+          "label": "myopic",
+          "description": "myopic foresight",
+          "baseline": "n"
+        }
+      ]
+    },
+    {
+      "id": "edge_effects",
+      "label": "edge effects",
+      "description": "Distortive effects of system boundaries and linearising model components can be mitigated against",
+      "members": [
+        {
+          "id": "time_operational",
+          "label": "time operational",
+          "description": "start/end-of-horizon operational effects (e.g. storage level wrapping)",
+          "baseline": "n"
+        },
+        {
+          "id": "time_financial",
+          "label": "time financial",
+          "description": "start/end-of-horizon financial effects (e.g. asset investment annuitisation)",
+          "baseline": "n"
+        },
+        {
+          "id": "spatial",
+          "label": "spatial",
+          "description": "energy flows into/out of the modelled region",
+          "baseline": "y"
+        },
+        {
+          "id": "energy_balance",
+          "label": "energy balance",
+          "description": "energy 'destruction' caused by simultaneous in- & out-flow from a lossy transmission/storage asset",
+          "baseline": "n"
+        }
+      ]
+    },
+    {
+      "id": "time__resolution__simplification",
+      "label": "time > resolution > simplification",
+      "description": "Temporal resolution adjustment options",
+      "members": [
+        {
+          "id": "resampling",
+          "label": "resampling",
+          "description": "temporal up/down-sampling",
+          "baseline": "n"
+        },
+        {
+          "id": "typical_periods",
+          "label": "typical periods",
+          "description": "full timeseries is represented by typical periods (days, weeks, months)",
+          "baseline": "n"
+        },
+        {
+          "id": "load_duration_curves",
+          "label": "load duration curves",
+          "description": "full timeseries is represented by load duration curves",
+          "baseline": "n"
+        },
+        {
+          "id": "distortion_mitigation",
+          "label": "distortion mitigation",
+          "description": "methods to manage inter-temporal model features in a temporally simplified model",
+          "baseline": "n"
+        }
+      ]
+    },
+    {
+      "id": "spatial__resolution__simplification",
+      "label": "spatial > resolution > simplification",
+      "description": "Spatial resolution adjustment options",
+      "members": [
+        {
+          "id": "resampling",
+          "label": "resampling",
+          "description": "spatial zone aggregation/disaggregation. Usually from nodal (bus) level to regional/bidding zone level",
+          "baseline": "n"
+        },
+        {
+          "id": "network",
+          "label": "network",
+          "description": "network element equivalencing",
+          "baseline": "n"
+        }
+      ]
+    },
+    {
+      "id": "asset__candidates",
+      "label": "asset > candidates",
+      "description": "Asset types and whether or not assets capacity decisions are decision variables in the model",
+      "members": [
+        {
+          "id": "generators",
+          "label": "generators",
+          "description": "carrier generator, consuming resources from outside the system boundary ",
+          "baseline": "y"
+        },
+        {
+          "id": "converters",
+          "label": "converters",
+          "description": "carrier generator, consuming other carriers from inside the system boundary. Necessary for coupled carrier optimisation",
+          "baseline": "n"
+        },
+        {
+          "id": "storage",
+          "label": "storage",
+          "description": "carrier storage, to delay carrier flows in time",
+          "baseline": "n"
+        },
+        {
+          "id": "fluid_or_gas_distribution",
+          "label": "fluid or gas distribution",
+          "description": "carrier distribution through pressurised pipework",
+          "baseline": "n"
+        },
+        {
+          "id": "electricity_transmission",
+          "label": "electricity transmission",
+          "description": "carrier distribution through electrical transmission lines",
+          "baseline": "y"
+        },
+        {
+          "id": "loads",
+          "label": "loads",
+          "description": "carrier consumers, explicitly defined to allow for e.g. demand-side management",
+          "baseline": "y"
+        },
+        {
+          "id": "endogenous",
+          "label": "endogenous",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "exogenous",
+          "label": "exogenous",
+          "description": "",
+          "baseline": "?"
+        }
+      ]
+    },
+    {
+      "id": "asset__capacity_representation",
+      "label": "asset > capacity representation",
+      "description": "Asset capacity representation (e.g. fixed or endogenous, discrete or continuous)",
+      "members": [
+        {
+          "id": "exogenous_capacity",
+          "label": "exogenous capacity",
+          "description": "asset capacity is fixed and fully defined in the input data (e.g. for modelling dispatch only)",
+          "baseline": "y"
+        },
+        {
+          "id": "continuous_capacity",
+          "label": "continuous capacity",
+          "description": "asset capacity is fully endogenous and modeled as a continuous (linear) decision variable; an optional maximum capacity can be specified in the input data (e.g. PV capacity that can be installed at any capacity from zero to a maximum defined by land-use constraints)",
+          "baseline": "n"
+        },
+        {
+          "id": "integer_investment_exogenous_capacity",
+          "label": "integer investment exogenous capacity",
+          "description": "asset capacity magnitude is fixed in the input data; investment is modeled as a discrete (e.g., integer) decision variable (e.g. nuclear power plants whose capacity is fixed & indivisible due to external constraints but the decision to invest in this capacity is as-yet undecided)",
+          "baseline": "n"
+        },
+        {
+          "id": "integer_investment_continuous_capacity",
+          "label": "integer investment continuous capacity",
+          "description": "asset capacity magnitude is endogenous and modeled as a continuous (linear) decision variable; investment is also endogenous and represented by a binary decision variable; an optional maximum capacity can be specified in the input data (e.g. gas turbines that you want to track as individual units (to which other constraints will apply) and whose capacity is not fixed by the manufacturer)",
+          "baseline": "n"
+        },
+        {
+          "id": "grouped",
+          "label": "grouped",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "partial_grouped",
+          "label": "partial grouped",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "units",
+          "label": "units",
+          "description": "",
+          "baseline": "?"
+        }
+      ]
+    },
+    {
+      "id": "asset__resolution",
+      "label": "asset > resolution",
+      "description": "The level of physical detail at which assets are represented",
+      "members": [
+        {
+          "id": "units",
+          "label": "units",
+          "description": "assets are modelled as discrete units which reflect physical assets 1-to-1",
+          "baseline": "n"
+        },
+        {
+          "id": "grouped",
+          "label": "grouped",
+          "description": "physical assets are aggregated into asset groups when modelled.",
+          "baseline": "y"
+        },
+        {
+          "id": "mixed",
+          "label": "mixed",
+          "description": "in a multi-year optimisation, physical assets can be aggregated in some years and discretised in others.",
+          "baseline": "n"
+        }
+      ]
+    },
+    {
+      "id": "asset__operating_representation",
+      "label": "asset > operating representation",
+      "description": "The resolution of asset operation representation in the model",
+      "members": [
+        {
+          "id": "uced",
+          "label": "uced",
+          "description": "assets can be committed as units and then economically dispatched. This requires unit-level asset capacity representation",
+          "baseline": "n"
+        },
+        {
+          "id": "ed",
+          "label": "ed",
+          "description": "assets can only be economically dispatched. This is possible with unit-level or grouped asset capacity representation",
+          "baseline": "y"
+        }
+      ]
+    },
+    {
+      "id": "asset__operating_constraints",
+      "label": "asset > operating constraints",
+      "description": "Upper/lower limits on asset operation",
+      "members": [
+        {
+          "id": "inter_temporal",
+          "label": "inter temporal",
+          "description": "limits that link time periods (e.g., ramping, run up, load shifting)",
+          "baseline": "n"
+        },
+        {
+          "id": "inter_spatial",
+          "label": "inter spatial",
+          "description": "limits that link geographic regions",
+          "baseline": "n"
+        },
+        {
+          "id": "operating",
+          "label": "operating",
+          "description": "limits applied to operating time periods (maintenance schedule) or when operating (load rate). Usually requires unit-level asset capacity representation.",
+          "baseline": "n"
+        },
+        {
+          "id": "total",
+          "label": "total",
+          "description": "limit on total asset carrier in-/out-flow over a subset or the entire time horizon / spatial scope. This can represent real contract arrangements / regulation.",
+          "baseline": "n"
+        }
+      ]
+    },
+    {
+      "id": "asset__operating_characteristics",
+      "label": "asset > operating characteristics",
+      "description": "Asset operating characteristics representation (e.g. efficiency, resource availability)",
+      "members": [
+        {
+          "id": "static non_dimensional",
+          "label": "static non dimensional",
+          "description": "asset characteristics are independent of decision variables and model dimensions (e.g. space, time)",
+          "baseline": "y"
+        },
+        {
+          "id": "static_dimensional",
+          "label": "static dimensional",
+          "description": "asset characteristics are independent of decision variables but dependent on model dimensions (e.g. space, time)",
+          "baseline": "y"
+        },
+        {
+          "id": "linear",
+          "label": "linear",
+          "description": "asset characteristics vary linearly with a single decision variable (e.g. resource availability increasing with asset capacity)",
+          "baseline": "y"
+        },
+        {
+          "id": "piecewise",
+          "label": "piecewise",
+          "description": "asset characteristics vary depending on operating decision variables creating a non-linear relationship that can be described by a piecewise linear curve (e.g., part-load efficiency, linked to capacity, storage head effects)",
+          "baseline": "n"
+        },
+        {
+          "id": "iterative",
+          "label": "iterative",
+          "description": "asset characteristics vary depending on operating decision variables creating a non-linear relationship that can only be converged upon iteratively (e.g. transmission line losses)",
+          "baseline": "n"
+        }
+      ]
+    },
+    {
+      "id": "asset__chaining",
+      "label": "asset > chaining",
+      "description": "Options to explicitly chain / link specific assets or asset types such that certain carrier flows can only occur between each other",
+      "members": [
+        {
+          "id": "stockpiling",
+          "label": "stockpiling",
+          "description": "storage of a specific generation asset's input material energy carrier (e.g., fuel, biomass, water) before conversion",
+          "baseline": "n"
+        },
+        {
+          "id": "asset_linking",
+          "label": "asset linking",
+          "description": "carrier out-flow from one asset can be reserved as an in-flow in a specific subset of other assets (e.g. hydropower cascading, CCGT asset internal steam flow considerations)",
+          "baseline": "n"
+        }
+      ]
+    },
+    {
+      "id": "asset__cost__investment",
+      "label": "asset > cost > investment",
+      "description": "Asset investment cost representation",
+      "members": [
+        {
+          "id": "linear",
+          "label": "linear",
+          "description": "initial asset capital cost which varies linearly with asset nameplate capacity (e.g. EUR/MW)",
+          "baseline": "y"
+        },
+        {
+          "id": "unit",
+          "label": "unit",
+          "description": "initial asset capital cost which is incurred on asset purchase, irrespective of capacity (e.g. land purchase).",
+          "baseline": "n"
+        },
+        {
+          "id": "piecewise",
+          "label": "piecewise",
+          "description": "initial asset capital cost which varies non-linearly, represented by a piecewise linear curve (e.g. economies of scale, where cost per capacity decreases with increasing capacity).\nThis may be represented by multiple assets of the same class (e.g. \"wind turbine\") but with different costs and maximum capacities.\n",
+          "baseline": "n"
+        },
+        {
+          "id": "annuitisation",
+          "label": "annuitisation",
+          "description": "an asset's capital investment can be annuitised to account for factors linked to its expected economic life and financing arrangements, such as weighted cost of capital, inflation and tax rates, and other sources of depreciation",
+          "baseline": "n"
+        },
+        {
+          "id": "subsidy/penalty",
+          "label": "subsidy/penalty",
+          "description": "costs to (dis)incentivise investment above/below given thresholds, representing soft constraints (e.g. rebate for providing firm capacity, penalty for exceeding land use limits)",
+          "baseline": "n"
+        }
+      ]
+    },
+    {
+      "id": "asset__cost__operation",
+      "label": "asset > cost > operation",
+      "description": "Asset operating cost representation",
+      "members": [
+        {
+          "id": "linear",
+          "label": "linear",
+          "description": "operating costs which vary linearly with unit in-/out-flow (e.g. EUR/MWh)",
+          "baseline": "y"
+        },
+        {
+          "id": "unit",
+          "label": "unit",
+          "description": "operating costs which are incurred on unit commitment (e.g. start-up costs)",
+          "baseline": "n"
+        },
+        {
+          "id": "piecewise",
+          "label": "piecewise",
+          "description": "operating costs which vary non-linearly, represented by a piecewise linear curve (e.g. generation bid increment / decrement levels)",
+          "baseline": "n"
+        },
+        {
+          "id": "subsidy/penalty",
+          "label": "subsidy/penalty",
+          "description": "costs to (dis)incentivise operating above/below given thresholds, representing soft constraints (e.g. feed-in tariff, emissions)",
+          "baseline": "n"
+        }
+      ]
+    },
+    {
+      "id": "transmission__opf",
+      "label": "transmission > opf",
+      "description": "Transmission network optimal power flow representation",
+      "members": [
+        {
+          "id": "transport",
+          "label": "transport",
+          "description": "energy transport only (no Kirchhoff's laws defined)",
+          "baseline": "y"
+        },
+        {
+          "id": "dc_opf",
+          "label": "dc opf",
+          "description": "linearised DC optimal power flow",
+          "baseline": "n"
+        },
+        {
+          "id": "ac_opf",
+          "label": "ac opf",
+          "description": "linearised AC optimal power flow",
+          "baseline": "n"
+        },
+        {
+          "id": "sec_opf",
+          "label": "sec opf",
+          "description": "security-constrained AC optimal power flow",
+          "baseline": "n"
+        }
+      ]
+    },
+    {
+      "id": "transmission__limits",
+      "label": "transmission > limits",
+      "description": "Transmission capacity limit representation",
+      "members": [
+        {
+          "id": "gtc",
+          "label": "gtc",
+          "description": "grid transfer capacities",
+          "baseline": "y"
+        },
+        {
+          "id": "ptdf",
+          "label": "ptdf",
+          "description": "power transfer distribution factors",
+          "baseline": "n"
+        },
+        {
+          "id": "thermal",
+          "label": "thermal",
+          "description": "thermal limits",
+          "baseline": "n"
+        },
+        {
+          "id": "phase_angle",
+          "label": "phase angle",
+          "description": "phase angles",
+          "baseline": "n"
+        }
+      ]
+    },
+    {
+      "id": "system__carriers",
+      "label": "system > carriers",
+      "description": "Energy carrier representation",
+      "members": [
+        {
+          "id": "decoupled",
+          "label": "decoupled",
+          "description": "only one energy carrier (e.g. electricity, gas, water) represented at a time or, if represented simultaneously, do not interact.",
+          "baseline": "y"
+        },
+        {
+          "id": "coupled",
+          "label": "coupled",
+          "description": "multiple energy carriers represented with the ability to interact via carrier converting assets. Usually used in multi-vector/sector co-optimisation (e.g. power & gas systems; power, transport, & building sectors)",
+          "baseline": "n"
+        }
+      ]
+    },
+    {
+      "id": "system__limits",
+      "label": "system > limits",
+      "description": "System-wide limits to represent physical or policy constraints",
+      "members": [
+        {
+          "id": "capacity",
+          "label": "capacity",
+          "description": "limit multi-asset capacity decisions  (e.g. land availability, procurement plans)",
+          "baseline": "n"
+        },
+        {
+          "id": "operation",
+          "label": "operation",
+          "description": "limit multi-asset operational factors  (e.g. max emissions, fuel availability, capacity factor)",
+          "baseline": "n"
+        }
+      ]
+    },
+    {
+      "id": "robustness",
+      "label": "robustness",
+      "description": "Methods to embed robustness into system design & operation",
+      "members": [
+        {
+          "id": "asset_outages",
+          "label": "asset outages",
+          "description": "asset outages represented by fixed downtime periods or capacity derating",
+          "baseline": "n"
+        },
+        {
+          "id": "reserve_limit",
+          "label": "reserve limit",
+          "description": "minimum requirement on firm capacity available in reserve",
+          "baseline": "n"
+        },
+        {
+          "id": "lolp_limit",
+          "label": "lolp limit",
+          "description": "loss of load probability limit",
+          "baseline": "n"
+        },
+        {
+          "id": "eens_limit",
+          "label": "eens limit",
+          "description": "expected energy not served limit",
+          "baseline": "n"
+        },
+        {
+          "id": "voll",
+          "label": "voll",
+          "description": "value of lost load, to place a soft constraint on load shedding that will be included in the optimisation",
+          "baseline": "n"
+        },
+        {
+          "id": "ram",
+          "label": "ram",
+          "description": "remaining Available Margins over an element or a corridor",
+          "baseline": "n"
+        },
+        {
+          "id": "two_stage_stochastic",
+          "label": "two stage stochastic",
+          "description": "two-stage stochastic optimisation; used in investment decision making under uncertainty",
+          "baseline": "n"
+        },
+        {
+          "id": "multi_stage_stochastic",
+          "label": "multi stage stochastic",
+          "description": "multi-stage stochastic optimisation; used in UCED decision making under uncertainty",
+          "baseline": "n"
+        }
+      ]
+    },
+    {
+      "id": "resource_adequacy",
+      "label": "resource adequacy",
+      "description": "Methods to quantify resource adequacy / system robustness",
+      "members": [
+        {
+          "id": "maintenance_scheduling",
+          "label": "maintenance scheduling",
+          "description": "model-derived asset maintenance schedule",
+          "baseline": "n"
+        },
+        {
+          "id": "lolp",
+          "label": "lolp",
+          "description": "loss of load probability calculated in postprocessing",
+          "baseline": "n"
+        },
+        {
+          "id": "eens",
+          "label": "eens",
+          "description": "expected energy not served calculated in postprocessing",
+          "baseline": "n"
+        },
+        {
+          "id": "monte_carlo",
+          "label": "monte carlo",
+          "description": "uncertainty space explored with Monte Carlo analysis",
+          "baseline": "n"
+        },
+        {
+          "id": "sampling",
+          "label": "sampling",
+          "description": "techniques to sample the uncertainty space",
+          "baseline": "n"
+        }
+      ]
+    },
+    {
+      "id": "preprocessing",
+      "label": "preprocessing",
+      "description": "Options to generate parameters derived from user-defined input data before running the model.",
+      "members": [
+        {
+          "id": "forecasting",
+          "label": "forecasting",
+          "description": "a user-defined generation / load profile can be automatically updated given user-defined forecasting parameters (e.g. change in total or peak)",
+          "baseline": "n"
+        },
+        {
+          "id": "spatial_distribution",
+          "label": "spatial distribution",
+          "description": "a user-defined parameter can be automatically distributed spatially using other spatial parameters (e.g. nodal demand distribution, transmission line distances, distributed slack)",
+          "baseline": "n"
+        },
+        {
+          "id": "download",
+          "label": "download",
+          "description": "data can be downloaded directly within the tool from an open or proprietary source rather than being specified by the user",
+          "baseline": "n"
+        }
+      ]
+    },
+    {
+      "id": "postprocessing",
+      "label": "postprocessing",
+      "description": "Postprocessing analyses that can be triggered by the tool based on model outputs, on a per-asset or system-wide basis.",
+      "members": [
+        {
+          "id": "impact_assessment",
+          "label": "impact assessment",
+          "description": "auxiliary impacts (e.g., GHG emissions, water consumption, job creation)",
+          "baseline": "n"
+        },
+        {
+          "id": "lcoe",
+          "label": "lcoe",
+          "description": "levelised cost of electricity (or other carriers)",
+          "baseline": "n"
+        },
+        {
+          "id": "curtailment",
+          "label": "curtailment",
+          "description": "asset generation curtailment",
+          "baseline": "n"
+        },
+        {
+          "id": "shadow_prices",
+          "label": "shadow prices",
+          "description": "optimisation problem shadow prices (e.g. to approximate wholesale market prices)",
+          "baseline": "n"
+        },
+        {
+          "id": "financial",
+          "label": "financial",
+          "description": "financial analyses for business cases",
+          "baseline": "n"
+        },
+        {
+          "id": "gtc",
+          "label": "gtc",
+          "description": "grid transfer capacities between nodes/zones/regions",
+          "baseline": "n"
+        },
+        {
+          "id": "ptdf",
+          "label": "ptdf",
+          "description": "power transfer distribution factors",
+          "baseline": "n"
+        },
+        {
+          "id": "lodf",
+          "label": "lodf",
+          "description": "line Outage Distribution Factor, used in contingency flow constraints",
+          "baseline": "n"
+        },
+        {
+          "id": "future_cost_function",
+          "label": "future cost function",
+          "description": "future cost function (water value) used to forecast the marginal cost of hydro and other seasonal storage devices for use in shorter term scheduling, given uncertain input parameters",
+          "baseline": "n"
+        },
+        {
+          "id": "aggregation",
+          "label": "aggregation",
+          "description": "Method to aggregate modelled components into broader classifications for analysis and dissemination (e.g., separately costed \"wind turbine\" assets aggregated back to \"wind turbine\")",
+          "baseline": "n"
+        }
+      ]
+    },
+    {
+      "id": "interface__input",
+      "label": "interface > input",
+      "description": "Available options for configuring model inputs and running models",
+      "members": [
+        {
+          "id": "gui",
+          "label": "gui",
+          "description": "graphical user interface",
+          "baseline": "n"
+        },
+        {
+          "id": "no_code",
+          "label": "no code",
+          "description": "configurable without knowledge of the programming language in which the tool has been written.",
+          "baseline": "n"
+        },
+        {
+          "id": "cli",
+          "label": "cli",
+          "description": "command line interface",
+          "baseline": "n"
+        },
+        {
+          "id": "scripting",
+          "label": "scripting",
+          "description": "can be configured and run using scripting specific to the tool programming language.",
+          "baseline": "n"
+        },
+        {
+          "id": "standardised",
+          "label": "standardised",
+          "description": "accepts data in an ISO standard input data format.",
+          "baseline": "n"
+        }
+      ]
+    },
+    {
+      "id": "interface__output",
+      "label": "interface > output",
+      "description": "Available options for interacting with model outputs",
+      "members": [
+        {
+          "id": "gui",
+          "label": "gui",
+          "description": "graphical user interface",
+          "baseline": "n"
+        },
+        {
+          "id": "reports",
+          "label": "reports",
+          "description": "static reports consolidating model outputs",
+          "baseline": "n"
+        },
+        {
+          "id": "tables",
+          "label": "tables",
+          "description": "pre-prepared tables that can be analysed in a spreadsheet application such as Excel.",
+          "baseline": "n"
+        },
+        {
+          "id": "logs",
+          "label": "logs",
+          "description": "run logs available in text files, for use in debugging failing model runs",
+          "baseline": "n"
+        },
+        {
+          "id": "standardised",
+          "label": "standardised",
+          "description": "outputs are in an ISO standard output data format, for regulatory reporting or for frictionless data transfer with a downstream process.",
+          "baseline": "n"
+        }
+      ]
+    },
+    {
+      "id": "competition",
+      "label": "competition",
+      "description": "Asset-owning agents (e.g. private utility companies) can be represented in the model with their own constraints and/or objectives",
+      "members": [
+        {
+          "id": "portfolio",
+          "label": "portfolio",
+          "description": "agent asset portfolios and associated constraints and cost considerations (e.g. limited cross-portfolio capital investment, risk appetite)",
+          "baseline": "n"
+        },
+        {
+          "id": "distributed_objectives",
+          "label": "distributed objectives",
+          "description": "per-agent profit maximising / risk minimising bidding in day-ahead / intra-day markets",
+          "baseline": "n"
+        }
+      ]
+    },
+    {
+      "id": "optimisation_problem",
+      "label": "optimisation problem",
+      "description": "Available options for interacting with the optimisation problem",
+      "members": [
+        {
+          "id": "decomposition",
+          "label": "decomposition",
+          "description": "decompose the problem into different stages that can be optimised in parallel with outputs of one stage acting as inputs to another. The different stages tend to represent the same system at different levels of complexity (higher/lower temporal resolution, unit commitment vs.  continuous dispatch). The process is iterated until solutions converge within a pre-defined tolerance.",
+          "baseline": "n"
+        },
+        {
+          "id": "sim + opt",
+          "label": "sim + opt",
+          "description": "iterate between a simulation and optimisation phase until convergence with respect to operational constraints (e.g. competitive market simulation, optimal power flow).",
+          "baseline": "n"
+        },
+        {
+          "id": "near_optimal",
+          "label": "near optimal",
+          "description": "generate a near-optimal solution set by relaxing constraints / objectives in the optimisation problem. Includes Modelling to Generate Alternatives (MGA)",
+          "baseline": "n"
+        },
+        {
+          "id": "user_defined_constraints",
+          "label": "user defined constraints",
+          "description": "users can define their own constraints to the optimisation problem, applied to existing decision variables.",
+          "baseline": "n"
+        },
+        {
+          "id": "user_defined_variables",
+          "label": "user defined variables",
+          "description": "users can define their own decision variables to the optimisation problem.",
+          "baseline": "n"
+        },
+        {
+          "id": "configuration",
+          "label": "configuration",
+          "description": "optimiser parameters can be directly configured, including convergence parameters & warm-starting options",
+          "baseline": "n"
+        }
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "id": "calliope",
+      "name": "calliope",
+      "shortname": "calliope",
+      "docs": "https://calliope.readthedocs.io",
+      "source": "https://github.com/calliope-project/calliope",
+      "maintainers": [
+        "brynpickering"
+      ],
+      "features": {
+        "asset__candidates": {
+          "converters": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/basic/techs/#base-techs",
+              "https://calliope.readthedocs.io/en/latest/examples/urban_scale/#conversion-technologies"
+            ]
+          },
+          "electricity_transmission": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/basic/techs/#base-techs",
+              "https://calliope.readthedocs.io/en/latest/examples/national_scale/#other-technologies",
+              "https://calliope.readthedocs.io/en/latest/examples/urban_scale/#transmission-technologies"
+            ]
+          },
+          "endogenous": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/math/base/#flow_cap"
+            ]
+          },
+          "exogenous": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/basic/modes/#operate-mode",
+              "https://calliope.readthedocs.io/en/latest/examples/modes/#running-in-operate-mode"
+            ]
+          },
+          "fluid_or_gas_distribution": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/examples/urban_scale/#transmission-technologies",
+              "https://calliope.readthedocs.io/en/latest/user_defined_math/examples/fuel_dist"
+            ]
+          },
+          "generators": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/basic/techs/#base-techs",
+              "https://calliope.readthedocs.io/en/latest/examples/national_scale/#supply-technologies",
+              "https://calliope.readthedocs.io/en/latest/examples/urban_scale/#supply-technologies"
+            ]
+          },
+          "loads": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/basic/techs/#base-techs",
+              "https://calliope.readthedocs.io/en/latest/examples/urban_scale/#demand-technologies"
+            ]
+          },
+          "storage": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/basic/techs/#base-techs"
+            ]
+          }
+        },
+        "asset__capacity_representation": {
+          "grouped": {
+            "value": "y",
+            "sources": []
+          },
+          "partial_grouped": {
+            "value": "n",
+            "sources": []
+          },
+          "units": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/examples/milp/#purchased-units"
+            ]
+          }
+        },
+        "asset__chaining": {
+          "asset_linking": {
+            "value": "y",
+            "sources": []
+          },
+          "stockpiling": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/advanced/constraints/#activating-storage-buffers-in-non-storage-technologies"
+            ]
+          }
+        },
+        "asset__cost__investment": {
+          "annuitisation": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/math/base/#cost_investment_annualised",
+              "https://calliope.readthedocs.io/en/latest/math/base/#cost_depreciation_rate",
+              "https://calliope.readthedocs.io/en/latest/math/base/#cost_interest_rate"
+            ]
+          },
+          "linear": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/math/base/#cost_area_use",
+              "https://calliope.readthedocs.io/en/latest/math/base/#cost_flow_cap",
+              "https://calliope.readthedocs.io/en/latest/math/base/#cost_flow_cap_per_distance",
+              "https://calliope.readthedocs.io/en/latest/math/base/#cost_source_cap",
+              "https://calliope.readthedocs.io/en/latest/math/base/#cost_storage_cap"
+            ]
+          },
+          "piecewise": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/user_defined_math/components/#piecewise-constraints",
+              "https://calliope.readthedocs.io/en/latest/user_defined_math/examples/piecewise_linear_costs/",
+              "https://calliope.readthedocs.io/en/latest/user_defined_math/examples/sos2_piecewise_linear_costs/",
+              "https://calliope.readthedocs.io/en/latest/examples/piecewise_constraints/"
+            ]
+          },
+          "subsidy/penalty": {
+            "value": "n",
+            "sources": []
+          },
+          "unit": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/math/built_in/milp/#cost_purchase",
+              "https://calliope.readthedocs.io/en/latest/math/built_in/milp/#cost_purchase_per_distance",
+              "https://calliope.readthedocs.io/en/latest/examples/milp/#purchase-cost"
+            ]
+          }
+        },
+        "asset__cost__operation": {
+          "linear": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/math/base/#cost_flow_in",
+              "https://calliope.readthedocs.io/en/latest/math/base/#cost_flow_out",
+              "https://calliope.readthedocs.io/en/latest/math/base/#cost_export"
+            ]
+          },
+          "piecewise": {
+            "value": "y",
+            "sources": []
+          },
+          "subsidy/penalty": {
+            "value": "y",
+            "sources": []
+          },
+          "unit": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "asset__operating_characteristics": {
+          "iterative": {
+            "value": "n",
+            "sources": []
+          },
+          "linear": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/math/base/#flow_out_eff",
+              "https://calliope.readthedocs.io/en/latest/math/base/#flow_in_eff"
+            ]
+          },
+          "piecewise": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/user_defined_math/examples/piecewise_linear_efficiency/#piecewise-linear-efficiency"
+            ]
+          },
+          "static non_dimensional": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/basic/data_definitions/"
+            ]
+          },
+          "static_dimensional": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/basic/data_definitions/"
+            ]
+          }
+        },
+        "asset__operating_constraints": {
+          "inter_spatial": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/user_defined_math/examples/net_import_share/"
+            ]
+          },
+          "inter_temporal": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/user_defined_math/helper_functions/#group_datetime",
+              "https://calliope.readthedocs.io/en/latest/math/base/#ramping_down",
+              "https://calliope.readthedocs.io/en/latest/math/base/#ramping_up"
+            ]
+          },
+          "operating": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/user_defined_math/examples/demand_share_per_timestep_decision/#demand-share-per-timestep-as-decision-variable",
+              "https://calliope.readthedocs.io/en/latest/user_defined_math/examples/max_time_varying/",
+              "https://calliope.readthedocs.io/en/latest/user_defined_math/examples/uptime_downtime_limits/"
+            ]
+          },
+          "total": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/user_defined_math/examples/share_all_timesteps/",
+              "https://calliope.readthedocs.io/en/latest/user_defined_math/examples/annual_energy_balance/"
+            ]
+          }
+        },
+        "asset__operating_representation": {
+          "ed": {
+            "value": "y",
+            "sources": []
+          },
+          "uced": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/examples/milp/",
+              "https://calliope.readthedocs.io/en/latest/math/built_in/milp/",
+              "https://calliope.readthedocs.io/en/latest/math/built_in/milp/#operating_units"
+            ]
+          }
+        },
+        "competition": {
+          "distributed_objectives": {
+            "value": "n",
+            "sources": []
+          },
+          "portfolio": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "edge_effects": {
+          "energy_balance": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/examples/milp/#asynchronous-flow-inout",
+              "https://calliope.readthedocs.io/en/latest/math/built_in/milp/#async_flow_in_milp"
+            ]
+          },
+          "spatial": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/advanced/constraints/#revenues-and-carrier-export",
+              "https://calliope.readthedocs.io/en/latest/examples/urban_scale/#revenue-by-export"
+            ]
+          },
+          "time_financial": {
+            "value": "dev",
+            "sources": [
+              "https://github.com/calliope-project/calliope-pathways"
+            ]
+          },
+          "time_operational": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/advanced/constraints/#cyclic-storage",
+              "https://calliope.readthedocs.io/en/latest/math/built_in/storage_inter_cluster/#inter-cluster-storage-math"
+            ]
+          }
+        },
+        "interface__input": {
+          "cli": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/basic/running-cli/#running-a-model-in-the-command-line"
+            ]
+          },
+          "gui": {
+            "value": "dev",
+            "sources": [
+              "https://engage.nrel.gov/"
+            ]
+          },
+          "no_code": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/getting_started/creating/#creating-a-model",
+              "https://calliope.readthedocs.io/en/latest/basic/data_tables/#loading-tabular-data-data_tables"
+            ]
+          },
+          "scripting": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/basic/running-python/#running-a-model-in-python"
+            ]
+          },
+          "standardised": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "interface__output": {
+          "gui": {
+            "value": "y",
+            "sources": [
+              "https://calligraph.readthedocs.io/en/latest/"
+            ]
+          },
+          "logs": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/troubleshooting/#retaining-logs-and-temporary-files"
+            ]
+          },
+          "reports": {
+            "value": "n",
+            "sources": []
+          },
+          "standardised": {
+            "value": "dev",
+            "sources": [
+              "https://github.com/brynpickering/friendly-calliope"
+            ]
+          },
+          "tables": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/reference/api/model/#calliope.Model.to_csv"
+            ]
+          }
+        },
+        "optimisation_problem": {
+          "configuration": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/advanced/solver/#specifying-custom-solver-options"
+            ]
+          },
+          "decomposition": {
+            "value": "n",
+            "sources": []
+          },
+          "near_optimal": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/math/built_in/spores/#spores-mode-math",
+              "https://calliope.readthedocs.io/en/latest/basic/modes/#spores-mode",
+              "https://doi.org/10.1016/j.joule.2020.08.002"
+            ]
+          },
+          "sim + opt": {
+            "value": "n",
+            "sources": []
+          },
+          "user_defined_constraints": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/user_defined_math/",
+              "https://calliope.readthedocs.io/en/latest/user_defined_math/examples/"
+            ]
+          },
+          "user_defined_variables": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/user_defined_math/",
+              "https://calliope.readthedocs.io/en/latest/user_defined_math/examples/"
+            ]
+          }
+        },
+        "postprocessing": {
+          "aggregation": {
+            "value": "dev",
+            "sources": [
+              "https://github.com/calliope-project/calliope/pull/839"
+            ]
+          },
+          "curtailment": {
+            "value": "dev",
+            "sources": [
+              "https://github.com/calliope-project/calliope/pull/839"
+            ]
+          },
+          "financial": {
+            "value": "n",
+            "sources": []
+          },
+          "future_cost_function": {
+            "value": "n",
+            "sources": []
+          },
+          "gtc": {
+            "value": "n",
+            "sources": []
+          },
+          "impact_assessment": {
+            "value": "y",
+            "sources": []
+          },
+          "lcoe": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/reference/api/postprocess/#calliope.postprocess.postprocess.systemwide_levelised_cost"
+            ]
+          },
+          "lodf": {
+            "value": "n",
+            "sources": []
+          },
+          "ptdf": {
+            "value": "n",
+            "sources": []
+          },
+          "shadow_prices": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/advanced/shadow_prices/#shadow-prices"
+            ]
+          }
+        },
+        "preprocessing": {
+          "download": {
+            "value": "dev",
+            "sources": [
+              "https://clio.readthedocs.io/en/latest/",
+              "https://github.com/calliope-project/module_integration"
+            ]
+          },
+          "forecasting": {
+            "value": "n",
+            "sources": []
+          },
+          "spatial_distribution": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "resource_adequacy": {
+          "eens": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/math/base/#unmet_demand"
+            ]
+          },
+          "lolp": {
+            "value": "n",
+            "sources": []
+          },
+          "maintenance_scheduling": {
+            "value": "n",
+            "sources": []
+          },
+          "monte_carlo": {
+            "value": "dev",
+            "sources": [
+              "https://doi.org/10.1016/j.joule.2020.08.002"
+            ]
+          },
+          "sampling": {
+            "value": "dev",
+            "sources": [
+              "https://github.com/brynpickering/bangalore-calliope/blob/master/Building%20and%20running%20the%20model.ipynb",
+              "https://github.com/brynpickering/cambridge-calliope/blob/master/notebooks/DMUU.ipynb"
+            ]
+          }
+        },
+        "robustness": {
+          "asset_outages": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/user_defined_math/examples/uptime_downtime_limits/"
+            ]
+          },
+          "eens_limit": {
+            "value": "n",
+            "sources": []
+          },
+          "lolp_limit": {
+            "value": "n",
+            "sources": []
+          },
+          "multi_stage_stochastic": {
+            "value": "n",
+            "sources": []
+          },
+          "ram": {
+            "value": "n",
+            "sources": []
+          },
+          "reserve_limit": {
+            "value": "dev",
+            "sources": [
+              "https://github.com/calliope-project/calliope/pull/517"
+            ]
+          },
+          "two_stage_stochastic": {
+            "value": "dev",
+            "sources": [
+              "https://github.com/calliope-project/calliope/tree/stochastic_optimisation"
+            ]
+          },
+          "voll": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/basic/config/#configbuildensure_feasibility"
+            ]
+          }
+        },
+        "spatial__resolution__simplification": {
+          "network": {
+            "value": "n",
+            "sources": []
+          },
+          "resampling": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "system__carriers": {
+          "coupled": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/examples/urban_scale/",
+              "https://github.com/calliope-project/sector-coupled-euro-calliope"
+            ]
+          },
+          "decoupled": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/examples/national_scale/"
+            ]
+          }
+        },
+        "system__limits": {
+          "capacity": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/math/base/#flow_cap_max_systemwide"
+            ]
+          },
+          "operation": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/migrating/#defining-parameters-outside-the-scope-of-nodes-and-techs",
+              "https://calliope.readthedocs.io/en/latest/user_defined_math/examples/annual_energy_balance/"
+            ]
+          }
+        },
+        "time__foresight": {
+          "myopic": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/basic/modes/#operate-mode"
+            ]
+          },
+          "perfect": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/basic/modes/#modes",
+              "https://github.com/calliope-project/calliope-pathways"
+            ]
+          }
+        },
+        "time__horizon": {
+          "multi_year": {
+            "value": "dev",
+            "sources": [
+              "https://github.com/calliope-project/calliope-pathways"
+            ]
+          },
+          "single_year": {
+            "value": "y",
+            "sources": []
+          },
+          "sub_day": {
+            "value": "y",
+            "sources": []
+          },
+          "sub_year": {
+            "value": "y",
+            "sources": []
+          }
+        },
+        "time__resolution__simplification": {
+          "distortion_mitigation": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/math/built_in/storage_inter_cluster/#inter-cluster-storage-math"
+            ]
+          },
+          "load_duration_curves": {
+            "value": "n",
+            "sources": []
+          },
+          "resampling": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/advanced/time/#time-resolution-adjustment-resampling"
+            ]
+          },
+          "typical_periods": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/advanced/time/#time-clustering"
+            ]
+          }
+        },
+        "transmission__limits": {
+          "gtc": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/examples/national_scale/#other-technologies",
+              "https://github.com/calliope-project/euro-calliope/blob/develop/scripts/transmission/template_transmission_entsoe_tyndp.py",
+              "https://calliope.readthedocs.io/en/latest/math/base/#symmetric_transmission"
+            ]
+          },
+          "phase_angle": {
+            "value": "n",
+            "sources": []
+          },
+          "ptdf": {
+            "value": "n",
+            "sources": []
+          },
+          "thermal": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "transmission__opf": {
+          "ac_opf": {
+            "value": "n",
+            "sources": []
+          },
+          "dc_opf": {
+            "value": "n",
+            "sources": []
+          },
+          "sec_opf": {
+            "value": "n",
+            "sources": []
+          },
+          "transport": {
+            "value": "y",
+            "sources": [
+              "https://calliope.readthedocs.io/en/latest/math/base/#balance_transmission",
+              "https://calliope.readthedocs.io/en/latest/math/base/#symmetric_transmission"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "GenX",
+      "name": "GenX.jl",
+      "shortname": "GenX",
+      "docs": "https://genxproject.github.io/GenX.jl/",
+      "source": "https://github.com/GenXProject/GenX.jl",
+      "maintainers": [
+        "virio-andreyana"
+      ],
+      "features": {
+        "asset__candidates": {
+          "converters": {
+            "value": "?",
+            "sources": []
+          },
+          "electricity_transmission": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.2-Network.csv"
+            ]
+          },
+          "endogenous": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.4-Resources-input-files"
+            ]
+          },
+          "exogenous": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.4-Resources-input-files"
+            ]
+          },
+          "fluid_or_gas_distribution": {
+            "value": "n",
+            "sources": []
+          },
+          "generators": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.4-Resources-input-files"
+            ]
+          },
+          "loads": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.3-Demand_data.csv-(Load_data.csv)"
+            ]
+          },
+          "storage": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.4-Resources-input-files",
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#Table-9a:-Additional-columns-in-the-Storage.csv-file"
+            ]
+          }
+        },
+        "asset__capacity_representation": {
+          "grouped": {
+            "value": "?",
+            "sources": []
+          },
+          "partial_grouped": {
+            "value": "n",
+            "sources": []
+          },
+          "units": {
+            "value": "?",
+            "sources": []
+          }
+        },
+        "asset__chaining": {
+          "asset_linking": {
+            "value": "?",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/resource/"
+            ]
+          },
+          "stockpiling": {
+            "value": "?",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/resource/"
+            ]
+          }
+        },
+        "asset__cost__investment": {
+          "annuitisation": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/multi_stage_input/"
+            ]
+          },
+          "linear": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/limitations_genx/#2.-Cost"
+            ]
+          },
+          "piecewise": {
+            "value": "n",
+            "sources": []
+          },
+          "subsidy/penalty": {
+            "value": "?",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/Model_Reference/write_outputs/#Write-Subsidy-Revenue"
+            ]
+          },
+          "unit": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "asset__cost__operation": {
+          "linear": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.4-Resources-input-files"
+            ]
+          },
+          "piecewise": {
+            "value": "n",
+            "sources": []
+          },
+          "subsidy/penalty": {
+            "value": "?",
+            "sources": []
+          },
+          "unit": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.4-Resources-input-files"
+            ]
+          }
+        },
+        "asset__operating_characteristics": {
+          "iterative": {
+            "value": "n",
+            "sources": []
+          },
+          "linear": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.1-Fuels_data.csv",
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.5-Generator_variability.csv"
+            ]
+          },
+          "piecewise": {
+            "value": "?",
+            "sources": []
+          },
+          "static non_dimensional": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.1-Fuels_data.csv"
+            ]
+          },
+          "static_dimensional": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.5-Generator_variability.csv"
+            ]
+          }
+        },
+        "asset__operating_constraints": {
+          "inter_spatial": {
+            "value": "?",
+            "sources": []
+          },
+          "inter_temporal": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/thermal_commit/"
+            ]
+          },
+          "operating": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/maintenance/"
+            ]
+          },
+          "total": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/multi_stage_input/"
+            ]
+          }
+        },
+        "asset__operating_representation": {
+          "ed": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/Model_Concept_Overview/objective_function/"
+            ]
+          },
+          "uced": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/thermal_commit/"
+            ]
+          }
+        },
+        "competition": {
+          "distributed_objectives": {
+            "value": "n",
+            "sources": []
+          },
+          "portfolio": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "edge_effects": {
+          "energy_balance": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/Model_Concept_Overview/power_balance/"
+            ]
+          },
+          "spatial": {
+            "value": "?",
+            "sources": []
+          },
+          "time_financial": {
+            "value": "n",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/limitations_genx/#2.-Cost"
+            ]
+          },
+          "time_operational": {
+            "value": "?",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/hydro_inter_period_linkage/",
+              "https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/long_duration_storage/"
+            ]
+          }
+        },
+        "interface__input": {
+          "cli": {
+            "value": "y",
+            "sources": [
+              "https://github.com/danielolsen/pygenx"
+            ]
+          },
+          "gui": {
+            "value": "n",
+            "sources": []
+          },
+          "no_code": {
+            "value": "n",
+            "sources": []
+          },
+          "scripting": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/Tutorials/Tutorials_intro/",
+              "https://genxproject.github.io/GenX.jl/stable/Getting_Started/examples_casestudies/"
+            ]
+          },
+          "standardised": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "interface__output": {
+          "gui": {
+            "value": "n",
+            "sources": []
+          },
+          "logs": {
+            "value": "n",
+            "sources": []
+          },
+          "reports": {
+            "value": "n",
+            "sources": []
+          },
+          "standardised": {
+            "value": "n",
+            "sources": []
+          },
+          "tables": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/model_output/"
+            ]
+          }
+        },
+        "optimisation_problem": {
+          "configuration": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/model_configuration/#6.-Solver-relate",
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/solver_configuration/"
+            ]
+          },
+          "decomposition": {
+            "value": "n",
+            "sources": []
+          },
+          "near_optimal": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/generate_alternatives/"
+            ]
+          },
+          "sim + opt": {
+            "value": "n",
+            "sources": []
+          },
+          "user_defined_constraints": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/Tutorials/Tutorial_1_configuring_settings/"
+            ]
+          },
+          "user_defined_variables": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/Tutorials/Tutorial_1_configuring_settings/"
+            ]
+          }
+        },
+        "postprocessing": {
+          "aggregation": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/Tutorials/Tutorial_8_outputs/"
+            ]
+          },
+          "curtailment": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/Model_Reference/write_outputs/#Write-Curtailment"
+            ]
+          },
+          "financial": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/Model_Reference/write_outputs/"
+            ]
+          },
+          "future_cost_function": {
+            "value": "n",
+            "sources": []
+          },
+          "gtc": {
+            "value": "n",
+            "sources": []
+          },
+          "impact_assessment": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/model_output/#1.3-emissions.csv",
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/model_output/#1.6-reliability.csv"
+            ]
+          },
+          "lcoe": {
+            "value": "n",
+            "sources": []
+          },
+          "lodf": {
+            "value": "n",
+            "sources": []
+          },
+          "ptdf": {
+            "value": "n",
+            "sources": []
+          },
+          "shadow_prices": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/model_output/"
+            ]
+          }
+        },
+        "preprocessing": {
+          "download": {
+            "value": "?",
+            "sources": []
+          },
+          "forecasting": {
+            "value": "?",
+            "sources": []
+          },
+          "spatial_distribution": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.2-Network.csv",
+              "https://genxproject.github.io/GenX.jl/stable/Tutorials/Tutorial_2_network_visualization/"
+            ]
+          }
+        },
+        "resource_adequacy": {
+          "eens": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/model_output/#1.6-reliability.csv"
+            ]
+          },
+          "lolp": {
+            "value": "?",
+            "sources": []
+          },
+          "maintenance_scheduling": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/maintenance/"
+            ]
+          },
+          "monte_carlo": {
+            "value": "n",
+            "sources": []
+          },
+          "sampling": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "robustness": {
+          "asset_outages": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.3-Demand_data.csv-(Load_data.csv)"
+            ]
+          },
+          "eens_limit": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.3-Demand_data.csv-(Load_data.csv)"
+            ]
+          },
+          "lolp_limit": {
+            "value": "n",
+            "sources": []
+          },
+          "multi_stage_stochastic": {
+            "value": "n",
+            "sources": []
+          },
+          "ram": {
+            "value": "?",
+            "sources": []
+          },
+          "reserve_limit": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#2.4-Capacity_reserve_margin.csv"
+            ]
+          },
+          "two_stage_stochastic": {
+            "value": "n",
+            "sources": []
+          },
+          "voll": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.3-Demand_data.csv-(Load_data.csv)"
+            ]
+          }
+        },
+        "spatial__resolution__simplification": {
+          "network": {
+            "value": "n",
+            "sources": []
+          },
+          "resampling": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "system__carriers": {
+          "coupled": {
+            "value": "n",
+            "sources": []
+          },
+          "decoupled": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "system__limits": {
+          "capacity": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/model_configuration/#3.-Policy-related"
+            ]
+          },
+          "operation": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#2.1-Operational_reserves.csv"
+            ]
+          }
+        },
+        "time__foresight": {
+          "myopic": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/multi_stage_input/"
+            ]
+          },
+          "perfect": {
+            "value": "?",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/multi_stage_input/"
+            ]
+          }
+        },
+        "time__horizon": {
+          "multi_year": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/multi_stage_input/"
+            ]
+          },
+          "single_year": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/Model_Concept_Overview/model_introduction/",
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/TDR_input/"
+            ]
+          },
+          "sub_day": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/Model_Concept_Overview/model_introduction/",
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/TDR_input/"
+            ]
+          },
+          "sub_year": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/Model_Concept_Overview/model_introduction/",
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/TDR_input/"
+            ]
+          }
+        },
+        "time__resolution__simplification": {
+          "distortion_mitigation": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/TDR_input/"
+            ]
+          },
+          "load_duration_curves": {
+            "value": "n",
+            "sources": []
+          },
+          "resampling": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/TDR_input/",
+              "https://genxproject.github.io/GenX.jl/stable/Model_Reference/write_outputs/#GenX.write_full_time_series_reconstruction-Tuple{AbstractString,%20Dict,%20DataFrames.DataFrame,%20String}"
+            ]
+          },
+          "typical_periods": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/TDR_input/"
+            ]
+          }
+        },
+        "transmission__limits": {
+          "gtc": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.2-Network.csv"
+            ]
+          },
+          "phase_angle": {
+            "value": "?",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/Model_Reference/core/#Transmission"
+            ]
+          },
+          "ptdf": {
+            "value": "?",
+            "sources": []
+          },
+          "thermal": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.4-Resources-input-files"
+            ]
+          }
+        },
+        "transmission__opf": {
+          "ac_opf": {
+            "value": "n",
+            "sources": []
+          },
+          "dc_opf": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/Model_Reference/core/#Transmission"
+            ]
+          },
+          "sec_opf": {
+            "value": "n",
+            "sources": []
+          },
+          "transport": {
+            "value": "y",
+            "sources": [
+              "https://genxproject.github.io/GenX.jl/stable/Model_Concept_Overview/model_introduction/"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "OSeMOSYS",
+      "name": "Open Source Energy Modelling System",
+      "shortname": "OSeMOSYS",
+      "docs": "https://osemosys.readthedocs.io/en/latest/?badge=latest",
+      "source": "https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg",
+      "maintainers": [
+        "willu47"
+      ],
+      "features": {
+        "asset__candidates": {
+          "converters": {
+            "value": "y",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#sets"
+            ]
+          },
+          "electricity_transmission": {
+            "value": "y",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#sets"
+            ]
+          },
+          "endogenous": {
+            "value": "y",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capacity-variables",
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capacity-adequacy-a"
+            ]
+          },
+          "exogenous": {
+            "value": "y",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#performance",
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capacity-adequacy-a"
+            ]
+          },
+          "fluid_or_gas_distribution": {
+            "value": "n",
+            "sources": []
+          },
+          "generators": {
+            "value": "y",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#accounting-technology-production-use"
+            ]
+          },
+          "loads": {
+            "value": "y",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#demands",
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#demands-1",
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#rate-of-demand"
+            ]
+          },
+          "storage": {
+            "value": "y",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#storage",
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#storage-1",
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#storage-equations",
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#storage-constraints",
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#storage-investments"
+            ]
+          }
+        },
+        "asset__capacity_representation": {
+          "grouped": {
+            "value": "y",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capacity-adequacy-a"
+            ]
+          },
+          "partial_grouped": {
+            "value": "n",
+            "sources": []
+          },
+          "units": {
+            "value": "y",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capacity-adequacy-a"
+            ]
+          }
+        },
+        "asset__chaining": {
+          "asset_linking": {
+            "value": "y",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#cascaded-water-storage",
+              "https://doi.org/10.1088/2515-7620/ad8ca4"
+            ]
+          },
+          "stockpiling": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "asset__cost__investment": {
+          "annuitisation": {
+            "value": "y",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capital-costs",
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#total-discounted-costs"
+            ]
+          },
+          "linear": {
+            "value": "y",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#technology-costs",
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capital-costs"
+            ]
+          },
+          "piecewise": {
+            "value": "n",
+            "sources": []
+          },
+          "subsidy/penalty": {
+            "value": "n",
+            "sources": []
+          },
+          "unit": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "asset__cost__operation": {
+          "linear": {
+            "value": "y",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#technology-costs",
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#operating-costs"
+            ]
+          },
+          "piecewise": {
+            "value": "dev",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#short-term-operational-constraints-of-power-plants"
+            ]
+          },
+          "subsidy/penalty": {
+            "value": "dev",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#short-term-planning"
+            ]
+          },
+          "unit": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "asset__operating_characteristics": {
+          "iterative": {
+            "value": "n",
+            "sources": []
+          },
+          "linear": {
+            "value": "y",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#performance"
+            ]
+          },
+          "piecewise": {
+            "value": "n",
+            "sources": []
+          },
+          "static non_dimensional": {
+            "value": "y",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#performance"
+            ]
+          },
+          "static_dimensional": {
+            "value": "y",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#performance"
+            ]
+          }
+        },
+        "asset__operating_constraints": {
+          "inter_spatial": {
+            "value": "n",
+            "sources": []
+          },
+          "inter_temporal": {
+            "value": "dev",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#short-term-operational-constraints-of-power-plants",
+              "https://doi.org/10.1016/j.apenergy.2014.08.072"
+            ]
+          },
+          "operating": {
+            "value": "n",
+            "sources": []
+          },
+          "total": {
+            "value": "y",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#activity-constraints",
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#annual-activity-constraints",
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#total-activity-constraints"
+            ]
+          }
+        },
+        "asset__operating_representation": {
+          "ed": {
+            "value": "y",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#activity-variables"
+            ]
+          },
+          "uced": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "competition": {
+          "distributed_objectives": {
+            "value": "n",
+            "sources": []
+          },
+          "portfolio": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "edge_effects": {
+          "energy_balance": {
+            "value": "n",
+            "sources": []
+          },
+          "spatial": {
+            "value": "y",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#activity-variables"
+            ]
+          },
+          "time_financial": {
+            "value": "y",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#salvage-value"
+            ]
+          },
+          "time_operational": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "interface__input": {
+          "cli": {
+            "value": "y",
+            "sources": [
+              "https://otoole.readthedocs.io/en/latest/functionality.html#"
+            ]
+          },
+          "gui": {
+            "value": "y",
+            "sources": [
+              "https://github.com/OSeMOSYS/MUIO/blob/master/README.md"
+            ]
+          },
+          "no_code": {
+            "value": "y",
+            "sources": [
+              "https://github.com/OSeMOSYS/MUIO/blob/master/README.md"
+            ]
+          },
+          "scripting": {
+            "value": "n",
+            "sources": []
+          },
+          "standardised": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "interface__output": {
+          "gui": {
+            "value": "y",
+            "sources": [
+              "https://github.com/OSeMOSYS/MUIO/blob/master/README.md"
+            ]
+          },
+          "logs": {
+            "value": "y",
+            "sources": [
+              "https://en.wikibooks.org/wiki/GLPK/Using_GLPSOL"
+            ]
+          },
+          "reports": {
+            "value": "n",
+            "sources": []
+          },
+          "standardised": {
+            "value": "n",
+            "sources": []
+          },
+          "tables": {
+            "value": "y",
+            "sources": [
+              "https://otoole.readthedocs.io/en/latest/functionality.html#result-processing"
+            ]
+          }
+        },
+        "optimisation_problem": {
+          "configuration": {
+            "value": "n",
+            "sources": []
+          },
+          "decomposition": {
+            "value": "n",
+            "sources": []
+          },
+          "near_optimal": {
+            "value": "n",
+            "sources": []
+          },
+          "sim + opt": {
+            "value": "n",
+            "sources": []
+          },
+          "user_defined_constraints": {
+            "value": "dev",
+            "sources": [
+              "https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/pull/75"
+            ]
+          },
+          "user_defined_variables": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "postprocessing": {
+          "aggregation": {
+            "value": "y",
+            "sources": [
+              "https://github.com/OSeMOSYS/osemosys2iamc/blob/main/README.md"
+            ]
+          },
+          "curtailment": {
+            "value": "n",
+            "sources": []
+          },
+          "financial": {
+            "value": "n",
+            "sources": []
+          },
+          "future_cost_function": {
+            "value": "n",
+            "sources": []
+          },
+          "gtc": {
+            "value": "n",
+            "sources": []
+          },
+          "impact_assessment": {
+            "value": "n",
+            "sources": []
+          },
+          "lcoe": {
+            "value": "n",
+            "sources": []
+          },
+          "lodf": {
+            "value": "n",
+            "sources": []
+          },
+          "ptdf": {
+            "value": "n",
+            "sources": []
+          },
+          "shadow_prices": {
+            "value": "y",
+            "sources": [
+              "https://github.com/KTH-dESA/dual_values/blob/main/README.md"
+            ]
+          }
+        },
+        "preprocessing": {
+          "download": {
+            "value": "n",
+            "sources": []
+          },
+          "forecasting": {
+            "value": "n",
+            "sources": []
+          },
+          "spatial_distribution": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "resource_adequacy": {
+          "eens": {
+            "value": "dev",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#stochastic-modelling-of-energy-security-assessment"
+            ]
+          },
+          "lolp": {
+            "value": "n",
+            "sources": []
+          },
+          "maintenance_scheduling": {
+            "value": "n",
+            "sources": []
+          },
+          "monte_carlo": {
+            "value": "dev",
+            "sources": [
+              "https://github.com/KTH-dESA/esom_gsa",
+              "https://open-research-europe.ec.europa.eu/articles/3-30/v1"
+            ]
+          },
+          "sampling": {
+            "value": "dev",
+            "sources": [
+              "https://github.com/KTH-dESA/esom_gsa",
+              "https://open-research-europe.ec.europa.eu/articles/3-30/v1"
+            ]
+          }
+        },
+        "robustness": {
+          "asset_outages": {
+            "value": "y",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Debugging%20a%20model.html#capacity-factors"
+            ]
+          },
+          "eens_limit": {
+            "value": "n",
+            "sources": []
+          },
+          "lolp_limit": {
+            "value": "n",
+            "sources": []
+          },
+          "multi_stage_stochastic": {
+            "value": "n",
+            "sources": []
+          },
+          "ram": {
+            "value": "n",
+            "sources": []
+          },
+          "reserve_limit": {
+            "value": "y",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#reserve-margin",
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#reserve-margin-constraints"
+            ]
+          },
+          "two_stage_stochastic": {
+            "value": "n",
+            "sources": []
+          },
+          "voll": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "spatial__resolution__simplification": {
+          "network": {
+            "value": "n",
+            "sources": []
+          },
+          "resampling": {
+            "value": "dev",
+            "sources": [
+              "https://github.com/KTH-dESA/GSA_Spatial_temporal",
+              "https://doi.org/10.1016/j.isci.2025.111792"
+            ]
+          }
+        },
+        "system__carriers": {
+          "coupled": {
+            "value": "y",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#sets"
+            ]
+          },
+          "decoupled": {
+            "value": "y",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#sets"
+            ]
+          }
+        },
+        "system__limits": {
+          "capacity": {
+            "value": "y",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#new-capacity-constraints",
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#total-capacity-constraints"
+            ]
+          },
+          "operation": {
+            "value": "y",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#annual-activity-constraints",
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#total-activity-constraints"
+            ]
+          }
+        },
+        "time__foresight": {
+          "myopic": {
+            "value": "dev",
+            "sources": [
+              "https://github.com/KTH-dESA/OSeMOSYS_step",
+              "https://doi.org/10.1186/s13705-024-00469-w"
+            ]
+          },
+          "perfect": {
+            "value": "y",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#objective-function"
+            ]
+          }
+        },
+        "time__horizon": {
+          "multi_year": {
+            "value": "y",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#sets",
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#global-parameters"
+            ]
+          },
+          "single_year": {
+            "value": "y",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#sets",
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#global-parameters"
+            ]
+          },
+          "sub_day": {
+            "value": "y",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#sets",
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#global-parameters"
+            ]
+          },
+          "sub_year": {
+            "value": "y",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#sets",
+              "https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#global-parameters"
+            ]
+          }
+        },
+        "time__resolution__simplification": {
+          "distortion_mitigation": {
+            "value": "n",
+            "sources": []
+          },
+          "load_duration_curves": {
+            "value": "n",
+            "sources": []
+          },
+          "resampling": {
+            "value": "n",
+            "sources": []
+          },
+          "typical_periods": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "transmission__limits": {
+          "gtc": {
+            "value": "y",
+            "sources": []
+          },
+          "phase_angle": {
+            "value": "n",
+            "sources": []
+          },
+          "ptdf": {
+            "value": "n",
+            "sources": []
+          },
+          "thermal": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "transmission__opf": {
+          "ac_opf": {
+            "value": "n",
+            "sources": []
+          },
+          "dc_opf": {
+            "value": "n",
+            "sources": []
+          },
+          "sec_opf": {
+            "value": "n",
+            "sources": []
+          },
+          "transport": {
+            "value": "y",
+            "sources": [
+              "https://osemosys.readthedocs.io/en/latest/manual/Introduction.html"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "pypsa",
+      "name": "Python for Power System Analysis",
+      "shortname": "pypsa",
+      "docs": "https://docs.pypsa.org/latest/",
+      "source": "https://github.com/PyPSA/pypsa",
+      "maintainers": [
+        "euronion",
+        "SermishaNarayana"
+      ],
+      "features": {
+        "asset__candidates": {
+          "converters": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/components/links/"
+            ]
+          },
+          "electricity_transmission": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/components/lines/"
+            ]
+          },
+          "endogenous": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/components/generators/",
+              "https://docs.pypsa.org/latest/user-guide/components/lines/",
+              "https://docs.pypsa.org/latest/user-guide/components/links/",
+              "https://docs.pypsa.org/latest/user-guide/components/storage-units/",
+              "https://docs.pypsa.org/latest/user-guide/components/stores/",
+              "https://docs.pypsa.org/latest/user-guide/components/transformers/"
+            ]
+          },
+          "exogenous": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/components/loads/",
+              "https://docs.pypsa.org/latest/user-guide/components/generators/",
+              "https://docs.pypsa.org/latest/user-guide/components/lines/",
+              "https://docs.pypsa.org/latest/user-guide/components/links/",
+              "https://docs.pypsa.org/latest/user-guide/components/storage-units/",
+              "https://docs.pypsa.org/latest/user-guide/components/stores/",
+              "https://docs.pypsa.org/latest/user-guide/components/transformers/"
+            ]
+          },
+          "fluid_or_gas_distribution": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/components/links/"
+            ]
+          },
+          "generators": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/components/generators/"
+            ]
+          },
+          "loads": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/components/loads/"
+            ]
+          },
+          "storage": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/components/stores/"
+            ]
+          }
+        },
+        "asset__capacity_representation": {
+          "grouped": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/components/generators/",
+              "https://docs.pypsa.org/latest/user-guide/components/lines/",
+              "https://docs.pypsa.org/latest/user-guide/components/links/",
+              "https://docs.pypsa.org/latest/user-guide/components/storage-units/",
+              "https://docs.pypsa.org/latest/user-guide/components/stores/"
+            ]
+          },
+          "partial_grouped": {
+            "value": "n",
+            "sources": []
+          },
+          "units": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/optimization/capacity-limits/#modularity-constraints"
+            ]
+          }
+        },
+        "asset__chaining": {
+          "asset_linking": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/examples/chained-hydro-reservoirs/"
+            ]
+          },
+          "stockpiling": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/components/stores/"
+            ]
+          }
+        },
+        "asset__cost__investment": {
+          "annuitisation": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/optimization/objective/#investment-costs"
+            ]
+          },
+          "linear": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/optimization/objective/#investment-costs",
+              "https://docs.pypsa.org/latest/user-guide/components/generators/",
+              "https://docs.pypsa.org/latest/user-guide/components/links/",
+              "https://docs.pypsa.org/latest/user-guide/components/stores/",
+              "https://docs.pypsa.org/latest/user-guide/components/storage-units/",
+              "https://docs.pypsa.org/latest/user-guide/components/lines/",
+              "https://docs.pypsa.org/latest/user-guide/components/transformers/"
+            ]
+          },
+          "piecewise": {
+            "value": "n",
+            "sources": []
+          },
+          "subsidy/penalty": {
+            "value": "dev",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/optimization/custom-constraints/#custom-constraints"
+            ]
+          },
+          "unit": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "asset__cost__operation": {
+          "linear": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/optimization/objective/#marginal-costs",
+              "https://docs.pypsa.org/latest/user-guide/components/generators/",
+              "https://docs.pypsa.org/latest/user-guide/components/links/",
+              "https://docs.pypsa.org/latest/user-guide/components/stores/",
+              "https://docs.pypsa.org/latest/user-guide/components/storage-units/",
+              "https://docs.pypsa.org/latest/user-guide/components/lines/",
+              "https://docs.pypsa.org/latest/user-guide/components/transformers/"
+            ]
+          },
+          "piecewise": {
+            "value": "n",
+            "sources": []
+          },
+          "subsidy/penalty": {
+            "value": "dev",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/optimization/custom-constraints/#custom-constraints"
+            ]
+          },
+          "unit": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/optimization/unit-commitment/#start-up-and-shut-down"
+            ]
+          }
+        },
+        "asset__operating_characteristics": {
+          "iterative": {
+            "value": "n",
+            "sources": []
+          },
+          "linear": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/components/generators/",
+              "https://docs.pypsa.org/latest/user-guide/components/links/",
+              "https://docs.pypsa.org/latest/user-guide/components/stores/",
+              "https://docs.pypsa.org/latest/user-guide/components/storage-units/",
+              "https://docs.pypsa.org/latest/user-guide/components/lines/",
+              "https://docs.pypsa.org/latest/user-guide/components/transformers/"
+            ]
+          },
+          "piecewise": {
+            "value": "dev",
+            "sources": [
+              "https://docs.pypsa.org/latest/examples/demand-elasticity/#piecewise-linear-demand-curve"
+            ]
+          },
+          "static non_dimensional": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/components/generators/",
+              "https://docs.pypsa.org/latest/user-guide/components/links/",
+              "https://docs.pypsa.org/latest/user-guide/components/stores/",
+              "https://docs.pypsa.org/latest/user-guide/components/storage-units/",
+              "https://docs.pypsa.org/latest/user-guide/components/lines/",
+              "https://docs.pypsa.org/latest/user-guide/components/transformers/"
+            ]
+          },
+          "static_dimensional": {
+            "value": "dev",
+            "sources": [
+              "https://github.com/PyPSA/pypsa-eur/blob/3679dc5b49aefd082ca36ebfc0c1df4ce4bbd435/scripts/solve_network.py#L589-L590"
+            ]
+          }
+        },
+        "asset__operating_constraints": {
+          "inter_spatial": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/design/#buses",
+              "https://docs.pypsa.org/latest/user-guide/components/lines/",
+              "https://docs.pypsa.org/latest/user-guide/components/links/"
+            ]
+          },
+          "inter_temporal": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/optimization/unit-commitment/#ramping",
+              "https://docs.pypsa.org/latest/examples/unit-commitment/#ramp-rate-limits"
+            ]
+          },
+          "operating": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/examples/unit-commitment/#minimum-part-load",
+              "https://docs.pypsa.org/latest/examples/unit-commitment/#minimum-up-time",
+              "https://docs.pypsa.org/latest/examples/unit-commitment/#minimum-down-time"
+            ]
+          },
+          "total": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/examples/simple-electricity-market-examples/",
+              "https://docs.pypsa.org/latest/user-guide/design/#buses",
+              "https://docs.pypsa.org/latest/user-guide/components/lines/",
+              "https://docs.pypsa.org/latest/user-guide/components/links/",
+              "https://docs.pypsa.org/latest/user-guide/optimization/custom-constraints/#custom-constraints"
+            ]
+          }
+        },
+        "asset__operating_representation": {
+          "ed": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/optimization/overview/"
+            ]
+          },
+          "uced": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/optimization/unit-commitment/"
+            ]
+          }
+        },
+        "competition": {
+          "distributed_objectives": {
+            "value": "n",
+            "sources": []
+          },
+          "portfolio": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "edge_effects": {
+          "energy_balance": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/optimization/energy-balance/"
+            ]
+          },
+          "spatial": {
+            "value": "y",
+            "sources": []
+          },
+          "time_financial": {
+            "value": "y",
+            "sources": []
+          },
+          "time_operational": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/optimization/pathway-planning/#examples"
+            ]
+          }
+        },
+        "interface__input": {
+          "cli": {
+            "value": "n",
+            "sources": []
+          },
+          "gui": {
+            "value": "n",
+            "sources": [
+              "https://www.bayesian.energy/convexity"
+            ]
+          },
+          "no_code": {
+            "value": "dev",
+            "sources": [
+              "https://model.energy/",
+              "https://model.energy/scenarios/"
+            ]
+          },
+          "scripting": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/api/networks/network/"
+            ]
+          },
+          "standardised": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "interface__output": {
+          "gui": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/plotting/charts/#interactive-plots",
+              "https://github.com/PyPSA/pypsa-server",
+              "https://github.com/PriyeshGosai/pypsa_network_viewer",
+              "https://www.bayesian.energy/convexity"
+            ]
+          },
+          "logs": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/logging/"
+            ]
+          },
+          "reports": {
+            "value": "n",
+            "sources": []
+          },
+          "standardised": {
+            "value": "n",
+            "sources": []
+          },
+          "tables": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/import-export/#excel",
+              "https://docs.pypsa.org/latest/user-guide/import-export/#csv-files"
+            ]
+          }
+        },
+        "optimisation_problem": {
+          "configuration": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/api/networks/optimize/#pypsa.Network.optimize.solve_model"
+            ]
+          },
+          "decomposition": {
+            "value": "n",
+            "sources": []
+          },
+          "near_optimal": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/examples/mga/",
+              "https://docs.pypsa.org/latest/api/networks/optimize/#pypsa.Network.optimize.solve_model"
+            ]
+          },
+          "sim + opt": {
+            "value": "n",
+            "sources": []
+          },
+          "user_defined_constraints": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/optimization/custom-constraints/#custom-constraints"
+            ]
+          },
+          "user_defined_variables": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/optimization/custom-constraints/#custom-constraints"
+            ]
+          }
+        },
+        "postprocessing": {
+          "aggregation": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/statistics/"
+            ]
+          },
+          "curtailment": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/api/networks/statistics/#pypsa.statistics.StatisticsAccessor.curtailment",
+              "https://docs.pypsa.org/latest/examples/scigrid-lopf-then-pf/#curtailment"
+            ]
+          },
+          "financial": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/statistics/"
+            ]
+          },
+          "future_cost_function": {
+            "value": "n",
+            "sources": []
+          },
+          "gtc": {
+            "value": "n",
+            "sources": []
+          },
+          "impact_assessment": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/statistics/",
+              "https://docs.pypsa.org/latest/api/components/types/global-constraints/#pypsa.components.GlobalConstraints.add"
+            ]
+          },
+          "lcoe": {
+            "value": "n",
+            "sources": []
+          },
+          "lodf": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/api/networks/subnetwork/#pypsa.SubNetwork.calculate_BODF"
+            ]
+          },
+          "ptdf": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/api/networks/subnetwork/#pypsa.SubNetwork.calculate_PTDF"
+            ]
+          },
+          "shadow_prices": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/home/features/#analysis-and-usability",
+              "https://docs.pypsa.org/latest/examples/scigrid-lopf-then-pf/#locational-marginal-prices",
+              "https://docs.pypsa.org/latest/user-guide/faq/#can-i-model-endogenous-fuel-prices-in-pypsa"
+            ]
+          }
+        },
+        "preprocessing": {
+          "download": {
+            "value": "dev",
+            "sources": [
+              "https://pypsa-eur.readthedocs.io/en/latest/retrieve.html",
+              "https://pypsa-earth.readthedocs.io/en/latest/data_workflow.html"
+            ]
+          },
+          "forecasting": {
+            "value": "dev",
+            "sources": [
+              "https://atlite.readthedocs.io/en/latest/",
+              "https://pypsa-eur.readthedocs.io/en/latest/configuration.html#solar"
+            ]
+          },
+          "spatial_distribution": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/api/components/types/lines/#pypsa.components.Lines.calculate_line_length"
+            ]
+          }
+        },
+        "resource_adequacy": {
+          "eens": {
+            "value": "y",
+            "sources": []
+          },
+          "lolp": {
+            "value": "n",
+            "sources": []
+          },
+          "maintenance_scheduling": {
+            "value": "n",
+            "sources": []
+          },
+          "monte_carlo": {
+            "value": "dev",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/faq/#can-you-do-generation-adequacy-studies-with-monte-carlo-unplanned-outages",
+              "https://pypsa-earth.readthedocs.io/en/latest/monte_carlo.html"
+            ]
+          },
+          "sampling": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/examples/stochastic-optimization/"
+            ]
+          }
+        },
+        "robustness": {
+          "asset_outages": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/optimization/dispatch-limits/",
+              "https://docs.pypsa.org/latest/examples/unit-commitment/#ramp-rate-limits"
+            ]
+          },
+          "eens_limit": {
+            "value": "n",
+            "sources": []
+          },
+          "lolp_limit": {
+            "value": "n",
+            "sources": []
+          },
+          "multi_stage_stochastic": {
+            "value": "n",
+            "sources": []
+          },
+          "ram": {
+            "value": "n",
+            "sources": []
+          },
+          "reserve_limit": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/examples/reserve-power/"
+            ]
+          },
+          "two_stage_stochastic": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/examples/stochastic-optimization/"
+            ]
+          },
+          "voll": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/api/networks/optimize/#pypsa.Network.optimize.add_load_shedding"
+            ]
+          }
+        },
+        "spatial__resolution__simplification": {
+          "network": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/examples/scigrid-redispatch/?h=redispatch"
+            ]
+          },
+          "resampling": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/clustering/",
+              "https://docs.pypsa.org/latest/api/networks/cluster/?h=clustering#pypsa.clustering.ClusteringAccessor"
+            ]
+          }
+        },
+        "system__carriers": {
+          "coupled": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/examples/sector-coupling-single-node/"
+            ]
+          },
+          "decoupled": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/examples/simple-electricity-market-examples/",
+              "https://docs.pypsa.org/latest/examples/islanded-methanol-production/"
+            ]
+          }
+        },
+        "system__limits": {
+          "capacity": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/examples/reserve-power/#basic-model"
+            ]
+          },
+          "operation": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/optimization/global-constraints/#operational-limit"
+            ]
+          }
+        },
+        "time__foresight": {
+          "myopic": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/examples/unit-commitment/#rolling-horizon",
+              "https://docs.pypsa.org/latest/examples/rolling-horizon/#rolling-horizon-optimization"
+            ]
+          },
+          "perfect": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/optimization/overview/"
+            ]
+          }
+        },
+        "time__horizon": {
+          "multi_year": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/faq/?h=multi+investment#can-investments-be-modelled-for-different-years-over-multiple-decades"
+            ]
+          },
+          "single_year": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/design/#snapshots"
+            ]
+          },
+          "sub_day": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/design/#snapshots"
+            ]
+          },
+          "sub_year": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/design/#snapshots"
+            ]
+          }
+        },
+        "time__resolution__simplification": {
+          "distortion_mitigation": {
+            "value": "dev",
+            "sources": [
+              "https://docs.pypsa.org/latest/examples/time-series-aggregation/?h=tsam"
+            ]
+          },
+          "load_duration_curves": {
+            "value": "n",
+            "sources": []
+          },
+          "resampling": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/examples/time-series-aggregation/",
+              "https://github.com/PyPSA/PyPSA/blob/c5346226ad01de2a9157f8aa198cd14e9fbcfa92/pypsa/common.py#L771"
+            ]
+          },
+          "typical_periods": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/examples/time-series-aggregation/"
+            ]
+          }
+        },
+        "transmission__limits": {
+          "gtc": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/components/lines/"
+            ]
+          },
+          "phase_angle": {
+            "value": "dev",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/components/lines/"
+            ]
+          },
+          "ptdf": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/api/networks/subnetwork/#pypsa.SubNetwork.calculate_PTDF"
+            ]
+          },
+          "thermal": {
+            "value": "dev",
+            "sources": [
+              "https://github.com/PyPSA/pypsa-eur/blob/3679dc5b49aefd082ca36ebfc0c1df4ce4bbd435/scripts/build_line_rating.py#L72"
+            ]
+          }
+        },
+        "transmission__opf": {
+          "ac_opf": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/api/networks/power-flow/#pypsa.Network.pf"
+            ]
+          },
+          "dc_opf": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/linear-power-flow/"
+            ]
+          },
+          "sec_opf": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/optimization/contingencies/#n-1-security-constraints-for-sclopf"
+            ]
+          },
+          "transport": {
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/latest/user-guide/components/links/"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "times",
+      "name": "The Integrated MARKAL-EFOM System",
+      "shortname": "times",
+      "docs": "https://iea-etsap.org/index.php/documentation",
+      "source": "https://github.com/etsap-TIMES/TIMES_model",
+      "maintainers": [
+        "gianvicolux",
+        "willu47"
+      ],
+      "features": {
+        "asset__candidates": {
+          "converters": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          },
+          "electricity_transmission": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          },
+          "endogenous": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          },
+          "exogenous": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          },
+          "fluid_or_gas_distribution": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf",
+              "https://link.springer.com/article/10.1007/s10666-024-09976-8"
+            ]
+          },
+          "generators": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          },
+          "loads": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          },
+          "storage": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          }
+        },
+        "asset__capacity_representation": {
+          "grouped": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf",
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          },
+          "partial_grouped": {
+            "value": "n",
+            "sources": []
+          },
+          "units": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "asset__chaining": {
+          "asset_linking": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          },
+          "stockpiling": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          }
+        },
+        "asset__cost__investment": {
+          "annuitisation": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf",
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          },
+          "linear": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf",
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          },
+          "piecewise": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf",
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          },
+          "subsidy/penalty": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf",
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          },
+          "unit": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "asset__cost__operation": {
+          "linear": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf",
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          },
+          "piecewise": {
+            "value": "n",
+            "sources": []
+          },
+          "subsidy/penalty": {
+            "value": "n",
+            "sources": []
+          },
+          "unit": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          }
+        },
+        "asset__operating_characteristics": {
+          "iterative": {
+            "value": "n",
+            "sources": []
+          },
+          "linear": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          },
+          "piecewise": {
+            "value": "y",
+            "sources": [
+              "https://iea-etsap.org/projects/TIMES_Dispatching_Documentation.pdf"
+            ]
+          },
+          "static non_dimensional": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          },
+          "static_dimensional": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          }
+        },
+        "asset__operating_constraints": {
+          "inter_spatial": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          },
+          "inter_temporal": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf",
+              "https://iea-etsap.org/projects/TIMES_Dispatching_Documentation.pdf"
+            ]
+          },
+          "operating": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf",
+              "https://iea-etsap.org/projects/TIMES_Dispatching_Documentation.pdf"
+            ]
+          },
+          "total": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          }
+        },
+        "asset__operating_representation": {
+          "ed": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          },
+          "uced": {
+            "value": "y",
+            "sources": [
+              "https://iea-etsap.org/projects/TIMES_Dispatching_Documentation.pdf"
+            ]
+          }
+        },
+        "competition": {
+          "distributed_objectives": {
+            "value": "n",
+            "sources": []
+          },
+          "portfolio": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "edge_effects": {
+          "energy_balance": {
+            "value": "n",
+            "sources": []
+          },
+          "spatial": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf",
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          },
+          "time_financial": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf",
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          },
+          "time_operational": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          }
+        },
+        "interface__input": {
+          "cli": {
+            "value": "n",
+            "sources": []
+          },
+          "gui": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf",
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-IV.pdf",
+              "https://github.com/GAMS-dev/TIMES_MIRO"
+            ]
+          },
+          "no_code": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf",
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-IV.pdf"
+            ]
+          },
+          "scripting": {
+            "value": "dev",
+            "sources": [
+              "https://github.com/etsap-TIMES/xl2times?tab=readme-ov-file",
+              "https://github.com/olejandro/times-dk_gams"
+            ]
+          },
+          "standardised": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "interface__output": {
+          "gui": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf",
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-IV.pdf",
+              "https://github.com/GAMS-dev/TIMES_MIRO"
+            ]
+          },
+          "logs": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf",
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-IV.pdf"
+            ]
+          },
+          "reports": {
+            "value": "n",
+            "sources": []
+          },
+          "standardised": {
+            "value": "n",
+            "sources": []
+          },
+          "tables": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf",
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-IV.pdf"
+            ]
+          }
+        },
+        "optimisation_problem": {
+          "configuration": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf",
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-IV.pdf"
+            ]
+          },
+          "decomposition": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf",
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf"
+            ]
+          },
+          "near_optimal": {
+            "value": "n",
+            "sources": []
+          },
+          "sim + opt": {
+            "value": "n",
+            "sources": []
+          },
+          "user_defined_constraints": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf",
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf"
+            ]
+          },
+          "user_defined_variables": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "postprocessing": {
+          "aggregation": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf",
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-IV.pdf"
+            ]
+          },
+          "curtailment": {
+            "value": "n",
+            "sources": []
+          },
+          "financial": {
+            "value": "n",
+            "sources": []
+          },
+          "future_cost_function": {
+            "value": "n",
+            "sources": []
+          },
+          "gtc": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          },
+          "impact_assessment": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          },
+          "lcoe": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          },
+          "lodf": {
+            "value": "n",
+            "sources": []
+          },
+          "ptdf": {
+            "value": "n",
+            "sources": []
+          },
+          "shadow_prices": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          }
+        },
+        "preprocessing": {
+          "download": {
+            "value": "dev",
+            "sources": [
+              "https://github.com/MaREI-EPMG/TIMES-GEO"
+            ]
+          },
+          "forecasting": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          },
+          "spatial_distribution": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "resource_adequacy": {
+          "eens": {
+            "value": "n",
+            "sources": []
+          },
+          "lolp": {
+            "value": "n",
+            "sources": []
+          },
+          "maintenance_scheduling": {
+            "value": "n",
+            "sources": []
+          },
+          "monte_carlo": {
+            "value": "y",
+            "sources": [
+              "https://iea-etsap.org/index.php/etsap-projects"
+            ]
+          },
+          "sampling": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "robustness": {
+          "asset_outages": {
+            "value": "y",
+            "sources": [
+              "https://iea-etsap.org/projects/TIMES-BS-Documentation.pdf"
+            ]
+          },
+          "eens_limit": {
+            "value": "n",
+            "sources": []
+          },
+          "lolp_limit": {
+            "value": "n",
+            "sources": []
+          },
+          "multi_stage_stochastic": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          },
+          "ram": {
+            "value": "n",
+            "sources": []
+          },
+          "reserve_limit": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf",
+              "https://iea-etsap.org/projects/TIMES-BS-Documentation.pdf"
+            ]
+          },
+          "two_stage_stochastic": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          },
+          "voll": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-IV.pdf"
+            ]
+          }
+        },
+        "spatial__resolution__simplification": {
+          "network": {
+            "value": "n",
+            "sources": []
+          },
+          "resampling": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "system__carriers": {
+          "coupled": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          },
+          "decoupled": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          }
+        },
+        "system__limits": {
+          "capacity": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          },
+          "operation": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          }
+        },
+        "time__foresight": {
+          "myopic": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf"
+            ]
+          },
+          "perfect": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf"
+            ]
+          }
+        },
+        "time__horizon": {
+          "multi_year": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf",
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          },
+          "single_year": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf",
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          },
+          "sub_day": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf",
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          },
+          "sub_year": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf",
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf",
+              "https://iea-etsap.org/projects/TIMES_Dispatching_Documentation.pdf"
+            ]
+          }
+        },
+        "time__resolution__simplification": {
+          "distortion_mitigation": {
+            "value": "n",
+            "sources": []
+          },
+          "load_duration_curves": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf",
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          },
+          "resampling": {
+            "value": "n",
+            "sources": []
+          },
+          "typical_periods": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf",
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          }
+        },
+        "transmission__limits": {
+          "gtc": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          },
+          "phase_angle": {
+            "value": "n",
+            "sources": []
+          },
+          "ptdf": {
+            "value": "n",
+            "sources": []
+          },
+          "thermal": {
+            "value": "n",
+            "sources": []
+          }
+        },
+        "transmission__opf": {
+          "ac_opf": {
+            "value": "n",
+            "sources": []
+          },
+          "dc_opf": {
+            "value": "n",
+            "sources": []
+          },
+          "sec_opf": {
+            "value": "n",
+            "sources": []
+          },
+          "transport": {
+            "value": "y",
+            "sources": [
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf",
+              "https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "useCases": [
+    {
+      "id": "bidding_zone_review",
+      "name": "Bidding Zone Review",
+      "shortname": "bidding_zone_review",
+      "description": "Model impact on energy system design, systemwide costs, and / or transmission system congestion of implementing new market mechanisms or updating existing ones. This could include bidding zone reviews; direct subsidies; feed-in-tariffs; contract auctions.",
+      "maintainers": [
+        "brynpickering"
+      ],
+      "assumptions": [
+        "The optimization will be run over individual years with myopic foresight over days or weeks within the year.",
+        "Available transmission lines are set by scenarios from the network development plan (NDP), are limited between bidding zones using power transfer distribution factors, and are represented using security-constrained AC optimal power flow.",
+        "Generator capacities are fixed by the integrated resource plan (IRP).",
+        "Assets are resolved individually where possible and their unit commitment as well as economic dispatch is represented with the aim of accurately representing the day-ahead and intra-day markets. This may require iterating between an optimisation and simulation run to resolve bidding decisions.",
+        "Only the power system is considered.",
+        "The system supply-demand balance is relaxed. Load shedding is limited with constraints on EENS and LOLP applied alongside a value of lost load (VOLL).",
+        "Resilience to weather uncertainty is addressed using multi-stage stochastic optimisation applied across rolling horizon windows. This may require decomposing the problem into different optimisation problems that are iterated upon until convergence.",
+        "Users require a GUI to navigate model preparation, optimisation, and analysis."
+      ],
+      "features": {
+        "asset__candidates": {
+          "converters": {
+            "value": "y"
+          },
+          "electricity_transmission": {
+            "value": "y"
+          },
+          "endogenous": {
+            "value": "n"
+          },
+          "exogenous": {
+            "value": "y"
+          },
+          "fluid_or_gas_distribution": {
+            "value": "n"
+          },
+          "generators": {
+            "value": "y"
+          },
+          "loads": {
+            "value": "y"
+          },
+          "storage": {
+            "value": "y"
+          }
+        },
+        "asset__capacity_representation": {
+          "grouped": {
+            "value": "n"
+          },
+          "partial_grouped": {
+            "value": "n"
+          },
+          "units": {
+            "value": "y"
+          }
+        },
+        "asset__chaining": {
+          "asset_linking": {
+            "value": "n"
+          },
+          "stockpiling": {
+            "value": "y"
+          }
+        },
+        "asset__cost__investment": {
+          "annuitisation": {
+            "value": "n"
+          },
+          "linear": {
+            "value": "n"
+          },
+          "piecewise": {
+            "value": "n"
+          },
+          "subsidy/penalty": {
+            "value": "n"
+          },
+          "unit": {
+            "value": "n"
+          }
+        },
+        "asset__cost__operation": {
+          "linear": {
+            "value": "y"
+          },
+          "piecewise": {
+            "value": "y"
+          },
+          "subsidy/penalty": {
+            "value": "y"
+          },
+          "unit": {
+            "value": "y"
+          }
+        },
+        "asset__operating_characteristics": {
+          "iterative": {
+            "value": "n"
+          },
+          "linear": {
+            "value": "y"
+          },
+          "piecewise": {
+            "value": "y"
+          },
+          "static non_dimensional": {
+            "value": "y"
+          },
+          "static_dimensional": {
+            "value": "y"
+          }
+        },
+        "asset__operating_constraints": {
+          "inter_spatial": {
+            "value": "y"
+          },
+          "inter_temporal": {
+            "value": "y"
+          },
+          "operating": {
+            "value": "y"
+          },
+          "total": {
+            "value": "y"
+          }
+        },
+        "asset__operating_representation": {
+          "ed": {
+            "value": "n"
+          },
+          "uced": {
+            "value": "y"
+          }
+        },
+        "competition": {
+          "distributed_objectives": {
+            "value": "n"
+          },
+          "portfolio": {
+            "value": "y"
+          }
+        },
+        "edge_effects": {
+          "energy_balance": {
+            "value": "y"
+          },
+          "spatial": {
+            "value": "y"
+          },
+          "time_financial": {
+            "value": "n"
+          },
+          "time_operational": {
+            "value": "y"
+          }
+        },
+        "interface__input": {
+          "cli": {
+            "value": "n"
+          },
+          "gui": {
+            "value": "y"
+          },
+          "no_code": {
+            "value": "n"
+          },
+          "scripting": {
+            "value": "n"
+          },
+          "standardised": {
+            "value": "n"
+          }
+        },
+        "interface__output": {
+          "gui": {
+            "value": "y"
+          },
+          "logs": {
+            "value": "y"
+          },
+          "reports": {
+            "value": "y"
+          },
+          "standardised": {
+            "value": "n"
+          },
+          "tables": {
+            "value": "y"
+          }
+        },
+        "optimisation_problem": {
+          "configuration": {
+            "value": "y"
+          },
+          "decomposition": {
+            "value": "y"
+          },
+          "near_optimal": {
+            "value": "n"
+          },
+          "sim + opt": {
+            "value": "y"
+          },
+          "user_defined_constraints": {
+            "value": "y"
+          },
+          "user_defined_variables": {
+            "value": "y"
+          }
+        },
+        "postprocessing": {
+          "aggregation": {
+            "value": "n"
+          },
+          "curtailment": {
+            "value": "y"
+          },
+          "financial": {
+            "value": "y"
+          },
+          "future_cost_function": {
+            "value": "n"
+          },
+          "gtc": {
+            "value": "n"
+          },
+          "impact_assessment": {
+            "value": "y"
+          },
+          "lcoe": {
+            "value": "y"
+          },
+          "lodf": {
+            "value": "n"
+          },
+          "ptdf": {
+            "value": "n"
+          },
+          "shadow_prices": {
+            "value": "y"
+          }
+        },
+        "preprocessing": {
+          "download": {
+            "value": "y"
+          },
+          "forecasting": {
+            "value": "y"
+          },
+          "spatial_distribution": {
+            "value": "y"
+          }
+        },
+        "resource_adequacy": {
+          "eens": {
+            "value": "y"
+          },
+          "lolp": {
+            "value": "y"
+          },
+          "maintenance_scheduling": {
+            "value": "n"
+          },
+          "monte_carlo": {
+            "value": "n"
+          },
+          "sampling": {
+            "value": "n"
+          }
+        },
+        "robustness": {
+          "asset_outages": {
+            "value": "y"
+          },
+          "eens_limit": {
+            "value": "y"
+          },
+          "lolp_limit": {
+            "value": "y"
+          },
+          "multi_stage_stochastic": {
+            "value": "y"
+          },
+          "ram": {
+            "value": "n"
+          },
+          "reserve_limit": {
+            "value": "y"
+          },
+          "two_stage_stochastic": {
+            "value": "n"
+          },
+          "voll": {
+            "value": "y"
+          }
+        },
+        "spatial__resolution__simplification": {
+          "network": {
+            "value": "n"
+          },
+          "resampling": {
+            "value": "y"
+          }
+        },
+        "system__carriers": {
+          "coupled": {
+            "value": "n"
+          },
+          "decoupled": {
+            "value": "y"
+          }
+        },
+        "system__limits": {
+          "capacity": {
+            "value": "n"
+          },
+          "operation": {
+            "value": "y"
+          }
+        },
+        "time__foresight": {
+          "myopic": {
+            "value": "y"
+          },
+          "perfect": {
+            "value": "n"
+          }
+        },
+        "time__horizon": {
+          "multi_year": {
+            "value": "n"
+          },
+          "single_year": {
+            "value": "y"
+          },
+          "sub_day": {
+            "value": "y"
+          },
+          "sub_year": {
+            "value": "y"
+          }
+        },
+        "time__resolution__simplification": {
+          "distortion_mitigation": {
+            "value": "n"
+          },
+          "load_duration_curves": {
+            "value": "n"
+          },
+          "resampling": {
+            "value": "n"
+          },
+          "typical_periods": {
+            "value": "y"
+          }
+        },
+        "transmission__limits": {
+          "gtc": {
+            "value": "n"
+          },
+          "phase_angle": {
+            "value": "n"
+          },
+          "ptdf": {
+            "value": "y"
+          },
+          "thermal": {
+            "value": "n"
+          }
+        },
+        "transmission__opf": {
+          "ac_opf": {
+            "value": "n"
+          },
+          "dc_opf": {
+            "value": "n"
+          },
+          "sec_opf": {
+            "value": "y"
+          },
+          "transport": {
+            "value": "n"
+          }
+        }
+      }
+    },
+    {
+      "id": "integrated_resource_planning",
+      "name": "Integrated Resource Planning (IRP)",
+      "shortname": "integrated_resource_planning",
+      "description": "Create a set of high-level scenarios of e.g. 2050 decarbonised energy system designs for use in guiding policy implementation, creating procurement plans, and providing boundary conditions for investors, utilities, and local authorities to develop their own plans. Future scenarios account for full sector coupling and GHG emission accounting.",
+      "maintainers": [
+        "brynpickering"
+      ],
+      "assumptions": [
+        "The optimization will be run with perfect foresight over the full model horizon, which spans multiple years/decades.",
+        "Investment decisions may occur once every N (> 1) years.\n Within a year, the timeseries is contiguous but may be resampled.",
+        "Large assets (e.g. thermal power plants, hydro) are individually resolved; distributed assets (e.g. wind & solar) are grouped per project or region.",
+        "Large assets are represented with unit commitment due to operating constraints which require resolving (ramping, uptimes, run ups. etc.).",
+        "Hydro cascading and technology chaining internal to power plants is not represented.",
+        "Generator contract arrangements (e.g. min/max dispatch obligations) are represented.",
+        "Technology economies of scale and bidding levels are represented.",
+        "Hydro storage levels are set by the model at the start/end of the time horizon.",
+        "Demand-side flexibility is represented by time-shiftable loads.",
+        "LOLP/EENS constraints are not explicitly set; the standard system balance constraint will set this to effectively zero energy not served.",
+        "Curtailment rates are calculated in post-processing.",
+        "Robustness and MGA techniques will not be employed. Sensitivity analysis will be limited to a small set of tests and therefore not require monte carlo techniques.",
+        "There is sufficient computational capacity to run the model with defined spatio-temporal scope and resolution without employing decomposition techniques.",
+        "transmission line and storage charge/discharge losses are not defined, so \"unphysical\" energy destruction does not need to be mitigated against.",
+        "User-defined constraints are necessary to represent policy targets (e.g. systemwide limits, possibly only affecting a subset of technologies).",
+        "Users require a GUI to navigate model preparation, optimisation, and analysis.",
+        "The gas distribution network is resolved alongside the electricity transmission network.",
+        "Transmission between regions is represented using DC optimal power flow."
+      ],
+      "features": {
+        "asset__candidates": {
+          "converters": {
+            "value": "y"
+          },
+          "electricity_transmission": {
+            "value": "y"
+          },
+          "endogenous": {
+            "value": "y"
+          },
+          "exogenous": {
+            "value": "n"
+          },
+          "fluid_or_gas_distribution": {
+            "value": "y"
+          },
+          "generators": {
+            "value": "y"
+          },
+          "loads": {
+            "value": "y"
+          },
+          "storage": {
+            "value": "y"
+          }
+        },
+        "asset__capacity_representation": {
+          "grouped": {
+            "value": "n"
+          },
+          "partial_grouped": {
+            "value": "y"
+          },
+          "units": {
+            "value": "n"
+          }
+        },
+        "asset__chaining": {
+          "asset_linking": {
+            "value": "n"
+          },
+          "stockpiling": {
+            "value": "y"
+          }
+        },
+        "asset__cost__investment": {
+          "annuitisation": {
+            "value": "y"
+          },
+          "linear": {
+            "value": "y"
+          },
+          "piecewise": {
+            "value": "n"
+          },
+          "subsidy/penalty": {
+            "value": "y"
+          },
+          "unit": {
+            "value": "y"
+          }
+        },
+        "asset__cost__operation": {
+          "linear": {
+            "value": "y"
+          },
+          "piecewise": {
+            "value": "n"
+          },
+          "subsidy/penalty": {
+            "value": "y"
+          },
+          "unit": {
+            "value": "n"
+          }
+        },
+        "asset__operating_characteristics": {
+          "iterative": {
+            "value": "n"
+          },
+          "linear": {
+            "value": "y"
+          },
+          "piecewise": {
+            "value": "n"
+          },
+          "static non_dimensional": {
+            "value": "y"
+          },
+          "static_dimensional": {
+            "value": "y"
+          }
+        },
+        "asset__operating_constraints": {
+          "inter_spatial": {
+            "value": "n"
+          },
+          "inter_temporal": {
+            "value": "y"
+          },
+          "operating": {
+            "value": "n"
+          },
+          "total": {
+            "value": "y"
+          }
+        },
+        "asset__operating_representation": {
+          "ed": {
+            "value": "y"
+          },
+          "uced": {
+            "value": "n"
+          }
+        },
+        "competition": {
+          "distributed_objectives": {
+            "value": "n"
+          },
+          "portfolio": {
+            "value": "n"
+          }
+        },
+        "edge_effects": {
+          "energy_balance": {
+            "value": "n"
+          },
+          "spatial": {
+            "value": "y"
+          },
+          "time_financial": {
+            "value": "y"
+          },
+          "time_operational": {
+            "value": "y"
+          }
+        },
+        "interface__input": {
+          "cli": {
+            "value": "n"
+          },
+          "gui": {
+            "value": "y"
+          },
+          "no_code": {
+            "value": "n"
+          },
+          "scripting": {
+            "value": "n"
+          },
+          "standardised": {
+            "value": "n"
+          }
+        },
+        "interface__output": {
+          "gui": {
+            "value": "y"
+          },
+          "logs": {
+            "value": "n"
+          },
+          "reports": {
+            "value": "y"
+          },
+          "standardised": {
+            "value": "n"
+          },
+          "tables": {
+            "value": "n"
+          }
+        },
+        "optimisation_problem": {
+          "configuration": {
+            "value": "y"
+          },
+          "decomposition": {
+            "value": "n"
+          },
+          "near_optimal": {
+            "value": "n"
+          },
+          "sim + opt": {
+            "value": "n"
+          },
+          "user_defined_constraints": {
+            "value": "y"
+          },
+          "user_defined_variables": {
+            "value": "n"
+          }
+        },
+        "postprocessing": {
+          "aggregation": {
+            "value": "y"
+          },
+          "curtailment": {
+            "value": "y"
+          },
+          "financial": {
+            "value": "y"
+          },
+          "future_cost_function": {
+            "value": "n"
+          },
+          "gtc": {
+            "value": "n"
+          },
+          "impact_assessment": {
+            "value": "y"
+          },
+          "lcoe": {
+            "value": "y"
+          },
+          "lodf": {
+            "value": "n"
+          },
+          "ptdf": {
+            "value": "n"
+          },
+          "shadow_prices": {
+            "value": "y"
+          }
+        },
+        "preprocessing": {
+          "download": {
+            "value": "y"
+          },
+          "forecasting": {
+            "value": "y"
+          },
+          "spatial_distribution": {
+            "value": "n"
+          }
+        },
+        "resource_adequacy": {
+          "eens": {
+            "value": "y"
+          },
+          "lolp": {
+            "value": "y"
+          },
+          "maintenance_scheduling": {
+            "value": "n"
+          },
+          "monte_carlo": {
+            "value": "n"
+          },
+          "sampling": {
+            "value": "n"
+          }
+        },
+        "robustness": {
+          "asset_outages": {
+            "value": "y"
+          },
+          "eens_limit": {
+            "value": "n"
+          },
+          "lolp_limit": {
+            "value": "n"
+          },
+          "multi_stage_stochastic": {
+            "value": "n"
+          },
+          "ram": {
+            "value": "n"
+          },
+          "reserve_limit": {
+            "value": "y"
+          },
+          "two_stage_stochastic": {
+            "value": "n"
+          },
+          "voll": {
+            "value": "n"
+          }
+        },
+        "spatial__resolution__simplification": {
+          "network": {
+            "value": "n"
+          },
+          "resampling": {
+            "value": "y"
+          }
+        },
+        "system__carriers": {
+          "coupled": {
+            "value": "y"
+          },
+          "decoupled": {
+            "value": "n"
+          }
+        },
+        "system__limits": {
+          "capacity": {
+            "value": "y"
+          },
+          "operation": {
+            "value": "y"
+          }
+        },
+        "time__foresight": {
+          "myopic": {
+            "value": "n"
+          },
+          "perfect": {
+            "value": "y"
+          }
+        },
+        "time__horizon": {
+          "multi_year": {
+            "value": "y"
+          },
+          "single_year": {
+            "value": "n"
+          },
+          "sub_day": {
+            "value": "y"
+          },
+          "sub_year": {
+            "value": "n"
+          }
+        },
+        "time__resolution__simplification": {
+          "distortion_mitigation": {
+            "value": "n"
+          },
+          "load_duration_curves": {
+            "value": "n"
+          },
+          "resampling": {
+            "value": "y"
+          },
+          "typical_periods": {
+            "value": "n"
+          }
+        },
+        "transmission__limits": {
+          "gtc": {
+            "value": "y"
+          },
+          "phase_angle": {
+            "value": "n"
+          },
+          "ptdf": {
+            "value": "n"
+          },
+          "thermal": {
+            "value": "n"
+          }
+        },
+        "transmission__opf": {
+          "ac_opf": {
+            "value": "n"
+          },
+          "dc_opf": {
+            "value": "n"
+          },
+          "sec_opf": {
+            "value": "n"
+          },
+          "transport": {
+            "value": "y"
+          }
+        }
+      }
+    },
+    {
+      "id": "network_development_plan",
+      "name": "Network Development Plan (NDP) / Transmission Planning Process (TPP)",
+      "shortname": "network_development_plan",
+      "description": "Create a set of detailed scenarios of e.g., 2050 transmission grid designs for use in guiding policy implementation and providing boundary conditions for investors, utilities, and local authorities to develop their own plans. The transmission plans will be optimized based on high-level scenarios of decarbonised energy system findings.",
+      "maintainers": [
+        "brynpickering"
+      ],
+      "assumptions": [
+        "The optimization will be run with perfect foresight over the full model horizon, which spans multiple years/decades.",
+        "Generator capacities are fixed by the integrated resource plan (IRP) at each of the model investment years.",
+        "Assets are grouped and only their dispatch, not their unit commitment is represented.",
+        "Contracted operating arrangements and regulated limits (e.g. on emissions) defined in the IRP are applied.",
+        "Non-linear transmission characteristics need to be defined, using piecewise linearisation.",
+        "Transmission between zones is represented using AC optimal power flow.",
+        "The transmission network is accurately represented, albeit aggregated into larger zones.",
+        "Transmission limits are defined by power limits (grid transfer capacities).",
+        "There is sufficient computational capacity to run the model with defined spatio-temporal scope and resolution without employing decomposition techniques.",
+        "Investment and storage asset horizon edge effects are ignored.",
+        "The system supply-demand balance is relaxed. Load shedding is limited with constraints on EENS and LOLP applied alongside a value of lost load (VOLL).",
+        "User-defined decision variables may be required to enable one-off transmission system quirks to be suitably constrained.",
+        "Users require a GUI to navigate model preparation, optimisation, and analysis.",
+        "Different weather and demand years are used to stress-test the model but not as a formal Monte Carlo analysis.",
+        "The output data must be formatted appropriately for regulatory approval."
+      ],
+      "features": {
+        "asset__candidates": {
+          "converters": {
+            "value": "n"
+          },
+          "electricity_transmission": {
+            "value": "y"
+          },
+          "endogenous": {
+            "value": "y"
+          },
+          "exogenous": {
+            "value": "y"
+          },
+          "fluid_or_gas_distribution": {
+            "value": "n"
+          },
+          "generators": {
+            "value": "y"
+          },
+          "loads": {
+            "value": "y"
+          },
+          "storage": {
+            "value": "y"
+          }
+        },
+        "asset__capacity_representation": {
+          "grouped": {
+            "value": "y"
+          },
+          "partial_grouped": {
+            "value": "n"
+          },
+          "units": {
+            "value": "n"
+          }
+        },
+        "asset__chaining": {
+          "asset_linking": {
+            "value": "n"
+          },
+          "stockpiling": {
+            "value": "y"
+          }
+        },
+        "asset__cost__investment": {
+          "annuitisation": {
+            "value": "y"
+          },
+          "linear": {
+            "value": "y"
+          },
+          "piecewise": {
+            "value": "n"
+          },
+          "subsidy/penalty": {
+            "value": "y"
+          },
+          "unit": {
+            "value": "n"
+          }
+        },
+        "asset__cost__operation": {
+          "linear": {
+            "value": "y"
+          },
+          "piecewise": {
+            "value": "n"
+          },
+          "subsidy/penalty": {
+            "value": "y"
+          },
+          "unit": {
+            "value": "n"
+          }
+        },
+        "asset__operating_characteristics": {
+          "iterative": {
+            "value": "n"
+          },
+          "linear": {
+            "value": "y"
+          },
+          "piecewise": {
+            "value": "y"
+          },
+          "static non_dimensional": {
+            "value": "y"
+          },
+          "static_dimensional": {
+            "value": "y"
+          }
+        },
+        "asset__operating_constraints": {
+          "inter_spatial": {
+            "value": "n"
+          },
+          "inter_temporal": {
+            "value": "y"
+          },
+          "operating": {
+            "value": "n"
+          },
+          "total": {
+            "value": "y"
+          }
+        },
+        "asset__operating_representation": {
+          "ed": {
+            "value": "y"
+          },
+          "uced": {
+            "value": "n"
+          }
+        },
+        "competition": {
+          "distributed_objectives": {
+            "value": "n"
+          },
+          "portfolio": {
+            "value": "n"
+          }
+        },
+        "edge_effects": {
+          "energy_balance": {
+            "value": "n"
+          },
+          "spatial": {
+            "value": "y"
+          },
+          "time_financial": {
+            "value": "n"
+          },
+          "time_operational": {
+            "value": "n"
+          }
+        },
+        "interface__input": {
+          "cli": {
+            "value": "n"
+          },
+          "gui": {
+            "value": "y"
+          },
+          "no_code": {
+            "value": "n"
+          },
+          "scripting": {
+            "value": "n"
+          },
+          "standardised": {
+            "value": "y"
+          }
+        },
+        "interface__output": {
+          "gui": {
+            "value": "y"
+          },
+          "logs": {
+            "value": "n"
+          },
+          "reports": {
+            "value": "y"
+          },
+          "standardised": {
+            "value": "y"
+          },
+          "tables": {
+            "value": "y"
+          }
+        },
+        "optimisation_problem": {
+          "configuration": {
+            "value": "y"
+          },
+          "decomposition": {
+            "value": "n"
+          },
+          "near_optimal": {
+            "value": "n"
+          },
+          "sim + opt": {
+            "value": "n"
+          },
+          "user_defined_constraints": {
+            "value": "y"
+          },
+          "user_defined_variables": {
+            "value": "y"
+          }
+        },
+        "postprocessing": {
+          "aggregation": {
+            "value": "y"
+          },
+          "curtailment": {
+            "value": "y"
+          },
+          "financial": {
+            "value": "y"
+          },
+          "future_cost_function": {
+            "value": "n"
+          },
+          "gtc": {
+            "value": "y"
+          },
+          "impact_assessment": {
+            "value": "y"
+          },
+          "lcoe": {
+            "value": "y"
+          },
+          "lodf": {
+            "value": "n"
+          },
+          "ptdf": {
+            "value": "n"
+          },
+          "shadow_prices": {
+            "value": "n"
+          }
+        },
+        "preprocessing": {
+          "download": {
+            "value": "y"
+          },
+          "forecasting": {
+            "value": "y"
+          },
+          "spatial_distribution": {
+            "value": "y"
+          }
+        },
+        "resource_adequacy": {
+          "eens": {
+            "value": "y"
+          },
+          "lolp": {
+            "value": "y"
+          },
+          "maintenance_scheduling": {
+            "value": "n"
+          },
+          "monte_carlo": {
+            "value": "n"
+          },
+          "sampling": {
+            "value": "n"
+          }
+        },
+        "robustness": {
+          "asset_outages": {
+            "value": "y"
+          },
+          "eens_limit": {
+            "value": "y"
+          },
+          "lolp_limit": {
+            "value": "y"
+          },
+          "multi_stage_stochastic": {
+            "value": "n"
+          },
+          "ram": {
+            "value": "n"
+          },
+          "reserve_limit": {
+            "value": "y"
+          },
+          "two_stage_stochastic": {
+            "value": "n"
+          },
+          "voll": {
+            "value": "y"
+          }
+        },
+        "spatial__resolution__simplification": {
+          "network": {
+            "value": "n"
+          },
+          "resampling": {
+            "value": "n"
+          }
+        },
+        "system__carriers": {
+          "coupled": {
+            "value": "n"
+          },
+          "decoupled": {
+            "value": "y"
+          }
+        },
+        "system__limits": {
+          "capacity": {
+            "value": "n"
+          },
+          "operation": {
+            "value": "y"
+          }
+        },
+        "time__foresight": {
+          "myopic": {
+            "value": "n"
+          },
+          "perfect": {
+            "value": "y"
+          }
+        },
+        "time__horizon": {
+          "multi_year": {
+            "value": "y"
+          },
+          "single_year": {
+            "value": "n"
+          },
+          "sub_day": {
+            "value": "y"
+          },
+          "sub_year": {
+            "value": "n"
+          }
+        },
+        "time__resolution__simplification": {
+          "distortion_mitigation": {
+            "value": "n"
+          },
+          "load_duration_curves": {
+            "value": "n"
+          },
+          "resampling": {
+            "value": "y"
+          },
+          "typical_periods": {
+            "value": "n"
+          }
+        },
+        "transmission__limits": {
+          "gtc": {
+            "value": "y"
+          },
+          "phase_angle": {
+            "value": "n"
+          },
+          "ptdf": {
+            "value": "n"
+          },
+          "thermal": {
+            "value": "n"
+          }
+        },
+        "transmission__opf": {
+          "ac_opf": {
+            "value": "y"
+          },
+          "dc_opf": {
+            "value": "n"
+          },
+          "sec_opf": {
+            "value": "n"
+          },
+          "transport": {
+            "value": "n"
+          }
+        }
+      }
+    },
+    {
+      "id": "policy_target_setting",
+      "name": "Policy Target Setting",
+      "shortname": "policy_target_setting",
+      "description": "Political exercise to set carbon emission pathways to meet future year targets",
+      "maintainers": [
+        "brynpickering"
+      ],
+      "assumptions": [
+        "The optimization will be run with perfect foresight over the full model horizon, which spans multiple decades at 5 year resolution.",
+        "Spatial scope is national and single node. Could be multinode at national resolution if multinational but not chosen here.",
+        "Year is represented by representative time slices (heuristics: day/night/peak/season). Could also be representative periods based on automated timeseries clustering, but not chosen here.",
+        "Storage aggregated. Need mathematical representation to handle inter-slice storage.",
+        "Assets are always grouped.",
+        "Sub-group assets by their costs/resource (pre-processed). Includes e.g. wind techs, sources of fuels etc. Group assets back up in postprocessing.",
+        "User constraints/variables are necessary to limit total emissions etc. for subsets of the system being defined.",
+        "No representation of complex asset characteristics.",
+        "Flexible demand is necessary.",
+        "Endogenous learning (piecewise investment cost) not used as it distorts the model.",
+        "Grid-transfer capacities used for multi-node models.",
+        "Multi-carrier, including electricity, hydrogen, natural gas, heat, etc.",
+        "Demands are end-use services (e.g. \"vehicle kms\" for transport demands).",
+        "Extraction of fossils are represented as assets, competing with e.g. imports.",
+        "Sensitivity scenarios will be conducted but detailed sensitivity analysis/stochastic optimisation is beyond the scope of this study.",
+        "Outages represented by a reserve margin of dispatchable capacity. Assets also have an availability factor.",
+        "GUI is necessary, particularly for outputs.",
+        "Marginal/shadow prices required to compare market prices between scenarios.",
+        "Technology-specific discount rates are used to represent consumer preferences on payback periods (a.k.a. hurdle rates).",
+        "Demand elasticity is represented in loads."
+      ],
+      "features": {
+        "asset__candidates": {
+          "converters": {
+            "value": "y"
+          },
+          "electricity_transmission": {
+            "value": "n"
+          },
+          "endogenous": {
+            "value": "y"
+          },
+          "exogenous": {
+            "value": "y"
+          },
+          "fluid_or_gas_distribution": {
+            "value": "n"
+          },
+          "generators": {
+            "value": "y"
+          },
+          "loads": {
+            "value": "y"
+          },
+          "storage": {
+            "value": "y"
+          }
+        },
+        "asset__capacity_representation": {
+          "grouped": {
+            "value": "y"
+          },
+          "partial_grouped": {
+            "value": "n"
+          },
+          "units": {
+            "value": "n"
+          }
+        },
+        "asset__chaining": {
+          "asset_linking": {
+            "value": "n"
+          },
+          "stockpiling": {
+            "value": "y"
+          }
+        },
+        "asset__cost__investment": {
+          "annuitisation": {
+            "value": "y"
+          },
+          "linear": {
+            "value": "y"
+          },
+          "piecewise": {
+            "value": "n"
+          },
+          "subsidy/penalty": {
+            "value": "n"
+          },
+          "unit": {
+            "value": "n"
+          }
+        },
+        "asset__cost__operation": {
+          "linear": {
+            "value": "y"
+          },
+          "piecewise": {
+            "value": "n"
+          },
+          "subsidy/penalty": {
+            "value": "n"
+          },
+          "unit": {
+            "value": "n"
+          }
+        },
+        "asset__operating_characteristics": {
+          "iterative": {
+            "value": "n"
+          },
+          "linear": {
+            "value": "y"
+          },
+          "piecewise": {
+            "value": "n"
+          },
+          "static non_dimensional": {
+            "value": "y"
+          },
+          "static_dimensional": {
+            "value": "y"
+          }
+        },
+        "asset__operating_constraints": {
+          "inter_spatial": {
+            "value": "n"
+          },
+          "inter_temporal": {
+            "value": "y"
+          },
+          "operating": {
+            "value": "n"
+          },
+          "total": {
+            "value": "y"
+          }
+        },
+        "asset__operating_representation": {
+          "ed": {
+            "value": "y"
+          },
+          "uced": {
+            "value": "n"
+          }
+        },
+        "competition": {
+          "distributed_objectives": {
+            "value": "n"
+          },
+          "portfolio": {
+            "value": "n"
+          }
+        },
+        "edge_effects": {
+          "energy_balance": {
+            "value": "y"
+          },
+          "spatial": {
+            "value": "y"
+          },
+          "time_financial": {
+            "value": "y"
+          },
+          "time_operational": {
+            "value": "n"
+          }
+        },
+        "interface__input": {
+          "cli": {
+            "value": "n"
+          },
+          "gui": {
+            "value": "y"
+          },
+          "no_code": {
+            "value": "n"
+          },
+          "scripting": {
+            "value": "n"
+          },
+          "standardised": {
+            "value": "n"
+          }
+        },
+        "interface__output": {
+          "gui": {
+            "value": "y"
+          },
+          "logs": {
+            "value": "y"
+          },
+          "reports": {
+            "value": "y"
+          },
+          "standardised": {
+            "value": "n"
+          },
+          "tables": {
+            "value": "y"
+          }
+        },
+        "optimisation_problem": {
+          "configuration": {
+            "value": "y"
+          },
+          "decomposition": {
+            "value": "n"
+          },
+          "near_optimal": {
+            "value": "n"
+          },
+          "sim + opt": {
+            "value": "n"
+          },
+          "user_defined_constraints": {
+            "value": "y"
+          },
+          "user_defined_variables": {
+            "value": "y"
+          }
+        },
+        "postprocessing": {
+          "aggregation": {
+            "value": "y"
+          },
+          "curtailment": {
+            "value": "n"
+          },
+          "financial": {
+            "value": "n"
+          },
+          "future_cost_function": {
+            "value": "n"
+          },
+          "gtc": {
+            "value": "n"
+          },
+          "impact_assessment": {
+            "value": "y"
+          },
+          "lcoe": {
+            "value": "y"
+          },
+          "lodf": {
+            "value": "n"
+          },
+          "ptdf": {
+            "value": "n"
+          },
+          "shadow_prices": {
+            "value": "y"
+          }
+        },
+        "preprocessing": {
+          "download": {
+            "value": "y"
+          },
+          "forecasting": {
+            "value": "y"
+          },
+          "spatial_distribution": {
+            "value": "n"
+          }
+        },
+        "resource_adequacy": {
+          "eens": {
+            "value": "n"
+          },
+          "lolp": {
+            "value": "n"
+          },
+          "maintenance_scheduling": {
+            "value": "n"
+          },
+          "monte_carlo": {
+            "value": "n"
+          },
+          "sampling": {
+            "value": "n"
+          }
+        },
+        "robustness": {
+          "asset_outages": {
+            "value": "y"
+          },
+          "eens_limit": {
+            "value": "n"
+          },
+          "lolp_limit": {
+            "value": "n"
+          },
+          "multi_stage_stochastic": {
+            "value": "n"
+          },
+          "ram": {
+            "value": "n"
+          },
+          "reserve_limit": {
+            "value": "y"
+          },
+          "two_stage_stochastic": {
+            "value": "n"
+          },
+          "voll": {
+            "value": "y"
+          }
+        },
+        "spatial__resolution__simplification": {
+          "network": {
+            "value": "n"
+          },
+          "resampling": {
+            "value": "n"
+          }
+        },
+        "system__carriers": {
+          "coupled": {
+            "value": "y"
+          },
+          "decoupled": {
+            "value": "n"
+          }
+        },
+        "system__limits": {
+          "capacity": {
+            "value": "y"
+          },
+          "operation": {
+            "value": "y"
+          }
+        },
+        "time__foresight": {
+          "myopic": {
+            "value": "n"
+          },
+          "perfect": {
+            "value": "y"
+          }
+        },
+        "time__horizon": {
+          "multi_year": {
+            "value": "y"
+          },
+          "single_year": {
+            "value": "n"
+          },
+          "sub_day": {
+            "value": "y"
+          },
+          "sub_year": {
+            "value": "y"
+          }
+        },
+        "time__resolution__simplification": {
+          "distortion_mitigation": {
+            "value": "y"
+          },
+          "load_duration_curves": {
+            "value": "n"
+          },
+          "resampling": {
+            "value": "n"
+          },
+          "typical_periods": {
+            "value": "y"
+          }
+        },
+        "transmission__limits": {
+          "gtc": {
+            "value": "n"
+          },
+          "phase_angle": {
+            "value": "n"
+          },
+          "ptdf": {
+            "value": "n"
+          },
+          "thermal": {
+            "value": "n"
+          }
+        },
+        "transmission__opf": {
+          "ac_opf": {
+            "value": "n"
+          },
+          "dc_opf": {
+            "value": "n"
+          },
+          "sec_opf": {
+            "value": "n"
+          },
+          "transport": {
+            "value": "y"
+          }
+        }
+      }
+    },
+    {
+      "id": "portfolio_plan",
+      "name": "Asset portfolio investment plan",
+      "shortname": "portfolio_plan",
+      "description": "Create an asset portfolio investment plan as a private / public utility company. This plan will be guided by national / regional plans (IRPs, NDPs, etc.), the company's   current risk appetite, and any upcoming changes to market mechanisms / subsidies which may impact revenue. ",
+      "maintainers": [
+        "brynpickering"
+      ],
+      "assumptions": [
+        "The optimization will be run over individual years both with perfect foresight (capacity planning) and with myopic foresight over days or weeks within the year (operating revenue analysis).",
+        "Financial and operational horizon edge effects must be considered as the portfolio includes storage devices.",
+        "No timeseries simplification is undertaken because the spatial and generator scope is limited to cover only the assets in the portfolio.",
+        "The rest of the system develops according to the scenarios set out by the integrated resource plan (IRP) and network development plan (NDP) and is resolved coarsely.",
+        "Portfolio assets are resolved individually with unit commitment characteristics (ramp rate, up/down-time, etc.) and non-linear operating and financial considerations that are piecewise linearised.",
+        "Hydro cascading is represented, as well as asset linking within power plants, where those power plants have multiple possible asset configurations.",
+        "Transmission from assets to the rest of the system is represented using AC optimal power flow, is limited by PTDF and considers phase angles.",
+        "Available investment limits the total capacity of new assets that can be feasibly purchased.",
+        "Weather and market uncertainties are mitigated against using two-stage stochastic optimisation.",
+        "Externalities (loads, changes to asset capacities beyond the current portfolio) must be forecast over the next 10-15 years.",
+        "Profit-maximisation must be represented in how the portfolio is committed and dispatched in the day-ahead and intra-day markets, which requires competitors and their perceived risk appetite to be resolved."
+      ],
+      "features": {
+        "asset__candidates": {
+          "converters": {
+            "value": "n"
+          },
+          "electricity_transmission": {
+            "value": "y"
+          },
+          "endogenous": {
+            "value": "y"
+          },
+          "exogenous": {
+            "value": "y"
+          },
+          "fluid_or_gas_distribution": {
+            "value": "n"
+          },
+          "generators": {
+            "value": "y"
+          },
+          "loads": {
+            "value": "n"
+          },
+          "storage": {
+            "value": "y"
+          }
+        },
+        "asset__capacity_representation": {
+          "grouped": {
+            "value": "n"
+          },
+          "partial_grouped": {
+            "value": "n"
+          },
+          "units": {
+            "value": "y"
+          }
+        },
+        "asset__chaining": {
+          "asset_linking": {
+            "value": "y"
+          },
+          "stockpiling": {
+            "value": "y"
+          }
+        },
+        "asset__cost__investment": {
+          "annuitisation": {
+            "value": "y"
+          },
+          "linear": {
+            "value": "n"
+          },
+          "piecewise": {
+            "value": "y"
+          },
+          "subsidy/penalty": {
+            "value": "y"
+          },
+          "unit": {
+            "value": "y"
+          }
+        },
+        "asset__cost__operation": {
+          "linear": {
+            "value": "y"
+          },
+          "piecewise": {
+            "value": "y"
+          },
+          "subsidy/penalty": {
+            "value": "y"
+          },
+          "unit": {
+            "value": "y"
+          }
+        },
+        "asset__operating_characteristics": {
+          "iterative": {
+            "value": "n"
+          },
+          "linear": {
+            "value": "y"
+          },
+          "piecewise": {
+            "value": "y"
+          },
+          "static non_dimensional": {
+            "value": "y"
+          },
+          "static_dimensional": {
+            "value": "y"
+          }
+        },
+        "asset__operating_constraints": {
+          "inter_spatial": {
+            "value": "y"
+          },
+          "inter_temporal": {
+            "value": "y"
+          },
+          "operating": {
+            "value": "y"
+          },
+          "total": {
+            "value": "y"
+          }
+        },
+        "asset__operating_representation": {
+          "ed": {
+            "value": "n"
+          },
+          "uced": {
+            "value": "y"
+          }
+        },
+        "competition": {
+          "distributed_objectives": {
+            "value": "y"
+          },
+          "portfolio": {
+            "value": "y"
+          }
+        },
+        "edge_effects": {
+          "energy_balance": {
+            "value": "n"
+          },
+          "spatial": {
+            "value": "n"
+          },
+          "time_financial": {
+            "value": "y"
+          },
+          "time_operational": {
+            "value": "y"
+          }
+        },
+        "interface__input": {
+          "cli": {
+            "value": "n"
+          },
+          "gui": {
+            "value": "y"
+          },
+          "no_code": {
+            "value": "n"
+          },
+          "scripting": {
+            "value": "n"
+          },
+          "standardised": {
+            "value": "n"
+          }
+        },
+        "interface__output": {
+          "gui": {
+            "value": "y"
+          },
+          "logs": {
+            "value": "y"
+          },
+          "reports": {
+            "value": "y"
+          },
+          "standardised": {
+            "value": "n"
+          },
+          "tables": {
+            "value": "y"
+          }
+        },
+        "optimisation_problem": {
+          "configuration": {
+            "value": "y"
+          },
+          "decomposition": {
+            "value": "y"
+          },
+          "near_optimal": {
+            "value": "y"
+          },
+          "sim + opt": {
+            "value": "n"
+          },
+          "user_defined_constraints": {
+            "value": "y"
+          },
+          "user_defined_variables": {
+            "value": "n"
+          }
+        },
+        "postprocessing": {
+          "aggregation": {
+            "value": "n"
+          },
+          "curtailment": {
+            "value": "y"
+          },
+          "financial": {
+            "value": "y"
+          },
+          "future_cost_function": {
+            "value": "y"
+          },
+          "gtc": {
+            "value": "n"
+          },
+          "impact_assessment": {
+            "value": "y"
+          },
+          "lcoe": {
+            "value": "n"
+          },
+          "lodf": {
+            "value": "n"
+          },
+          "ptdf": {
+            "value": "n"
+          },
+          "shadow_prices": {
+            "value": "y"
+          }
+        },
+        "preprocessing": {
+          "download": {
+            "value": "n"
+          },
+          "forecasting": {
+            "value": "y"
+          },
+          "spatial_distribution": {
+            "value": "y"
+          }
+        },
+        "resource_adequacy": {
+          "eens": {
+            "value": "n"
+          },
+          "lolp": {
+            "value": "n"
+          },
+          "maintenance_scheduling": {
+            "value": "y"
+          },
+          "monte_carlo": {
+            "value": "y"
+          },
+          "sampling": {
+            "value": "y"
+          }
+        },
+        "robustness": {
+          "asset_outages": {
+            "value": "y"
+          },
+          "eens_limit": {
+            "value": "n"
+          },
+          "lolp_limit": {
+            "value": "n"
+          },
+          "multi_stage_stochastic": {
+            "value": "y"
+          },
+          "ram": {
+            "value": "n"
+          },
+          "reserve_limit": {
+            "value": "y"
+          },
+          "two_stage_stochastic": {
+            "value": "y"
+          },
+          "voll": {
+            "value": "y"
+          }
+        },
+        "spatial__resolution__simplification": {
+          "network": {
+            "value": "n"
+          },
+          "resampling": {
+            "value": "n"
+          }
+        },
+        "system__carriers": {
+          "coupled": {
+            "value": "n"
+          },
+          "decoupled": {
+            "value": "y"
+          }
+        },
+        "system__limits": {
+          "capacity": {
+            "value": "y"
+          },
+          "operation": {
+            "value": "y"
+          }
+        },
+        "time__foresight": {
+          "myopic": {
+            "value": "y"
+          },
+          "perfect": {
+            "value": "y"
+          }
+        },
+        "time__horizon": {
+          "multi_year": {
+            "value": "n"
+          },
+          "single_year": {
+            "value": "y"
+          },
+          "sub_day": {
+            "value": "y"
+          },
+          "sub_year": {
+            "value": "y"
+          }
+        },
+        "time__resolution__simplification": {
+          "distortion_mitigation": {
+            "value": "n"
+          },
+          "load_duration_curves": {
+            "value": "n"
+          },
+          "resampling": {
+            "value": "n"
+          },
+          "typical_periods": {
+            "value": "n"
+          }
+        },
+        "transmission__limits": {
+          "gtc": {
+            "value": "n"
+          },
+          "phase_angle": {
+            "value": "y"
+          },
+          "ptdf": {
+            "value": "y"
+          },
+          "thermal": {
+            "value": "n"
+          }
+        },
+        "transmission__opf": {
+          "ac_opf": {
+            "value": "y"
+          },
+          "dc_opf": {
+            "value": "n"
+          },
+          "sec_opf": {
+            "value": "n"
+          },
+          "transport": {
+            "value": "n"
+          }
+        }
+      }
+    }
+  ]
+}
