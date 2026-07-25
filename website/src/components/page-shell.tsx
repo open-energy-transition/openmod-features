@@ -8,8 +8,8 @@ export function FeatureTable({
   minWidth: string
 }) {
   return (
-    <div className="overflow-x-auto rounded-md border border-slate-200 bg-white">
-      <table className="w-full border-collapse text-sm" style={{ minWidth }}>
+    <div className="atlas-table-frame">
+      <table className="atlas-table w-full border-collapse text-sm" style={{ minWidth }}>
         {children}
       </table>
     </div>
@@ -18,7 +18,7 @@ export function FeatureTable({
 
 export function ColumnHead({ children }: { children: ReactNode }) {
   return (
-    <th className="sticky top-0 z-10 border-b border-slate-200 bg-white px-3 py-3 text-center font-semibold">
+    <th className="atlas-table-head sticky top-0 z-10 px-3 py-3 text-center font-semibold">
       {children}
     </th>
   )
@@ -36,12 +36,12 @@ export function Panel({
   children: ReactNode
 }) {
   return (
-    <section className="rounded-md border border-slate-200 bg-white">
-      <div className="flex flex-col gap-3 border-b border-slate-200 px-4 py-3 sm:flex-row sm:items-start sm:justify-between">
+    <section className="atlas-panel">
+      <div className="atlas-panel-header flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h2 className="text-base font-semibold">{title}</h2>
+          <h2 className="atlas-panel-title text-base font-semibold">{title}</h2>
           {description ? (
-            <p className="mt-1 text-sm text-slate-500">{description}</p>
+            <p className="atlas-panel-description mt-1 text-sm">{description}</p>
           ) : null}
         </div>
         {actions ? <div className="flex shrink-0 gap-2">{actions}</div> : null}
@@ -55,10 +55,10 @@ export function EmptyState({ title, detail }: { title: string; detail: string })
   return (
     <div
       role="status"
-      className="rounded-md border border-dashed border-slate-300 bg-white px-4 py-10 text-center"
+      className="atlas-panel px-4 py-10 text-center"
     >
-      <h2 className="text-sm font-semibold text-slate-900">{title}</h2>
-      <p className="mt-1 text-sm text-slate-500">{detail}</p>
+      <h2 className="text-sm font-semibold text-[var(--atlas-ink)]">{title}</h2>
+      <p className="atlas-caption mt-1 text-sm">{detail}</p>
     </div>
   )
 }

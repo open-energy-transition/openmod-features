@@ -30,17 +30,17 @@ export function Toggle({
   description: string
 }) {
   return (
-    <label className="group flex min-w-0 items-start gap-3 rounded-md px-2 py-1.5 hover:bg-slate-100">
+    <label className="group flex min-w-0 items-start gap-3 rounded-[6px] px-2 py-1.5 hover:bg-[var(--atlas-hydro-wash)]">
       <Switch.Root
         checked={checked}
         onCheckedChange={onCheckedChange}
-        className="mt-0.5 flex h-5 w-9 shrink-0 rounded-full bg-slate-300 p-0.5 outline-none transition-colors focus-visible:ring-2 focus-visible:ring-teal-700 data-[checked]:bg-teal-700"
+        className="mt-0.5 flex h-5 w-9 shrink-0 rounded-full bg-[var(--atlas-line-strong)] p-0.5 outline-none transition-colors focus-visible:ring-2 focus-visible:ring-[var(--atlas-hydro)] data-[checked]:bg-[var(--atlas-hydro)]"
       >
         <Switch.Thumb className="h-4 w-4 rounded-full bg-white transition-transform data-[checked]:translate-x-4" />
       </Switch.Root>
       <span className="grid gap-0.5">
-        <span className="text-sm font-medium text-slate-800">{label}</span>
-        <span className="text-xs leading-5 text-slate-500">{description}</span>
+        <span className="text-sm font-medium text-[var(--atlas-ink)]">{label}</span>
+        <span className="atlas-caption text-xs leading-5">{description}</span>
       </span>
     </label>
   )
@@ -56,11 +56,11 @@ export function CheckPill({
   children: ReactNode
 }) {
   return (
-    <label className="flex cursor-pointer items-center gap-2 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 hover:border-slate-300 hover:bg-slate-50">
+    <label className="atlas-secondary-button flex cursor-pointer items-center gap-2 px-3 py-2 text-sm">
       <Checkbox.Root
         checked={checked}
         onCheckedChange={onCheckedChange}
-        className="grid h-4 w-4 shrink-0 place-items-center rounded border border-slate-400 text-white outline-none focus-visible:ring-2 focus-visible:ring-teal-700 data-[checked]:border-teal-700 data-[checked]:bg-teal-700"
+        className="grid h-4 w-4 shrink-0 place-items-center rounded border border-[var(--atlas-line-strong)] text-white outline-none focus-visible:ring-2 focus-visible:ring-[var(--atlas-hydro)] data-[checked]:border-[var(--atlas-hydro)] data-[checked]:bg-[var(--atlas-hydro)]"
       >
         <Checkbox.Indicator>
           <FaCheck className="text-[10px]" />
@@ -86,13 +86,13 @@ export function Hint({
     <Tooltip.Root>
       <Tooltip.Trigger
         render={<span />}
-        className="cursor-help text-left underline decoration-slate-300 decoration-dotted underline-offset-4 outline-none focus-visible:ring-2 focus-visible:ring-teal-700"
+        className="cursor-help text-left underline decoration-[rgb(13_118_111_/_0.28)] decoration-dotted underline-offset-4 outline-none focus-visible:ring-2 focus-visible:ring-[var(--atlas-hydro)]"
       >
         {children}
       </Tooltip.Trigger>
       <Tooltip.Portal>
         <Tooltip.Positioner sideOffset={8}>
-          <Tooltip.Popup className="max-w-sm rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-xs leading-5 text-white shadow-lg">
+          <Tooltip.Popup className="atlas-popup max-w-sm px-3 py-2 text-xs leading-5">
             {label}
           </Tooltip.Popup>
         </Tooltip.Positioner>
@@ -141,13 +141,13 @@ export function StatusIcon({
 
 export function StatusLegend() {
   return (
-    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-slate-600">
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-[var(--atlas-ink-soft)]">
       <LegendItem value="y" sourced label="Implemented" />
       <LegendItem value="y" sourced={false} label="Implemented, unvalidated" />
       <LegendItem value="dev" sourced label="In development" />
       <LegendItem value="n" sourced label="Missing" />
       <span className="inline-flex items-center gap-1.5">
-        <FaMinus className="text-slate-400" aria-hidden="true" />
+        <FaMinus className="atlas-muted" aria-hidden="true" />
         Not required
       </span>
     </div>
@@ -174,7 +174,7 @@ function LegendItem({
 export function CoverageBadge({ coverage }: { coverage: CoverageResult }) {
   if (coverage.percentage === null) {
     return (
-      <span className="inline-flex min-w-16 justify-center rounded bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-500">
+      <span className="inline-flex min-w-16 justify-center rounded bg-[var(--atlas-surface-inset)] px-2 py-1 text-xs font-semibold text-[var(--atlas-ink-muted)]">
         N/A
       </span>
     )
@@ -182,7 +182,7 @@ export function CoverageBadge({ coverage }: { coverage: CoverageResult }) {
 
   return (
     <span
-      className="inline-flex min-w-16 justify-center rounded px-2 py-1 text-xs font-semibold text-slate-950"
+      className="inline-flex min-w-16 justify-center rounded px-2 py-1 text-xs font-semibold text-[var(--atlas-badge-ink)] shadow-[inset_0_0_0_1px_rgb(22_37_32_/_0.08)]"
       style={{ backgroundColor: coverageColor(coverage.percentage) }}
     >
       {Math.round(coverage.percentage)}%
@@ -205,7 +205,7 @@ export function IconButton({
       onClick={onClick}
       aria-label={label}
       title={label}
-      className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700"
+      className="atlas-secondary-button atlas-focus inline-flex h-9 w-9 items-center justify-center"
     >
       {children}
     </button>
@@ -218,7 +218,7 @@ export function ExternalLink({ href, label }: { href: string; label: string }) {
       href={href}
       target="_blank"
       rel="noreferrer"
-      className="inline-flex items-center gap-1 text-xs font-medium text-teal-700 hover:text-teal-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700"
+      className="atlas-reference-link atlas-focus inline-flex items-center gap-1 px-0.5 text-xs font-medium focus-visible:outline-none"
     >
       {label}
       <FaArrowUpRightFromSquare className="text-[10px]" aria-hidden="true" />
@@ -235,10 +235,10 @@ export function ToolName({
 }) {
   return (
     <div className={compact ? 'grid justify-items-center gap-1' : 'grid gap-1'}>
-      <span className="font-medium text-slate-900">
+      <span className="font-medium text-[var(--atlas-ink)]">
         {compact ? tool.shortname : tool.name}
       </span>
-      <span className="max-w-44 truncate text-xs text-slate-500">
+      <span className="atlas-caption max-w-44 truncate text-xs">
         {compact ? tool.name : tool.shortname}
       </span>
       {(tool.docs || tool.source) && compact ? (
@@ -261,16 +261,16 @@ export function CoverageControls({
   return (
     <section
       aria-labelledby="coverage-options"
-      className="grid gap-3 rounded-md border border-slate-200 bg-slate-50 p-3 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)_minmax(0,2fr)]"
+      className="atlas-toolbar grid gap-3 p-3 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)_minmax(0,2fr)]"
     >
       <div>
         <h2
           id="coverage-options"
-          className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500"
+          className="atlas-caption text-xs font-semibold uppercase tracking-[0.12em]"
         >
           Coverage Rules
         </h2>
-        <p className="mt-1 text-xs leading-5 text-slate-500">
+        <p className="atlas-caption mt-1 text-xs leading-5">
           Percentages update across every view.
         </p>
       </div>

@@ -98,15 +98,15 @@ function UseCaseFitPage() {
   return (
     <div className="grid gap-4">
       {customUseCase && customFeatures ? (
-        <section className="flex flex-col gap-3 rounded-md border border-teal-200 bg-teal-50 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+        <section className="atlas-tint-card flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
-              <h2 className="text-sm font-semibold text-teal-950">
+              <h2 className="text-sm font-semibold text-[var(--atlas-ink)]">
                 {customUseCase.name}
               </h2>
               <CustomBadge />
             </div>
-            <p className="mt-1 text-sm text-teal-800">
+            <p className="mt-1 text-sm text-[var(--atlas-hydro-strong)]">
               Comparing the shareable custom use case. Add built-in use cases from
               the filter when you need a side-by-side review.
             </p>
@@ -119,7 +119,7 @@ function UseCaseFitPage() {
                   [CUSTOM_USE_CASE_PARAM]: customFeatures,
                 } as never
               }
-              className="inline-flex h-9 items-center justify-center gap-2 rounded-md border border-teal-300 bg-white px-3 text-sm font-medium text-teal-800 hover:bg-teal-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700"
+              className="atlas-secondary-button atlas-focus inline-flex h-9 items-center justify-center gap-2 px-3 text-sm font-medium"
             >
               <FaPenToSquare aria-hidden="true" />
               Edit
@@ -127,7 +127,7 @@ function UseCaseFitPage() {
             <button
               type="button"
               onClick={() => void shareCustomUseCase()}
-              className="inline-flex h-9 items-center justify-center gap-2 rounded-md bg-teal-700 px-3 text-sm font-medium text-white hover:bg-teal-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700"
+              className="atlas-primary-button atlas-focus inline-flex h-9 items-center justify-center gap-2 px-3 text-sm font-medium"
             >
               {copied ? (
                 <FaLink aria-hidden="true" />
@@ -180,7 +180,7 @@ function UseCaseFitPage() {
                     </span>
                     {useCase.id === CUSTOM_USE_CASE_ID ? <CustomBadge /> : null}
                   </div>
-                  <span className="mt-1 block text-xs font-normal text-slate-500">
+                  <span className="atlas-caption mt-1 block text-xs font-normal">
                     {useCaseRequirementCount(useCase)} required
                   </span>
                 </ColumnHead>
@@ -189,7 +189,7 @@ function UseCaseFitPage() {
             <tr>
               <StickyHead>Overall</StickyHead>
               {selectedUseCases.map((useCase) => (
-                <td key={useCase.id} className="border-b border-slate-200 px-3 py-2">
+                <td key={useCase.id} className="atlas-cell-border px-3 py-2">
                   {selectedTool ? (
                     <CoverageBadge
                       coverage={calculateUseCaseCoverage(
@@ -200,7 +200,7 @@ function UseCaseFitPage() {
                       )}
                     />
                   ) : (
-                    <span className="text-slate-400">-</span>
+                    <span className="atlas-muted">-</span>
                   )}
                 </td>
               ))}
@@ -225,7 +225,7 @@ function UseCaseFitPage() {
                       )}
                     />
                   ) : (
-                    <span className="text-slate-400">-</span>
+                    <span className="atlas-muted">-</span>
                   )
                 }
                 renderFeatureCell={(useCase, featureId) => (
@@ -251,7 +251,7 @@ function UseCaseFitPage() {
 
 function CustomBadge() {
   return (
-    <span className="inline-flex h-5 items-center rounded border border-teal-300 bg-white px-1.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-teal-800">
+    <span className="inline-flex h-5 items-center rounded border border-[rgb(13_118_111_/_0.24)] bg-[var(--atlas-surface-raised)] px-1.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--atlas-hydro-strong)]">
       Custom
     </span>
   )

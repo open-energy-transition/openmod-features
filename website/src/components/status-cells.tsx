@@ -48,7 +48,7 @@ export function RequirementCell({
 }) {
   if (value !== 'y') {
     return (
-      <span className="inline-flex items-center justify-center text-slate-400">
+      <span className="atlas-muted inline-flex items-center justify-center">
         <FaMinus aria-hidden="true" />
         <span className="sr-only">Not required</span>
       </span>
@@ -94,32 +94,32 @@ function SourceReferenceLink({
         target="_blank"
         rel="noreferrer"
         delay={300}
-        className="rounded px-0.5 text-[10px] font-semibold text-teal-700 hover:text-teal-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700"
+        className="atlas-reference-link atlas-focus px-0.5 text-[10px] font-semibold focus-visible:outline-none"
         aria-label={`Open source ${number}: ${reference.label}`}
       >
         {number}
       </PreviewCard.Trigger>
       <PreviewCard.Portal>
         <PreviewCard.Positioner side="top" align="center" sideOffset={8}>
-          <PreviewCard.Popup className="z-50 w-[min(22rem,calc(100vw-2rem))] rounded-md border border-slate-200 bg-white p-3 text-left text-sm text-slate-700 shadow-lg outline-none">
+          <PreviewCard.Popup className="atlas-preview-card z-50 w-[min(22rem,calc(100vw-2rem))] p-3 text-left text-sm outline-none">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+                <p className="atlas-caption text-xs font-semibold uppercase tracking-[0.12em]">
                   Reference {number}
                 </p>
-                <p className="mt-1 truncate font-semibold text-slate-950">
+                <p className="mt-1 truncate font-semibold text-[var(--atlas-ink)]">
                   {reference.label}
                 </p>
               </div>
               <FaArrowUpRightFromSquare
-                className="mt-1 shrink-0 text-xs text-teal-700"
+                className="mt-1 shrink-0 text-xs text-[var(--atlas-hydro)]"
                 aria-hidden="true"
               />
             </div>
-            <p className="mt-2 line-clamp-3 break-all text-xs leading-5 text-slate-600">
+            <p className="atlas-copy mt-2 line-clamp-3 break-all text-xs leading-5">
               {source}
             </p>
-            <p className="mt-3 text-xs font-medium text-teal-700">
+            <p className="mt-3 text-xs font-medium text-[var(--atlas-hydro)]">
               Click to open the source in a new tab.
             </p>
           </PreviewCard.Popup>

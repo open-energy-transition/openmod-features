@@ -98,7 +98,7 @@ function ToolMatrixPage() {
             <tr>
               <StickyHead>Overall</StickyHead>
               {selectedTools.map((tool) => (
-                <td key={tool.id} className="border-b border-slate-200 px-3 py-2">
+                <td key={tool.id} className="atlas-cell-border px-3 py-2">
                   <CoverageBadge
                     coverage={calculateToolCoverage(
                       scopedTaxonomy,

@@ -206,20 +206,20 @@ function StartAction({
   return (
     <Link
       to={to}
-      className="group grid gap-3 rounded-md border border-slate-200 bg-white p-4 outline-none hover:border-teal-300 hover:bg-teal-50 focus-visible:ring-2 focus-visible:ring-teal-700"
+      className="atlas-panel atlas-focus group grid gap-3 p-4 outline-none hover:bg-[var(--atlas-hydro-wash)]"
     >
       <span className="flex items-center justify-between gap-3">
-        <span className="grid h-9 w-9 place-items-center rounded-md bg-teal-700 text-white">
+        <span className="grid h-9 w-9 place-items-center rounded-[6px] bg-[var(--atlas-hydro)] text-white shadow-[0_8px_18px_-14px_rgb(13_118_111_/_0.7)]">
           {icon}
         </span>
         <FaArrowRight
-          className="text-slate-400 group-hover:text-teal-700"
+          className="atlas-muted group-hover:text-[var(--atlas-hydro)]"
           aria-hidden="true"
         />
       </span>
       <span>
-        <span className="block font-semibold text-slate-950">{title}</span>
-        <span className="mt-1 block text-sm leading-5 text-slate-600">{detail}</span>
+        <span className="block font-semibold text-[var(--atlas-ink)]">{title}</span>
+        <span className="atlas-copy mt-1 block text-sm leading-5">{detail}</span>
       </span>
     </Link>
   )
@@ -227,8 +227,8 @@ function StartAction({
 
 function AnswerItem({ text }: { text: string }) {
   return (
-    <div className="flex gap-3 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700">
-      <FaArrowRight className="mt-0.5 shrink-0 text-teal-700" aria-hidden="true" />
+    <div className="atlas-subtle-card flex gap-3 px-3 py-2 text-sm text-[var(--atlas-ink-soft)]">
+      <FaArrowRight className="mt-0.5 shrink-0 text-[var(--atlas-hydro)]" aria-hidden="true" />
       <span>{text}</span>
     </div>
   )
@@ -246,15 +246,15 @@ function Metric({
   icon?: React.ReactNode
 }) {
   return (
-    <div className="rounded-md border border-slate-200 bg-white p-4">
+    <div className="atlas-panel p-4">
       <div className="flex items-start justify-between gap-3">
-        <dt className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+        <dt className="atlas-caption text-xs font-semibold uppercase tracking-[0.14em]">
           {label}
         </dt>
-        {icon ? <span className="text-slate-400">{icon}</span> : null}
+        {icon ? <span className="atlas-muted">{icon}</span> : null}
       </div>
-      <dd className="mt-2 truncate text-2xl font-semibold text-slate-950">{value}</dd>
-      {detail ? <p className="mt-2 text-xs leading-5 text-slate-500">{detail}</p> : null}
+      <dd className="mt-2 truncate text-2xl font-semibold tabular-nums text-[var(--atlas-ink)]">{value}</dd>
+      {detail ? <p className="atlas-caption mt-2 text-xs leading-5">{detail}</p> : null}
     </div>
   )
 }
@@ -270,11 +270,11 @@ function ProvenanceItem({
 }) {
   return (
     <div>
-      <dt className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+      <dt className="atlas-caption text-xs font-semibold uppercase tracking-[0.12em]">
         {label}
       </dt>
-      <dd className="mt-1 font-medium text-slate-900">{value}</dd>
-      {detail ? <p className="mt-1 text-xs leading-5 text-slate-500">{detail}</p> : null}
+      <dd className="mt-1 font-medium text-[var(--atlas-ink)]">{value}</dd>
+      {detail ? <p className="atlas-caption mt-1 text-xs leading-5">{detail}</p> : null}
     </div>
   )
 }
@@ -289,12 +289,12 @@ function QualityItem({
   value: string
 }) {
   return (
-    <div className="flex items-center justify-between gap-3 rounded-md border border-slate-200 bg-slate-50 px-3 py-2">
-      <dt className="flex min-w-0 items-center gap-2 text-slate-600">
-        <span className="text-slate-400">{icon}</span>
+    <div className="atlas-subtle-card flex items-center justify-between gap-3 px-3 py-2">
+      <dt className="flex min-w-0 items-center gap-2 text-[var(--atlas-ink-soft)]">
+        <span className="atlas-muted">{icon}</span>
         <span className="truncate">{label}</span>
       </dt>
-      <dd className="font-semibold tabular-nums text-slate-950">{value}</dd>
+      <dd className="font-semibold tabular-nums text-[var(--atlas-ink)]">{value}</dd>
     </div>
   )
 }
@@ -302,11 +302,11 @@ function QualityItem({
 function Bar({ percentage }: { percentage: number }) {
   return (
     <div
-      className="h-2 overflow-hidden rounded-full bg-slate-100"
+      className="h-2 overflow-hidden rounded-full bg-[var(--atlas-surface-inset)]"
       aria-label={`${Math.round(percentage)} percent coverage`}
     >
       <div
-        className="h-full rounded-full bg-teal-700"
+        className="h-full rounded-full bg-[var(--atlas-hydro)]"
         style={{ width: `${Math.max(0, Math.min(100, percentage))}%` }}
       />
     </div>

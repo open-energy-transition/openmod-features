@@ -21,6 +21,8 @@ import type { UseCaseRecord } from '../data/types'
 import { useDashboardData } from '../data/useDashboardData'
 import { CoverageControls } from './ui'
 
+type Theme = 'light' | 'dark'
+
 export type DashboardOutletContext = {
   data: DashboardData
   coverageOptions: CoverageOptions
@@ -43,6 +45,7 @@ export function DashboardLayout() {
   const state = useDashboardData()
   const [coverageOptions, setCoverageOptions] = useState(defaultCoverageOptions)
   const [customUseCase, setCustomUseCaseState] = useState<UseCaseRecord | null>(null)
+  const [theme, setTheme] = useState<Theme>('light')
 
   useEffect(() => {
     const syncFromUrl = () => {
@@ -58,6 +61,22 @@ export function DashboardLayout() {
 
     return () => window.removeEventListener('popstate', syncFromUrl)
   }, [])
+
+  useEffect(() => {
+    const storedTheme = window.localStorage.getItem('openmod-dashboard-theme')
+    if (storedTheme === 'light' || storedTheme === 'dark') {
+      setTheme(storedTheme)
+      return
+    }
+
+    setTheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+  }, [])
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+    document.documentElement.style.colorScheme = theme
+    window.localStorage.setItem('openmod-dashboard-theme', theme)
+  }, [theme])
 
   const setCustomUseCase = (useCase: UseCaseRecord) => {
     setCustomUseCaseState(useCase)
@@ -106,11 +125,13 @@ export function DashboardLayout() {
 
   return (
     <Tooltip.Provider>
-      <main className="min-h-screen bg-slate-50 text-slate-950">
+      <main className="atlas-canvas">
         <DashboardHeader
           data={dashboardData}
           coverageOptions={coverageOptions}
           onCoverageChange={setCoverageOptions}
+          theme={theme}
+          onThemeChange={setTheme}
         />
         <div className="mx-auto grid max-w-[1800px] gap-5 px-4 py-6 sm:px-6 lg:px-8">
           <DashboardNav customUseCase={customUseCase} />
@@ -135,29 +156,33 @@ function DashboardHeader({
   data,
   coverageOptions,
   onCoverageChange,
+  theme,
+  onThemeChange,
 }: {
   data: DashboardData
   coverageOptions: CoverageOptions
   onCoverageChange: (options: CoverageOptions) => void
+  theme: Theme
+  onThemeChange: (theme: Theme) => void
 }) {
   return (
-    <header className="border-b border-slate-200 bg-white">
+    <header className="atlas-header">
       <div className="mx-auto grid max-w-[1800px] gap-4 px-4 py-5 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-teal-700">
+            <p className="atlas-eyebrow">
               Open Energy Modelling
             </p>
-            <h1 className="mt-1 text-2xl font-semibold text-slate-950 sm:text-3xl">
+            <h1 className="atlas-title mt-1 text-2xl font-semibold sm:text-3xl">
               Tool Feature Dashboard
             </h1>
-            <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+            <p className="atlas-copy mt-2 max-w-3xl text-sm leading-6">
               Compare modelling capabilities, source validation, and use-case
               fit from the repository feature inventory.
             </p>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center lg:flex-col lg:items-end">
-            <ThemeSwitch />
+            <ThemeSwitch theme={theme} onThemeChange={onThemeChange} />
             <DataStamp data={data} />
           </div>
         </div>
@@ -167,21 +192,27 @@ function DashboardHeader({
   )
 }
 
-function ThemeSwitch() {
-  const [dark, setDark] = useState(false)
+function ThemeSwitch({
+  theme,
+  onThemeChange,
+}: {
+  theme: Theme
+  onThemeChange: (theme: Theme) => void
+}) {
+  const dark = theme === 'dark'
 
   return (
-    <label className="flex w-fit items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-medium text-slate-600">
+    <label className="atlas-subtle-card flex w-fit items-center gap-2 px-2.5 py-1.5 text-xs font-medium text-[var(--atlas-ink-soft)]">
       <FaSun className="text-amber-500" aria-hidden="true" />
       <Switch.Root
         checked={dark}
-        onCheckedChange={setDark}
-        aria-label="Toggle dark theme"
-        className="flex h-5 w-9 shrink-0 rounded-full bg-slate-300 p-0.5 outline-none transition-colors focus-visible:ring-2 focus-visible:ring-teal-700 data-[checked]:bg-slate-800"
+        onCheckedChange={(checked) => onThemeChange(checked ? 'dark' : 'light')}
+        aria-label={dark ? 'Switch to light theme' : 'Switch to dark theme'}
+        className="flex h-5 w-9 shrink-0 rounded-full bg-[var(--atlas-switch-off)] p-0.5 outline-none transition-colors focus-visible:ring-2 focus-visible:ring-[var(--atlas-hydro)] data-[checked]:bg-[var(--atlas-switch-on)]"
       >
-        <Switch.Thumb className="h-4 w-4 rounded-full bg-white transition-transform data-[checked]:translate-x-4" />
+        <Switch.Thumb className="h-4 w-4 rounded-full bg-[var(--atlas-switch-thumb)] transition-transform data-[checked]:translate-x-4" />
       </Switch.Root>
-      <FaMoon className="text-slate-500" aria-hidden="true" />
+      <FaMoon className="atlas-caption" aria-hidden="true" />
     </label>
   )
 }
@@ -190,7 +221,7 @@ function DashboardNav({ customUseCase }: { customUseCase: UseCaseRecord | null }
   return (
     <nav
       aria-label="Dashboard sections"
-      className="flex w-fit max-w-full gap-1 overflow-x-auto border-b border-slate-200"
+      className="atlas-nav flex gap-1 p-1"
     >
       <NavLink to="/" customUseCase={customUseCase}>
         Overview
@@ -227,7 +258,7 @@ function NavLink({
           ? ({ [CUSTOM_USE_CASE_PARAM]: customFeatures } as never)
           : undefined
       }
-      className="h-10 whitespace-nowrap border-b-2 border-transparent px-3 text-sm font-medium leading-10 text-slate-600 outline-none hover:text-slate-950 focus-visible:ring-2 focus-visible:ring-teal-700 [&.active]:border-teal-700 [&.active]:text-teal-800"
+      className="atlas-nav-link atlas-focus h-9 whitespace-nowrap rounded-[6px] px-3 text-sm font-medium leading-9 outline-none"
       activeOptions={{ exact: to === '/' }}
     >
       {children}
@@ -249,7 +280,7 @@ function updateCustomUseCaseUrl(encoded: string | null) {
 
 function DataStamp({ data }: { data: DashboardData }) {
   return (
-    <dl className="grid grid-cols-2 gap-2 text-xs text-slate-600 sm:flex sm:flex-wrap sm:items-center sm:justify-end">
+    <dl className="grid grid-cols-2 gap-2 text-xs text-[var(--atlas-ink-soft)] sm:flex sm:flex-wrap sm:items-center sm:justify-end">
       <DataItem
         icon={<FaScrewdriverWrench aria-hidden="true" />}
         label="Tools"
@@ -269,6 +300,7 @@ function DataStamp({ data }: { data: DashboardData }) {
         icon={<FaClockRotateLeft aria-hidden="true" />}
         label="Updated"
         value={new Date(data.generatedAt).toLocaleString()}
+        wide
       />
     </dl>
   )
@@ -278,17 +310,21 @@ function DataItem({
   icon,
   label,
   value,
+  wide = false,
 }: {
   icon: React.ReactNode
   label: string
   value: string
+  wide?: boolean
 }) {
   return (
-    <div className="flex items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1.5">
-      <dt className="text-slate-400">{icon}</dt>
-      <dd className="flex items-baseline gap-1.5 whitespace-nowrap">
-        <span className="font-semibold tabular-nums text-slate-800">{value}</span>
-        <span className="text-slate-500">{label}</span>
+    <div
+      className={`atlas-subtle-card flex min-w-0 items-center gap-2 px-2.5 py-1.5 ${wide ? 'col-span-2' : ''}`}
+    >
+      <dt className="atlas-muted">{icon}</dt>
+      <dd className="flex min-w-0 items-baseline gap-1.5 whitespace-nowrap">
+        <span className="truncate font-semibold tabular-nums text-[var(--atlas-ink)]">{value}</span>
+        <span className="atlas-caption shrink-0">{label}</span>
       </dd>
     </div>
   )
@@ -296,10 +332,10 @@ function DataItem({
 
 function ShellState({ title, detail }: { title: string; detail?: string }) {
   return (
-    <main className="grid min-h-screen place-items-center bg-slate-50 px-4 text-center">
+    <main className="atlas-canvas grid place-items-center px-4 text-center">
       <div role="status" aria-live="polite">
-        <h1 className="text-xl font-semibold text-slate-950">{title}</h1>
-        {detail ? <p className="mt-2 text-sm text-slate-600">{detail}</p> : null}
+        <h1 className="text-xl font-semibold text-[var(--atlas-ink)]">{title}</h1>
+        {detail ? <p className="atlas-copy mt-2 text-sm">{detail}</p> : null}
       </div>
     </main>
   )

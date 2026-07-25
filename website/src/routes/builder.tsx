@@ -184,13 +184,13 @@ function UseCaseBuilderPage() {
           description="Compose required feature rows, then save the draft as a shareable custom use case for the matrix pages."
         >
           <div className="grid gap-4 p-4">
-            <label className="grid gap-1 text-sm font-medium text-slate-700">
+            <label className="atlas-label grid gap-1 text-sm font-medium">
               Use case name
               <input
                 value={name}
                 onChange={(event) => setName(event.target.value)}
                 placeholder="My Use Case"
-                className="h-10 rounded-md border border-slate-300 px-3 text-sm outline-none focus:border-teal-700 focus:ring-2 focus:ring-teal-100"
+                className="atlas-control h-10 px-3 text-sm"
               />
             </label>
             <StartingPointTabs
@@ -205,14 +205,14 @@ function UseCaseBuilderPage() {
               onLoadYaml={() => void importYaml(yamlFile)}
             />
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <p className="min-w-0 text-sm text-slate-500">
+              <p className="atlas-caption min-w-0 text-sm">
                 {actionHelper}
               </p>
               <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
                 <button
                   type="button"
                   onClick={clearSelection}
-                  className="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-slate-300 bg-white px-3 text-sm font-medium text-slate-700 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700"
+                  className="atlas-secondary-button atlas-focus inline-flex h-10 items-center justify-center gap-2 px-3 text-sm font-medium"
                 >
                   <FaRegTrashCan aria-hidden="true" />
                   Clear
@@ -222,7 +222,7 @@ function UseCaseBuilderPage() {
                   onClick={() => void handleSave()}
                   disabled={selectedFeatureCount === 0 || saving}
                   aria-busy={saving}
-                  className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-teal-700 px-3 text-sm font-medium text-white hover:bg-teal-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700 disabled:cursor-not-allowed disabled:bg-slate-300"
+                  className="atlas-primary-button atlas-focus inline-flex h-10 items-center justify-center gap-2 px-3 text-sm font-medium"
                 >
                   {saving ? (
                     <FaSpinner className="animate-spin" aria-hidden="true" />
@@ -234,7 +234,7 @@ function UseCaseBuilderPage() {
               </div>
             </div>
             {yamlImportError ? (
-              <p role="alert" className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+              <p role="alert" className="atlas-warning px-3 py-2 text-sm">
                 {yamlImportError}
               </p>
             ) : null}
@@ -246,15 +246,15 @@ function UseCaseBuilderPage() {
             <SummaryItem label="Features" value={selectedFeatureCount.toString()} />
             <SummaryItem label="Categories" value={selectedCategoryCount.toString()} />
           </dl>
-          <div className="border-t border-slate-100 p-4">
-            <h3 className="text-sm font-semibold text-slate-900">Tool fit preview</h3>
+          <div className="border-t border-[var(--atlas-line-soft)] p-4">
+            <h3 className="text-sm font-semibold text-[var(--atlas-ink)]">Tool fit preview</h3>
             <div className="mt-3 grid gap-2">
               {toolCoverage.map(({ tool, coverage }) => (
                 <div
                   key={tool.id}
                   className="flex items-center justify-between gap-3 text-sm"
                 >
-                  <span className="min-w-0 truncate text-slate-700">{tool.name}</span>
+                  <span className="min-w-0 truncate text-[var(--atlas-ink-soft)]">{tool.name}</span>
                   <CoverageBadge coverage={coverage} />
                 </div>
               ))}
@@ -264,27 +264,27 @@ function UseCaseBuilderPage() {
       </section>
 
       <Tabs.Root defaultValue="list" className="grid gap-4">
-        <Tabs.List className="flex w-fit max-w-full gap-1 overflow-x-auto border-b border-slate-200">
+        <Tabs.List className="atlas-nav flex w-fit max-w-full gap-1 overflow-x-auto p-1">
           <Tabs.Tab
             value="list"
-            className="h-10 whitespace-nowrap border-b-2 border-transparent px-3 text-sm font-medium leading-10 text-slate-600 outline-none hover:text-slate-950 focus-visible:ring-2 focus-visible:ring-teal-700 data-[active]:border-teal-700 data-[active]:text-teal-800"
+            className="atlas-nav-link atlas-focus h-9 whitespace-nowrap rounded-[6px] px-3 text-sm font-medium leading-9 outline-none data-[active]:bg-[var(--atlas-hydro-wash)] data-[active]:text-[var(--atlas-hydro-strong)]"
           >
             List
           </Tabs.Tab>
           <Tabs.Tab
             value="yaml"
-            className="h-10 whitespace-nowrap border-b-2 border-transparent px-3 text-sm font-medium leading-10 text-slate-600 outline-none hover:text-slate-950 focus-visible:ring-2 focus-visible:ring-teal-700 data-[active]:border-teal-700 data-[active]:text-teal-800"
+            className="atlas-nav-link atlas-focus h-9 whitespace-nowrap rounded-[6px] px-3 text-sm font-medium leading-9 outline-none data-[active]:bg-[var(--atlas-hydro-wash)] data-[active]:text-[var(--atlas-hydro-strong)]"
           >
             YAML
           </Tabs.Tab>
         </Tabs.List>
 
         <Tabs.Panel value="list" className="grid gap-4 outline-none">
-          <div className="flex flex-col gap-3 rounded-md border border-slate-200 bg-white p-4 lg:flex-row lg:items-end lg:justify-between">
-            <label className="grid w-full gap-1 text-sm font-medium text-slate-700 lg:max-w-[50%]">
+          <div className="atlas-toolbar flex flex-col gap-3 p-4 lg:flex-row lg:items-end lg:justify-between">
+            <label className="atlas-label grid w-full gap-1 text-sm font-medium lg:max-w-[50%]">
               <span className="flex items-center justify-between gap-2">
                 <span>Search</span>
-                <span className="text-xs font-normal text-slate-500">
+                <span className="atlas-caption text-xs font-normal">
                   {taxonomy.length} categories
                 </span>
               </span>
@@ -293,7 +293,7 @@ function UseCaseBuilderPage() {
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Search feature names or keys"
-                className="h-10 rounded-md border border-slate-300 px-3 text-sm outline-none focus:border-teal-700 focus:ring-2 focus:ring-teal-100"
+                className="atlas-control h-10 px-3 text-sm"
               />
             </label>
             <LegendActions
@@ -339,7 +339,7 @@ function UseCaseBuilderPage() {
             description="Use this content as a starting point for a repository use-case features.yaml file."
             actions={<ExportAction onExport={exportYaml} />}
           >
-            <pre className="max-h-[36rem] overflow-auto p-4 text-xs leading-5 text-slate-700">
+            <pre className="max-h-[36rem] overflow-auto bg-[var(--atlas-surface-inset)] p-4 text-xs leading-5 text-[var(--atlas-ink-soft)]">
               {yaml}
             </pre>
           </Panel>
@@ -364,7 +364,7 @@ function ExportAction({ onExport }: { onExport: () => void }) {
     <button
       type="button"
       onClick={onExport}
-      className="inline-flex h-9 items-center justify-center gap-2 rounded-md bg-teal-700 px-3 text-sm font-medium text-white hover:bg-teal-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700"
+      className="atlas-primary-button atlas-focus inline-flex h-9 items-center justify-center gap-2 px-3 text-sm font-medium"
     >
       <FaFileExport aria-hidden="true" />
       Export
@@ -406,8 +406,8 @@ function StartingPointTabs({
       className="grid gap-3"
     >
       <div className="grid gap-1">
-        <span className="text-sm font-medium text-slate-700">Starting point</span>
-        <Tabs.List className="flex w-fit max-w-full gap-1 overflow-x-auto rounded-md border border-slate-200 bg-slate-50 p-1">
+        <span className="atlas-label text-sm font-medium">Starting point</span>
+        <Tabs.List className="atlas-subtle-card flex w-fit max-w-full gap-1 overflow-x-auto p-1">
           <StartingPointTab value="scratch">From scratch</StartingPointTab>
           <StartingPointTab value="copy">Copy existing</StartingPointTab>
           <StartingPointTab value="yaml">Import YAML</StartingPointTab>
@@ -415,7 +415,7 @@ function StartingPointTabs({
       </div>
 
       <Tabs.Panel value="scratch" className="outline-none">
-        <p className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-600">
+        <p className="atlas-subtle-card px-3 py-2 text-sm text-[var(--atlas-ink-soft)]">
           Start with an empty requirement set, then pick required features manually
           from the feature list below.
         </p>
@@ -430,7 +430,7 @@ function StartingPointTabs({
         <button
           type="button"
           onClick={onLoadTemplate}
-          className="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-slate-300 bg-white px-3 text-sm font-medium text-slate-700 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700"
+          className="atlas-secondary-button atlas-focus inline-flex h-10 items-center justify-center gap-2 px-3 text-sm font-medium"
         >
           <FaClipboardCheck aria-hidden="true" />
           Load use case
@@ -438,21 +438,21 @@ function StartingPointTabs({
       </Tabs.Panel>
 
       <Tabs.Panel value="yaml" className="grid gap-3 outline-none lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
-        <label className="grid gap-1 text-sm font-medium text-slate-700">
+        <label className="atlas-label grid gap-1 text-sm font-medium">
           Local YAML file
           <input
             id={yamlInputId}
             type="file"
             accept=".yaml,.yml,text/yaml,application/yaml"
             onChange={(event) => onYamlFileChange(event.target.files?.[0] ?? null)}
-            className="block h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 file:mr-3 file:rounded file:border-0 file:bg-slate-100 file:px-2 file:py-1 file:text-sm file:font-medium file:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700"
+            className="atlas-control block h-10 w-full px-3 py-2 text-sm file:mr-3 file:rounded file:border-0 file:bg-[var(--atlas-hydro-wash)] file:px-2 file:py-1 file:text-sm file:font-medium file:text-[var(--atlas-hydro-strong)]"
           />
         </label>
         <button
           type="button"
           onClick={onLoadYaml}
           disabled={!yamlFile}
-          className="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-slate-300 bg-white px-3 text-sm font-medium text-slate-700 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400"
+          className="atlas-secondary-button atlas-focus inline-flex h-10 items-center justify-center gap-2 px-3 text-sm font-medium disabled:cursor-not-allowed disabled:bg-[var(--atlas-surface-inset)] disabled:text-[var(--atlas-ink-faint)]"
         >
           <FaFileImport aria-hidden="true" />
           Load YAML
@@ -472,7 +472,7 @@ function StartingPointTab({
   return (
     <Tabs.Tab
       value={value}
-      className="h-8 whitespace-nowrap rounded px-3 text-sm font-medium text-slate-600 outline-none hover:text-slate-950 focus-visible:ring-2 focus-visible:ring-teal-700 data-[active]:bg-white data-[active]:text-teal-800 data-[active]:shadow-sm"
+      className="atlas-focus h-8 whitespace-nowrap rounded-[5px] px-3 text-sm font-medium text-[var(--atlas-ink-muted)] outline-none hover:text-[var(--atlas-ink)] data-[active]:bg-[var(--atlas-surface-raised)] data-[active]:text-[var(--atlas-hydro-strong)] data-[active]:shadow-[0_1px_2px_rgb(15_23_21_/_0.06)]"
     >
       {children}
     </Tabs.Tab>
@@ -504,28 +504,28 @@ function TemplateSelect({
       }}
       modal={false}
     >
-      <div className="grid gap-1 text-sm font-medium text-slate-700">
+      <div className="atlas-label grid gap-1 text-sm font-medium">
         <Select.Label>Existing use cases</Select.Label>
-        <Select.Trigger className="flex h-10 min-w-0 items-center justify-between gap-3 rounded-md border border-slate-300 bg-white px-3 text-left text-sm font-normal text-slate-800 outline-none hover:bg-slate-50 focus-visible:border-teal-700 focus-visible:ring-2 focus-visible:ring-teal-100 data-[popup-open]:border-teal-700 data-[popup-open]:ring-2 data-[popup-open]:ring-teal-100">
+        <Select.Trigger className="atlas-control flex h-10 min-w-0 items-center justify-between gap-3 px-3 text-left text-sm font-normal">
           <Select.Value className="min-w-0 flex-1 truncate" />
-          <Select.Icon className="shrink-0 text-slate-500">
+          <Select.Icon className="atlas-caption shrink-0">
             <FaChevronDown aria-hidden="true" />
           </Select.Icon>
         </Select.Trigger>
       </div>
       <Select.Portal>
         <Select.Positioner sideOffset={6} className="z-50">
-          <Select.Popup className="max-h-72 min-w-[var(--anchor-width)] max-w-[calc(100vw-2rem)] overflow-hidden rounded-md border border-slate-200 bg-white shadow-lg outline-none lg:w-max">
+          <Select.Popup className="atlas-popup max-h-72 min-w-[var(--anchor-width)] max-w-[calc(100vw-2rem)] overflow-hidden outline-none lg:w-max">
             <Select.List className="max-h-72 overflow-y-auto py-1">
               {items.map((item) => (
                 <Select.Item
                   key={item.value}
                   value={item.value}
-                  className="grid cursor-default grid-cols-[1rem_minmax(0,max-content)] items-center gap-2 px-3 py-2 text-sm text-slate-700 outline-none data-[highlighted]:bg-teal-50 data-[selected]:font-medium"
+                  className="atlas-option grid cursor-default grid-cols-[1rem_minmax(0,max-content)] items-center gap-2 px-3 py-2 text-sm outline-none"
                 >
                   <Select.ItemIndicator
                     keepMounted
-                    className="invisible col-start-1 text-teal-700 data-[selected]:visible"
+                    className="invisible col-start-1 text-[var(--atlas-hydro)] data-[selected]:visible"
                   >
                     <FaCheck className="text-[10px]" aria-hidden="true" />
                   </Select.ItemIndicator>
@@ -544,9 +544,9 @@ function TemplateSelect({
 
 function SummaryItem({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-md border border-slate-200 bg-slate-50 p-3">
-      <dt className="text-xs font-medium text-slate-500">{label}</dt>
-      <dd className="mt-1 text-2xl font-semibold text-slate-950">{value}</dd>
+    <div className="atlas-subtle-card p-3">
+      <dt className="atlas-caption text-xs font-medium">{label}</dt>
+      <dd className="mt-1 text-2xl font-semibold tabular-nums text-[var(--atlas-ink)]">{value}</dd>
     </div>
   )
 }
@@ -570,22 +570,22 @@ function BuilderCategoryRows({
 
   return (
     <>
-      <tr className="bg-slate-100">
-        <td colSpan={3} className="border-b border-slate-200 px-3 py-2">
+      <tr className="atlas-category-row">
+        <td colSpan={3} className="atlas-cell-border px-3 py-2">
           <button
             type="button"
             onClick={onToggleCategory}
             aria-expanded={expanded}
-            className="flex w-full items-center justify-between gap-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-teal-700"
+            className="atlas-focus flex w-full items-center justify-between gap-3 text-left outline-none"
           >
-            <span className="flex min-w-0 items-center gap-2 font-semibold text-slate-800">
+            <span className="flex min-w-0 items-center gap-2 font-semibold text-[var(--atlas-ink)]">
               <FaChevronDown
                 className={expanded ? 'shrink-0' : '-rotate-90 shrink-0'}
                 aria-hidden="true"
               />
               <Hint label={category.description}>{category.label}</Hint>
             </span>
-            <span className="shrink-0 text-xs font-medium text-slate-500">
+            <span className="atlas-caption shrink-0 text-xs font-medium">
               {selectedCount}/{category.members.length}
             </span>
           </button>
@@ -597,25 +597,25 @@ function BuilderCategoryRows({
             const checked = selected.has(key)
 
             return (
-              <tr key={feature.id} className="hover:bg-slate-50">
-                <td className="w-12 border-b border-slate-100 px-3 py-2">
+              <tr key={feature.id} className="atlas-feature-row">
+                <td className="atlas-cell-border w-12 px-3 py-2">
                   <Checkbox.Root
                     checked={checked}
                     onCheckedChange={(nextChecked) =>
                       onToggleFeature(feature.id, nextChecked === true)
                     }
                     aria-label={`Require ${feature.label}`}
-                    className="grid h-5 w-5 place-items-center rounded border border-slate-400 text-white outline-none focus-visible:ring-2 focus-visible:ring-teal-700 data-[checked]:border-teal-700 data-[checked]:bg-teal-700"
+                    className="grid h-5 w-5 place-items-center rounded border border-[var(--atlas-line-strong)] text-white outline-none focus-visible:ring-2 focus-visible:ring-[var(--atlas-hydro)] data-[checked]:border-[var(--atlas-hydro)] data-[checked]:bg-[var(--atlas-hydro)]"
                   >
                     <Checkbox.Indicator>
                       <FaCheck className="text-[11px]" aria-hidden="true" />
                     </Checkbox.Indicator>
                   </Checkbox.Root>
                 </td>
-                <td className="border-b border-slate-100 px-3 py-2 text-sm font-medium text-slate-800">
+                <td className="atlas-cell-border px-3 py-2 text-sm font-medium text-[var(--atlas-ink)]">
                   <Hint label={feature.description}>{feature.label}</Hint>
                 </td>
-                <td className="w-40 border-b border-slate-100 px-3 py-2 text-xs text-slate-500">
+                <td className="atlas-cell-border atlas-caption w-40 px-3 py-2 text-xs">
                   {checked ? 'Required' : 'Not required'}
                 </td>
               </tr>
