@@ -27,19 +27,24 @@ export function ColumnHead({ children }: { children: ReactNode }) {
 export function Panel({
   title,
   description,
+  actions,
   children,
 }: {
   title: string
   description?: string
+  actions?: ReactNode
   children: ReactNode
 }) {
   return (
     <section className="rounded-md border border-slate-200 bg-white">
-      <div className="border-b border-slate-200 px-4 py-3">
-        <h2 className="text-base font-semibold">{title}</h2>
-        {description ? (
-          <p className="mt-1 text-sm text-slate-500">{description}</p>
-        ) : null}
+      <div className="flex flex-col gap-3 border-b border-slate-200 px-4 py-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h2 className="text-base font-semibold">{title}</h2>
+          {description ? (
+            <p className="mt-1 text-sm text-slate-500">{description}</p>
+          ) : null}
+        </div>
+        {actions ? <div className="flex shrink-0 gap-2">{actions}</div> : null}
       </div>
       {children}
     </section>
@@ -57,4 +62,3 @@ export function EmptyState({ title, detail }: { title: string; detail: string })
     </div>
   )
 }
-

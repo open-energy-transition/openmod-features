@@ -4,6 +4,11 @@ import {
   calculateUseCaseCoverage,
   isImplemented,
 } from '../src/data/coverage'
+import {
+  createSelectionFromUseCaseYaml,
+  decodeCustomUseCase,
+  encodeCustomUseCase,
+} from '../src/data/custom-use-case'
 import type { DashboardData, TaxonomyCategory, ToolRecord, UseCaseRecord } from '../src/data/types'
 
 const taxonomy: TaxonomyCategory[] = [
@@ -96,5 +101,43 @@ describe('generated dashboard data', () => {
     ])
     expect(data.useCases).toHaveLength(5)
     expect(data.taxonomy.reduce((total, category) => total + category.members.length, 0)).toBeGreaterThan(0)
+  })
+})
+
+describe('custom use case URL payloads', () => {
+  it('round-trips a compact custom use case payload', () => {
+    const encoded = encodeCustomUseCase(useCase)
+    const decoded = decodeCustomUseCase(encoded)
+
+    expect(decoded).toMatchObject({
+      id: 'custom-use-case',
+      name: 'Use Case',
+      features: {
+        category: {
+          sourced: { value: 'y' },
+          unsourced: { value: 'y' },
+          dev: { value: 'y' },
+        },
+      },
+    })
+    expect(decoded?.features.category).not.toHaveProperty('missing')
+  })
+
+  it('ignores empty or malformed custom use case payloads', () => {
+    expect(decodeCustomUseCase(null)).toBeNull()
+    expect(decodeCustomUseCase('not-valid-base64')).toBeNull()
+  })
+
+  it('imports selected features from YAML', async () => {
+    await expect(createSelectionFromUseCaseYaml(`
+features:
+  category:
+    sourced:
+      value: y
+    missing:
+      value: n
+    unknown:
+      value: y
+`, taxonomy)).resolves.toEqual(new Set(['category::sourced']))
   })
 })

@@ -7,6 +7,7 @@ import {
   FaChevronRight,
   FaMagnifyingGlass,
 } from 'react-icons/fa6'
+import { CUSTOM_USE_CASE_ID } from '../data/custom-use-case'
 import type { TaxonomyCategory, ToolRecord, UseCaseRecord } from '../data/types'
 import { Hint } from './ui'
 
@@ -156,7 +157,7 @@ export function LegendActions({
 }) {
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-      {legend}
+      {legend ? legend : null}
       <div className="flex shrink-0 gap-2">
         <button
           type="button"
@@ -194,6 +195,7 @@ export function UseCaseCombobox({
       items={useCases.map((useCase) => ({
         value: useCase.id,
         label: useCase.name,
+        custom: useCase.id === CUSTOM_USE_CASE_ID,
       }))}
       value={[...selectedUseCaseIds]}
       onValueChange={(value) => onUseCaseChange(value)}
@@ -229,7 +231,7 @@ export function UseCaseCombobox({
               No use cases found.
             </Combobox.Empty>
             <Combobox.List className="max-h-72 overflow-y-auto py-1">
-              {(item: { value: string; label: string }, index: number) => (
+              {(item: { value: string; label: string; custom: boolean }, index: number) => (
                 <Combobox.Item
                   key={item.value}
                   value={item.value}
@@ -244,7 +246,10 @@ export function UseCaseCombobox({
                       <FaCheck className="text-[10px]" aria-hidden="true" />
                     </Combobox.ItemIndicator>
                   </span>
-                  <span className="col-start-2">{item.label}</span>
+                  <span className="col-start-2 flex min-w-0 items-center gap-2">
+                    <span className="min-w-0 truncate">{item.label}</span>
+                    {item.custom ? <CustomOptionBadge /> : null}
+                  </span>
                 </Combobox.Item>
               )}
             </Combobox.List>
@@ -252,6 +257,14 @@ export function UseCaseCombobox({
         </Combobox.Positioner>
       </Combobox.Portal>
     </Combobox.Root>
+  )
+}
+
+function CustomOptionBadge() {
+  return (
+    <span className="shrink-0 rounded border border-teal-300 bg-teal-50 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-teal-800">
+      Custom
+    </span>
   )
 }
 

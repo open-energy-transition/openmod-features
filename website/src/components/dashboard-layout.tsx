@@ -1,7 +1,7 @@
 import { Tooltip } from '@base-ui/react/tooltip'
 import { Switch } from '@base-ui/react/switch'
 import { Link, Outlet } from '@tanstack/react-router'
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import {
   FaClockRotateLeft,
   FaMoon,
@@ -11,13 +11,22 @@ import {
   FaTableList,
 } from 'react-icons/fa6'
 import { countFeatures, defaultCoverageOptions } from '../data/coverage'
+import {
+  CUSTOM_USE_CASE_PARAM,
+  decodeCustomUseCase,
+  encodeCustomUseCase,
+} from '../data/custom-use-case'
 import type { CoverageOptions, DashboardData } from '../data/types'
+import type { UseCaseRecord } from '../data/types'
 import { useDashboardData } from '../data/useDashboardData'
 import { CoverageControls } from './ui'
 
 export type DashboardOutletContext = {
   data: DashboardData
   coverageOptions: CoverageOptions
+  customUseCase: UseCaseRecord | null
+  setCustomUseCase: (useCase: UseCaseRecord) => void
+  clearCustomUseCase: () => void
 }
 
 const DashboardContext = createContext<DashboardOutletContext | null>(null)
@@ -33,6 +42,50 @@ export function useDashboardContext() {
 export function DashboardLayout() {
   const state = useDashboardData()
   const [coverageOptions, setCoverageOptions] = useState(defaultCoverageOptions)
+  const [customUseCase, setCustomUseCaseState] = useState<UseCaseRecord | null>(null)
+
+  useEffect(() => {
+    const syncFromUrl = () => {
+      setCustomUseCaseState(
+        decodeCustomUseCase(
+          new URLSearchParams(window.location.search).get(CUSTOM_USE_CASE_PARAM),
+        ),
+      )
+    }
+
+    syncFromUrl()
+    window.addEventListener('popstate', syncFromUrl)
+
+    return () => window.removeEventListener('popstate', syncFromUrl)
+  }, [])
+
+  const setCustomUseCase = (useCase: UseCaseRecord) => {
+    setCustomUseCaseState(useCase)
+    updateCustomUseCaseUrl(encodeCustomUseCase(useCase))
+  }
+
+  const clearCustomUseCase = () => {
+    setCustomUseCaseState(null)
+    updateCustomUseCaseUrl(null)
+  }
+
+  const dashboardData = useMemo(() => {
+    if (state.status !== 'ready') {
+      return null
+    }
+
+    if (!customUseCase) {
+      return state.data
+    }
+
+    return {
+      ...state.data,
+      useCases: [
+        customUseCase,
+        ...state.data.useCases.filter((useCase) => useCase.id !== customUseCase.id),
+      ],
+    }
+  }, [customUseCase, state])
 
   if (state.status === 'loading') {
     return <ShellState title="Loading dashboard data" />
@@ -47,17 +100,29 @@ export function DashboardLayout() {
     )
   }
 
+  if (!dashboardData) {
+    return <ShellState title="Loading dashboard data" />
+  }
+
   return (
     <Tooltip.Provider>
       <main className="min-h-screen bg-slate-50 text-slate-950">
         <DashboardHeader
-          data={state.data}
+          data={dashboardData}
           coverageOptions={coverageOptions}
           onCoverageChange={setCoverageOptions}
         />
         <div className="mx-auto grid max-w-[1800px] gap-5 px-4 py-6 sm:px-6 lg:px-8">
-          <DashboardNav />
-          <DashboardContext.Provider value={{ data: state.data, coverageOptions }}>
+          <DashboardNav customUseCase={customUseCase} />
+          <DashboardContext.Provider
+            value={{
+              data: dashboardData,
+              coverageOptions,
+              customUseCase,
+              setCustomUseCase,
+              clearCustomUseCase,
+            }}
+          >
             <Outlet />
           </DashboardContext.Provider>
         </div>
@@ -121,29 +186,65 @@ function ThemeSwitch() {
   )
 }
 
-function DashboardNav() {
+function DashboardNav({ customUseCase }: { customUseCase: UseCaseRecord | null }) {
   return (
     <nav
       aria-label="Dashboard sections"
       className="flex w-fit max-w-full gap-1 overflow-x-auto border-b border-slate-200"
     >
-      <NavLink to="/">Overview</NavLink>
-      <NavLink to="/tools">Tool Matrix</NavLink>
-      <NavLink to="/use-cases">Use-Case Fit</NavLink>
+      <NavLink to="/" customUseCase={customUseCase}>
+        Overview
+      </NavLink>
+      <NavLink to="/tools" customUseCase={customUseCase}>
+        Tool Matrix
+      </NavLink>
+      <NavLink to="/use-cases" customUseCase={customUseCase}>
+        Use-Case Fit
+      </NavLink>
+      <NavLink to="/builder" customUseCase={customUseCase}>
+        Use Case Builder
+      </NavLink>
     </nav>
   )
 }
 
-function NavLink({ to, children }: { to: string; children: React.ReactNode }) {
+function NavLink({
+  to,
+  customUseCase,
+  children,
+}: {
+  to: string
+  customUseCase: UseCaseRecord | null
+  children: React.ReactNode
+}) {
+  const customFeatures = customUseCase ? encodeCustomUseCase(customUseCase) : null
+
   return (
     <Link
       to={to}
+      search={
+        customFeatures
+          ? ({ [CUSTOM_USE_CASE_PARAM]: customFeatures } as never)
+          : undefined
+      }
       className="h-10 whitespace-nowrap border-b-2 border-transparent px-3 text-sm font-medium leading-10 text-slate-600 outline-none hover:text-slate-950 focus-visible:ring-2 focus-visible:ring-teal-700 [&.active]:border-teal-700 [&.active]:text-teal-800"
       activeOptions={{ exact: to === '/' }}
     >
       {children}
     </Link>
   )
+}
+
+function updateCustomUseCaseUrl(encoded: string | null) {
+  const url = new URL(window.location.href)
+
+  if (encoded) {
+    url.searchParams.set(CUSTOM_USE_CASE_PARAM, encoded)
+  } else {
+    url.searchParams.delete(CUSTOM_USE_CASE_PARAM)
+  }
+
+  window.history.replaceState(null, '', url)
 }
 
 function DataStamp({ data }: { data: DashboardData }) {

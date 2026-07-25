@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDashboardContext } from '../components/dashboard-layout'
 import {
   CategoryRows,
@@ -19,6 +19,7 @@ import {
   filterTaxonomy,
   filterTaxonomyByUseCases,
   sortTaxonomyAlphabetically,
+  syncSelectedIds,
   toggleSetValue,
 } from '../lib/dashboard-utils'
 
@@ -34,6 +35,11 @@ function ToolMatrixPage() {
     new Set(data.useCases.map((useCase) => useCase.id)),
   )
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
+
+  useEffect(() => {
+    setSelectedUseCaseIds((current) => syncSelectedIds(current, data.useCases))
+  }, [data.useCases])
+
   const selectedTools =
     toolId === '__all__'
       ? data.tools
