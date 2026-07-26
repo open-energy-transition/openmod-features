@@ -162,12 +162,15 @@ export function LegendActions({
         <button
           type="button"
           onClick={allExpanded ? onFoldAll : onUnfoldAll}
-          className="atlas-secondary-button atlas-focus inline-flex h-9 min-w-36 items-center justify-center gap-2 px-3 text-sm font-medium"
+          className="atlas-fold-button atlas-focus inline-flex h-9 min-w-36 items-center justify-center gap-2 px-3 text-sm font-medium"
         >
-          <FaChevronDown
-            className={allExpanded ? '-rotate-90' : undefined}
+          <span
+            className="atlas-fold-icon"
+            data-expanded={allExpanded ? 'true' : 'false'}
             aria-hidden="true"
-          />
+          >
+            <FaChevronDown />
+          </span>
           {allExpanded ? 'Fold all' : 'Unfold all'}
         </button>
       </div>

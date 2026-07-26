@@ -189,7 +189,10 @@ function UseCaseFitPage() {
             <tr>
               <StickyHead>Overall</StickyHead>
               {selectedUseCases.map((useCase) => (
-                <td key={useCase.id} className="atlas-cell-border px-3 py-2">
+                <td
+                  key={useCase.id}
+                  className="atlas-cell-border px-3 py-2 text-center"
+                >
                   {selectedTool ? (
                     <CoverageBadge
                       coverage={calculateUseCaseCoverage(

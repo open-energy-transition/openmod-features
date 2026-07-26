@@ -202,17 +202,25 @@ function ThemeSwitch({
   const dark = theme === 'dark'
 
   return (
-    <label className="atlas-subtle-card flex w-fit items-center gap-2 px-2.5 py-1.5 text-xs font-medium text-[var(--atlas-ink-soft)]">
-      <FaSun className="text-amber-500" aria-hidden="true" />
+    <label
+      className="atlas-theme-switch"
+      data-theme-state={theme}
+      title={dark ? 'Switch to light theme' : 'Switch to dark theme'}
+    >
+      <span className="atlas-theme-icon atlas-theme-sun" aria-hidden="true">
+        <FaSun />
+      </span>
       <Switch.Root
         checked={dark}
         onCheckedChange={(checked) => onThemeChange(checked ? 'dark' : 'light')}
         aria-label={dark ? 'Switch to light theme' : 'Switch to dark theme'}
-        className="flex h-5 w-9 shrink-0 rounded-full bg-[var(--atlas-switch-off)] p-0.5 outline-none transition-colors focus-visible:ring-2 focus-visible:ring-[var(--atlas-hydro)] data-[checked]:bg-[var(--atlas-switch-on)]"
+        className="atlas-theme-track atlas-focus"
       >
-        <Switch.Thumb className="h-4 w-4 rounded-full bg-[var(--atlas-switch-thumb)] transition-transform data-[checked]:translate-x-4" />
+        <Switch.Thumb className="atlas-theme-thumb" />
       </Switch.Root>
-      <FaMoon className="atlas-caption" aria-hidden="true" />
+      <span className="atlas-theme-icon atlas-theme-moon" aria-hidden="true">
+        <FaMoon />
+      </span>
     </label>
   )
 }
