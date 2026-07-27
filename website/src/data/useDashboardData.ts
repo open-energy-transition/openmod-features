@@ -15,8 +15,10 @@ export function useDashboardData(): DataState {
 
   useEffect(() => {
     let cancelled = false
+    const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '')
+    const dataUrl = `${baseUrl}/data/features.json`
 
-    fetch('/data/features.json')
+    fetch(dataUrl)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`Failed to load dashboard data (${response.status})`)

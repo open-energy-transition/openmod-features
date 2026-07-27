@@ -4,7 +4,10 @@
   "type": "module",
   "scripts": {
     "dev": "pnpm generate:data && vite dev",
-    "build": "pnpm generate:data && vite build && tsc --noEmit",
+    "build": "pnpm generate:data && vite build && pnpm export:static && tsc --noEmit",
+    "build:cloudflare": "DEPLOY_BASE=/ pnpm build",
+    "deploy:cloudflare": "pnpm build:cloudflare && npx wrangler pages deploy dist/client --project-name openmod-features-dashboard",
+    "export:static": "node scripts/export-static.mjs",
     "preview": "vite preview",
     "generate:data": "node scripts/generate-data.mjs",
     "test": "vitest run --config vitest.config.ts",
