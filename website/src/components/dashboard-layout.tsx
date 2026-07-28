@@ -1,9 +1,11 @@
 import { Tooltip } from '@base-ui/react/tooltip'
 import { Switch } from '@base-ui/react/switch'
-import { Link, Outlet } from '@tanstack/react-router'
+import { Link, Outlet, useLocation } from '@tanstack/react-router'
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import {
+  FaClipboardCheck,
   FaClockRotateLeft,
+  FaFileCircleCheck,
   FaMoon,
   FaListCheck,
   FaScrewdriverWrench,
@@ -42,6 +44,7 @@ export function useDashboardContext() {
 }
 
 export function DashboardLayout() {
+  const location = useLocation()
   const state = useDashboardData()
   const [coverageOptions, setCoverageOptions] = useState(defaultCoverageOptions)
   const [customUseCase, setCustomUseCaseState] = useState<UseCaseRecord | null>(null)
@@ -128,13 +131,15 @@ export function DashboardLayout() {
       <main className="atlas-canvas">
         <DashboardHeader
           data={dashboardData}
-          coverageOptions={coverageOptions}
-          onCoverageChange={setCoverageOptions}
           theme={theme}
           onThemeChange={setTheme}
         />
         <div className="mx-auto grid max-w-[1800px] gap-5 px-4 py-6 sm:px-6 lg:px-8">
-          <DashboardNav customUseCase={customUseCase} />
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <DashboardNav customUseCase={customUseCase} />
+            <CoverageControls options={coverageOptions} onChange={setCoverageOptions} />
+          </div>
+          {location.pathname === '/' ? <HomeIntro data={dashboardData} /> : null}
           <DashboardContext.Provider
             value={{
               data: dashboardData,
@@ -152,16 +157,89 @@ export function DashboardLayout() {
   )
 }
 
+function HomeIntro({ data }: { data: DashboardData }) {
+  return (
+    <section className="atlas-preamble grid gap-5 p-4 lg:grid-cols-[minmax(0,1.35fr)_minmax(300px,0.65fr)] lg:items-center">
+      <div className="max-w-4xl">
+        <p className="atlas-eyebrow">Project Preamble</p>
+        <h2 className="atlas-panel-title mt-1 text-lg font-semibold sm:text-xl">
+          Open energy modelling feature coverage
+        </h2>
+        <p className="atlas-copy mt-2 max-w-3xl text-sm leading-6">
+          Explore and compare open-source energy modelling tools by capability,
+          evidence, and planning use-case fit. The dashboard is generated from
+          repository feature inventory files, with coverage percentages controlled
+          by the rules beside the navigation.
+        </p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <PreamblePoint
+            icon={<FaScrewdriverWrench aria-hidden="true" />}
+            text="Compare tool capabilities"
+          />
+          <PreamblePoint
+            icon={<FaFileCircleCheck aria-hidden="true" />}
+            text="Trace source-backed evidence"
+          />
+          <PreamblePoint
+            icon={<FaClipboardCheck aria-hidden="true" />}
+            text="Check use-case fit"
+          />
+        </div>
+      </div>
+
+      <dl className="grid gap-3 text-sm sm:grid-cols-3 lg:grid-cols-1">
+        <ProvenanceItem
+          label="Generated"
+          value={new Date(data.generatedAt).toLocaleString()}
+        />
+        <ProvenanceItem
+          label="Inventory"
+          value={`${data.tools.length} tools / ${data.useCases.length} use cases`}
+        />
+        <ProvenanceItem
+          label="Validation"
+          value="Docs + source evidence"
+        />
+      </dl>
+    </section>
+  )
+}
+
+function PreamblePoint({ icon, text }: { icon: React.ReactNode; text: string }) {
+  return (
+    <span className="atlas-preamble-point inline-flex items-center gap-2 px-2.5 py-1.5 text-xs font-medium">
+      <span className="atlas-muted">{icon}</span>
+      <span>{text}</span>
+    </span>
+  )
+}
+
+function ProvenanceItem({
+  label,
+  value,
+  detail,
+}: {
+  label: string
+  value: string
+  detail?: string
+}) {
+  return (
+    <div>
+      <dt className="atlas-caption text-xs font-semibold uppercase tracking-[0.12em]">
+        {label}
+      </dt>
+      <dd className="mt-1 font-medium text-[var(--atlas-ink)]">{value}</dd>
+      {detail ? <p className="atlas-caption mt-1 text-xs leading-5">{detail}</p> : null}
+    </div>
+  )
+}
+
 function DashboardHeader({
   data,
-  coverageOptions,
-  onCoverageChange,
   theme,
   onThemeChange,
 }: {
   data: DashboardData
-  coverageOptions: CoverageOptions
-  onCoverageChange: (options: CoverageOptions) => void
   theme: Theme
   onThemeChange: (theme: Theme) => void
 }) {
@@ -186,7 +264,6 @@ function DashboardHeader({
             <DataStamp data={data} />
           </div>
         </div>
-        <CoverageControls options={coverageOptions} onChange={onCoverageChange} />
       </div>
     </header>
   )

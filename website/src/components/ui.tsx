@@ -7,6 +7,7 @@ import {
   FaCheck,
   FaCircleQuestion,
   FaCodeBranch,
+  FaCircleInfo,
   FaMinus,
   FaXmark,
 } from 'react-icons/fa6'
@@ -261,34 +262,76 @@ export function CoverageControls({
   return (
     <section
       aria-labelledby="coverage-options"
-      className="atlas-toolbar grid gap-3 p-3 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)_minmax(0,2fr)]"
+      className="atlas-rule-switcher flex max-w-full flex-wrap items-center gap-2 p-1.5"
     >
-      <div>
-        <h2
-          id="coverage-options"
-          className="atlas-caption text-xs font-semibold uppercase tracking-[0.12em]"
-        >
-          Coverage Rules
-        </h2>
-        <p className="atlas-caption mt-1 text-xs leading-5">
-          Percentages update across every view.
-        </p>
-      </div>
-      <Toggle
+      <h2
+        id="coverage-options"
+        className="atlas-rule-label whitespace-nowrap px-1.5 text-xs font-semibold uppercase tracking-[0.12em]"
+      >
+        Coverage Rules
+      </h2>
+      <CoverageRuleSwitch
+        label="Unvalidated"
         checked={options.countUnsourced}
-        onCheckedChange={(checked) =>
-          onChange({ ...options, countUnsourced: checked })
-        }
-        label="Count unvalidated"
+        onCheckedChange={(checked) => onChange({ ...options, countUnsourced: checked })}
         description="Include implemented values without source links."
       />
-      <Toggle
+      <CoverageRuleSwitch
+        label="In development"
         checked={options.countDev}
         onCheckedChange={(checked) => onChange({ ...options, countDev: checked })}
-        label="Count in development"
         description="Treat development status as meeting a requirement."
       />
     </section>
+  )
+}
+
+function CoverageRuleSwitch({
+  label,
+  checked,
+  onCheckedChange,
+  description,
+}: {
+  label: string
+  checked: boolean
+  onCheckedChange: (checked: boolean) => void
+  description: string
+}) {
+  const descriptionId = `coverage-rule-${label.toLowerCase().replace(/\s+/g, '-')}`
+
+  return (
+    <div className="flex items-center gap-1">
+      <Switch.Root
+        checked={checked}
+        onCheckedChange={onCheckedChange}
+        aria-describedby={descriptionId}
+        className="atlas-rule-switch atlas-focus inline-flex h-9 items-center gap-2 whitespace-nowrap rounded-[6px] px-2.5 text-sm font-medium outline-none"
+      >
+        <span className="atlas-rule-track">
+          <Switch.Thumb className="atlas-rule-thumb" />
+        </span>
+        <span>{label}</span>
+        <span id={descriptionId} className="sr-only">
+          {description}
+        </span>
+      </Switch.Root>
+      <Tooltip.Root>
+        <Tooltip.Trigger
+          render={<button type="button" />}
+          aria-label={`${label} coverage rule detail`}
+          className="atlas-rule-info atlas-focus grid h-8 w-8 place-items-center rounded-[6px] outline-none"
+        >
+          <FaCircleInfo aria-hidden="true" />
+        </Tooltip.Trigger>
+        <Tooltip.Portal>
+          <Tooltip.Positioner sideOffset={8}>
+            <Tooltip.Popup className="atlas-popup max-w-xs px-3 py-2 text-xs leading-5">
+              {description}
+            </Tooltip.Popup>
+          </Tooltip.Positioner>
+        </Tooltip.Portal>
+      </Tooltip.Root>
+    </div>
   )
 }
 

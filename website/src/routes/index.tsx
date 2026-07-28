@@ -1,16 +1,12 @@
-import { Link, createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import { useMemo } from 'react'
 import {
-  FaArrowRight,
   FaChartSimple,
   FaCircleQuestion,
   FaClipboardCheck,
   FaCodeBranch,
   FaFileCircleCheck,
-  FaListCheck,
-  FaPenToSquare,
   FaRegCircleQuestion,
-  FaScrewdriverWrench,
   FaTableList,
 } from 'react-icons/fa6'
 import { useDashboardContext } from '../components/dashboard-layout'
@@ -56,59 +52,6 @@ function OverviewPage() {
 
   return (
     <div className="grid gap-5">
-      <section className="grid gap-3 lg:grid-cols-3">
-        <StartAction
-          to="/tools"
-          icon={<FaScrewdriverWrench aria-hidden="true" />}
-          title="Compare Tools"
-          detail="Review feature coverage across every model in the inventory."
-        />
-        <StartAction
-          to="/use-cases"
-          icon={<FaListCheck aria-hidden="true" />}
-          title="Compare Use Cases"
-          detail="Check how a selected tool fits built-in policy and planning cases."
-        />
-        <StartAction
-          to="/builder"
-          icon={<FaPenToSquare aria-hidden="true" />}
-          title="Build Custom Use Case"
-          detail="Compose requirements, compare fit, and share the result as a URL."
-        />
-      </section>
-
-      <section className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-        <Panel title="What This Answers">
-          <div className="grid gap-3 p-4">
-            <AnswerItem text="Which tools support the modelling features I care about?" />
-            <AnswerItem text="Which use cases require each feature row?" />
-            <AnswerItem text="Which tool best fits a custom set of requirements?" />
-          </div>
-        </Panel>
-
-        <Panel
-          title="Data Provenance"
-          description="The dashboard is generated from repository feature inventory files."
-        >
-          <dl className="grid gap-3 p-4 text-sm sm:grid-cols-3">
-            <ProvenanceItem
-              label="Generated"
-              value={new Date(data.generatedAt).toLocaleString()}
-            />
-            <ProvenanceItem
-              label="Coverage Rules"
-              value="Header switches"
-              detail="Percentages respond to source and development settings."
-            />
-            <ProvenanceItem
-              label="Validation"
-              value="Docs + source"
-              detail="Linked evidence separates sourced and unsourced support."
-            />
-          </dl>
-        </Panel>
-      </section>
-
       <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <Metric
           label="Most Complete Tool"
@@ -192,48 +135,6 @@ function OverviewPage() {
   )
 }
 
-function StartAction({
-  to,
-  icon,
-  title,
-  detail,
-}: {
-  to: string
-  icon: React.ReactNode
-  title: string
-  detail: string
-}) {
-  return (
-    <Link
-      to={to}
-      className="atlas-panel atlas-focus group grid gap-3 p-4 outline-none hover:bg-[var(--atlas-hydro-wash)]"
-    >
-      <span className="flex items-center justify-between gap-3">
-        <span className="grid h-9 w-9 place-items-center rounded-[6px] bg-[var(--atlas-hydro)] text-white shadow-[0_8px_18px_-14px_rgb(13_118_111_/_0.7)]">
-          {icon}
-        </span>
-        <FaArrowRight
-          className="atlas-muted group-hover:text-[var(--atlas-hydro)]"
-          aria-hidden="true"
-        />
-      </span>
-      <span>
-        <span className="block font-semibold text-[var(--atlas-ink)]">{title}</span>
-        <span className="atlas-copy mt-1 block text-sm leading-5">{detail}</span>
-      </span>
-    </Link>
-  )
-}
-
-function AnswerItem({ text }: { text: string }) {
-  return (
-    <div className="atlas-subtle-card flex gap-3 px-3 py-2 text-sm text-[var(--atlas-ink-soft)]">
-      <FaArrowRight className="mt-0.5 shrink-0 text-[var(--atlas-hydro)]" aria-hidden="true" />
-      <span>{text}</span>
-    </div>
-  )
-}
-
 function Metric({
   label,
   value,
@@ -255,26 +156,6 @@ function Metric({
       </div>
       <dd className="mt-2 truncate text-2xl font-semibold tabular-nums text-[var(--atlas-ink)]">{value}</dd>
       {detail ? <p className="atlas-caption mt-2 text-xs leading-5">{detail}</p> : null}
-    </div>
-  )
-}
-
-function ProvenanceItem({
-  label,
-  value,
-  detail,
-}: {
-  label: string
-  value: string
-  detail?: string
-}) {
-  return (
-    <div>
-      <dt className="atlas-caption text-xs font-semibold uppercase tracking-[0.12em]">
-        {label}
-      </dt>
-      <dd className="mt-1 font-medium text-[var(--atlas-ink)]">{value}</dd>
-      {detail ? <p className="atlas-caption mt-1 text-xs leading-5">{detail}</p> : null}
     </div>
   )
 }
