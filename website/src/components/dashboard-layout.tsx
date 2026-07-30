@@ -135,7 +135,7 @@ export function DashboardLayout() {
           onThemeChange={setTheme}
         />
         <div className="mx-auto grid max-w-[1800px] gap-5 px-4 py-6 sm:px-6 lg:px-8">
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex min-w-0 flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <DashboardNav customUseCase={customUseCase} />
             <CoverageControls options={coverageOptions} onChange={setCoverageOptions} />
           </div>

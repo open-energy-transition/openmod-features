@@ -521,12 +521,18 @@ a:active {
   }
 
   .atlas-nav {
-    width: fit-content;
+    width: 100%;
     max-width: 100%;
     overflow-x: auto;
     border-radius: var(--atlas-radius-md);
     background: var(--atlas-nav-background);
     box-shadow: var(--atlas-shadow-panel);
+  }
+
+  @media (min-width: 1024px) {
+    .atlas-nav {
+      width: fit-content;
+    }
   }
 
   .atlas-nav-link {
@@ -562,11 +568,18 @@ a:active {
   }
 
   .atlas-rule-switcher {
-    width: fit-content;
+    width: 100%;
+    overflow-x: auto;
     border: 1px solid var(--atlas-line-soft);
     border-radius: var(--atlas-radius-md);
     background: var(--atlas-nav-background);
     box-shadow: var(--atlas-button-inset);
+  }
+
+  @media (min-width: 1024px) {
+    .atlas-rule-switcher {
+      width: fit-content;
+    }
   }
 
   .atlas-rule-label {
