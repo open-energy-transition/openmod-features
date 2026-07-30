@@ -30,20 +30,23 @@ export const Route = createFileRoute('/tools')({
 function ToolMatrixPage() {
   const { data, coverageOptions } = useDashboardContext()
   const [query, setQuery] = useState('')
-  const [toolId, setToolId] = useState('__all__')
+  const [selectedToolIds, setSelectedToolIds] = useState(
+    new Set(data.tools.map((tool) => tool.id)),
+  )
   const [selectedUseCaseIds, setSelectedUseCaseIds] = useState(
     new Set(data.useCases.map((useCase) => useCase.id)),
   )
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
 
   useEffect(() => {
+    setSelectedToolIds((current) => syncSelectedIds(current, data.tools))
+  }, [data.tools])
+
+  useEffect(() => {
     setSelectedUseCaseIds((current) => syncSelectedIds(current, data.useCases))
   }, [data.useCases])
 
-  const selectedTools =
-    toolId === '__all__'
-      ? data.tools
-      : data.tools.filter((tool) => tool.id === toolId)
+  const selectedTools = data.tools.filter((tool) => selectedToolIds.has(tool.id))
   const scopedTaxonomy = filterTaxonomyByUseCases(
     data.taxonomy,
     data.useCases,
@@ -61,8 +64,8 @@ function ToolMatrixPage() {
       <TableToolbar
         query={query}
         onQueryChange={setQuery}
-        toolId={toolId}
-        onToolChange={setToolId}
+        selectedToolIds={selectedToolIds}
+        onToolChange={(ids) => setSelectedToolIds(new Set(ids))}
         tools={data.tools}
         selectedUseCaseIds={selectedUseCaseIds}
         onUseCaseChange={(ids) => setSelectedUseCaseIds(new Set(ids))}
@@ -83,6 +86,11 @@ function ToolMatrixPage() {
               ? 'Select at least one use case to scope feature rows.'
               : 'Clear the search or adjust filters to show more features.'
           }
+        />
+      ) : selectedTools.length === 0 ? (
+        <EmptyState
+          title="No tools selected"
+          detail="Select at least one tool to compare feature coverage."
         />
       ) : (
         <FeatureTable minWidth="1100px">

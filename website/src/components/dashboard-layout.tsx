@@ -4,8 +4,8 @@ import { Link, Outlet, useLocation } from '@tanstack/react-router'
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import {
   FaClipboardCheck,
-  FaClockRotateLeft,
   FaFileCircleCheck,
+  FaGithub,
   FaMoon,
   FaListCheck,
   FaScrewdriverWrench,
@@ -261,7 +261,7 @@ function DashboardHeader({
           </div>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center lg:flex-col lg:items-end">
             <ThemeSwitch theme={theme} onThemeChange={onThemeChange} />
-            <DataStamp data={data} />
+            <HeaderLinks data={data} />
           </div>
         </div>
       </div>
@@ -363,9 +363,9 @@ function updateCustomUseCaseUrl(encoded: string | null) {
   window.history.replaceState(null, '', url)
 }
 
-function DataStamp({ data }: { data: DashboardData }) {
+function HeaderLinks({ data }: { data: DashboardData }) {
   return (
-    <dl className="grid grid-cols-2 gap-2 text-xs text-[var(--atlas-ink-soft)] sm:flex sm:flex-wrap sm:items-center sm:justify-end">
+    <div className="grid grid-cols-2 gap-2 text-xs text-[var(--atlas-ink-soft)] sm:flex sm:flex-wrap sm:items-center sm:justify-end">
       <DataItem
         icon={<FaScrewdriverWrench aria-hidden="true" />}
         label="Tools"
@@ -381,13 +381,8 @@ function DataStamp({ data }: { data: DashboardData }) {
         label="Feature rows"
         value={countFeatures(data).toString()}
       />
-      <DataItem
-        icon={<FaClockRotateLeft aria-hidden="true" />}
-        label="Updated"
-        value={new Date(data.generatedAt).toLocaleString()}
-        wide
-      />
-    </dl>
+      <GithubLink />
+    </div>
   )
 }
 
@@ -395,23 +390,34 @@ function DataItem({
   icon,
   label,
   value,
-  wide = false,
 }: {
   icon: React.ReactNode
   label: string
   value: string
-  wide?: boolean
 }) {
   return (
-    <div
-      className={`atlas-subtle-card flex min-w-0 items-center gap-2 px-2.5 py-1.5 ${wide ? 'col-span-2' : ''}`}
-    >
+    <div className="atlas-subtle-card flex min-w-0 items-center gap-2 px-2.5 py-1.5">
       <dt className="atlas-muted">{icon}</dt>
       <dd className="flex min-w-0 items-baseline gap-1.5 whitespace-nowrap">
         <span className="truncate font-semibold tabular-nums text-[var(--atlas-ink)]">{value}</span>
         <span className="atlas-caption shrink-0">{label}</span>
       </dd>
     </div>
+  )
+}
+
+function GithubLink() {
+  return (
+    <a
+      href="https://github.com/open-energy-transition/openmod-features"
+      target="_blank"
+      rel="noreferrer"
+      aria-label="Open the openmod-features repository on GitHub"
+      title="Open GitHub repository"
+      className="atlas-github-button atlas-focus inline-flex h-10 w-10 items-center justify-center rounded-[6px] text-lg outline-none"
+    >
+      <FaGithub aria-hidden="true" />
+    </a>
   )
 }
 

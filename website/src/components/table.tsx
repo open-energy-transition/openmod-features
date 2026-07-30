@@ -1,5 +1,4 @@
 import { Combobox } from '@base-ui/react/combobox'
-import { Select } from '@base-ui/react/select'
 import type { ReactNode } from 'react'
 import {
   FaCheck,
@@ -14,25 +13,23 @@ import { Hint } from './ui'
 export function TableToolbar({
   query,
   onQueryChange,
-  toolId,
+  selectedToolIds,
   onToolChange,
   tools,
   selectedUseCaseIds,
   onUseCaseChange,
   useCases,
   resultCount,
-  toolMode = 'all',
 }: {
   query: string
   onQueryChange: (query: string) => void
-  toolId: string
-  onToolChange: (toolId: string) => void
+  selectedToolIds: Set<string>
+  onToolChange: (toolIds: string[]) => void
   tools: ToolRecord[]
   selectedUseCaseIds: Set<string>
   onUseCaseChange: (useCaseIds: string[]) => void
   useCases: UseCaseRecord[]
   resultCount?: number
-  toolMode?: 'all' | 'optional-none'
 }) {
   return (
     <section className="atlas-toolbar grid gap-3 p-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,2fr)]">
@@ -61,11 +58,10 @@ export function TableToolbar({
         </span>
       </label>
 
-      <ToolSelect
-        toolId={toolId}
+      <ToolCombobox
+        selectedToolIds={selectedToolIds}
         onToolChange={onToolChange}
         tools={tools}
-        toolMode={toolMode}
       />
 
       <UseCaseCombobox
@@ -77,70 +73,84 @@ export function TableToolbar({
   )
 }
 
-function ToolSelect({
-  toolId,
+function ToolCombobox({
+  selectedToolIds,
   onToolChange,
   tools,
-  toolMode,
 }: {
-  toolId: string
-  onToolChange: (toolId: string) => void
+  selectedToolIds: Set<string>
+  onToolChange: (toolIds: string[]) => void
   tools: ToolRecord[]
-  toolMode: 'all' | 'optional-none'
 }) {
-  const items = [
-    ...(toolMode === 'all'
-      ? [{ value: '__all__', label: 'All tools' }]
-      : [{ value: '', label: 'Requirements only' }]),
-    ...tools.map((tool) => ({ value: tool.id, label: tool.name })),
-  ]
+  const selectedToolList = tools.filter((tool) => selectedToolIds.has(tool.id))
+  const inputId = 'tool-combobox'
 
   return (
-    <Select.Root
-      items={items}
-      value={toolId}
-      onValueChange={(value) => {
-        if (typeof value === 'string') {
-          onToolChange(value)
-        }
-      }}
+    <Combobox.Root
+      multiple
+      items={tools.map((tool) => ({
+        value: tool.id,
+        label: tool.name,
+      }))}
+      value={[...selectedToolIds]}
+      onValueChange={(value) => onToolChange(value)}
       modal={false}
     >
       <div className="atlas-label grid gap-1 text-sm font-medium">
-        <Select.Label>Tool</Select.Label>
-        <Select.Trigger className="atlas-control flex h-10 min-w-0 items-center justify-between gap-3 px-3 text-left text-sm font-normal">
-          <Select.Value className="min-w-0 flex-1 truncate" />
-          <Select.Icon className="atlas-caption shrink-0">
-            <FaChevronDown aria-hidden="true" />
-          </Select.Icon>
-        </Select.Trigger>
+        <label htmlFor={inputId}>Tools</label>
+        <Combobox.InputGroup className="atlas-control flex min-h-10 items-center gap-2 px-3 py-1.5 focus-within:border-[var(--atlas-hydro)] focus-within:shadow-[0_0_0_3px_rgb(13_118_111_/_0.14),inset_0_1px_1px_rgb(15_23_21_/_0.03)]">
+          <FaMagnifyingGlass
+            className="atlas-muted shrink-0"
+            aria-hidden="true"
+          />
+          <Combobox.Input
+            id={inputId}
+            placeholder={
+              selectedToolList.length === 0
+                ? 'Search tools'
+                : selectedToolList.length === tools.length
+                  ? 'All tools selected'
+                  : `${selectedToolList.length} selected`
+            }
+            className="min-w-32 flex-1 border-0 bg-transparent text-sm text-[var(--atlas-ink)] outline-none placeholder:text-[var(--atlas-ink-muted)]"
+          />
+          <Combobox.Trigger className="atlas-focus inline-flex h-7 w-7 shrink-0 items-center justify-center rounded text-[var(--atlas-ink-muted)] outline-none hover:bg-[var(--atlas-hydro-wash)]">
+            <Combobox.Icon>
+              <FaChevronDown aria-hidden="true" />
+            </Combobox.Icon>
+          </Combobox.Trigger>
+        </Combobox.InputGroup>
       </div>
-      <Select.Portal>
-        <Select.Positioner sideOffset={6} className="z-50">
-          <Select.Popup className="atlas-popup max-h-72 min-w-[var(--anchor-width)] max-w-[calc(100vw-2rem)] overflow-hidden outline-none lg:w-max">
-            <Select.List className="max-h-72 overflow-y-auto py-1">
-              {items.map((item) => (
-                <Select.Item
+      <Combobox.Portal>
+        <Combobox.Positioner sideOffset={6} className="z-50">
+          <Combobox.Popup className="atlas-popup max-h-72 w-[min(var(--anchor-width),calc(100vw-2rem))] overflow-hidden outline-none">
+            <Combobox.Empty className="atlas-caption px-3 py-2 text-sm">
+              No tools found.
+            </Combobox.Empty>
+            <Combobox.List className="max-h-72 overflow-y-auto py-1">
+              {(item: { value: string; label: string }, index: number) => (
+                <Combobox.Item
                   key={item.value}
                   value={item.value}
-                  className="atlas-option grid cursor-default grid-cols-[1rem_minmax(0,max-content)] items-center gap-2 px-3 py-2 text-sm outline-none"
+                  index={index}
+                  className="atlas-option group grid cursor-default grid-cols-[1rem_minmax(0,1fr)] items-start gap-2 px-3 py-2 text-sm outline-none"
                 >
-                  <Select.ItemIndicator
-                    keepMounted
-                    className="invisible col-start-1 text-[var(--atlas-hydro)] data-[selected]:visible"
-                  >
-                    <FaCheck className="text-[10px]" aria-hidden="true" />
-                  </Select.ItemIndicator>
-                  <Select.ItemText className="col-start-2 line-clamp-1">
-                    {item.label}
-                  </Select.ItemText>
-                </Select.Item>
-              ))}
-            </Select.List>
-          </Select.Popup>
-        </Select.Positioner>
-      </Select.Portal>
-    </Select.Root>
+                  <span className="col-start-1 mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded border border-[var(--atlas-line-strong)] text-white group-data-[selected]:border-[var(--atlas-hydro)] group-data-[selected]:bg-[var(--atlas-hydro)]">
+                    <Combobox.ItemIndicator
+                      keepMounted
+                      className="invisible data-[selected]:visible"
+                    >
+                      <FaCheck className="text-[10px]" aria-hidden="true" />
+                    </Combobox.ItemIndicator>
+                  </span>
+                  <span className="col-start-2 min-w-0 truncate">{item.label}</span>
+                </Combobox.Item>
+              )}
+            </Combobox.List>
+          </Combobox.Popup>
+        </Combobox.Positioner>
+      </Combobox.Portal>
+    </Combobox.Root>
   )
 }
 

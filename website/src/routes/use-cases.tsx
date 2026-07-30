@@ -1,15 +1,16 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { useEffect, useMemo, useState } from 'react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 import { FaLink, FaPenToSquare, FaRegCopy } from 'react-icons/fa6'
 import { useDashboardContext } from '../components/dashboard-layout'
 import {
   CategoryRows,
   LegendActions,
+  StickyCell,
   StickyHead,
   TableToolbar,
 } from '../components/table'
 import { ColumnHead, EmptyState, FeatureTable } from '../components/page-shell'
-import { CoverageBadge, Hint, StatusLegend } from '../components/ui'
+import { CoverageBadge, Hint, StatusLegend, ToolName } from '../components/ui'
 import {
   RequirementCell,
   useCaseRequirementCount,
@@ -39,7 +40,9 @@ export const Route = createFileRoute('/use-cases')({
 function UseCaseFitPage() {
   const { data, coverageOptions, customUseCase } = useDashboardContext()
   const [query, setQuery] = useState('')
-  const [toolId, setToolId] = useState(data.tools[0]?.id ?? '')
+  const [selectedToolIds, setSelectedToolIds] = useState(
+    () => new Set(data.tools[0] ? [data.tools[0].id] : []),
+  )
   const [copied, setCopied] = useState(false)
   const [selectedUseCaseIds, setSelectedUseCaseIds] = useState(
     () =>
@@ -54,6 +57,10 @@ function UseCaseFitPage() {
     () => (customUseCase ? encodeCustomUseCase(customUseCase) : null),
     [customUseCase],
   )
+
+  useEffect(() => {
+    setSelectedToolIds((current) => syncSelectedToolIds(current, data.tools))
+  }, [data.tools])
 
   useEffect(() => {
     setSelectedUseCaseIds((current) =>
@@ -72,7 +79,7 @@ function UseCaseFitPage() {
     return () => window.clearTimeout(timeoutId)
   }, [copied])
 
-  const selectedTool = data.tools.find((tool) => tool.id === toolId)
+  const selectedTools = data.tools.filter((tool) => selectedToolIds.has(tool.id))
   const selectedUseCases = data.useCases.filter((useCase) =>
     selectedUseCaseIds.has(useCase.id),
   )
@@ -142,14 +149,13 @@ function UseCaseFitPage() {
       <TableToolbar
         query={query}
         onQueryChange={setQuery}
-        toolId={toolId}
-        onToolChange={setToolId}
+        selectedToolIds={selectedToolIds}
+        onToolChange={(ids) => setSelectedToolIds(new Set(ids))}
         tools={data.tools}
         selectedUseCaseIds={selectedUseCaseIds}
         onUseCaseChange={(ids) => setSelectedUseCaseIds(new Set(ids))}
         useCases={data.useCases}
         resultCount={filteredTaxonomy.length}
-        toolMode="optional-none"
       />
       <LegendActions
         legend={<StatusLegend />}
@@ -161,6 +167,11 @@ function UseCaseFitPage() {
         <EmptyState
           title="No use cases selected"
           detail="Select at least one use case to compare requirements."
+        />
+      ) : selectedTools.length === 0 ? (
+        <EmptyState
+          title="No tools selected"
+          detail="Select at least one tool to compare use-case fit."
         />
       ) : filteredTaxonomy.length === 0 ? (
         <EmptyState
@@ -186,70 +197,77 @@ function UseCaseFitPage() {
                 </ColumnHead>
               ))}
             </tr>
-            <tr>
-              <StickyHead>Overall</StickyHead>
-              {selectedUseCases.map((useCase) => (
-                <td
-                  key={useCase.id}
-                  className="atlas-cell-border px-3 py-2 text-center"
-                >
-                  {selectedTool ? (
-                    <CoverageBadge
-                      coverage={calculateUseCaseCoverage(
-                        data.taxonomy,
-                        selectedTool,
-                        useCase,
-                        coverageOptions,
-                      )}
-                    />
-                  ) : (
-                    <span className="atlas-muted">-</span>
-                  )}
-                </td>
-              ))}
-            </tr>
           </thead>
           <tbody>
-            {filteredTaxonomy.map((category) => (
-              <CategoryRows
-                key={category.id}
-                category={category}
-                expanded={expanded.has(category.id)}
-                onToggle={() => toggleSetValue(expanded, setExpanded, category.id)}
-                columns={selectedUseCases}
-                renderCategoryCell={(useCase) =>
-                  selectedTool ? (
+            {selectedTools.map((tool) => (
+              <Fragment key={tool.id}>
+                <tr className="atlas-tool-section-row">
+                  <StickyCell>
+                    <ToolName tool={tool} />
+                  </StickyCell>
+                  {selectedUseCases.map((useCase) => (
+                    <td
+                      key={useCase.id}
+                      className="atlas-cell-border px-3 py-2 text-center"
+                    >
+                      <CoverageBadge
+                        coverage={calculateUseCaseCoverage(
+                          data.taxonomy,
+                          tool,
+                          useCase,
+                          coverageOptions,
+                        )}
+                      />
+                    </td>
+                  ))}
+                </tr>
+                {filteredTaxonomy.map((category) => (
+                  <CategoryRows
+                    key={`${tool.id}-${category.id}`}
+                    category={category}
+                    expanded={expanded.has(category.id)}
+                    onToggle={() => toggleSetValue(expanded, setExpanded, category.id)}
+                    columns={selectedUseCases}
+                    renderCategoryCell={(useCase) => (
                     <CoverageBadge
                       coverage={calculateCategoryUseCaseCoverage(
                         category,
-                        selectedTool,
+                        tool,
                         useCase,
                         coverageOptions,
                       )}
                     />
-                  ) : (
-                    <span className="atlas-muted">-</span>
-                  )
-                }
-                renderFeatureCell={(useCase, featureId) => (
-                  <RequirementCell
-                    value={getUseCaseValue(useCase, category.id, featureId)}
-                    toolFeature={
-                      selectedTool
-                        ? getToolFeature(selectedTool, category.id, featureId)
-                        : undefined
-                    }
-                    options={coverageOptions}
-                    hasTool={Boolean(selectedTool)}
+                    )}
+                    renderFeatureCell={(useCase, featureId) => (
+                      <RequirementCell
+                        value={getUseCaseValue(useCase, category.id, featureId)}
+                        toolFeature={getToolFeature(tool, category.id, featureId)}
+                        options={coverageOptions}
+                        hasTool
+                      />
+                    )}
                   />
-                )}
-              />
+                ))}
+              </Fragment>
             ))}
           </tbody>
         </FeatureTable>
       )}
     </div>
   )
+}
+
+function syncSelectedToolIds(current: Set<string>, tools: { id: string }[]) {
+  const validIds = new Set(tools.map((tool) => tool.id))
+  const next = new Set([...current].filter((id) => validIds.has(id)))
+
+  if (next.size === 0 && tools[0]) {
+    next.add(tools[0].id)
+  }
+
+  return next.size === current.size && [...next].every((id) => current.has(id))
+    ? current
+    : next
 }
 
 function CustomBadge() {
