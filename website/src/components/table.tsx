@@ -159,16 +159,19 @@ export function LegendActions({
   allExpanded,
   onFoldAll,
   onUnfoldAll,
+  actions,
 }: {
   legend: ReactNode
   allExpanded: boolean
   onFoldAll: () => void
   onUnfoldAll: () => void
+  actions?: ReactNode
 }) {
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       {legend ? legend : null}
-      <div className="flex shrink-0 gap-2">
+      <div className="flex shrink-0 flex-wrap gap-2">
+        {actions}
         <button
           type="button"
           onClick={allExpanded ? onFoldAll : onUnfoldAll}
@@ -288,6 +291,8 @@ export function CategoryRows<T extends { id: string }>({
   columns,
   renderCategoryCell,
   renderFeatureCell,
+  muted = false,
+  isFeatureMuted = () => false,
 }: {
   category: TaxonomyCategory
   expanded: boolean
@@ -295,10 +300,12 @@ export function CategoryRows<T extends { id: string }>({
   columns: T[]
   renderCategoryCell: (column: T) => ReactNode
   renderFeatureCell: (column: T, featureId: string) => ReactNode
+  muted?: boolean
+  isFeatureMuted?: (featureId: string) => boolean
 }) {
   return (
     <>
-      <tr className="atlas-category-row">
+      <tr className={`atlas-category-row ${muted ? 'atlas-filter-muted' : ''}`}>
         <StickyCell>
           <button
             type="button"
@@ -325,7 +332,10 @@ export function CategoryRows<T extends { id: string }>({
       </tr>
       {expanded
         ? category.members.map((feature) => (
-            <tr key={feature.id} className="atlas-feature-row">
+            <tr
+              key={feature.id}
+              className={`atlas-feature-row ${isFeatureMuted(feature.id) ? 'atlas-filter-muted' : ''}`}
+            >
               <StickyCell>
                 <span className="block pl-7 text-[var(--atlas-ink-soft)]">
                   <Hint label={feature.description}>{feature.label}</Hint>

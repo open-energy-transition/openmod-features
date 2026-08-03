@@ -1,6 +1,13 @@
+import { Drawer } from '@base-ui/react/drawer'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Fragment, useEffect, useMemo, useState } from 'react'
-import { FaLink, FaPenToSquare, FaRegCopy } from 'react-icons/fa6'
+import {
+  FaCircleInfo,
+  FaLink,
+  FaPenToSquare,
+  FaRegCopy,
+  FaXmark,
+} from 'react-icons/fa6'
 import { useDashboardContext } from '../components/dashboard-layout'
 import {
   CategoryRows,
@@ -10,7 +17,7 @@ import {
   TableToolbar,
 } from '../components/table'
 import { ColumnHead, EmptyState, FeatureTable } from '../components/page-shell'
-import { CoverageBadge, Hint, StatusLegend, ToolName } from '../components/ui'
+import { CheckPill, CoverageBadge, Hint, StatusLegend, ToolName } from '../components/ui'
 import {
   RequirementCell,
   useCaseRequirementCount,
@@ -26,6 +33,7 @@ import {
   CUSTOM_USE_CASE_PARAM,
   encodeCustomUseCase,
 } from '../data/custom-use-case'
+import type { UseCaseRecord } from '../data/types'
 import {
   filterTaxonomy,
   sortTaxonomyAlphabetically,
@@ -52,6 +60,7 @@ function UseCaseFitPage() {
           : data.useCases.map((useCase) => useCase.id),
       ),
   )
+  const [hideInactiveTools, setHideInactiveTools] = useState(false)
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
   const customFeatures = useMemo(
     () => (customUseCase ? encodeCustomUseCase(customUseCase) : null),
@@ -80,6 +89,7 @@ function UseCaseFitPage() {
   }, [copied])
 
   const selectedTools = data.tools.filter((tool) => selectedToolIds.has(tool.id))
+  const displayedTools = hideInactiveTools ? selectedTools : data.tools
   const selectedUseCases = data.useCases.filter((useCase) =>
     selectedUseCaseIds.has(useCase.id),
   )
@@ -162,13 +172,21 @@ function UseCaseFitPage() {
         allExpanded={allExpanded}
         onUnfoldAll={() => setExpanded(new Set(filteredTaxonomy.map((c) => c.id)))}
         onFoldAll={() => setExpanded(new Set())}
+        actions={
+          <CheckPill
+            checked={hideInactiveTools}
+            onCheckedChange={setHideInactiveTools}
+          >
+            Hide inactive
+          </CheckPill>
+        }
       />
       {selectedUseCases.length === 0 ? (
         <EmptyState
           title="No use cases selected"
           detail="Select at least one use case to compare requirements."
         />
-      ) : selectedTools.length === 0 ? (
+      ) : displayedTools.length === 0 ? (
         <EmptyState
           title="No tools selected"
           detail="Select at least one tool to compare use-case fit."
@@ -186,8 +204,9 @@ function UseCaseFitPage() {
               {selectedUseCases.map((useCase) => (
                 <ColumnHead key={useCase.id}>
                   <div className="flex flex-col items-center gap-1">
-                    <span className="inline-flex max-w-full items-center gap-1">
+                    <span className="inline-flex max-w-full items-center justify-center gap-1">
                       <Hint label={useCase.description}>{useCase.name}</Hint>
+                      <UseCaseAssumptionsDrawer useCase={useCase} />
                     </span>
                     {useCase.id === CUSTOM_USE_CASE_ID ? <CustomBadge /> : null}
                   </div>
@@ -199,57 +218,67 @@ function UseCaseFitPage() {
             </tr>
           </thead>
           <tbody>
-            {selectedTools.map((tool) => (
-              <Fragment key={tool.id}>
-                <tr className="atlas-tool-section-row">
-                  <StickyCell>
-                    <ToolName tool={tool} />
-                  </StickyCell>
-                  {selectedUseCases.map((useCase) => (
-                    <td
-                      key={useCase.id}
-                      className="atlas-cell-border px-3 py-2 text-center"
-                    >
-                      <CoverageBadge
-                        coverage={calculateUseCaseCoverage(
-                          data.taxonomy,
-                          tool,
-                          useCase,
-                          coverageOptions,
-                        )}
-                      />
-                    </td>
-                  ))}
-                </tr>
-                {filteredTaxonomy.map((category) => (
-                  <CategoryRows
-                    key={`${tool.id}-${category.id}`}
-                    category={category}
-                    expanded={expanded.has(category.id)}
-                    onToggle={() => toggleSetValue(expanded, setExpanded, category.id)}
-                    columns={selectedUseCases}
-                    renderCategoryCell={(useCase) => (
-                    <CoverageBadge
-                      coverage={calculateCategoryUseCaseCoverage(
-                        category,
-                        tool,
-                        useCase,
-                        coverageOptions,
+            {displayedTools.map((tool) => {
+              const toolActive = selectedToolIds.has(tool.id)
+
+              return (
+                <Fragment key={tool.id}>
+                  <tr
+                    className={`atlas-tool-section-row ${toolActive ? '' : 'atlas-filter-muted'}`}
+                  >
+                    <StickyCell>
+                      <ToolName tool={tool} />
+                    </StickyCell>
+                    {selectedUseCases.map((useCase) => (
+                      <td
+                        key={useCase.id}
+                        className="atlas-cell-border px-3 py-2 text-center"
+                      >
+                        <CoverageBadge
+                          coverage={calculateUseCaseCoverage(
+                            data.taxonomy,
+                            tool,
+                            useCase,
+                            coverageOptions,
+                          )}
+                        />
+                      </td>
+                    ))}
+                  </tr>
+                  {filteredTaxonomy.map((category) => (
+                    <CategoryRows
+                      key={`${tool.id}-${category.id}`}
+                      category={category}
+                      expanded={expanded.has(category.id)}
+                      onToggle={() =>
+                        toggleSetValue(expanded, setExpanded, category.id)
+                      }
+                      columns={selectedUseCases}
+                      renderCategoryCell={(useCase) => (
+                        <CoverageBadge
+                          coverage={calculateCategoryUseCaseCoverage(
+                            category,
+                            tool,
+                            useCase,
+                            coverageOptions,
+                          )}
+                        />
                       )}
+                      renderFeatureCell={(useCase, featureId) => (
+                        <RequirementCell
+                          value={getUseCaseValue(useCase, category.id, featureId)}
+                          toolFeature={getToolFeature(tool, category.id, featureId)}
+                          options={coverageOptions}
+                          hasTool
+                        />
+                      )}
+                      muted={!toolActive}
+                      isFeatureMuted={() => !toolActive}
                     />
-                    )}
-                    renderFeatureCell={(useCase, featureId) => (
-                      <RequirementCell
-                        value={getUseCaseValue(useCase, category.id, featureId)}
-                        toolFeature={getToolFeature(tool, category.id, featureId)}
-                        options={coverageOptions}
-                        hasTool
-                      />
-                    )}
-                  />
-                ))}
-              </Fragment>
-            ))}
+                  ))}
+                </Fragment>
+              )
+            })}
           </tbody>
         </FeatureTable>
       )}
@@ -275,5 +304,89 @@ function CustomBadge() {
     <span className="inline-flex h-5 items-center rounded border border-[rgb(13_118_111_/_0.24)] bg-[var(--atlas-surface-raised)] px-1.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--atlas-hydro-strong)]">
       Custom
     </span>
+  )
+}
+
+function UseCaseAssumptionsDrawer({
+  useCase,
+}: {
+  useCase: UseCaseRecord
+}) {
+  const assumptionCount = useCase.assumptions.length
+
+  return (
+    <Drawer.Root>
+      <Drawer.Trigger
+        aria-label={`View assumptions for ${useCase.name}`}
+        className="atlas-usecase-info-trigger atlas-focus inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full"
+      >
+        <FaCircleInfo aria-hidden="true" />
+      </Drawer.Trigger>
+      <Drawer.Portal>
+        <Drawer.Viewport>
+          <Drawer.Backdrop className="atlas-drawer-backdrop" />
+          <Drawer.Popup className="atlas-usecase-drawer">
+            <div className="flex items-start justify-between gap-4 border-b border-[var(--atlas-line-soft)] px-5 py-4">
+              <div className="min-w-0">
+                <p className="atlas-eyebrow">Use Case Assumptions</p>
+                <Drawer.Title className="mt-1 text-lg font-semibold leading-6 text-[var(--atlas-ink)]">
+                  {useCase.name}
+                </Drawer.Title>
+                {useCase.description ? (
+                  <Drawer.Description className="atlas-copy mt-2 text-sm leading-6">
+                    {useCase.description}
+                  </Drawer.Description>
+                ) : null}
+              </div>
+              <Drawer.Close
+                aria-label="Close assumptions drawer"
+                className="atlas-secondary-button atlas-focus inline-flex h-9 w-9 shrink-0 items-center justify-center"
+              >
+                <FaXmark aria-hidden="true" />
+              </Drawer.Close>
+            </div>
+
+            <div className="grid gap-4 overflow-y-auto px-5 py-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="atlas-subtle-card px-3 py-2">
+                  <p className="atlas-caption text-xs">Assumptions</p>
+                  <p className="mt-1 text-xl font-semibold tabular-nums text-[var(--atlas-ink)]">
+                    {assumptionCount}
+                  </p>
+                </div>
+                <div className="atlas-subtle-card px-3 py-2">
+                  <p className="atlas-caption text-xs">Required Features</p>
+                  <p className="mt-1 text-xl font-semibold tabular-nums text-[var(--atlas-ink)]">
+                    {useCaseRequirementCount(useCase)}
+                  </p>
+                </div>
+              </div>
+
+              {assumptionCount > 0 ? (
+                <ol className="grid gap-2">
+                  {useCase.assumptions.map((assumption, index) => (
+                    <li
+                      key={`${index}-${assumption}`}
+                      className="atlas-assumption-item grid grid-cols-[1.75rem_1fr] gap-3 px-3 py-3 text-left"
+                    >
+                      <span className="atlas-assumption-index flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold tabular-nums">
+                        {index + 1}
+                      </span>
+                      <span className="text-sm leading-6 text-[var(--atlas-ink-soft)]">
+                        {assumption}
+                      </span>
+                    </li>
+                  ))}
+                </ol>
+              ) : (
+                <div className="atlas-subtle-card px-3 py-3 text-sm text-[var(--atlas-ink-muted)]">
+                  No assumptions are recorded for this use case.
+                </div>
+              )}
+            </div>
+          </Drawer.Popup>
+        </Drawer.Viewport>
+      </Drawer.Portal>
+    </Drawer.Root>
   )
 }

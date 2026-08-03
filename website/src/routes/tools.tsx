@@ -8,7 +8,7 @@ import {
   TableToolbar,
 } from '../components/table'
 import { ColumnHead, EmptyState, FeatureTable } from '../components/page-shell'
-import { CoverageBadge, StatusLegend, ToolName } from '../components/ui'
+import { CheckPill, CoverageBadge, StatusLegend, ToolName } from '../components/ui'
 import { StatusCell } from '../components/status-cells'
 import {
   calculateCategoryCoverage,
@@ -36,6 +36,7 @@ function ToolMatrixPage() {
   const [selectedUseCaseIds, setSelectedUseCaseIds] = useState(
     new Set(data.useCases.map((useCase) => useCase.id)),
   )
+  const [hideInactiveRows, setHideInactiveRows] = useState(false)
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
 
   useEffect(() => {
@@ -47,13 +48,19 @@ function ToolMatrixPage() {
   }, [data.useCases])
 
   const selectedTools = data.tools.filter((tool) => selectedToolIds.has(tool.id))
-  const scopedTaxonomy = filterTaxonomyByUseCases(
+  const useCaseScopedTaxonomy = filterTaxonomyByUseCases(
     data.taxonomy,
     data.useCases,
     selectedUseCaseIds,
   )
+  const activeFeatureIds = new Set(
+    useCaseScopedTaxonomy.flatMap((category) =>
+      category.members.map((feature) => featureKey(category.id, feature.id)),
+    ),
+  )
+  const displayTaxonomy = hideInactiveRows ? useCaseScopedTaxonomy : data.taxonomy
   const filteredTaxonomy = sortTaxonomyAlphabetically(
-    filterTaxonomy(scopedTaxonomy, query),
+    filterTaxonomy(displayTaxonomy, query),
   )
   const allExpanded =
     filteredTaxonomy.length > 0 &&
@@ -77,6 +84,14 @@ function ToolMatrixPage() {
         allExpanded={allExpanded}
         onUnfoldAll={() => setExpanded(new Set(filteredTaxonomy.map((c) => c.id)))}
         onFoldAll={() => setExpanded(new Set())}
+        actions={
+          <CheckPill
+            checked={hideInactiveRows}
+            onCheckedChange={setHideInactiveRows}
+          >
+            Hide inactive
+          </CheckPill>
+        }
       />
       {filteredTaxonomy.length === 0 ? (
         <EmptyState
@@ -112,7 +127,7 @@ function ToolMatrixPage() {
                 >
                   <CoverageBadge
                     coverage={calculateToolCoverage(
-                      scopedTaxonomy,
+                      useCaseScopedTaxonomy,
                       tool,
                       coverageOptions,
                     )}
@@ -144,6 +159,10 @@ function ToolMatrixPage() {
                     options={coverageOptions}
                   />
                 )}
+                muted={isCategoryInactive(category, activeFeatureIds)}
+                isFeatureMuted={(featureId) =>
+                  !activeFeatureIds.has(featureKey(category.id, featureId))
+                }
               />
             ))}
           </tbody>
@@ -151,4 +170,17 @@ function ToolMatrixPage() {
       )}
     </div>
   )
+}
+
+function isCategoryInactive(
+  category: { id: string; members: { id: string }[] },
+  activeFeatureIds: Set<string>,
+) {
+  return category.members.every(
+    (feature) => !activeFeatureIds.has(featureKey(category.id, feature.id)),
+  )
+}
+
+function featureKey(categoryId: string, featureId: string) {
+  return `${categoryId}:${featureId}`
 }
