@@ -117,7 +117,7 @@ function EvidenceStatus({
   }
 
   return (
-    <Drawer.Root>
+    <Drawer.Root modal={false}>
       <Drawer.Trigger
         aria-label={`View validation evidence for ${tool.shortname} ${taxonomyFeature.label}`}
         className="atlas-evidence-trigger atlas-focus inline-flex h-8 min-w-8 items-center justify-center gap-1 rounded-[6px] outline-none"
@@ -127,7 +127,6 @@ function EvidenceStatus({
       </Drawer.Trigger>
       <Drawer.Portal>
         <Drawer.Viewport>
-          <Drawer.Backdrop className="atlas-drawer-backdrop" />
           <Drawer.Popup className="atlas-evidence-drawer">
             <div className="flex items-start justify-between gap-4 border-b border-[var(--atlas-line-soft)] px-5 py-4">
               <div className="min-w-0">

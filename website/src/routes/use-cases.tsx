@@ -319,7 +319,7 @@ function UseCaseAssumptionsDrawer({
   const assumptionCount = useCase.assumptions.length
 
   return (
-    <Drawer.Root>
+    <Drawer.Root modal={false}>
       <Drawer.Trigger
         aria-label={`View assumptions for ${useCase.name}`}
         className="atlas-usecase-info-trigger atlas-focus inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full"
@@ -328,7 +328,6 @@ function UseCaseAssumptionsDrawer({
       </Drawer.Trigger>
       <Drawer.Portal>
         <Drawer.Viewport>
-          <Drawer.Backdrop className="atlas-drawer-backdrop" />
           <Drawer.Popup className="atlas-usecase-drawer">
             <div className="flex items-start justify-between gap-4 border-b border-[var(--atlas-line-soft)] px-5 py-4">
               <div className="min-w-0">
