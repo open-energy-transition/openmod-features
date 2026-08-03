@@ -159,10 +159,13 @@ function ToolMatrixPage() {
                     )}
                   />
                 )}
-                renderFeatureCell={(tool, featureId) => (
+                renderFeatureCell={(tool, feature) => (
                   <StatusCell
-                    feature={getToolFeature(tool, category.id, featureId)}
+                    feature={getToolFeature(tool, category.id, feature.id)}
                     options={coverageOptions}
+                    tool={tool}
+                    category={category}
+                    taxonomyFeature={feature}
                   />
                 )}
                 muted={isCategoryInactive(category, activeFeatureIds)}

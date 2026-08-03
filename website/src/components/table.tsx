@@ -7,7 +7,12 @@ import {
   FaMagnifyingGlass,
 } from 'react-icons/fa6'
 import { CUSTOM_USE_CASE_ID } from '../data/custom-use-case'
-import type { TaxonomyCategory, ToolRecord, UseCaseRecord } from '../data/types'
+import type {
+  TaxonomyCategory,
+  TaxonomyFeature,
+  ToolRecord,
+  UseCaseRecord,
+} from '../data/types'
 import { Hint } from './ui'
 
 export function TableToolbar({
@@ -299,7 +304,7 @@ export function CategoryRows<T extends { id: string }>({
   onToggle: () => void
   columns: T[]
   renderCategoryCell: (column: T) => ReactNode
-  renderFeatureCell: (column: T, featureId: string) => ReactNode
+  renderFeatureCell: (column: T, feature: TaxonomyFeature) => ReactNode
   muted?: boolean
   isFeatureMuted?: (featureId: string) => boolean
 }) {
@@ -346,7 +351,7 @@ export function CategoryRows<T extends { id: string }>({
                   key={column.id}
                   className="atlas-cell-border px-3 py-2 text-center"
                 >
-                  {renderFeatureCell(column, feature.id)}
+                  {renderFeatureCell(column, feature)}
                 </td>
               ))}
             </tr>

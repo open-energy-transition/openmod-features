@@ -264,12 +264,16 @@ function UseCaseFitPage() {
                           )}
                         />
                       )}
-                      renderFeatureCell={(useCase, featureId) => (
+                      renderFeatureCell={(useCase, feature) => (
                         <RequirementCell
-                          value={getUseCaseValue(useCase, category.id, featureId)}
-                          toolFeature={getToolFeature(tool, category.id, featureId)}
+                          value={getUseCaseValue(useCase, category.id, feature.id)}
+                          toolFeature={getToolFeature(tool, category.id, feature.id)}
                           options={coverageOptions}
                           hasTool
+                          tool={tool}
+                          category={category}
+                          taxonomyFeature={feature}
+                          useCase={useCase}
                         />
                       )}
                       muted={!toolActive}
