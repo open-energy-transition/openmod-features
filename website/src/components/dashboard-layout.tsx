@@ -127,7 +127,7 @@ export function DashboardLayout() {
   }
 
   return (
-    <Tooltip.Provider>
+    <Tooltip.Provider delay={0} closeDelay={80}>
       <main className="atlas-canvas">
         <DashboardHeader
           data={dashboardData}

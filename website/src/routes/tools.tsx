@@ -58,6 +58,9 @@ function ToolMatrixPage() {
       category.members.map((feature) => featureKey(category.id, feature.id)),
     ),
   )
+  const activeCategoryById = new Map(
+    useCaseScopedTaxonomy.map((category) => [category.id, category]),
+  )
   const displayTaxonomy = hideInactiveRows ? useCaseScopedTaxonomy : data.taxonomy
   const filteredTaxonomy = sortTaxonomyAlphabetically(
     filterTaxonomy(displayTaxonomy, query),
@@ -147,7 +150,10 @@ function ToolMatrixPage() {
                 renderCategoryCell={(tool) => (
                   <CoverageBadge
                     coverage={calculateCategoryCoverage(
-                      category,
+                      activeCategoryById.get(category.id) ?? {
+                        ...category,
+                        members: [],
+                      },
                       tool,
                       coverageOptions,
                     )}

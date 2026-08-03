@@ -2,7 +2,7 @@ import { Drawer } from '@base-ui/react/drawer'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Fragment, useEffect, useMemo, useState } from 'react'
 import {
-  FaCircleInfo,
+  FaCircleQuestion,
   FaLink,
   FaPenToSquare,
   FaRegCopy,
@@ -320,7 +320,7 @@ function UseCaseAssumptionsDrawer({
         aria-label={`View assumptions for ${useCase.name}`}
         className="atlas-usecase-info-trigger atlas-focus inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full"
       >
-        <FaCircleInfo aria-hidden="true" />
+        <FaCircleQuestion aria-hidden="true" />
       </Drawer.Trigger>
       <Drawer.Portal>
         <Drawer.Viewport>
