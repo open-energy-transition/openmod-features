@@ -8,18 +8,14 @@
 
 assumptions: []
 features:
-  asset__candidates:
-    converters:
+  actors:
+    aggregated_prosumers:
       value: '?'
-    electricity_transmission:
+    distributed_objectives:
       value: '?'
-    fluid_or_gas_distribution:
+    equilibrium:
       value: '?'
-    generators:
-      value: '?'
-    loads:
-      value: '?'
-    storage:
+    portfolio:
       value: '?'
   asset__capacity_representation:
     continuous_capacity:
@@ -30,11 +26,6 @@ features:
       value: '?'
     integer_investment_exogenous_capacity:
       value: '?'
-  asset__chaining:
-    asset_linking:
-      value: '?'
-    stockpiling:
-      value: '?'
   asset__cost__investment:
     annuitisation:
       value: '?'
@@ -42,29 +33,44 @@ features:
       value: '?'
     piecewise:
       value: '?'
-    subsidy/penalty:
+    threshold_deviation:
       value: '?'
     unit:
       value: '?'
   asset__cost__operation:
+    inter_temporal:
+      value: '?'
     linear:
       value: '?'
     piecewise:
       value: '?'
-    subsidy/penalty:
+    threshold_deviation:
       value: '?'
     unit:
       value: '?'
+  asset__investment_constraints:
+    brownfield:
+      value: '?'
+    inter_period:
+      value: '?'
+    minimum_size:
+      value: '?'
+    total:
+      value: '?'
   asset__operating_characteristics:
+    configurable_dimensions:
+      value: '?'
+    extensible_dimensions:
+      value: '?'
     iterative:
       value: '?'
     linear:
       value: '?'
+    path_dependent:
+      value: '?'
     piecewise:
       value: '?'
-    static non_dimensional:
-      value: '?'
-    static_dimensional:
+    quadratic:
       value: '?'
   asset__operating_constraints:
     inter_spatial:
@@ -73,87 +79,135 @@ features:
       value: '?'
     operating:
       value: '?'
+    reserved_flows:
+      value: '?'
     total:
       value: '?'
   asset__operating_representation:
     ed:
+      value: '?'
+    maintenance_scheduling:
       value: '?'
     uced:
       value: '?'
   asset__resolution:
     grouped:
       value: '?'
-    mixed:
-      value: '?'
     units:
       value: '?'
-  competition:
-    distributed_objectives:
+  data__io:
+    binary:
       value: '?'
-    portfolio:
+    database:
+      value: '?'
+    lazy_loading:
+      value: '?'
+    plain_text:
+      value: '?'
+    remote_storage:
       value: '?'
   edge_effects:
     energy_balance:
-      value: '?'
-    spatial:
       value: '?'
     time_financial:
       value: '?'
     time_operational:
       value: '?'
-  interface__input:
+  interface__analysis:
+    gui:
+      value: '?'
+    reports:
+      value: '?'
+    standardised_data:
+      value: '?'
+    tables:
+      value: '?'
+  interface__build:
+    api:
+      value: '?'
+    component_groups:
+      value: '?'
+    component_templating:
+      value: '?'
+    config_files:
+      value: '?'
+    gui:
+      value: '?'
+    standardised_data:
+      value: '?'
+  interface__math:
+    formulation_transparency:
+      value: '?'
+    problem_file_export:
+      value: '?'
+    soft_constraints:
+      value: '?'
+    user_defined_math:
+      value: '?'
+    user_defined_objective:
+      value: '?'
+  interface__run:
+    api:
+      value: '?'
     cli:
       value: '?'
     gui:
       value: '?'
-    no_code:
+    remote_execution:
       value: '?'
-    scripting:
+    solver_configuration:
       value: '?'
-    standardised:
+  network__electricity:
+    ac_opf:
       value: '?'
-  interface__output:
-    gui:
+    dc_opf:
       value: '?'
-    logs:
+    network_devices:
       value: '?'
-    reports:
+    network_limits:
       value: '?'
-    standardised:
+    ptdf:
       value: '?'
-    tables:
+    security_constrained:
       value: '?'
-  optimisation_problem:
-    configuration:
+  optimisation__objective:
+    multi_objective_pareto:
       value: '?'
-    decomposition:
+    multi_objective_weighted:
       value: '?'
-    near_optimal:
+    quadratic:
       value: '?'
-    sim + opt:
+  orchestration:
+    rolling_horizon:
       value: '?'
-    user_defined_constraints:
+    sampled_runs:
       value: '?'
-    user_defined_variables:
+    scenario_runs:
+      value: '?'
+    simulation_optimisation:
       value: '?'
   postprocessing:
     aggregation:
       value: '?'
+    contract_settlement:
+      value: '?'
     curtailment:
+      value: '?'
+    disaggregation:
+      value: '?'
+    elcc:
       value: '?'
     financial:
       value: '?'
     future_cost_function:
       value: '?'
-    gtc:
-      value: '?'
     impact_assessment:
       value: '?'
-    lcoe:
+    network_transfer_metrics:
       value: '?'
-    lodf:
+    probabilistic_reliability_assessment:
       value: '?'
-    ptdf:
+    scenario_comparison:
       value: '?'
     shadow_prices:
       value: '?'
@@ -162,66 +216,79 @@ features:
       value: '?'
     forecasting:
       value: '?'
+    input_validation:
+      value: '?'
+    model_catalogue:
+      value: '?'
+    scenario_generation:
+      value: '?'
     spatial_distribution:
-      value: '?'
-  resource_adequacy:
-    eens:
-      value: '?'
-    lolp:
-      value: '?'
-    maintenance_scheduling:
-      value: '?'
-    monte_carlo:
-      value: '?'
-    sampling:
-      value: '?'
-  robustness:
-    asset_outages:
-      value: '?'
-    eens_limit:
-      value: '?'
-    lolp_limit:
-      value: '?'
-    multi_stage_stochastic:
-      value: '?'
-    ram:
-      value: '?'
-    reserve_limit:
-      value: '?'
-    two_stage_stochastic:
-      value: '?'
-    voll:
-      value: '?'
-  spatial__resolution__simplification:
-    network:
-      value: '?'
-    resampling:
-      value: '?'
-  system__carriers:
-    coupled:
-      value: '?'
-    decoupled:
       value: '?'
   system__limits:
     capacity:
       value: '?'
     operation:
       value: '?'
-  time__foresight:
-    myopic:
+  system__processes:
+    boundary_exchange:
       value: '?'
-    perfect:
+    conversion:
       value: '?'
-  time__horizon:
-    multi_year:
+    delayed_transfer:
       value: '?'
-    single_year:
+    discrete_transport:
       value: '?'
-    sub_day:
+    explicit_demand:
       value: '?'
-    sub_year:
+    spatial_transfer:
       value: '?'
-  time__resolution__simplification:
+    state_changing_transfer:
+      value: '?'
+    temporal_transfer:
+      value: '?'
+  system__reliability:
+    margin_requirement:
+      value: '?'
+    probabilistic_reliability_limit:
+      value: '?'
+    unserved_demand:
+      value: '?'
+  time__pathway:
+    backcasting:
+      value: '?'
+    myopic_foresight:
+      value: '?'
+    perfect_foresight:
+      value: '?'
+  tractability__algorithm:
+    approximation:
+      value: '?'
+    decomposition:
+      value: '?'
+  tractability__reformulation:
+    convex_relaxation:
+      value: '?'
+    function_conversion:
+      value: '?'
+    linearised_unit_commitment:
+      value: '?'
+    variable_fidelity:
+      value: '?'
+  tractability__spatial:
+    network_reduction:
+      value: '?'
+    zone_aggregation:
+      value: '?'
+  tractability__structural:
+    black_boxing:
+      value: '?'
+    clustering:
+      value: '?'
+    component_removal:
+      value: '?'
+    constraint_screening:
+      value: '?'
+  tractability__temporal:
     distortion_mitigation:
       value: '?'
     load_duration_curves:
@@ -230,21 +297,25 @@ features:
       value: '?'
     typical_periods:
       value: '?'
-  transmission__limits:
-    gtc:
+  uncertainty:
+    multi_stage_stochastic:
       value: '?'
-    phase_angle:
+    near_optimal:
       value: '?'
-    ptdf:
+    risk_aversion:
       value: '?'
-    thermal:
+    robust_optimisation:
       value: '?'
-  transmission__opf:
-    ac_opf:
+    two_stage_stochastic:
       value: '?'
-    dc_opf:
+  workflow__transparency:
+    infeasibility_diagnosis:
       value: '?'
-    sec_opf:
+    intermediate_access:
       value: '?'
-    transport:
+    metadata_propagation:
+      value: '?'
+    run_logs:
+      value: '?'
+    unit_tracking:
       value: '?'

@@ -27,7 +27,7 @@ Some key features of our repository are:
 ## Installation
 
 1. Clone this repository
-1. Install [pixi](https://pixi.sh/latest/).
+1. Install [pixi](https://pixi.prefix.dev/latest/).
 1. Install pre-commit: `pixi run pre-commit install`
 
 ## Add your tool
@@ -54,8 +54,8 @@ You can also optionally provide a documentation site URL and a longer descriptio
 Once your tool config file has been generated, you will find it under `tools/<tool-shortname>/`.
 You will then be able to update your tool's feature list at `tools/<tool-shortname>/features.yaml`.
 
-All tool features default to values of `n`, i.e., not available in your tool.
-You should update each to a value of `y` if that feature is available, or `dev` if it is actively in development.
+All tool features default to values of `?`, i.e., unknown.
+You should update each to a value of `y` if that feature is available, `n` if it is not, or `dev` if it is actively in development.
 For each, add a `source` key pointing to URL (e.g. in your documentation, a Pull Request, a test) in which that feature is explicitly referenced.
 The `source` key is not _required_ but your feature will show as unvalidated if it is missing.
 

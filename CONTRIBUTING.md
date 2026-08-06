@@ -49,6 +49,10 @@ Ultimately, this can be used to identify tool **feature gaps**.
 >You can also add multiple sources if it will support users to better understand the feature.
 >Features with multiple sources will have all those sources linked to that feature in our feature list platform.
 
+>[!NOTE]
+>A feature value states that a capability *exists*, not that it performs well at real-world scale.
+>Computational performance / tractability at scale cannot be validated against documentation links and is therefore out of scope for feature values; benchmarking of tools at scale is tracked as a separate initiative.
+
 ### Updating an Existing Entry
 
 If you are the entry maintainer:
@@ -116,7 +120,7 @@ To share your new ideas for the project, perform the following actions:
 
 To set up your environment, perform the following actions:
 
-- Install [pixi](https://pixi.sh/latest/)
+- Install [pixi](https://pixi.prefix.dev/latest/)
 - Install pre-commit: `pixi run pre-commit install`
 
 ## Best practices
