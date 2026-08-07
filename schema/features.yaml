@@ -127,7 +127,7 @@ asset__investment_constraints:
     Upper/lower limits on asset investment decisions, as distinct from operating decisions.
   members:
     minimum_size: >-
-      A minimum implementable capacity if an asset is built at all (requires integer investment).
+      A minimum required capacity or a minimum implementable capacity if an asset is built at all (requires integer investment).
     inter_period: >-
       Investment limits linking investment periods (e.g. build-rate limits, phased retirement, availability windows).
     total: >-
@@ -171,14 +171,14 @@ asset__cost__investment:
     linear: >-
       Initial asset capital cost which varies linearly with asset nameplate capacity (e.g. EUR/MW).
     unit: >-
-      Initial asset capital cost which is incurred on asset purchase, irrespective of capacity (e.g. land purchase).
+      Initial asset capital cost which is incurred on asset purchase, irrespective of capacity (e.g. land purchase, engineering cost).
     piecewise: >-
       Initial asset capital cost which varies non-linearly, represented by a piecewise linear curve
       (e.g. economies of scale, where cost per capacity decreases with increasing capacity).
       This may be approximated by multiple assets of the same class (e.g. "wind turbine") that each have different costs and maximum capacities.
     annuitisation: >-
       An asset's capital investment can be annuitised to account for factors linked to its expected economic life and financing arrangements.
-      (e.g., weighted cost of capital, inflation and tax rates, and other sources of depreciation).
+      (e.g., weighted cost of capital, inflation and tax rates).
     threshold_deviation: >-
       Costs on deviations above/below a contracted or reference investment level.
       This is applied as a soft constraint requiring a reference level plus deviation variables

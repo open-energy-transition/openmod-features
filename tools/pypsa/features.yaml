@@ -320,14 +320,14 @@ features:
   preprocessing:
     download:
       source:
-        - https://pypsa-eur.readthedocs.io/en/latest/retrieve.html
-        - https://pypsa-earth.readthedocs.io/en/latest/data_workflow.html
+        - https://pypsa-eur.readthedocs.io/en/latest/retrieve
+        - https://pypsa-earth.readthedocs.io/en/latest/user-guide/data-workflow
       # Ecosystem feature
       value: dev
     forecasting:
       source:
         - https://atlite.readthedocs.io/en/latest/
-        - https://pypsa-eur.readthedocs.io/en/latest/configuration.html#solar
+        - https://pypsa-eur.readthedocs.io/en/latest/configuration/#solar
       # Ecosystem feature
       value: dev
     spatial_distribution:
@@ -347,7 +347,7 @@ features:
     monte_carlo:
       source:
         - https://docs.pypsa.org/latest/user-guide/faq/#can-you-do-generation-adequacy-studies-with-monte-carlo-unplanned-outages
-        - https://pypsa-earth.readthedocs.io/en/latest/monte_carlo.html
+        - https://pypsa-earth.readthedocs.io/en/latest/api-reference/monte-carlo
       value: dev
     sampling:
       source:

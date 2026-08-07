@@ -201,7 +201,7 @@ features:
       value: y
     gui:
       source:
-        - https://engage.nrel.gov/
+        - https://engage.nlr.gov/
       value: dev
     no_code:
       source:
@@ -285,7 +285,7 @@ features:
       value: y
     lcoe:
       source:
-        - https://calliope.readthedocs.io/en/latest/reference/api/postprocess/#calliope.postprocess.postprocess.systemwide_levelised_cost
+        - https://calliope.readthedocs.io/en/latest/math/base/#systemwide_levelised_cost
       value: y
     lodf:
       source: []
