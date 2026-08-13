@@ -45,17 +45,17 @@ network__electricity:
       Linearised AC optimal power flow
     security_constrained: >-
       Security-constrained optimal power flow (contingency constraints)
-    ptdf: >-
-      PTDF-based (flow-based) linear power-flow formulation, in which flows are expressed as
-      linear sensitivities to nodal/zonal injections (e.g. flow-based market coupling),
-      as an alternative to the angle-based `dc_opf` formulation.
-      Post-hoc PTDF computation from model outputs is `postprocessing.network_transfer_metrics`.
+    sensitivity_limits: >-
+      Flows can be limited using supplied linear sensitivities, as an alternative to physical network limits
+      (e.g., Power Transfer Distribution Factor <PTDF>, Line/Branch Outage Distribution Factor <LODF/BODF>, Generic Transmission Constraint).
     network_limits: >-
       Network operating limits representable in the power-flow formulation
       (e.g. thermal limits, phase-angle limits).
     network_devices: >-
       Network components beyond simple lines and buses, carrying their own mathematical formulations
-      (e.g. shunt and phase-shifting transformers, FACTS devices, HVDC converter stations).
+      (e.g. shunt and phase-shifting transformers, FACTS devices, rectifiers, inverters, HVDC converter stations).
+    unbalanced_flows: >-
+      Unbalanced flows (asymmetric phases) can be handled in optimal power flow, usually using linearised DistFlow branch equations.
 
 asset__capacity_representation:
   description: How asset capacities can be represented in the model and optimisation problem.
@@ -76,29 +76,15 @@ asset__capacity_representation:
       An optional maximum capacity can be specified in the input data
       (e.g. gas turbines that you want to track as individual units and whose capacity is not fixed by the manufacturer).
 
-asset__resolution:
-  description: >-
-    The level of physical detail at which assets are represented.
-    Automated conversion between these representations is `tractability__structural.clustering`.
-  members:
-    units: >-
-      Assets are modelled as discrete units which reflect physical assets 1-to-1
-      (asset subsystems, e.g. individual CCGT turbines, are out of scope).
-    grouped: >-
-      Physical assets are aggregated into asset groups when modelled.
-
 asset__operating_representation:
   description: >-
     The resolution of asset operation representation in the model.
     A linearised approximation of unit commitment is
     `tractability__reformulation.linearised_unit_commitment`.
   members:
-    uced: >-
-      Assets can be committed as units and then economically dispatched.
-      This generally requires unit-level asset capacity representation (see `asset__resolution`).
-    ed: >-
-      Assets can only be economically dispatched.
-      This is possible with unit-level or grouped asset capacity representation (see `asset__resolution`).
+    unit_commitment: >-
+      Assets can be committed as units and _then_ economically dispatched.
+      This generally requires assets to be modelled as discrete units which reflect assets 1-to-1.
     maintenance_scheduling: >-
       Asset maintenance / outage schedules are derived endogenously, co-optimised with operation.
       Exogenously fixed maintenance windows are instead `asset__operating_constraints.operating`.
@@ -110,15 +96,21 @@ asset__operating_constraints:
     inter_temporal: >-
       Limits that link time periods (e.g., ramping, run up, load shifting).
     inter_spatial: >-
-      limits that link geographic regions.
-    operating: >-
-      Limits on _when_ or _how_ assets can operate (e.g. including exogenous outage windows,
-      maintenance schedules, and capacity-derating profiles, minimum/maximum load levels).
+      limits that link geographic regions (e.g. to ensure regional equity).
+    inter_asset: >-
+      limits that link assets, within or across regions and time
+      (e.g., regional emissions limits applied across all emitting assets)
+    dispatch: >-
+      Limits on how much assets can output in a given time period
+      (e.g. capacity de-rating profiles, minimum/maximum load levels, renewables capacity factors).
+    commitment: >-
+      Limits on whether an asset can be committed in a given time period (e.g., forced/planned outage windows).
+      Usually requires `asset__operating_representation.unit_commitment`.
     total: >-
       Limit on total asset carrier in-/out-flow over a subset or the entire time horizon / spatial scope
-      (e.g. storage cycling / annual throughput limits).
+      (e.g. limits on storage cycling, annual throughput limits, uptime).
       This can represent real contract arrangements / regulation.
-    reserved_flows: >-
+    dedicated_flow_routing: >-
       Carrier out-flow from one asset can be reserved as in-flow to a specific subset of other assets
       (e.g. fuel stockpiling ahead of conversion, hydropower cascades, CHP internal steam flows).
 
@@ -127,11 +119,18 @@ asset__investment_constraints:
     Upper/lower limits on asset investment decisions, as distinct from operating decisions.
   members:
     minimum_size: >-
-      A minimum required capacity or a minimum implementable capacity if an asset is built at all (requires integer investment).
+      A minimum implementable capacity if an asset is built at all (requires integer investment).
     inter_period: >-
       Investment limits linking investment periods (e.g. build-rate limits, phased retirement, availability windows).
+    inter_spatial: >-
+      limits that link geographic regions (e.g. to ensure regional equity).
+    inter_asset: >-
+      limits that link assets, within or across regions and time
+      (e.g., land-use competition, system-wide embodied emissions limits)
     total: >-
-      Limits on aggregate investment in an asset across a spatial/temporal subset.
+      Limit on aggregate investment over a subset or the entire time horizon / spatial scope
+      (e.g. policy targets).
+      This can represent real contract arrangements / regulation.
     brownfield: >-
       Investment optimisation can start from an existing asset stock rather than from an empty (greenfield) system.
       This allows pre-existing capacities to be represented, which may be extendable and / or retirable.
@@ -171,7 +170,7 @@ asset__cost__investment:
     linear: >-
       Initial asset capital cost which varies linearly with asset nameplate capacity (e.g. EUR/MW).
     unit: >-
-      Initial asset capital cost which is incurred on asset purchase, irrespective of capacity (e.g. land purchase, engineering cost).
+      Initial asset capital cost which is incurred on asset purchase, irrespective of capacity (e.g. land purchase, design phase).
     piecewise: >-
       Initial asset capital cost which varies non-linearly, represented by a piecewise linear curve
       (e.g. economies of scale, where cost per capacity decreases with increasing capacity).
@@ -201,14 +200,6 @@ asset__cost__operation:
     inter_temporal: >-
       Costs applied to the magnitude of change in an operating decision variable between timesteps (e.g. ramping wear cost).
 
-system__limits:
-  description: System-wide limits to represent physical or policy constraints.
-  members:
-    capacity: >-
-      Limit multi-asset capacity decisions (e.g. land availability, procurement plans).
-    operation: >-
-      Limit multi-asset operational factors (e.g. max emissions, fuel availability, capacity factor).
-
 system__reliability:
   description: >-
     Reliability requirements imposed as constraints or penalty costs within the optimisation, under deterministic inputs.
@@ -216,8 +207,8 @@ system__reliability:
   members:
     margin_requirement: >-
       Minimum requirement on firm capacity/margin held in reserve.
-      This could be applied at the system level or on single / subsets of assets
-      (e.g. reserve requirements, remaining available margins (RAM)).
+      This could be applied at the system level or on single / subsets of assets, if `interface__build.component_groups` is available.
+      (e.g. firm capacity requirements, spinning reserve, ramping reserve).
     probabilistic_reliability_limit: >-
       Probabilistic reliability constraints within the optimisation
       (e.g. loss-of-load-probability <LOLP> limit, expected-energy-not-served <EENS> limit).
@@ -319,26 +310,25 @@ tractability__spatial:
     network_reduction: >-
       Network element equivalencing (e.g., reducing to a single voltage level).
 
-tractability__structural:
+tractability__assets:
   description: >-
-    Reduction of problem size by removing or collapsing model structure - components or constraints -
-    as opposed to reducing resolution or reformulating math.
+    Asset resolution adjustment options.
   members:
     clustering: >-
       Individually defined assets are automatically aggregated into asset groups for optimisation.
       This usually requires `interface__build.component_groups` to define aggregation membership.
     black_boxing: >-
-      A chain of interconnected components is collapsed into a single component with an in/out interface.
-      This usually requires `reserved_flows` between interconnected components.
+      A chain of interconnected assets is collapsed into a single component with an in/out interface.
+      This usually requires `asset__operating_constraints.dedicated_flow_routing` between interconnected components.
     component_removal: >-
-      Nodes, assets, or carriers can be systematically excluded from the built problem.
-    constraint_screening: >-
-      Constraints unlikely to bind are omitted or lazily added.
+      Individual or groups of assets (e.g. sharing a node or a carrier) can be systematically filtered out of the built problem.
 
 tractability__reformulation:
   description: >-
     Approximations of discrete or non-linear formulations that preserve (mixed-integer) linear tractability.
   members:
+    constraint_screening: >-
+      Constraints unlikely to bind are omitted or lazily added.
     linearised_unit_commitment: >-
       Unit commitment approximated with continuous (linearised) commitment variables, avoiding integer decision variables.
     convex_relaxation: >-
@@ -350,12 +340,6 @@ tractability__reformulation:
       The mathematical fidelity of the same physical attribute can differ across the model's scope within one model definition
       (e.g. discrete units in some investment periods and aggregated capacity in others;
       unit commitment over the near-term horizon, continuous economic dispatch beyond).
-
-tractability__algorithm:
-  description: >-
-    Restructuring of the solution algorithm of a single optimisation problem to reduce computational burden.
-    Coordinating multiple complete runs is `orchestration`.
-  members:
     decomposition: >-
       The problem is split into coordinated sub-problems solved iteratively or in parallel until convergence
       (e.g. Benders decomposition; Stochastic Dual Dynamic Programming <SDDP> for multi-stage stochastic hydropower scheduling).
@@ -367,7 +351,6 @@ orchestration:
   description: >-
     Tool-managed workflows coordinating multiple complete runs in series/parallel,
     where the result emerges from the ensemble or its convergence.
-    Restructuring the solution algorithm of a single problem is `tractability__algorithm`.
   members:
     rolling_horizon: >-
       The operational timescale is optimised in sequential (possibly overlapping) windows, each with limited foresight.
