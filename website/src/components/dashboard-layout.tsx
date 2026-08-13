@@ -171,17 +171,20 @@ function HomeIntro({ data }: { data: DashboardData }) {
           by the rules beside the navigation.
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
-          <PreamblePoint
+          <PreambleLink
+            href="https://github.com/open-energy-transition/openmod-features#add-your-tool"
             icon={<FaScrewdriverWrench aria-hidden="true" />}
-            text="Compare tool capabilities"
+            text="Contribute or update a tool"
           />
-          <PreamblePoint
+          <PreambleLink
+            href="https://github.com/open-energy-transition/openmod-features#add-a-use-case"
             icon={<FaFileCircleCheck aria-hidden="true" />}
-            text="Trace source-backed evidence"
+            text="Contribute or update a use case"
           />
-          <PreamblePoint
+          <PreambleLink
+            href="https://github.com/open-energy-transition/openmod-features/blob/main/GOVERNANCE.md"
             icon={<FaClipboardCheck aria-hidden="true" />}
-            text="Check use-case fit"
+            text="Governance"
           />
         </div>
       </div>
@@ -204,12 +207,25 @@ function HomeIntro({ data }: { data: DashboardData }) {
   )
 }
 
-function PreamblePoint({ icon, text }: { icon: React.ReactNode; text: string }) {
+function PreambleLink({
+  href,
+  icon,
+  text,
+}: {
+  href: string
+  icon: React.ReactNode
+  text: string
+}) {
   return (
-    <span className="atlas-preamble-point inline-flex items-center gap-2 px-2.5 py-1.5 text-xs font-medium">
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      className="atlas-preamble-point atlas-focus inline-flex items-center gap-2 px-2.5 py-1.5 text-xs font-medium outline-none"
+    >
       <span className="atlas-muted">{icon}</span>
       <span>{text}</span>
-    </span>
+    </a>
   )
 }
 

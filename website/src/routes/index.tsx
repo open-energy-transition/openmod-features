@@ -89,7 +89,7 @@ function OverviewPage() {
         <div className="grid gap-4">
           <Panel
             title="Data Quality"
-            description="Inventory maintenance signals. Unknown means unassessed, unsourced means implemented without validation links, and in development means partial or planned support."
+            description="Validation and maintenance signals for the feature inventory."
           >
             <dl className="grid gap-3 p-4 text-sm sm:grid-cols-2 xl:grid-cols-1">
               <QualityItem

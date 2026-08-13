@@ -668,6 +668,12 @@ a:active {
     color: var(--atlas-ink-soft);
   }
 
+  .atlas-preamble-point:hover {
+    border-color: rgb(13 118 111 / 0.32);
+    background: var(--atlas-hydro-wash);
+    color: var(--atlas-hydro-strong);
+  }
+
   .atlas-rule-switcher {
     width: 100%;
     overflow-x: auto;
