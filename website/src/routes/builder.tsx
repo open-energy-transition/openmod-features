@@ -407,7 +407,7 @@ function StartingPointTabs({
     >
       <div className="grid gap-1">
         <span className="atlas-label text-sm font-medium">Starting point</span>
-        <Tabs.List className="flex w-fit max-w-full gap-1 overflow-x-auto border border-[var(--atlas-line-soft)] p-0.5">
+        <Tabs.List className="atlas-nav flex w-fit max-w-full gap-1 overflow-x-auto p-1">
           <StartingPointTab value="scratch">From scratch</StartingPointTab>
           <StartingPointTab value="copy">Copy existing</StartingPointTab>
           <StartingPointTab value="yaml">Import YAML</StartingPointTab>
@@ -415,7 +415,7 @@ function StartingPointTabs({
       </div>
 
       <Tabs.Panel value="scratch" className="outline-none">
-        <p className="atlas-subtle-card px-3 py-2 text-sm text-[var(--atlas-ink-soft)]">
+        <p className="border-l border-[var(--atlas-line-strong)] px-3 py-2 text-sm text-[var(--atlas-ink-soft)]">
           Start with an empty requirement set, then pick required features manually
           from the feature list below.
         </p>
@@ -472,7 +472,7 @@ function StartingPointTab({
   return (
     <Tabs.Tab
       value={value}
-      className="atlas-focus h-8 whitespace-nowrap px-3 text-sm font-medium text-[var(--atlas-ink-muted)] outline-none hover:bg-[var(--atlas-control-hover)] hover:text-[var(--atlas-ink)] data-[active]:border data-[active]:border-[var(--atlas-line-strong)] data-[active]:bg-[var(--atlas-surface-raised)] data-[active]:text-[var(--atlas-hydro-strong)]"
+      className="atlas-builder-view-tab atlas-focus inline-flex h-9 items-center justify-center gap-2 whitespace-nowrap rounded-[6px] px-3 text-sm font-medium outline-none"
     >
       {children}
     </Tabs.Tab>
