@@ -21,8 +21,8 @@
   --atlas-crimson: #b21c2d;
   --atlas-crimson-wash: rgb(178 28 45 / 0.055);
   --atlas-crimson-line: rgb(178 28 45 / 0.42);
-  --atlas-grid-line: rgb(22 37 32 / 0.055);
-  --atlas-grid-strong: rgb(22 37 32 / 0.09);
+  --atlas-grid-line: rgb(22 37 32 / 0.026);
+  --atlas-grid-strong: rgb(22 37 32 / 0.042);
   --atlas-rail: rgb(13 118 111 / 0.34);
   --atlas-rule-amber: #d97706;
   --atlas-check-green: #059669;
@@ -103,8 +103,8 @@
   --atlas-crimson: #ff6b7b;
   --atlas-crimson-wash: rgb(255 107 123 / 0.11);
   --atlas-crimson-line: rgb(255 107 123 / 0.5);
-  --atlas-grid-line: rgb(220 245 237 / 0.045);
-  --atlas-grid-strong: rgb(220 245 237 / 0.075);
+  --atlas-grid-line: rgb(220 245 237 / 0.028);
+  --atlas-grid-strong: rgb(220 245 237 / 0.046);
   --atlas-rail: rgb(55 200 186 / 0.36);
   --atlas-rule-amber: #f59e0b;
   --atlas-check-green: #34d399;
@@ -160,8 +160,8 @@ body {
   background: var(--atlas-body-background);
   background-size:
     auto,
-    4rem 4rem,
-    4rem 4rem,
+    5.5rem 5.5rem,
+    5.5rem 5.5rem,
     auto;
 }
 
@@ -212,8 +212,8 @@ a:active {
     min-height: 100vh;
     background: var(--atlas-canvas-background);
     background-size:
-      9rem 9rem,
-      9rem 9rem,
+      12rem 12rem,
+      12rem 12rem,
       auto,
       auto,
       auto;
@@ -231,18 +231,6 @@ a:active {
     box-shadow:
       inset 0 2px 0 var(--atlas-crimson-line),
       var(--atlas-header-shadow);
-  }
-
-  .atlas-header::before {
-    position: absolute;
-    inset: 0;
-    background:
-      linear-gradient(90deg, transparent 0, transparent calc(100% - 1px), var(--atlas-line-soft) calc(100% - 1px)),
-      linear-gradient(180deg, transparent 0, transparent calc(100% - 1px), var(--atlas-line-soft) calc(100% - 1px));
-    background-size: 4.5rem 4.5rem;
-    content: "";
-    opacity: 0.62;
-    pointer-events: none;
   }
 
   .atlas-header::after {
