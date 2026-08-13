@@ -18,6 +18,12 @@
   --atlas-hydro-strong: #075e59;
   --atlas-hydro-soft: #d8f1ec;
   --atlas-hydro-wash: #eefaf7;
+  --atlas-crimson: #b21c2d;
+  --atlas-crimson-wash: rgb(178 28 45 / 0.055);
+  --atlas-crimson-line: rgb(178 28 45 / 0.42);
+  --atlas-rule-amber: #d97706;
+  --atlas-rule-blue: #2563eb;
+  --atlas-check-green: #059669;
   --atlas-primary-fill: var(--atlas-hydro);
   --atlas-primary-fill-hover: var(--atlas-hydro-strong);
   --atlas-primary-ink: #ffffff;
@@ -88,6 +94,12 @@
   --atlas-hydro-strong: #7be4d8;
   --atlas-hydro-soft: #123d38;
   --atlas-hydro-wash: #0f2825;
+  --atlas-crimson: #ff6b7b;
+  --atlas-crimson-wash: rgb(255 107 123 / 0.11);
+  --atlas-crimson-line: rgb(255 107 123 / 0.5);
+  --atlas-rule-amber: #f59e0b;
+  --atlas-rule-blue: #60a5fa;
+  --atlas-check-green: #34d399;
   --atlas-primary-fill: #5ee1d2;
   --atlas-primary-fill-hover: #8deee4;
   --atlas-primary-ink: #031412;
@@ -187,8 +199,16 @@ a:active {
 
   .atlas-header {
     border-bottom: 1px solid var(--atlas-line);
-    background: var(--atlas-header-background);
-    box-shadow: var(--atlas-header-shadow);
+    background:
+      linear-gradient(90deg, var(--atlas-crimson-wash), transparent 48%),
+      var(--atlas-header-background);
+    box-shadow:
+      inset 0 2px 0 var(--atlas-crimson-line),
+      var(--atlas-header-shadow);
+  }
+
+  .atlas-header .atlas-eyebrow {
+    color: var(--atlas-crimson);
   }
 
   .atlas-eyebrow {
@@ -704,7 +724,16 @@ a:active {
   }
 
   .atlas-rule-switch[data-checked] {
-    box-shadow: inset 0 0 0 1px rgb(13 118 111 / 0.18);
+    background: var(--atlas-surface-raised);
+    color: var(--atlas-ink);
+    box-shadow:
+      inset 0 0 0 1px var(--atlas-line-strong),
+      var(--atlas-button-inset);
+  }
+
+  .atlas-rule-switch[data-checked] .atlas-rule-label,
+  .atlas-rule-switch[data-checked] .atlas-rule-info {
+    color: inherit;
   }
 
   .atlas-rule-track {
@@ -719,7 +748,41 @@ a:active {
   }
 
   .atlas-rule-switch[data-checked] .atlas-rule-track {
-    background: var(--atlas-switch-on);
+    background: var(--atlas-hydro);
+  }
+
+  .atlas-rule-switch[data-checked][data-rule-tone='amber'] .atlas-rule-track {
+    background: var(--atlas-rule-amber);
+  }
+
+  .atlas-rule-switch[data-checked][data-rule-tone='blue'] .atlas-rule-track {
+    background: var(--atlas-rule-blue);
+  }
+
+  .atlas-builder-view-tab {
+    position: relative;
+    color: var(--atlas-ink-muted);
+  }
+
+  .atlas-builder-view-tab:hover {
+    color: var(--atlas-ink);
+  }
+
+  .atlas-builder-view-tab[data-active] {
+    background: var(--atlas-surface-raised);
+    color: var(--atlas-ink);
+    box-shadow:
+      inset 0 0 0 1px var(--atlas-line-strong),
+      var(--atlas-button-inset);
+  }
+
+  .atlas-builder-view-tab[data-active]::before {
+    height: 0.28rem;
+    width: 0.48rem;
+    border-bottom: 2px solid var(--atlas-check-green);
+    border-left: 2px solid var(--atlas-check-green);
+    content: "";
+    transform: rotate(-45deg) translateY(-0.03rem);
   }
 
   .atlas-rule-thumb {

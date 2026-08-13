@@ -267,13 +267,13 @@ function UseCaseBuilderPage() {
         <Tabs.List className="atlas-nav flex w-fit max-w-full gap-1 overflow-x-auto p-1">
           <Tabs.Tab
             value="list"
-            className="atlas-nav-link atlas-focus h-9 whitespace-nowrap rounded-[6px] px-3 text-sm font-medium leading-9 outline-none data-[active]:bg-[var(--atlas-hydro-wash)] data-[active]:text-[var(--atlas-hydro-strong)]"
+            className="atlas-builder-view-tab atlas-focus inline-flex h-9 items-center justify-center gap-2 whitespace-nowrap rounded-[6px] px-3 text-sm font-medium outline-none"
           >
             List
           </Tabs.Tab>
           <Tabs.Tab
             value="yaml"
-            className="atlas-nav-link atlas-focus h-9 whitespace-nowrap rounded-[6px] px-3 text-sm font-medium leading-9 outline-none data-[active]:bg-[var(--atlas-hydro-wash)] data-[active]:text-[var(--atlas-hydro-strong)]"
+            className="atlas-builder-view-tab atlas-focus inline-flex h-9 items-center justify-center gap-2 whitespace-nowrap rounded-[6px] px-3 text-sm font-medium outline-none"
           >
             YAML
           </Tabs.Tab>

@@ -272,12 +272,14 @@ export function CoverageControls({
       </h2>
       <CoverageRuleSwitch
         label="Unvalidated"
+        tone="amber"
         checked={options.countUnsourced}
         onCheckedChange={(checked) => onChange({ ...options, countUnsourced: checked })}
         description="Include implemented values without source links."
       />
       <CoverageRuleSwitch
         label="In development"
+        tone="blue"
         checked={options.countDev}
         onCheckedChange={(checked) => onChange({ ...options, countDev: checked })}
         description="Treat development status as meeting a requirement."
@@ -288,11 +290,13 @@ export function CoverageControls({
 
 function CoverageRuleSwitch({
   label,
+  tone,
   checked,
   onCheckedChange,
   description,
 }: {
   label: string
+  tone: 'amber' | 'blue'
   checked: boolean
   onCheckedChange: (checked: boolean) => void
   description: string
@@ -305,6 +309,7 @@ function CoverageRuleSwitch({
         checked={checked}
         onCheckedChange={onCheckedChange}
         aria-describedby={descriptionId}
+        data-rule-tone={tone}
         className="atlas-rule-switch atlas-focus inline-flex h-9 items-center gap-2 whitespace-nowrap rounded-[6px] px-2.5 text-sm font-medium outline-none"
       >
         <span className="atlas-rule-track">
