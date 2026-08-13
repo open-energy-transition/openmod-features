@@ -21,12 +21,15 @@ system__processes:
       Carriers are moved in time (e.g. storage, demand shifting), linking system states across timesteps.
     spatial_transfer: >-
       Carriers are moved between regions as continuous flow subject to transfer-capacity limits, without network physics.
-      See `network__electricity` for electrical network physics features.
+      See `network__electricity` / `network__pipeline` for network physics features.
     delayed_transfer: >-
-      Continuous flow in space with a time delay or in-transit buffering between injection and withdrawal
-      (e.g., river flows, pipeline linepack, district-heating transit).
+      Continuous flow in space with a time delay between injection and withdrawal
+      (e.g., river flows, district-heating transit).
+    buffered_transfer: >
+      Flow in space with an endogenous in-transit inventory, to enable the flow to accumulate in time
+      (e.g. pipeline linepack).
     discrete_transport: >-
-      Carriers are moved in discrete packets by mobile units with loading/unloading decisions
+      Carriers are moved in space or exchanged across the system boundary in discrete packets by mobile units with loading/unloading decisions
       (e.g. shipping, trucking, rail).
     state_changing_transfer: >-
       Carrier movement requiring the carrier's physical state to be tracked or converted en route
@@ -43,8 +46,6 @@ network__electricity:
       Linearised DC optimal power flow
     ac_opf: >-
       Linearised AC optimal power flow
-    security_constrained: >-
-      Security-constrained optimal power flow (contingency constraints)
     sensitivity_limits: >-
       Flows can be limited using supplied linear sensitivities, as an alternative to physical network limits
       (e.g., Power Transfer Distribution Factor <PTDF>, Line/Branch Outage Distribution Factor <LODF/BODF>, Generic Transmission Constraint).
@@ -56,6 +57,22 @@ network__electricity:
       (e.g. shunt and phase-shifting transformers, FACTS devices, rectifiers, inverters, HVDC converter stations).
     unbalanced_flows: >-
       Unbalanced flows (asymmetric phases) can be handled in optimal power flow, usually using linearised DistFlow branch equations.
+
+network__pipeline:
+  description: >-
+    Pressure-driven network representation for carriers transported through pipes,
+    beyond the `system__processes.spatial_transfer` baseline
+    (e.g. methane, hydrogen, CO2, district heat/cooling, water).
+  members:
+    linearised_flow: >-
+      Nodal pressure/head is a decision variable which couples flows using a linearised pressure-drop relationship.
+      Operating limits on that state are representable in the same formulation
+      (e.g. minimum/maximum nodal pressure, maximum allowable operating pressure <MAOP>, contracted delivery pressure).
+    composition_tracking: >-
+      A single transfer asset carries a mixture whose constituents are balanced individually,
+      allowing limits on the resulting blend
+      (e.g. hydrogen blend-fraction limits, minimum gross calorific value <GCV>, Wobbe index bounds).
+      Composition-dependent hydraulics (e.g. a density-dependent pressure-drop coefficient) are out of scope.
 
 asset__capacity_representation:
   description: How asset capacities can be represented in the model and optimisation problem.
@@ -152,7 +169,7 @@ asset__operating_characteristics:
     piecewise: >-
       Asset characteristics vary depending on operating decision variables.
       This creates a non-linear relationship that can be described by a piecewise linear curve
-      (e.g., part-load efficiency, linked to capacity, storage head effects).
+      (e.g., part-load efficiency, linked to capacity, storage head effects, pressurisation energy curves).
     quadratic: >-
       Asset characteristics vary quadratically with decision variables, passed natively to a QP/QCP-capable solver
       (e.g. quadratic fuel curves, loss approximations).
@@ -214,6 +231,10 @@ system__reliability:
       (e.g. loss-of-load-probability <LOLP> limit, expected-energy-not-served <EENS> limit).
     unserved_demand: >-
       Demand can go unserved at a penalty cost (value of lost load <VOLL>), placing a soft constraint on load shedding within the optimisation.
+    contingency_constrained: >-
+      The optimisation is constrained to remain feasible following the loss of individual components, over an enumerated set of discrete failure states
+      (e.g. N-1 security-constrained optimal power flow, loss of a compressor station or pipeline segment).
+      Post-contingency corrective action can be co-optimised where the tool supports it.
 
 edge_effects:
   description: >-
@@ -235,13 +256,12 @@ actors:
       Agent asset portfolios and associated constraints and cost considerations
       (e.g. limited cross-portfolio capital investment, risk appetite).
     distributed_objectives: >-
-      Per-agent profit maximising / risk minimising bidding in day-ahead / intra-day markets.
+      Per-agent profit maximising / risk minimising objectives can be represented within the larger system-level optimisation
+      (e.g. bidding in day-ahead / intra-day markets, behind-the-meter prosumer decisions)
     equilibrium: >-
       Market equilibrium found across actors with competing objectives.
       This could be applied via complementarity/MCP/bi-level formulations or a quadratic-markup reformulation of the cost-minimisation objective
       (e.g. Cournot-Nash oligopoly modelling).
-    aggregated_prosumers: >-
-      Small-scale consumers/prosumers represented as aggregated actor classes with their own objectives and response behaviour, rather than as individuals.
 
 time__pathway:
   description: >-
