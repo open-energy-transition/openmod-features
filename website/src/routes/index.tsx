@@ -182,7 +182,7 @@ function QualityItem({
   detail?: string
 }) {
   return (
-    <div className="atlas-subtle-card grid gap-1 px-3 py-2">
+    <div className="grid gap-1 border-l border-[var(--atlas-line-strong)] px-3 py-2">
       <div className="flex items-center justify-between gap-3">
         <dt className="flex min-w-0 items-center gap-2 text-[var(--atlas-ink-soft)]">
           <span className="atlas-muted">{icon}</span>

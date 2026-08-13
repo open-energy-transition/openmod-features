@@ -406,7 +406,7 @@ function DataItem({
   value: string
 }) {
   return (
-    <div className="atlas-subtle-card flex min-w-0 items-center gap-2 px-2.5 py-1.5">
+    <div className="flex min-w-0 items-center gap-2 border-l border-[var(--atlas-line-strong)] py-1 pl-2.5">
       <dt className="atlas-muted">{icon}</dt>
       <dd className="flex min-w-0 items-baseline gap-1.5 whitespace-nowrap">
         <span className="truncate font-semibold tabular-nums text-[var(--atlas-ink)]">{value}</span>

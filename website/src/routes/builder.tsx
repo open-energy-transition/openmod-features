@@ -407,7 +407,7 @@ function StartingPointTabs({
     >
       <div className="grid gap-1">
         <span className="atlas-label text-sm font-medium">Starting point</span>
-        <Tabs.List className="atlas-subtle-card flex w-fit max-w-full gap-1 overflow-x-auto p-1">
+        <Tabs.List className="flex w-fit max-w-full gap-1 overflow-x-auto border border-[var(--atlas-line-soft)] p-0.5">
           <StartingPointTab value="scratch">From scratch</StartingPointTab>
           <StartingPointTab value="copy">Copy existing</StartingPointTab>
           <StartingPointTab value="yaml">Import YAML</StartingPointTab>
@@ -472,7 +472,7 @@ function StartingPointTab({
   return (
     <Tabs.Tab
       value={value}
-      className="atlas-focus h-8 whitespace-nowrap rounded-[5px] px-3 text-sm font-medium text-[var(--atlas-ink-muted)] outline-none hover:text-[var(--atlas-ink)] data-[active]:bg-[var(--atlas-surface-raised)] data-[active]:text-[var(--atlas-hydro-strong)] data-[active]:shadow-[0_1px_2px_rgb(15_23_21_/_0.06)]"
+      className="atlas-focus h-8 whitespace-nowrap px-3 text-sm font-medium text-[var(--atlas-ink-muted)] outline-none hover:bg-[var(--atlas-control-hover)] hover:text-[var(--atlas-ink)] data-[active]:border data-[active]:border-[var(--atlas-line-strong)] data-[active]:bg-[var(--atlas-surface-raised)] data-[active]:text-[var(--atlas-hydro-strong)]"
     >
       {children}
     </Tabs.Tab>
@@ -544,7 +544,7 @@ function TemplateSelect({
 
 function SummaryItem({ label, value }: { label: string; value: string }) {
   return (
-    <div className="atlas-subtle-card p-3">
+    <div className="border-l border-[var(--atlas-line-strong)] p-3">
       <dt className="atlas-caption text-xs font-medium">{label}</dt>
       <dd className="mt-1 text-2xl font-semibold tabular-nums text-[var(--atlas-ink)]">{value}</dd>
     </div>
