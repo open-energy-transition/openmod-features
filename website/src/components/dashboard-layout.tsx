@@ -260,13 +260,13 @@ function DashboardHeader({
 }) {
   return (
     <header className="atlas-header">
-      <div className="mx-auto grid max-w-[1800px] gap-4 px-4 py-5 sm:px-6 lg:px-8">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-          <div>
+      <div className="atlas-header-inner mx-auto grid max-w-[1800px] gap-4 px-4 py-6 sm:px-6 lg:px-8">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <div className="atlas-header-copy">
             <p className="atlas-eyebrow">
               Open Energy Modelling
             </p>
-            <h1 className="atlas-title mt-1 text-2xl font-semibold sm:text-3xl">
+            <h1 className="atlas-title mt-2 text-3xl font-semibold sm:text-4xl">
               Tool Feature Dashboard
             </h1>
             <p className="atlas-copy mt-2 max-w-3xl text-sm leading-6">
@@ -274,7 +274,7 @@ function DashboardHeader({
               fit from the repository feature inventory.
             </p>
           </div>
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center lg:flex-col lg:items-end">
+          <div className="atlas-header-controls flex flex-col gap-3 sm:flex-row sm:items-center lg:flex-col lg:items-end">
             <ThemeSwitch theme={theme} onThemeChange={onThemeChange} />
             <HeaderLinks data={data} />
           </div>

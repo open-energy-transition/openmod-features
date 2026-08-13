@@ -50,7 +50,7 @@ function OverviewPage() {
 
   return (
     <div className="grid gap-5">
-      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <section className="atlas-metric-grid grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <Metric
           label="Most Complete Tool"
           value={strongestTool?.tool.shortname ?? 'N/A'}
@@ -157,14 +157,14 @@ function Metric({
   icon?: React.ReactNode
 }) {
   return (
-    <div className="atlas-panel p-4">
+    <div className="atlas-panel atlas-metric p-4">
       <div className="flex items-start justify-between gap-3">
         <dt className="atlas-caption text-xs font-semibold uppercase tracking-[0.14em]">
           {label}
         </dt>
-        {icon ? <span className="atlas-muted">{icon}</span> : null}
+        {icon ? <span className="atlas-metric-icon">{icon}</span> : null}
       </div>
-      <dd className="mt-2 truncate text-2xl font-semibold tabular-nums text-[var(--atlas-ink)]">{value}</dd>
+      <dd className="mt-3 truncate text-3xl font-semibold tabular-nums text-[var(--atlas-ink)]">{value}</dd>
       {detail ? <p className="atlas-caption mt-2 text-xs leading-5">{detail}</p> : null}
     </div>
   )
