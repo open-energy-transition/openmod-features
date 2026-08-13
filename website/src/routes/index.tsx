@@ -6,6 +6,7 @@ import {
   FaClipboardCheck,
   FaCodeBranch,
   FaFileCircleCheck,
+  FaLink,
   FaRegCircleQuestion,
   FaTableList,
 } from 'react-icons/fa6'
@@ -17,7 +18,7 @@ import {
   calculateUseCaseCoverage,
   countFeatures,
 } from '../data/coverage'
-import type { CoverageResult, ToolRecord, UseCaseRecord } from '../data/types'
+import type { CoverageResult, ToolRecord } from '../data/types'
 import { calculateValidation, compareCoverage } from '../lib/dashboard-utils'
 
 export const Route = createFileRoute('/')({
@@ -45,10 +46,7 @@ function OverviewPage() {
   const quality = useMemo(() => calculateQuality(data), [data])
   const strongestTool = toolCoverages[0]
   const strongestFit = useCaseFits[0]
-  const totalRequiredRows = data.useCases.reduce(
-    (total, useCase) => total + countRequiredRows(useCase),
-    0,
-  )
+  const featureRows = countFeatures(data)
 
   return (
     <div className="grid gap-5">
@@ -80,31 +78,43 @@ function OverviewPage() {
           icon={<FaFileCircleCheck aria-hidden="true" />}
         />
         <Metric
-          label="Required Rows"
-          value={totalRequiredRows.toString()}
-          detail={`Across ${data.useCases.length} built-in use cases.`}
+          label="Feature Rows"
+          value={featureRows.toString()}
+          detail="Taxonomy feature rows tracked across all tools."
           icon={<FaTableList aria-hidden="true" />}
         />
       </section>
 
       <section className="grid gap-4 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
         <div className="grid gap-4">
-          <Panel title="Data Quality" description="Maintenance signals for the feature inventory.">
-            <dl className="grid gap-3 p-4 text-sm sm:grid-cols-3 xl:grid-cols-1">
+          <Panel
+            title="Data Quality"
+            description="Inventory maintenance signals. Unknown means unassessed, unsourced means implemented without validation links, and in development means partial or planned support."
+          >
+            <dl className="grid gap-3 p-4 text-sm sm:grid-cols-2 xl:grid-cols-1">
+              <QualityItem
+                icon={<FaLink aria-hidden="true" />}
+                label="Source-backed values"
+                value={`${quality.sourced} / ${quality.sourceEligible}`}
+                detail="Implemented or in-development values with at least one validation link."
+              />
               <QualityItem
                 icon={<FaRegCircleQuestion aria-hidden="true" />}
                 label="Unknown values"
                 value={quality.unknown.toString()}
+                detail="Feature cells still marked as unassessed."
               />
               <QualityItem
                 icon={<FaCircleQuestion aria-hidden="true" />}
                 label="Unsourced implemented values"
                 value={quality.unsourced.toString()}
+                detail="Implemented values without validation links."
               />
               <QualityItem
                 icon={<FaCodeBranch aria-hidden="true" />}
                 label="In-development values"
                 value={quality.development.toString()}
+                detail="Partial or planned support marked as dev."
               />
             </dl>
           </Panel>
@@ -164,18 +174,23 @@ function QualityItem({
   icon,
   label,
   value,
+  detail,
 }: {
   icon: React.ReactNode
   label: string
   value: string
+  detail?: string
 }) {
   return (
-    <div className="atlas-subtle-card flex items-center justify-between gap-3 px-3 py-2">
-      <dt className="flex min-w-0 items-center gap-2 text-[var(--atlas-ink-soft)]">
-        <span className="atlas-muted">{icon}</span>
-        <span className="truncate">{label}</span>
-      </dt>
-      <dd className="font-semibold tabular-nums text-[var(--atlas-ink)]">{value}</dd>
+    <div className="atlas-subtle-card grid gap-1 px-3 py-2">
+      <div className="flex items-center justify-between gap-3">
+        <dt className="flex min-w-0 items-center gap-2 text-[var(--atlas-ink-soft)]">
+          <span className="atlas-muted">{icon}</span>
+          <span className="truncate">{label}</span>
+        </dt>
+        <dd className="font-semibold tabular-nums text-[var(--atlas-ink)]">{value}</dd>
+      </div>
+      {detail ? <p className="atlas-caption pl-6 text-xs leading-5">{detail}</p> : null}
     </div>
   )
 }
@@ -194,25 +209,25 @@ function Bar({ percentage }: { percentage: number }) {
   )
 }
 
-function countRequiredRows(useCase: UseCaseRecord) {
-  return Object.values(useCase.features).reduce(
-    (total, category) =>
-      total +
-      Object.values(category).filter((feature) => feature.value === 'y').length,
-    0,
-  )
-}
-
 function calculateQuality(data: {
   tools: ToolRecord[]
 }) {
   let unknown = 0
   let unsourced = 0
   let development = 0
+  let sourceEligible = 0
+  let sourced = 0
 
   for (const tool of data.tools) {
     for (const category of Object.values(tool.features)) {
       for (const feature of Object.values(category)) {
+        if (feature.value === 'y' || feature.value === 'dev') {
+          sourceEligible += 1
+          if (feature.sources.length > 0) {
+            sourced += 1
+          }
+        }
+
         if (feature.value === '?') {
           unknown += 1
         }
@@ -228,5 +243,5 @@ function calculateQuality(data: {
     }
   }
 
-  return { unknown, unsourced, development }
+  return { unknown, unsourced, development, sourceEligible, sourced }
 }

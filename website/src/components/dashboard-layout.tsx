@@ -10,9 +10,8 @@ import {
   FaListCheck,
   FaScrewdriverWrench,
   FaSun,
-  FaTableList,
 } from 'react-icons/fa6'
-import { countFeatures, defaultCoverageOptions } from '../data/coverage'
+import { defaultCoverageOptions } from '../data/coverage'
 import {
   CUSTOM_USE_CASE_PARAM,
   decodeCustomUseCase,
@@ -375,11 +374,6 @@ function HeaderLinks({ data }: { data: DashboardData }) {
         icon={<FaListCheck aria-hidden="true" />}
         label="Use cases"
         value={data.useCases.length.toString()}
-      />
-      <DataItem
-        icon={<FaTableList aria-hidden="true" />}
-        label="Feature rows"
-        value={countFeatures(data).toString()}
       />
       <GithubLink />
     </div>

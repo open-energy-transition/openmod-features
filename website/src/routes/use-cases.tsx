@@ -60,7 +60,7 @@ function UseCaseFitPage() {
           : data.useCases.map((useCase) => useCase.id),
       ),
   )
-  const [hideInactiveTools, setHideInactiveTools] = useState(false)
+  const [hideInactiveTools, setHideInactiveTools] = useState(true)
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
   const customFeatures = useMemo(
     () => (customUseCase ? encodeCustomUseCase(customUseCase) : null),
@@ -89,7 +89,10 @@ function UseCaseFitPage() {
   }, [copied])
 
   const selectedTools = data.tools.filter((tool) => selectedToolIds.has(tool.id))
-  const displayedTools = hideInactiveTools ? selectedTools : data.tools
+  const inactiveTools = data.tools.filter((tool) => !selectedToolIds.has(tool.id))
+  const displayedTools = hideInactiveTools
+    ? selectedTools
+    : [...selectedTools, ...inactiveTools]
   const selectedUseCases = data.useCases.filter((useCase) =>
     selectedUseCaseIds.has(useCase.id),
   )
