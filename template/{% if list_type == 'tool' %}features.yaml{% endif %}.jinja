@@ -7,23 +7,17 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/{{ _copier_answers._commit }}/schema/tool-schema.yaml
 
 features:
-  asset__candidates:
-    converters:
+  actors:
+    aggregated_prosumers:
       source: []
       value: '?'
-    electricity_transmission:
+    distributed_objectives:
       source: []
       value: '?'
-    fluid_or_gas_distribution:
+    equilibrium:
       source: []
       value: '?'
-    generators:
-      source: []
-      value: '?'
-    loads:
-      source: []
-      value: '?'
-    storage:
+    portfolio:
       source: []
       value: '?'
   asset__capacity_representation:
@@ -39,13 +33,6 @@ features:
     integer_investment_exogenous_capacity:
       source: []
       value: '?'
-  asset__chaining:
-    asset_linking:
-      source: []
-      value: '?'
-    stockpiling:
-      source: []
-      value: '?'
   asset__cost__investment:
     annuitisation:
       source: []
@@ -56,39 +43,61 @@ features:
     piecewise:
       source: []
       value: '?'
-    subsidy/penalty:
+    threshold_deviation:
       source: []
       value: '?'
     unit:
       source: []
       value: '?'
   asset__cost__operation:
+    inter_temporal:
+      source: []
+      value: '?'
     linear:
       source: []
       value: '?'
     piecewise:
       source: []
       value: '?'
-    subsidy/penalty:
+    threshold_deviation:
       source: []
       value: '?'
     unit:
       source: []
       value: '?'
+  asset__investment_constraints:
+    brownfield:
+      source: []
+      value: '?'
+    inter_period:
+      source: []
+      value: '?'
+    minimum_size:
+      source: []
+      value: '?'
+    total:
+      source: []
+      value: '?'
   asset__operating_characteristics:
+    configurable_dimensions:
+      source: []
+      value: '?'
+    extensible_dimensions:
+      source: []
+      value: '?'
     iterative:
       source: []
       value: '?'
     linear:
       source: []
       value: '?'
+    path_dependent:
+      source: []
+      value: '?'
     piecewise:
       source: []
       value: '?'
-    static non_dimensional:
-      source: []
-      value: '?'
-    static_dimensional:
+    quadratic:
       source: []
       value: '?'
   asset__operating_constraints:
@@ -101,11 +110,17 @@ features:
     operating:
       source: []
       value: '?'
+    reserved_flows:
+      source: []
+      value: '?'
     total:
       source: []
       value: '?'
   asset__operating_representation:
     ed:
+      source: []
+      value: '?'
+    maintenance_scheduling:
       source: []
       value: '?'
     uced:
@@ -115,24 +130,27 @@ features:
     grouped:
       source: []
       value: '?'
-    mixed:
-      source: []
-      value: '?'
     units:
       source: []
       value: '?'
-  competition:
-    distributed_objectives:
+  data__io:
+    binary:
       source: []
       value: '?'
-    portfolio:
+    database:
+      source: []
+      value: '?'
+    lazy_loading:
+      source: []
+      value: '?'
+    plain_text:
+      source: []
+      value: '?'
+    remote_storage:
       source: []
       value: '?'
   edge_effects:
     energy_balance:
-      source: []
-      value: '?'
-    spatial:
       source: []
       value: '?'
     time_financial:
@@ -141,62 +159,126 @@ features:
     time_operational:
       source: []
       value: '?'
-  interface__input:
+  interface__analysis:
+    gui:
+      source: []
+      value: '?'
+    reports:
+      source: []
+      value: '?'
+    standardised_data:
+      source: []
+      value: '?'
+    tables:
+      source: []
+      value: '?'
+  interface__build:
+    api:
+      source: []
+      value: '?'
+    component_groups:
+      source: []
+      value: '?'
+    component_templating:
+      source: []
+      value: '?'
+    config_files:
+      source: []
+      value: '?'
+    gui:
+      source: []
+      value: '?'
+    standardised_data:
+      source: []
+      value: '?'
+  interface__math:
+    formulation_transparency:
+      source: []
+      value: '?'
+    problem_file_export:
+      source: []
+      value: '?'
+    soft_constraints:
+      source: []
+      value: '?'
+    user_defined_math:
+      source: []
+      value: '?'
+    user_defined_objective:
+      source: []
+      value: '?'
+  interface__run:
+    api:
+      source: []
+      value: '?'
     cli:
       source: []
       value: '?'
     gui:
       source: []
       value: '?'
-    no_code:
+    remote_execution:
       source: []
       value: '?'
-    scripting:
+    solver_configuration:
       source: []
       value: '?'
-    standardised:
+  network__electricity:
+    ac_opf:
       source: []
       value: '?'
-  interface__output:
-    gui:
+    dc_opf:
       source: []
       value: '?'
-    logs:
+    network_devices:
       source: []
       value: '?'
-    reports:
+    network_limits:
       source: []
       value: '?'
-    standardised:
+    ptdf:
       source: []
       value: '?'
-    tables:
+    security_constrained:
       source: []
       value: '?'
-  optimisation_problem:
-    configuration:
+  optimisation__objective:
+    multi_objective_pareto:
       source: []
       value: '?'
-    decomposition:
+    multi_objective_weighted:
       source: []
       value: '?'
-    near_optimal:
+    quadratic:
       source: []
       value: '?'
-    sim + opt:
+  orchestration:
+    rolling_horizon:
       source: []
       value: '?'
-    user_defined_constraints:
+    sampled_runs:
       source: []
       value: '?'
-    user_defined_variables:
+    scenario_runs:
+      source: []
+      value: '?'
+    simulation_optimisation:
       source: []
       value: '?'
   postprocessing:
     aggregation:
       source: []
       value: '?'
+    contract_settlement:
+      source: []
+      value: '?'
     curtailment:
+      source: []
+      value: '?'
+    disaggregation:
+      source: []
+      value: '?'
+    elcc:
       source: []
       value: '?'
     financial:
@@ -205,19 +287,16 @@ features:
     future_cost_function:
       source: []
       value: '?'
-    gtc:
-      source: []
-      value: '?'
     impact_assessment:
       source: []
       value: '?'
-    lcoe:
+    network_transfer_metrics:
       source: []
       value: '?'
-    lodf:
+    probabilistic_reliability_assessment:
       source: []
       value: '?'
-    ptdf:
+    scenario_comparison:
       source: []
       value: '?'
     shadow_prices:
@@ -230,62 +309,16 @@ features:
     forecasting:
       source: []
       value: '?'
+    input_validation:
+      source: []
+      value: '?'
+    model_catalogue:
+      source: []
+      value: '?'
+    scenario_generation:
+      source: []
+      value: '?'
     spatial_distribution:
-      source: []
-      value: '?'
-  resource_adequacy:
-    eens:
-      source: []
-      value: '?'
-    lolp:
-      source: []
-      value: '?'
-    maintenance_scheduling:
-      source: []
-      value: '?'
-    monte_carlo:
-      source: []
-      value: '?'
-    sampling:
-      source: []
-      value: '?'
-  robustness:
-    asset_outages:
-      source: []
-      value: '?'
-    eens_limit:
-      source: []
-      value: '?'
-    lolp_limit:
-      source: []
-      value: '?'
-    multi_stage_stochastic:
-      source: []
-      value: '?'
-    ram:
-      source: []
-      value: '?'
-    reserve_limit:
-      source: []
-      value: '?'
-    two_stage_stochastic:
-      source: []
-      value: '?'
-    voll:
-      source: []
-      value: '?'
-  spatial__resolution__simplification:
-    network:
-      source: []
-      value: '?'
-    resampling:
-      source: []
-      value: '?'
-  system__carriers:
-    coupled:
-      source: []
-      value: '?'
-    decoupled:
       source: []
       value: '?'
   system__limits:
@@ -295,27 +328,92 @@ features:
     operation:
       source: []
       value: '?'
-  time__foresight:
-    myopic:
+  system__processes:
+    boundary_exchange:
       source: []
       value: '?'
-    perfect:
+    conversion:
       source: []
       value: '?'
-  time__horizon:
-    multi_year:
+    delayed_transfer:
       source: []
       value: '?'
-    single_year:
+    discrete_transport:
       source: []
       value: '?'
-    sub_day:
+    explicit_demand:
       source: []
       value: '?'
-    sub_year:
+    spatial_transfer:
       source: []
       value: '?'
-  time__resolution__simplification:
+    state_changing_transfer:
+      source: []
+      value: '?'
+    temporal_transfer:
+      source: []
+      value: '?'
+  system__reliability:
+    margin_requirement:
+      source: []
+      value: '?'
+    probabilistic_reliability_limit:
+      source: []
+      value: '?'
+    unserved_demand:
+      source: []
+      value: '?'
+  time__pathway:
+    backcasting:
+      source: []
+      value: '?'
+    myopic_foresight:
+      source: []
+      value: '?'
+    perfect_foresight:
+      source: []
+      value: '?'
+  tractability__algorithm:
+    approximation:
+      source: []
+      value: '?'
+    decomposition:
+      source: []
+      value: '?'
+  tractability__reformulation:
+    convex_relaxation:
+      source: []
+      value: '?'
+    function_conversion:
+      source: []
+      value: '?'
+    linearised_unit_commitment:
+      source: []
+      value: '?'
+    variable_fidelity:
+      source: []
+      value: '?'
+  tractability__spatial:
+    network_reduction:
+      source: []
+      value: '?'
+    zone_aggregation:
+      source: []
+      value: '?'
+  tractability__structural:
+    black_boxing:
+      source: []
+      value: '?'
+    clustering:
+      source: []
+      value: '?'
+    component_removal:
+      source: []
+      value: '?'
+    constraint_screening:
+      source: []
+      value: '?'
+  tractability__temporal:
     distortion_mitigation:
       source: []
       value: '?'
@@ -328,29 +426,35 @@ features:
     typical_periods:
       source: []
       value: '?'
-  transmission__limits:
-    gtc:
+  uncertainty:
+    multi_stage_stochastic:
       source: []
       value: '?'
-    phase_angle:
+    near_optimal:
       source: []
       value: '?'
-    ptdf:
+    risk_aversion:
       source: []
       value: '?'
-    thermal:
+    robust_optimisation:
       source: []
       value: '?'
-  transmission__opf:
-    ac_opf:
+    two_stage_stochastic:
       source: []
       value: '?'
-    dc_opf:
+  workflow__transparency:
+    infeasibility_diagnosis:
       source: []
       value: '?'
-    sec_opf:
+    intermediate_access:
       source: []
       value: '?'
-    transport:
+    metadata_propagation:
+      source: []
+      value: '?'
+    run_logs:
+      source: []
+      value: '?'
+    unit_tracking:
       source: []
       value: '?'
