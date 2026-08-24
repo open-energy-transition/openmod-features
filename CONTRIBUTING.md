@@ -30,6 +30,15 @@ Ultimately, this can be used to identify tool **feature gaps**.
 1. **Complete**: Fill out the feature list in `features.yaml` with sources by updating the `value` key of each feature to `y` (yes) / `n` (no) /`dev` (in development).
    Sources should be links to documentation or source code for any features that are available.
    Features in development could be linked to e.g., Pull Requests or academic publications.
+
+   >[!NOTE]
+   >Some features are split into **slices**: distinct implementations of the same underlying capability
+   >(e.g. `interface.gui` is sliced into `build` / `run` / `analyse`; `asset__cost.linear` is sliced into `investment` / `operation`).
+   > For those features, `value` is a mapping of slice name to `y`/`n`/`dev`/`?`
+   >rather than a single scalar, and every slice comes pre-filled with `?` so you only need to change the values you know.
+   > A `source` entry can either be a bare URL, which validates every slice at once, or a single-entry mapping such as `- operation: <url>`, which validates only that one slice.
+   > Not every feature in a group with slices is itself sliced — one that is inherently confined to a single slice
+   > (e.g. `asset__cost.annuitisation` only ever applies to `investment`) stays a plain scalar `value`.
 1. **Submit**: Open a PR with your new entry
 1. **Review**:
    - All listed maintainers must explicitly approve in PR comments
