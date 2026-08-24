@@ -8,9 +8,6 @@
 
 features:
   actors:
-    aggregated_prosumers:
-      source: []
-      value: '?'
     distributed_objectives:
       source: []
       value: '?'
@@ -33,122 +30,138 @@ features:
     integer_investment_exogenous_capacity:
       source: []
       value: '?'
-  asset__cost__investment:
+  asset__characteristics:
+    configurable_dimensions:
+      source: []
+      value:
+        investment: '?'
+        operation: '?'
+    extensible_dimensions:
+      source: []
+      value:
+        investment: '?'
+        operation: '?'
+    linear:
+      source: []
+      value:
+        investment: '?'
+        operation: '?'
+    nonlinear:
+      source: []
+      value:
+        investment: '?'
+        operation: '?'
+    path_dependent:
+      source: []
+      value:
+        investment: '?'
+        operation: '?'
+    quadratic:
+      source: []
+      value:
+        investment: '?'
+        operation: '?'
+  asset__constraints:
+    boundary_conditions:
+      source: []
+      value:
+        investment: '?'
+        operation: '?'
+    commitment:
+      source: []
+      value:
+        investment: '?'
+        operation: '?'
+    dedicated_flow_routing:
+      source: []
+      value: '?'
+    inter_asset:
+      source: []
+      value:
+        investment: '?'
+        operation: '?'
+    inter_spatial:
+      source: []
+      value:
+        investment: '?'
+        operation: '?'
+    inter_temporal:
+      source: []
+      value:
+        investment: '?'
+        operation: '?'
+    intra_temporal:
+      source: []
+      value:
+        investment: '?'
+        operation: '?'
+    total:
+      source: []
+      value:
+        investment: '?'
+        operation: '?'
+  asset__cost:
     annuitisation:
       source: []
       value: '?'
-    linear:
-      source: []
-      value: '?'
-    piecewise:
-      source: []
-      value: '?'
-    threshold_deviation:
-      source: []
-      value: '?'
-    unit:
-      source: []
-      value: '?'
-  asset__cost__operation:
     inter_temporal:
       source: []
-      value: '?'
+      value:
+        investment: '?'
+        operation: '?'
     linear:
       source: []
-      value: '?'
-    piecewise:
+      value:
+        investment: '?'
+        operation: '?'
+    nonlinear:
       source: []
-      value: '?'
+      value:
+        investment: '?'
+        operation: '?'
     threshold_deviation:
       source: []
-      value: '?'
+      value:
+        investment: '?'
+        operation: '?'
     unit:
       source: []
-      value: '?'
-  asset__investment_constraints:
-    brownfield:
-      source: []
-      value: '?'
-    inter_period:
-      source: []
-      value: '?'
-    minimum_size:
-      source: []
-      value: '?'
-    total:
-      source: []
-      value: '?'
-  asset__operating_characteristics:
-    configurable_dimensions:
-      source: []
-      value: '?'
-    extensible_dimensions:
-      source: []
-      value: '?'
-    iterative:
-      source: []
-      value: '?'
-    linear:
-      source: []
-      value: '?'
-    path_dependent:
-      source: []
-      value: '?'
-    piecewise:
-      source: []
-      value: '?'
-    quadratic:
-      source: []
-      value: '?'
-  asset__operating_constraints:
-    inter_spatial:
-      source: []
-      value: '?'
-    inter_temporal:
-      source: []
-      value: '?'
-    operating:
-      source: []
-      value: '?'
-    reserved_flows:
-      source: []
-      value: '?'
-    total:
-      source: []
-      value: '?'
+      value:
+        investment: '?'
+        operation: '?'
   asset__operating_representation:
-    ed:
-      source: []
-      value: '?'
     maintenance_scheduling:
       source: []
       value: '?'
-    uced:
-      source: []
-      value: '?'
-  asset__resolution:
-    grouped:
-      source: []
-      value: '?'
-    units:
+    unit_commitment:
       source: []
       value: '?'
   data__io:
     binary:
       source: []
-      value: '?'
+      value:
+        input: '?'
+        output: '?'
     database:
       source: []
-      value: '?'
+      value:
+        input: '?'
+        output: '?'
     lazy_loading:
       source: []
-      value: '?'
+      value:
+        input: '?'
+        output: '?'
     plain_text:
       source: []
-      value: '?'
+      value:
+        input: '?'
+        output: '?'
     remote_storage:
       source: []
-      value: '?'
+      value:
+        input: '?'
+        output: '?'
   edge_effects:
     energy_balance:
       source: []
@@ -159,40 +172,53 @@ features:
     time_operational:
       source: []
       value: '?'
-  interface__analysis:
-    gui:
+  interface:
+    analysis_templates:
       source: []
       value: '?'
-    reports:
-      source: []
-      value: '?'
-    standardised_data:
-      source: []
-      value: '?'
-    tables:
-      source: []
-      value: '?'
-  interface__build:
     api:
       source: []
-      value: '?'
-    component_groups:
+      value:
+        analyse: '?'
+        build: '?'
+        run: '?'
+    cli:
       source: []
-      value: '?'
+      value:
+        analyse: '?'
+        build: '?'
+        run: '?'
     component_templating:
       source: []
       value: '?'
-    config_files:
+    dimension_groups:
       source: []
       value: '?'
     gui:
       source: []
+      value:
+        analyse: '?'
+        build: '?'
+        run: '?'
+    remote_execution:
+      source: []
+      value: '?'
+    solver_configuration:
+      source: []
       value: '?'
     standardised_data:
       source: []
-      value: '?'
+      value:
+        analyse: '?'
+        build: '?'
   interface__math:
+    dual_extraction:
+      source: []
+      value: '?'
     formulation_transparency:
+      source: []
+      value: '?'
+    piecewise_formulation:
       source: []
       value: '?'
     problem_file_export:
@@ -204,42 +230,37 @@ features:
     user_defined_math:
       source: []
       value: '?'
-    user_defined_objective:
-      source: []
-      value: '?'
-  interface__run:
-    api:
-      source: []
-      value: '?'
-    cli:
-      source: []
-      value: '?'
-    gui:
-      source: []
-      value: '?'
-    remote_execution:
-      source: []
-      value: '?'
-    solver_configuration:
-      source: []
-      value: '?'
   network__electricity:
-    ac_opf:
-      source: []
-      value: '?'
-    dc_opf:
-      source: []
-      value: '?'
     network_devices:
       source: []
-      value: '?'
+      value:
+        facts_devices: '?'
+        hvdc_converters: '?'
+        transformers: '?'
     network_limits:
       source: []
-      value: '?'
-    ptdf:
+      value:
+        phase_angle: '?'
+        thermal: '?'
+    optimal_power_flow:
+      source: []
+      value:
+        ac_opf: '?'
+        dc_opf: '?'
+    sensitivity_limits:
+      source: []
+      value:
+        generic_constraints: '?'
+        outage_factors: '?'
+        ptdf: '?'
+    unbalanced_flows:
       source: []
       value: '?'
-    security_constrained:
+  network__pipeline:
+    composition_tracking:
+      source: []
+      value: '?'
+    linearised_flow:
       source: []
       value: '?'
   optimisation__objective:
@@ -268,38 +289,49 @@ features:
   postprocessing:
     aggregation:
       source: []
-      value: '?'
-    contract_settlement:
-      source: []
-      value: '?'
-    curtailment:
-      source: []
-      value: '?'
+      value:
+        assets: '?'
+        spatial: '?'
+        temporal: '?'
     disaggregation:
       source: []
-      value: '?'
-    elcc:
-      source: []
-      value: '?'
+      value:
+        assets: '?'
+        spatial: '?'
+        temporal: '?'
     financial:
       source: []
-      value: '?'
-    future_cost_function:
-      source: []
-      value: '?'
+      value:
+        asset_accounts: '?'
+        contract_settlement: '?'
+        levelised_cost: '?'
+        marginal_price: '?'
+        net_present_value: '?'
+        water_value: '?'
     impact_assessment:
       source: []
-      value: '?'
+      value:
+        emissions: '?'
+        resource_use: '?'
+        socioeconomic: '?'
     network_transfer_metrics:
       source: []
-      value: '?'
+      value:
+        flow_sensitivity: '?'
+        transfer_capacity: '?'
+    operational:
+      source: []
+      value:
+        capacity_factor: '?'
+        curtailment: '?'
+        full_load_hours: '?'
     probabilistic_reliability_assessment:
       source: []
-      value: '?'
+      value:
+        capacity_credit: '?'
+        loss_of_load: '?'
+        unserved_energy: '?'
     scenario_comparison:
-      source: []
-      value: '?'
-    shadow_prices:
       source: []
       value: '?'
   preprocessing:
@@ -315,21 +347,23 @@ features:
     model_catalogue:
       source: []
       value: '?'
+    numeric_scaling:
+      source: []
+      value: '?'
     scenario_generation:
       source: []
       value: '?'
     spatial_distribution:
       source: []
-      value: '?'
-  system__limits:
-    capacity:
-      source: []
-      value: '?'
-    operation:
-      source: []
-      value: '?'
+      value:
+        demand: '?'
+        network_geometry: '?'
+        slack: '?'
   system__processes:
     boundary_exchange:
+      source: []
+      value: '?'
+    buffered_transfer:
       source: []
       value: '?'
     conversion:
@@ -354,34 +388,68 @@ features:
       source: []
       value: '?'
   system__reliability:
+    contingency_constrained:
+      source: []
+      value: '?'
     margin_requirement:
       source: []
-      value: '?'
+      value:
+        capacity: '?'
+        operating_reserve: '?'
     probabilistic_reliability_limit:
       source: []
-      value: '?'
+      value:
+        loss_of_load: '?'
+        unserved_energy: '?'
     unserved_demand:
       source: []
       value: '?'
   time__pathway:
-    backcasting:
-      source: []
-      value: '?'
     myopic_foresight:
       source: []
-      value: '?'
+      value:
+        investment: '?'
+        operation: '?'
     perfect_foresight:
       source: []
-      value: '?'
-  tractability__algorithm:
+      value:
+        investment: '?'
+        operation: '?'
+    singular:
+      source: []
+      value:
+        investment: '?'
+        operation: '?'
+  tractability__dimension_reduction:
+    assets:
+      source: []
+      value:
+        black_boxing: '?'
+        clustering: '?'
+        component_removal: '?'
+    spatial:
+      source: []
+      value:
+        clustering: '?'
+        network_reduction: '?'
+    temporal:
+      source: []
+      value:
+        dimension_non_contiguity: '?'
+        load_duration_curves: '?'
+        resampling: '?'
+        typical_periods: '?'
+  tractability__reformulation:
     approximation:
       source: []
       value: '?'
-    decomposition:
+    constraint_screening:
       source: []
       value: '?'
-  tractability__reformulation:
     convex_relaxation:
+      source: []
+      value: '?'
+    decomposition:
       source: []
       value: '?'
     function_conversion:
@@ -391,39 +459,6 @@ features:
       source: []
       value: '?'
     variable_fidelity:
-      source: []
-      value: '?'
-  tractability__spatial:
-    network_reduction:
-      source: []
-      value: '?'
-    zone_aggregation:
-      source: []
-      value: '?'
-  tractability__structural:
-    black_boxing:
-      source: []
-      value: '?'
-    clustering:
-      source: []
-      value: '?'
-    component_removal:
-      source: []
-      value: '?'
-    constraint_screening:
-      source: []
-      value: '?'
-  tractability__temporal:
-    distortion_mitigation:
-      source: []
-      value: '?'
-    load_duration_curves:
-      source: []
-      value: '?'
-    resampling:
-      source: []
-      value: '?'
-    typical_periods:
       source: []
       value: '?'
   uncertainty:
@@ -451,10 +486,9 @@ features:
       value: '?'
     metadata_propagation:
       source: []
-      value: '?'
+      value:
+        provenance: '?'
+        units: '?'
     run_logs:
-      source: []
-      value: '?'
-    unit_tracking:
       source: []
       value: '?'
