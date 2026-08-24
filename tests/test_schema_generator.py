@@ -7,11 +7,13 @@
 This script was created by Claude Sonnet 4.5 and modified manually.
 """
 
+import copy
 import shutil
 import subprocess
 from pathlib import Path
 
 import copier
+import jsonschema
 import pytest
 import yaml
 
@@ -250,14 +252,38 @@ class TestTemplateValidation:
         features = yaml.safe_load(features_file.read_text())
         assert "features" in features
         assert isinstance(features["features"], dict)
-        # Check that features have the expected structure with 'value' and 'source'
+        # Check that features have the expected structure with 'value' and 'source'.
+        # 'value' is either a scalar '?' (unsliced) or a mapping of slice name to '?' (sliced).
         for group in features["features"].values():
             if isinstance(group, dict):
                 for feature_data in group.values():
                     if isinstance(feature_data, dict):
                         assert "value" in feature_data
                         assert "source" in feature_data
-                        assert feature_data["value"] == "?"
+                        value = feature_data["value"]
+                        if isinstance(value, dict):
+                            assert len(value) >= 2
+                            assert all(v == "?" for v in value.values())
+                        else:
+                            assert value == "?"
+
+    def test_tool_project_sliced_feature_scaffolds_all_slices(
+        self, tool_project_from_generated_template: Path
+    ):
+        """Test that a known sliced feature scaffolds every one of its slice keys."""
+        features_file = tool_project_from_generated_template / "features.yaml"
+        features = yaml.safe_load(features_file.read_text())
+        linear = features["features"]["asset__cost"]["linear"]
+        assert linear["value"] == {"investment": "?", "operation": "?"}
+
+    def test_tool_project_unsliced_feature_in_sliced_group_stays_scalar(
+        self, tool_project_from_generated_template: Path
+    ):
+        """Test that an unsliced feature in a group with sliced siblings stays a plain scalar."""
+        features_file = tool_project_from_generated_template / "features.yaml"
+        features = yaml.safe_load(features_file.read_text())
+        annuitisation = features["features"]["asset__cost"]["annuitisation"]
+        assert annuitisation["value"] == "?"
 
     def test_use_case_project_features_file_exists(
         self, use_case_project_from_generated_template: Path
@@ -295,10 +321,86 @@ class TestTemplateValidation:
         assert isinstance(features["assumptions"], list)
         assert "features" in features
         assert isinstance(features["features"], dict)
-        # Check that features have the expected structure with 'value' only
+        # Check that features have the expected structure with 'value' only.
+        # 'value' is either a scalar '?' (unsliced) or a mapping of slice name to '?' (sliced).
         for group in features["features"].values():
             if isinstance(group, dict):
                 for feature_data in group.values():
                     if isinstance(feature_data, dict):
                         assert "value" in feature_data
-                        assert feature_data["value"] == "?"
+                        assert "source" not in feature_data
+                        value = feature_data["value"]
+                        if isinstance(value, dict):
+                            assert len(value) >= 2
+                            assert all(v == "?" for v in value.values())
+                        else:
+                            assert value == "?"
+
+
+class TestSlicedFeatureValidation:
+    """Test that the generated tool schema enforces slice-level constraints.
+
+    These checks run `jsonschema` directly against the generated schema, mirroring how the
+    `validate-yaml-schemas` pre-commit hook validates real `features.yaml` files (as opposed to
+    Pydantic's runtime validation, which is not exercised by that hook).
+    """
+
+    @pytest.fixture(scope="class")
+    def tool_schema(self, generated_schemas: Path) -> dict:
+        """Load the generated tool JSON schema."""
+        return yaml.safe_load(
+            (generated_schemas / "schema" / "tool-schema.yaml").read_text()
+        )
+
+    @pytest.fixture(scope="class")
+    def valid_features(self, tool_project_from_generated_template: Path) -> dict:
+        """Load a fully-scaffolded, schema-valid tool features.yaml."""
+        features_file = tool_project_from_generated_template / "features.yaml"
+        return yaml.safe_load(features_file.read_text())
+
+    def test_scaffolded_template_is_valid(
+        self, valid_features: dict, tool_schema: dict
+    ):
+        """Sanity check: the freshly generated template must itself validate."""
+        jsonschema.validate(valid_features, tool_schema)
+
+    def test_slice_source_with_two_slices_rejected(
+        self, valid_features: dict, tool_schema: dict
+    ):
+        """A source entry mapping more than one slice to a URL is rejected."""
+        features = copy.deepcopy(valid_features)
+        features["features"]["asset__cost"]["linear"]["source"] = [
+            {
+                "investment": "https://example.com/a",
+                "operation": "https://example.com/b",
+            }
+        ]
+        with pytest.raises(jsonschema.ValidationError):
+            jsonschema.validate(features, tool_schema)
+
+    def test_unknown_slice_key_rejected(self, valid_features: dict, tool_schema: dict):
+        """A slice name not declared for the feature is rejected."""
+        features = copy.deepcopy(valid_features)
+        features["features"]["asset__cost"]["linear"]["value"]["bogus"] = "y"
+        with pytest.raises(jsonschema.ValidationError):
+            jsonschema.validate(features, tool_schema)
+
+    def test_scalar_value_on_sliced_feature_rejected(
+        self, valid_features: dict, tool_schema: dict
+    ):
+        """A sliced feature's `value` must be a mapping, not a bare scalar."""
+        features = copy.deepcopy(valid_features)
+        features["features"]["asset__cost"]["linear"]["value"] = "y"
+        with pytest.raises(jsonschema.ValidationError):
+            jsonschema.validate(features, tool_schema)
+
+    def test_mapping_value_on_unsliced_feature_rejected(
+        self, valid_features: dict, tool_schema: dict
+    ):
+        """An unsliced feature's `value` must be a bare scalar, not a mapping."""
+        features = copy.deepcopy(valid_features)
+        features["features"]["asset__cost"]["annuitisation"]["value"] = {
+            "investment": "y"
+        }
+        with pytest.raises(jsonschema.ValidationError):
+            jsonschema.validate(features, tool_schema)

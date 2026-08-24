@@ -54,6 +54,70 @@ class ToolFeatureModel(pydantic.BaseModel):
     This is usually used to validate a `y` (documentation link) or `dev` (issue or pull request link) but can feasibly be used to validate an `n`."""
 
 
+def _pascal(name: str) -> str:
+    """Convert a `snake_case` or `dunder__case` taxonomy name into a PascalCase model-name fragment."""
+    return name.replace("_", " ").title().replace(" ", "")
+
+
+def create_sliced_feature_model(
+    feature_model: type[pydantic.BaseModel],
+    grp: str,
+    feature: str,
+    slices: dict[str, str],
+) -> type[pydantic.BaseModel]:
+    """Create a Pydantic model for a feature whose `value` (and `source`) are keyed by slice.
+
+    Args:
+        feature_model (type[pydantic.BaseModel]): The unsliced feature model
+            (`ToolFeatureModel` or `UseCaseFeatureModel`) to derive slice-level field types from.
+        grp (str): Taxonomy group name the feature belongs to.
+        feature (str): Feature (taxonomy member) name.
+        slices (dict[str, str]): Mapping of slice name to slice description.
+
+    Returns:
+        type[pydantic.BaseModel]: Sliced feature schema.
+    """
+    if len(slices) < 2:
+        raise ValueError(
+            f"`{grp}.{feature}` declares {len(slices)} slice(s); a sliced feature "
+            "must declare at least two slices, otherwise leave it unsliced."
+        )
+    name = _pascal(grp) + _pascal(feature)
+    value_type = feature_model.model_fields["value"].annotation
+    value_model = create_model(
+        f"{name}ValueModel",
+        __config__={"extra": "forbid"},
+        **{
+            slice_name: (value_type, Field(default="?", description=slice_desc))
+            for slice_name, slice_desc in slices.items()
+        },
+    )
+
+    fields: dict[str, Any] = {
+        "value": (
+            value_model,
+            Field(default=value_model(), description="Per-slice feature value."),
+        )
+    }
+    if "source" in feature_model.model_fields:
+        slice_literal = Literal[tuple(slices)]
+        # `min_length`/`max_length` on a dict field constrain its number of entries and are
+        # exported as `minProperties`/`maxProperties` in the JSON Schema, so a slice-scoped
+        # source entry mapping more than one slice to a URL is rejected both by Pydantic and
+        # by the plain-jsonschema `validate-yaml-schemas` pre-commit hook.
+        slice_source_map = Annotated[
+            dict[slice_literal, HttpsUrl], Field(min_length=1, max_length=1)
+        ]
+        fields["source"] = (
+            list[HttpsUrl | slice_source_map],
+            Field(
+                default_factory=list,
+                description=feature_model.model_fields["source"].description,
+            ),
+        )
+    return create_model(f"{name}FeatureModel", __config__={"extra": "forbid"}, **fields)
+
+
 def create_feature_model(
     feature_model: type[pydantic.BaseModel],
 ) -> type[pydantic.BaseModel]:
@@ -64,14 +128,22 @@ def create_feature_model(
     """
     feature_models: dict[str, Any] = {}
     for grp, grp_info in FEATURES.items():
-        member_model: dict[str, Any] = {
-            feature: (feature_model, Field(default=feature_model(), description=desc))
-            for feature, desc in grp_info["members"].items()
-        }
+        member_model: dict[str, Any] = {}
+        for feature, feature_info in grp_info["members"].items():
+            if isinstance(feature_info, dict):
+                this_feature_model = create_sliced_feature_model(
+                    feature_model, grp, feature, feature_info["slices"]
+                )
+                desc = feature_info["description"]
+            else:
+                this_feature_model = feature_model
+                desc = feature_info
+            member_model[feature] = (
+                this_feature_model,
+                Field(default=this_feature_model(), description=desc),
+            )
         group_model = create_model(
-            grp.replace("_", " ").title().replace(" ", "") + "Model",
-            __config__={"extra": "forbid"},
-            **member_model,
+            _pascal(grp) + "Model", __config__={"extra": "forbid"}, **member_model
         )
         feature_models[grp] = (
             group_model,
