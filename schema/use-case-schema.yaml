@@ -4,23 +4,17 @@ $defs:
     properties:
       distributed_objectives:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Per-agent profit maximising / risk minimising objectives can
           be represented within the larger system-level optimisation (e.g. bidding
           in day-ahead / intra-day markets, behind-the-meter prosumer decisions)
       equilibrium:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Market equilibrium found across actors with competing objectives.
           This could be applied via complementarity/MCP/bi-level formulations or a
           quadratic-markup reformulation of the cost-minimisation objective (e.g.
           Cournot-Nash oligopoly modelling).
       portfolio:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Agent asset portfolios and associated constraints and cost considerations
           (e.g. limited cross-portfolio capital investment, risk appetite).
     title: ActorsModel
@@ -30,22 +24,16 @@ $defs:
     properties:
       continuous_capacity:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Asset capacity is fully endogenous and modeled as a continuous
           (linear) decision variable. An optional maximum capacity can be specified
           in the input data (e.g. PV capacity that can be installed at any capacity
           from zero to a maximum defined by land-use constraints).
       exogenous_capacity:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Asset capacity is fixed and fully defined in the input data (e.g.
           for modelling dispatch only).
       integer_investment_continuous_capacity:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Asset capacity magnitude is endogenous and modeled as a continuous
           (linear) decision variable. Investment is also endogenous and represented
           by a binary decision variable. An optional maximum capacity can be specified
@@ -53,843 +41,206 @@ $defs:
           units and whose capacity is not fixed by the manufacturer).
       integer_investment_exogenous_capacity:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Asset capacity magnitude is fixed in the input data. Investment
           is modeled as a discrete (i.e., integer) decision variable (e.g. nuclear
           power plants whose capacity is fixed & indivisible due to external constraints
           but the decision to invest in this capacity is as-yet undecided).
     title: AssetCapacityRepresentationModel
     type: object
-  AssetCharacteristicsConfigurableDimensionsFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/AssetCharacteristicsConfigurableDimensionsValueModel'
-        default:
-          investment: '?'
-          operation: '?'
-        description: Per-slice feature value.
-    title: AssetCharacteristicsConfigurableDimensionsFeatureModel
-    type: object
-  AssetCharacteristicsConfigurableDimensionsValueModel:
+  AssetCharacteristicsLinearModel:
     additionalProperties: false
     properties:
       investment:
-        default: '?'
-        description: Applies to investment characteristics (e.g. capital cost, maximum
-          buildable capacity).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Investment
-        type: string
-      operation:
-        default: '?'
-        description: Applies to operating characteristics (e.g. efficiency, resource
-          availability).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Operation
-        type: string
-    title: AssetCharacteristicsConfigurableDimensionsValueModel
-    type: object
-  AssetCharacteristicsExtensibleDimensionsFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/AssetCharacteristicsExtensibleDimensionsValueModel'
-        default:
-          investment: '?'
-          operation: '?'
-        description: Per-slice feature value.
-    title: AssetCharacteristicsExtensibleDimensionsFeatureModel
-    type: object
-  AssetCharacteristicsExtensibleDimensionsValueModel:
-    additionalProperties: false
-    properties:
-      investment:
-        default: '?'
-        description: Applies to investment characteristics.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Investment
-        type: string
-      operation:
-        default: '?'
-        description: Applies to operating characteristics.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Operation
-        type: string
-    title: AssetCharacteristicsExtensibleDimensionsValueModel
-    type: object
-  AssetCharacteristicsLinearFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/AssetCharacteristicsLinearValueModel'
-        default:
-          investment: '?'
-          operation: '?'
-        description: Per-slice feature value.
-    title: AssetCharacteristicsLinearFeatureModel
-    type: object
-  AssetCharacteristicsLinearValueModel:
-    additionalProperties: false
-    properties:
-      investment:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Varies linearly with an investment decision variable (e.g. resource
           availability increasing with asset capacity).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Investment
-        type: string
       operation:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Varies linearly with an operating decision variable.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Operation
-        type: string
-    title: AssetCharacteristicsLinearValueModel
+    title: AssetCharacteristicsLinearModel
     type: object
   AssetCharacteristicsModel:
     additionalProperties: false
     properties:
-      configurable_dimensions:
-        $ref: '#/$defs/AssetCharacteristicsConfigurableDimensionsFeatureModel'
-        default:
-          value:
-            investment: '?'
-            operation: '?'
-        description: A characteristic's dimensionality can be chosen by the user per
-          characteristic, rather than being fixed by the tool for each named parameter
-          (Full user choice on whether e.g. parameters vary by time, space, both,
-          or neither).
-      extensible_dimensions:
-        $ref: '#/$defs/AssetCharacteristicsExtensibleDimensionsFeatureModel'
-        default:
-          value:
-            investment: '?'
-            operation: '?'
-        description: A dimension not natively defined by the tool (e.g. a custom vintage,
-          cohort, or scenario axis) can be introduced by the user. The tool's mathematical
-          formulation can either handle this automatically or requires custom math
-          (see `interface__math.user_defined_math`).
       linear:
-        $ref: '#/$defs/AssetCharacteristicsLinearFeatureModel'
-        default:
-          value:
-            investment: '?'
-            operation: '?'
+        $ref: '#/$defs/AssetCharacteristicsLinearModel'
         description: Asset characteristics vary linearly with a single decision variable.
       nonlinear:
-        $ref: '#/$defs/AssetCharacteristicsNonlinearFeatureModel'
-        default:
-          value:
-            investment: '?'
-            operation: '?'
+        $ref: '#/$defs/AssetCharacteristicsNonlinearModel'
         description: Asset characteristics link together several decision variables.
           This creates a non-linear relationship that can be described by e.g. a piecewise
           linear curve or through iterative solving.
       path_dependent:
-        $ref: '#/$defs/AssetCharacteristicsPathDependentFeatureModel'
-        default:
-          value:
-            investment: '?'
-            operation: '?'
+        $ref: '#/$defs/AssetCharacteristicsPathDependentModel'
         description: Asset characteristics evolve based on cumulative historical conditions.
       quadratic:
-        $ref: '#/$defs/AssetCharacteristicsQuadraticFeatureModel'
-        default:
-          value:
-            investment: '?'
-            operation: '?'
+        $ref: '#/$defs/AssetCharacteristicsQuadraticModel'
         description: Asset characteristics vary quadratically with a decision variable,
           passed natively to a QP/QCP-capable solver.
     title: AssetCharacteristicsModel
     type: object
-  AssetCharacteristicsNonlinearFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/AssetCharacteristicsNonlinearValueModel'
-        default:
-          investment: '?'
-          operation: '?'
-        description: Per-slice feature value.
-    title: AssetCharacteristicsNonlinearFeatureModel
-    type: object
-  AssetCharacteristicsNonlinearValueModel:
+  AssetCharacteristicsNonlinearModel:
     additionalProperties: false
     properties:
       investment:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Varies with an investment decision variable (e.g. storage head
           effects, pressurisation energy curves linked to capacity).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Investment
-        type: string
       operation:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Varies with an operating decision variable (e.g., part-load efficiency,
           line losses).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Operation
-        type: string
-    title: AssetCharacteristicsNonlinearValueModel
+    title: AssetCharacteristicsNonlinearModel
     type: object
-  AssetCharacteristicsPathDependentFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/AssetCharacteristicsPathDependentValueModel'
-        default:
-          investment: '?'
-          operation: '?'
-        description: Per-slice feature value.
-    title: AssetCharacteristicsPathDependentFeatureModel
-    type: object
-  AssetCharacteristicsPathDependentValueModel:
+  AssetCharacteristicsPathDependentModel:
     additionalProperties: false
     properties:
       investment:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Investment characteristics evolve based on investments made in
           previous periods (e.g. learning curves).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Investment
-        type: string
       operation:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Operational characteristics evolve based on operation in previous
           timesteps (e.g. battery cycling/calendar degradation, filter fouling).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Operation
-        type: string
-    title: AssetCharacteristicsPathDependentValueModel
+    title: AssetCharacteristicsPathDependentModel
     type: object
-  AssetCharacteristicsQuadraticFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/AssetCharacteristicsQuadraticValueModel'
-        default:
-          investment: '?'
-          operation: '?'
-        description: Per-slice feature value.
-    title: AssetCharacteristicsQuadraticFeatureModel
-    type: object
-  AssetCharacteristicsQuadraticValueModel:
+  AssetCharacteristicsQuadraticModel:
     additionalProperties: false
     properties:
       investment:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Varies quadratically with an investment decision variable.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Investment
-        type: string
       operation:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Varies quadratically with an operating decision variable (e.g.
           quadratic fuel curves, loss approximations).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Operation
-        type: string
-    title: AssetCharacteristicsQuadraticValueModel
+    title: AssetCharacteristicsQuadraticModel
     type: object
-  AssetConstraintsBoundaryConditionsFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/AssetConstraintsBoundaryConditionsValueModel'
-        default:
-          investment: '?'
-          operation: '?'
-        description: Per-slice feature value.
-    title: AssetConstraintsBoundaryConditionsFeatureModel
-    type: object
-  AssetConstraintsBoundaryConditionsValueModel:
+  AssetCostInterTemporalModel:
     additionalProperties: false
     properties:
       investment:
-        default: '?'
-        description: Investment optimisation can start from an existing asset stock
-          rather than from an empty (greenfield) system or can define a desired end-state.
-          This allows pre-existing capacities to be represented (initial) and for
-          backcasting system design (end-state).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Investment
-        type: string
-      operation:
-        default: '?'
-        description: Initial or end-state operational conditions can be set (e.g.
-          start or end storage level requirements).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Operation
-        type: string
-    title: AssetConstraintsBoundaryConditionsValueModel
-    type: object
-  AssetConstraintsCommitmentFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/AssetConstraintsCommitmentValueModel'
-        default:
-          investment: '?'
-          operation: '?'
-        description: Per-slice feature value.
-    title: AssetConstraintsCommitmentFeatureModel
-    type: object
-  AssetConstraintsCommitmentValueModel:
-    additionalProperties: false
-    properties:
-      investment:
-        default: '?'
-        description: Limits on investment unit purchase within investment periods.
-          Usually requires `asset__capacity_representation.integer_investment_...`.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Investment
-        type: string
-      operation:
-        default: '?'
-        description: Limits on operational unit commit within timesteps (e.g., forced/planned
-          outage windows). Usually requires `asset__operating_representation.unit_commitment`.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Operation
-        type: string
-    title: AssetConstraintsCommitmentValueModel
-    type: object
-  AssetConstraintsInterAssetFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/AssetConstraintsInterAssetValueModel'
-        default:
-          investment: '?'
-          operation: '?'
-        description: Per-slice feature value.
-    title: AssetConstraintsInterAssetFeatureModel
-    type: object
-  AssetConstraintsInterAssetValueModel:
-    additionalProperties: false
-    properties:
-      investment:
-        default: '?'
-        description: Investment limits that link assets (e.g., land-use competition,
-          system-wide embodied emissions limits).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Investment
-        type: string
-      operation:
-        default: '?'
-        description: Operating limits that link assets (e.g., regional emissions limits
-          applied across all emitting assets).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Operation
-        type: string
-    title: AssetConstraintsInterAssetValueModel
-    type: object
-  AssetConstraintsInterSpatialFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/AssetConstraintsInterSpatialValueModel'
-        default:
-          investment: '?'
-          operation: '?'
-        description: Per-slice feature value.
-    title: AssetConstraintsInterSpatialFeatureModel
-    type: object
-  AssetConstraintsInterSpatialValueModel:
-    additionalProperties: false
-    properties:
-      investment:
-        default: '?'
-        description: Investment limits that link geographic regions.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Investment
-        type: string
-      operation:
-        default: '?'
-        description: Operating limits that link geographic regions.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Operation
-        type: string
-    title: AssetConstraintsInterSpatialValueModel
-    type: object
-  AssetConstraintsInterTemporalFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/AssetConstraintsInterTemporalValueModel'
-        default:
-          investment: '?'
-          operation: '?'
-        description: Per-slice feature value.
-    title: AssetConstraintsInterTemporalFeatureModel
-    type: object
-  AssetConstraintsInterTemporalValueModel:
-    additionalProperties: false
-    properties:
-      investment:
-        default: '?'
-        description: Investment limits linking investment periods (e.g. build-rate
-          limits, phased retirement, availability windows).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Investment
-        type: string
-      operation:
-        default: '?'
-        description: Operating limits that link time periods (e.g., ramping, run up,
-          load shifting).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Operation
-        type: string
-    title: AssetConstraintsInterTemporalValueModel
-    type: object
-  AssetConstraintsIntraTemporalFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/AssetConstraintsIntraTemporalValueModel'
-        default:
-          investment: '?'
-          operation: '?'
-        description: Per-slice feature value.
-    title: AssetConstraintsIntraTemporalFeatureModel
-    type: object
-  AssetConstraintsIntraTemporalValueModel:
-    additionalProperties: false
-    properties:
-      investment:
-        default: '?'
-        description: Limits on investment within investment periods (e.g. minimum/maximum
-          size).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Investment
-        type: string
-      operation:
-        default: '?'
-        description: Limits on operation within timesteps (e.g. capacity de-rating
-          profiles, minimum/maximum load levels, renewables capacity factors).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Operation
-        type: string
-    title: AssetConstraintsIntraTemporalValueModel
-    type: object
-  AssetConstraintsModel:
-    additionalProperties: false
-    properties:
-      boundary_conditions:
-        $ref: '#/$defs/AssetConstraintsBoundaryConditionsFeatureModel'
-        default:
-          value:
-            investment: '?'
-            operation: '?'
-        description: Initial and end-state conditions can be set.
-      commitment:
-        $ref: '#/$defs/AssetConstraintsCommitmentFeatureModel'
-        default:
-          value:
-            investment: '?'
-            operation: '?'
-        description: Limits on commitment to investing in or operating an asset in
-          a given time period.
-      dedicated_flow_routing:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
-        description: Carrier out-flow from one asset can be reserved as in-flow to
-          a specific subset of other assets (e.g. fuel stockpiling ahead of conversion,
-          hydropower cascades, CHP internal steam flows).
-      inter_asset:
-        $ref: '#/$defs/AssetConstraintsInterAssetFeatureModel'
-        default:
-          value:
-            investment: '?'
-            operation: '?'
-        description: Limits that link assets, within or across regions and time.
-      inter_spatial:
-        $ref: '#/$defs/AssetConstraintsInterSpatialFeatureModel'
-        default:
-          value:
-            investment: '?'
-            operation: '?'
-        description: Limits that link geographic regions (e.g. to ensure regional
-          equity).
-      inter_temporal:
-        $ref: '#/$defs/AssetConstraintsInterTemporalFeatureModel'
-        default:
-          value:
-            investment: '?'
-            operation: '?'
-        description: Limits that link across time periods.
-      intra_temporal:
-        $ref: '#/$defs/AssetConstraintsIntraTemporalFeatureModel'
-        default:
-          value:
-            investment: '?'
-            operation: '?'
-        description: Limits on how much assets can output in a given time period
-      total:
-        $ref: '#/$defs/AssetConstraintsTotalFeatureModel'
-        default:
-          value:
-            investment: '?'
-            operation: '?'
-        description: Limit on an aggregate quantity over a subset or the entire time
-          horizon / spatial scope. This can represent real contract arrangements /
-          regulation.
-    title: AssetConstraintsModel
-    type: object
-  AssetConstraintsTotalFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/AssetConstraintsTotalValueModel'
-        default:
-          investment: '?'
-          operation: '?'
-        description: Per-slice feature value.
-    title: AssetConstraintsTotalFeatureModel
-    type: object
-  AssetConstraintsTotalValueModel:
-    additionalProperties: false
-    properties:
-      investment:
-        default: '?'
-        description: Limit on aggregate investment (e.g. policy targets).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Investment
-        type: string
-      operation:
-        default: '?'
-        description: Limit on total asset carrier in-/out-flow (e.g. limits on storage
-          cycling, annual throughput limits, uptime).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Operation
-        type: string
-    title: AssetConstraintsTotalValueModel
-    type: object
-  AssetCostInterTemporalFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/AssetCostInterTemporalValueModel'
-        default:
-          investment: '?'
-          operation: '?'
-        description: Per-slice feature value.
-    title: AssetCostInterTemporalFeatureModel
-    type: object
-  AssetCostInterTemporalValueModel:
-    additionalProperties: false
-    properties:
-      investment:
-        default: '?'
         description: Costs applied between investment periods (e.g. learning rate
           penalty).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Investment
-        type: string
       operation:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Costs applied between timesteps (e.g. ramping wear cost).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Operation
-        type: string
-    title: AssetCostInterTemporalValueModel
+    title: AssetCostInterTemporalModel
     type: object
-  AssetCostLinearFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/AssetCostLinearValueModel'
-        default:
-          investment: '?'
-          operation: '?'
-        description: Per-slice feature value.
-    title: AssetCostLinearFeatureModel
-    type: object
-  AssetCostLinearValueModel:
+  AssetCostLinearModel:
     additionalProperties: false
     properties:
       investment:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Capital cost which varies linearly with asset nameplate capacity
           (e.g. EUR/MW).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Investment
-        type: string
       operation:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Operating cost which varies linearly with unit in-/out-flow (e.g.
           EUR/MWh).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Operation
-        type: string
-    title: AssetCostLinearValueModel
+    title: AssetCostLinearModel
     type: object
   AssetCostModel:
     additionalProperties: false
     properties:
       annuitisation:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: An asset's capital investment can be annuitised to account for
           factors linked to its expected economic life and financing arrangements.
           (e.g., weighted cost of capital, inflation and tax rates).
       inter_temporal:
-        $ref: '#/$defs/AssetCostInterTemporalFeatureModel'
-        default:
-          value:
-            investment: '?'
-            operation: '?'
+        $ref: '#/$defs/AssetCostInterTemporalModel'
         description: Costs applied to the magnitude of change in a decision variable
           between time periods.
       linear:
-        $ref: '#/$defs/AssetCostLinearFeatureModel'
-        default:
-          value:
-            investment: '?'
-            operation: '?'
+        $ref: '#/$defs/AssetCostLinearModel'
         description: Cost which varies linearly with a decision variable.
       nonlinear:
-        $ref: '#/$defs/AssetCostNonlinearFeatureModel'
-        default:
-          value:
-            investment: '?'
-            operation: '?'
+        $ref: '#/$defs/AssetCostNonlinearModel'
         description: Cost which varies non-linearly, usually described in the objective
           using piecewise linear curves.
       threshold_deviation:
-        $ref: '#/$defs/AssetCostThresholdDeviationFeatureModel'
-        default:
-          value:
-            investment: '?'
-            operation: '?'
+        $ref: '#/$defs/AssetCostThresholdDeviationModel'
         description: Costs on deviations above/below a contracted or reference level.
           This is applied as a soft constraint requiring a reference level plus deviation
           variables.
       unit:
-        $ref: '#/$defs/AssetCostUnitFeatureModel'
-        default:
-          value:
-            investment: '?'
-            operation: '?'
+        $ref: '#/$defs/AssetCostUnitModel'
         description: Cost which is incurred as a fixed lump sum, irrespective of magnitude.
     title: AssetCostModel
     type: object
-  AssetCostNonlinearFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/AssetCostNonlinearValueModel'
-        default:
-          investment: '?'
-          operation: '?'
-        description: Per-slice feature value.
-    title: AssetCostNonlinearFeatureModel
-    type: object
-  AssetCostNonlinearValueModel:
+  AssetCostNonlinearModel:
     additionalProperties: false
     properties:
       investment:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Capital cost economies of scale, where cost per capacity decreases
           with increasing capacity. In some cases, it is possible to describe this
           without an explicit piecewise constraint. Instead, it may be approximated
           by multiple assets of the same class (e.g. "wind turbine") that each have
           different costs and maximum capacities.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Investment
-        type: string
       operation:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Operating cost generation bid increment / decrement levels.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Operation
-        type: string
-    title: AssetCostNonlinearValueModel
+    title: AssetCostNonlinearModel
     type: object
-  AssetCostThresholdDeviationFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/AssetCostThresholdDeviationValueModel'
-        default:
-          investment: '?'
-          operation: '?'
-        description: Per-slice feature value.
-    title: AssetCostThresholdDeviationFeatureModel
-    type: object
-  AssetCostThresholdDeviationValueModel:
+  AssetCostThresholdDeviationModel:
     additionalProperties: false
     properties:
       investment:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Deviation from a contracted or reference investment level (e.g.
           rebate for providing firm capacity, penalty for exceeding land-use limits).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Investment
-        type: string
       operation:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Deviation from a contracted or reference operating level (e.g.
           feed-in tariffs, redispatch cost relative to contracted dispatch).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Operation
-        type: string
-    title: AssetCostThresholdDeviationValueModel
+    title: AssetCostThresholdDeviationModel
     type: object
-  AssetCostUnitFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/AssetCostUnitValueModel'
-        default:
-          investment: '?'
-          operation: '?'
-        description: Per-slice feature value.
-    title: AssetCostUnitFeatureModel
-    type: object
-  AssetCostUnitValueModel:
+  AssetCostUnitModel:
     additionalProperties: false
     properties:
       investment:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Initial capital cost incurred on asset purchase, irrespective
           of capacity (e.g. land purchase, design phase).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Investment
-        type: string
       operation:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Operating cost incurred on unit commitment (e.g. start-up costs).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Operation
-        type: string
-    title: AssetCostUnitValueModel
+    title: AssetCostUnitModel
+    type: object
+  AssetModel:
+    additionalProperties: false
+    properties:
+      capacity_representation:
+        $ref: '#/$defs/AssetCapacityRepresentationModel'
+        description: How asset capacities can be represented in the model and optimisation
+          problem.
+      characteristics:
+        $ref: '#/$defs/AssetCharacteristicsModel'
+        description: Representation of asset investment and operating characteristics
+          (e.g. efficiency, resource availability).
+      cost:
+        $ref: '#/$defs/AssetCostModel'
+        description: Asset investment and operating cost representation.
+      operating_representation:
+        $ref: '#/$defs/AssetOperatingRepresentationModel'
+        description: The resolution of asset operation representation in the model.
+          A linearised approximation of unit commitment is `tractability.reformulation.linearised_unit_commitment`.
+    title: AssetModel
     type: object
   AssetOperatingRepresentationModel:
     additionalProperties: false
     properties:
       maintenance_scheduling:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Asset maintenance / outage schedules are derived endogenously,
           co-optimised with operation. Exogenously fixed maintenance windows are instead
-          `asset__constraints.commitment`.
+          `constraints.commitment`.
       unit_commitment:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Assets can be committed as units and _then_ economically dispatched.
           This generally requires assets to be modelled as discrete units which reflect
           assets 1-to-1.
@@ -901,934 +252,515 @@ $defs:
       type: string
     title: AssumptionsModel
     type: array
-  DataIoBinaryFeatureModel:
+  ConstraintsBoundaryConditionsModel:
     additionalProperties: false
     properties:
-      value:
-        $ref: '#/$defs/DataIoBinaryValueModel'
-        default:
-          input: '?'
-          output: '?'
-        description: Per-slice feature value.
-    title: DataIoBinaryFeatureModel
+      investment:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Investment optimisation can start from an existing asset stock
+          rather than from an empty (greenfield) system or can define a desired end-state.
+          This allows pre-existing capacities to be represented (initial) and for
+          backcasting system design (end-state).
+      operation:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Initial or end-state operational conditions can be set (e.g.
+          start or end storage level requirements).
+    title: ConstraintsBoundaryConditionsModel
     type: object
-  DataIoBinaryValueModel:
+  ConstraintsCommitmentModel:
     additionalProperties: false
     properties:
-      input:
-        default: '?'
-        description: Input data can be provided in this format.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Input
-        type: string
-      output:
-        default: '?'
-        description: Output data is written in this format.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Output
-        type: string
-    title: DataIoBinaryValueModel
+      investment:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Limits on investment unit purchase within investment periods.
+          Usually requires `asset.capacity_representation.integer_investment_...`.
+      operation:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Limits on operational unit commit within timesteps (e.g., forced/planned
+          outage windows). Usually requires `asset.operating_representation.unit_commitment`.
+    title: ConstraintsCommitmentModel
     type: object
-  DataIoDatabaseFeatureModel:
+  ConstraintsInterAssetModel:
     additionalProperties: false
     properties:
-      value:
-        $ref: '#/$defs/DataIoDatabaseValueModel'
-        default:
-          input: '?'
-          output: '?'
-        description: Per-slice feature value.
-    title: DataIoDatabaseFeatureModel
+      investment:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Investment limits that link assets (e.g., land-use competition,
+          system-wide embodied emissions limits).
+      operation:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Operating limits that link assets (e.g., regional emissions limits
+          applied across all emitting assets).
+    title: ConstraintsInterAssetModel
     type: object
-  DataIoDatabaseValueModel:
+  ConstraintsInterSpatialModel:
     additionalProperties: false
     properties:
-      input:
-        default: '?'
-        description: Input data can be read from a database.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Input
-        type: string
-      output:
-        default: '?'
-        description: Output data can be written to a database.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Output
-        type: string
-    title: DataIoDatabaseValueModel
+      investment:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Investment limits that link geographic regions (e.g. a minimum
+          share of new capacity built in each region).
+      operation:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Operating limits that link geographic regions (e.g. a regional
+          self-sufficiency requirement on generation relative to demand).
+    title: ConstraintsInterSpatialModel
     type: object
-  DataIoLazyLoadingFeatureModel:
+  ConstraintsInterTemporalModel:
     additionalProperties: false
     properties:
-      value:
-        $ref: '#/$defs/DataIoLazyLoadingValueModel'
-        default:
-          input: '?'
-          output: '?'
-        description: Per-slice feature value.
-    title: DataIoLazyLoadingFeatureModel
+      investment:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Investment limits linking investment periods (e.g. build-rate
+          limits, phased retirement, availability windows).
+      operation:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Operating limits that link time periods (e.g., ramping, run up,
+          load shifting).
+    title: ConstraintsInterTemporalModel
     type: object
-  DataIoLazyLoadingValueModel:
+  ConstraintsIntraTemporalModel:
     additionalProperties: false
     properties:
-      input:
-        default: '?'
-        description: Input data can be loaded lazily.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Input
-        type: string
-      output:
-        default: '?'
-        description: Output data can be written lazily / streamed rather than held
-          fully in memory.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Output
-        type: string
-    title: DataIoLazyLoadingValueModel
+      investment:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Limits on investment within investment periods (e.g. minimum/maximum
+          size).
+      operation:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Limits on operation within timesteps (e.g. capacity de-rating
+          profiles, minimum/maximum load levels, renewables capacity factors).
+    title: ConstraintsIntraTemporalModel
     type: object
-  DataIoModel:
+  ConstraintsModel:
     additionalProperties: false
     properties:
-      binary:
-        $ref: '#/$defs/DataIoBinaryFeatureModel'
-        default:
-          value:
-            input: '?'
-            output: '?'
-        description: Data in compact / compressible, non-human-readable binary formats
-          (e.g. Excel, NetCDF, HDF5, Parquet).
-      database:
-        $ref: '#/$defs/DataIoDatabaseFeatureModel'
-        default:
-          value:
-            input: '?'
-            output: '?'
-        description: Data in databases (relational or otherwise).
-      lazy_loading:
-        $ref: '#/$defs/DataIoLazyLoadingFeatureModel'
-        default:
-          value:
-            input: '?'
-            output: '?'
-        description: Data can be loaded lazily / out-of-core, allowing datasets larger
-          than memory.
-      plain_text:
-        $ref: '#/$defs/DataIoPlainTextFeatureModel'
-        default:
-          value:
-            input: '?'
-            output: '?'
-        description: Data in human-readable, diff- and version-control-friendly text
-          formats (e.g. CSV, JSON, YAML).
-      remote_storage:
-        $ref: '#/$defs/DataIoRemoteStorageFeatureModel'
-        default:
-          value:
-            input: '?'
-            output: '?'
-        description: Data can be read from / written to remote storage (e.g. object
-          stores, cloud drives).
-    title: DataIoModel
+      boundary_conditions:
+        $ref: '#/$defs/ConstraintsBoundaryConditionsModel'
+        description: Initial and end-state conditions can be set.
+      commitment:
+        $ref: '#/$defs/ConstraintsCommitmentModel'
+        description: Limits on commitment to investing in or operating an asset in
+          a given time period.
+      dedicated_flow_routing:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Carrier out-flow from one asset can be reserved as in-flow to
+          a specific subset of other assets (e.g. fuel stockpiling ahead of conversion,
+          hydropower cascades, CHP internal steam flows).
+      inter_asset:
+        $ref: '#/$defs/ConstraintsInterAssetModel'
+        description: Limits that link assets, within or across regions and time.
+      inter_spatial:
+        $ref: '#/$defs/ConstraintsInterSpatialModel'
+        description: Limits that link geographic regions (e.g. to ensure regional
+          equity).
+      inter_temporal:
+        $ref: '#/$defs/ConstraintsInterTemporalModel'
+        description: Limits that link across time periods.
+      intra_temporal:
+        $ref: '#/$defs/ConstraintsIntraTemporalModel'
+        description: Limits on how much assets can output in a given time period
+      reliability:
+        $ref: '#/$defs/ConstraintsReliabilityModel'
+        description: Reliability requirements imposed as constraints or penalty costs
+          within the optimisation, under deterministic inputs. Post-hoc adequacy assessment
+          is `postprocessing.probabilistic_reliability_assessment`; probabilistic
+          decision methods are `uncertainty`.
+      total:
+        $ref: '#/$defs/ConstraintsTotalModel'
+        description: Limit on an aggregate quantity over a subset or the entire time
+          horizon / spatial scope. This can represent real contract arrangements /
+          regulation.
+    title: ConstraintsModel
     type: object
-  DataIoPlainTextFeatureModel:
+  ConstraintsReliabilityMarginRequirementModel:
     additionalProperties: false
     properties:
-      value:
-        $ref: '#/$defs/DataIoPlainTextValueModel'
-        default:
-          input: '?'
-          output: '?'
-        description: Per-slice feature value.
-    title: DataIoPlainTextFeatureModel
+      capacity:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Firm capacity requirement, held against peak demand or a resource-adequacy
+          target.
+      operating_reserve:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Operating reserve requirement, held against short-term contingencies
+          (e.g. spinning reserve, ramping reserve).
+    title: ConstraintsReliabilityMarginRequirementModel
     type: object
-  DataIoPlainTextValueModel:
+  ConstraintsReliabilityModel:
     additionalProperties: false
     properties:
-      input:
-        default: '?'
-        description: Input data can be provided in this format.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Input
-        type: string
-      output:
-        default: '?'
-        description: Output data is written in this format.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Output
-        type: string
-    title: DataIoPlainTextValueModel
+      contingency_constrained:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: The optimisation is constrained to remain feasible following
+          the loss of individual components, over an enumerated set of discrete failure
+          states (e.g. N-1 security-constrained optimal power flow, loss of a compressor
+          station or pipeline segment). Post-contingency corrective action can be
+          co-optimised where the tool supports it.
+      margin_requirement:
+        $ref: '#/$defs/ConstraintsReliabilityMarginRequirementModel'
+        description: Minimum requirement on firm capacity/margin held in reserve.
+          This could be applied at the system level or on single / subsets of assets,
+          if `model_definition.dimension_groups` is available.
+      probabilistic_reliability_limit:
+        $ref: '#/$defs/ConstraintsReliabilityProbabilisticReliabilityLimitModel'
+        description: Probabilistic reliability constraints within the optimisation.
+      unserved_demand:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Demand can go unserved at a penalty cost (value of lost load
+          <VOLL>), placing a soft constraint on load shedding within the optimisation.
+    title: ConstraintsReliabilityModel
     type: object
-  DataIoRemoteStorageFeatureModel:
+  ConstraintsReliabilityProbabilisticReliabilityLimitModel:
     additionalProperties: false
     properties:
-      value:
-        $ref: '#/$defs/DataIoRemoteStorageValueModel'
-        default:
-          input: '?'
-          output: '?'
-        description: Per-slice feature value.
-    title: DataIoRemoteStorageFeatureModel
+      loss_of_load:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Loss-of-load-probability <LOLP> limit.
+      unserved_energy:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Expected-energy-not-served <EENS> limit.
+    title: ConstraintsReliabilityProbabilisticReliabilityLimitModel
     type: object
-  DataIoRemoteStorageValueModel:
+  ConstraintsTotalModel:
     additionalProperties: false
     properties:
-      input:
-        default: '?'
-        description: Input data can be read from remote storage.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Input
-        type: string
-      output:
-        default: '?'
-        description: Output data can be written to remote storage.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Output
-        type: string
-    title: DataIoRemoteStorageValueModel
+      investment:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Limit on aggregate investment (e.g. policy targets).
+      operation:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Limit on total asset carrier in-/out-flow (e.g. limits on storage
+          cycling, annual throughput limits, uptime).
+    title: ConstraintsTotalModel
     type: object
   EdgeEffectsModel:
     additionalProperties: false
     properties:
       energy_balance:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Energy 'destruction' caused by simultaneous in- & out-flow from
           a lossy transmission/storage asset.
       time_financial:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Start- / End-of-horizon financial effects (e.g. asset investment
           annuitisation).
       time_operational:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Start- / End-of-horizon operational effects (e.g. storage level
           wrapping).
     title: EdgeEffectsModel
     type: object
   FeatureSetModel:
+    additionalProperties: false
     properties:
       actors:
         $ref: '#/$defs/ActorsModel'
-        default:
-          distributed_objectives:
-            value: '?'
-          equilibrium:
-            value: '?'
-          portfolio:
-            value: '?'
         description: Representation of heterogeneous decision-making actors, deviating
           from the single, central-planner baseline.
-      asset__capacity_representation:
-        $ref: '#/$defs/AssetCapacityRepresentationModel'
-        default:
-          continuous_capacity:
-            value: '?'
-          exogenous_capacity:
-            value: '?'
-          integer_investment_continuous_capacity:
-            value: '?'
-          integer_investment_exogenous_capacity:
-            value: '?'
-        description: How asset capacities can be represented in the model and optimisation
-          problem.
-      asset__characteristics:
-        $ref: '#/$defs/AssetCharacteristicsModel'
-        default:
-          configurable_dimensions:
-            value:
-              investment: '?'
-              operation: '?'
-          extensible_dimensions:
-            value:
-              investment: '?'
-              operation: '?'
-          linear:
-            value:
-              investment: '?'
-              operation: '?'
-          nonlinear:
-            value:
-              investment: '?'
-              operation: '?'
-          path_dependent:
-            value:
-              investment: '?'
-              operation: '?'
-          quadratic:
-            value:
-              investment: '?'
-              operation: '?'
-        description: Representation of asset investment and operating characteristics
-          (e.g. efficiency, resource availability).
-      asset__constraints:
-        $ref: '#/$defs/AssetConstraintsModel'
-        default:
-          boundary_conditions:
-            value:
-              investment: '?'
-              operation: '?'
-          commitment:
-            value:
-              investment: '?'
-              operation: '?'
-          dedicated_flow_routing:
-            value: '?'
-          inter_asset:
-            value:
-              investment: '?'
-              operation: '?'
-          inter_spatial:
-            value:
-              investment: '?'
-              operation: '?'
-          inter_temporal:
-            value:
-              investment: '?'
-              operation: '?'
-          intra_temporal:
-            value:
-              investment: '?'
-              operation: '?'
-          total:
-            value:
-              investment: '?'
-              operation: '?'
-        description: Upper/lower limits on asset investment and operating decisions.
-      asset__cost:
-        $ref: '#/$defs/AssetCostModel'
-        default:
-          annuitisation:
-            value: '?'
-          inter_temporal:
-            value:
-              investment: '?'
-              operation: '?'
-          linear:
-            value:
-              investment: '?'
-              operation: '?'
-          nonlinear:
-            value:
-              investment: '?'
-              operation: '?'
-          threshold_deviation:
-            value:
-              investment: '?'
-              operation: '?'
-          unit:
-            value:
-              investment: '?'
-              operation: '?'
-        description: Asset investment and operating cost representation.
-      asset__operating_representation:
-        $ref: '#/$defs/AssetOperatingRepresentationModel'
-        default:
-          maintenance_scheduling:
-            value: '?'
-          unit_commitment:
-            value: '?'
-        description: The resolution of asset operation representation in the model.
-          A linearised approximation of unit commitment is `tractability__reformulation.linearised_unit_commitment`.
-      data__io:
-        $ref: '#/$defs/DataIoModel'
-        default:
-          binary:
-            value:
-              input: '?'
-              output: '?'
-          database:
-            value:
-              input: '?'
-              output: '?'
-          lazy_loading:
-            value:
-              input: '?'
-              output: '?'
-          plain_text:
-            value:
-              input: '?'
-              output: '?'
-          remote_storage:
-            value:
-              input: '?'
-              output: '?'
-        description: Data formats and mechanisms for moving model input/output data.
-          Computing new parameters is `preprocessing`.
+      asset:
+        $ref: '#/$defs/AssetModel'
+        description: 'Representation of the individual assets that make up the system:
+          how their capacities and operation are modelled, the characteristics they
+          carry, and the costs they incur. Limits placed on asset investment and operation
+          are `constraints`.'
+      constraints:
+        $ref: '#/$defs/ConstraintsModel'
+        description: Upper/lower limits on asset investment and operating decisions,
+          and reliability requirements imposed on the system as a whole, whether enforced
+          as hard constraints or as penalty costs.
       edge_effects:
         $ref: '#/$defs/EdgeEffectsModel'
-        default:
-          energy_balance:
-            value: '?'
-          time_financial:
-            value: '?'
-          time_operational:
-            value: '?'
         description: Distortive effects of system boundaries and linearising model
           components can be mitigated against. Flows across the spatial boundary are
-          `system__processes.boundary_exchange`.
+          `processes.boundary_exchange`.
       interface:
         $ref: '#/$defs/InterfaceModel'
-        default:
-          analysis_templates:
-            value: '?'
-          api:
-            value:
-              analyse: '?'
-              build: '?'
-              run: '?'
-          cli:
-            value:
-              analyse: '?'
-              build: '?'
-              run: '?'
-          component_templating:
-            value: '?'
-          dimension_groups:
-            value: '?'
-          gui:
-            value:
-              analyse: '?'
-              build: '?'
-              run: '?'
-          remote_execution:
-            value: '?'
-          solver_configuration:
-            value: '?'
-          standardised_data:
-            value:
-              analyse: '?'
-              build: '?'
-        description: 'Available options across the model workflow: defining, configuring,
-          and structuring a model (`build`); executing a model run (`run`); and interacting
-          with model outputs (`analyse`).'
-      interface__math:
-        $ref: '#/$defs/InterfaceMathModel'
-        default:
-          dual_extraction:
-            value: '?'
-          formulation_transparency:
-            value: '?'
-          piecewise_formulation:
-            value: '?'
-          problem_file_export:
-            value: '?'
-          soft_constraints:
-            value: '?'
-          user_defined_math:
-            value: '?'
+        description: 'Available options for users and machines to drive the tool:
+          defining, configuring, and structuring a model (`build`); executing a model
+          run (`run`); interacting with model outputs (`analyse`); plus tool-level
+          execution and solver configuration.'
+      io:
+        $ref: '#/$defs/IoModel'
+        description: Data formats, conventions, and mechanisms for moving model input/output
+          data. Computing new parameters is `preprocessing`.
+      math:
+        $ref: '#/$defs/MathModel'
         description: Access to, and user extension of, the underlying mathematical
           formulation.
-      network__electricity:
-        $ref: '#/$defs/NetworkElectricityModel'
-        default:
-          network_devices:
-            value:
-              facts_devices: '?'
-              hvdc_converters: '?'
-              transformers: '?'
-          network_limits:
-            value:
-              phase_angle: '?'
-              thermal: '?'
-          optimal_power_flow:
-            value:
-              ac_opf: '?'
-              dc_opf: '?'
-          sensitivity_limits:
-            value:
-              generic_constraints: '?'
-              outage_factors: '?'
-              ptdf: '?'
-          unbalanced_flows:
-            value: '?'
-        description: Electrical network representation beyond the `system__processes.spatial_transfer`
-          baseline.
-      network__pipeline:
-        $ref: '#/$defs/NetworkPipelineModel'
-        default:
-          composition_tracking:
-            value: '?'
-          linearised_flow:
-            value: '?'
-        description: Pressure-driven network representation for carriers transported
-          through pipes, beyond the `system__processes.spatial_transfer` baseline
-          (e.g. methane, hydrogen, CO2, district heat/cooling, water).
-      optimisation__objective:
-        $ref: '#/$defs/OptimisationObjectiveModel'
-        default:
-          multi_objective_pareto:
-            value: '?'
-          multi_objective_weighted:
-            value: '?'
-          quadratic:
-            value: '?'
+      model_definition:
+        $ref: '#/$defs/ModelDefinitionModel'
+        description: How the model's parameter space and dimensions can be shaped,
+          grouped, and reused, independent of any single characteristic, constraint,
+          or cost.
+      network:
+        $ref: '#/$defs/NetworkModel'
+        description: Network physics representation beyond the `processes.spatial_transfer`
+          baseline, where flows are coupled by the physics of the transporting medium
+          rather than by capacity limits alone.
+      objective:
+        $ref: '#/$defs/ObjectiveModel'
         description: Objective-function options beyond minimisation of a single linear
           cost term.
       orchestration:
         $ref: '#/$defs/OrchestrationModel'
-        default:
-          rolling_horizon:
-            value: '?'
-          sampled_runs:
-            value: '?'
-          scenario_runs:
-            value: '?'
-          simulation_optimisation:
-            value: '?'
         description: Tool-managed workflows coordinating multiple complete runs in
           series/parallel, where the result emerges from the ensemble or its convergence.
+      pathway:
+        $ref: '#/$defs/PathwayModel'
+        description: "Foresight extent and planning direction across operational (intra-annual)\
+          \ or investment (inter-annual) time periods. A single-snapshot run \u2014\
+          \ \"overnight\" capacity expansion, or dispatch without a time dimension\
+          \ - is the baseline; we do not track it explicitly here."
       postprocessing:
         $ref: '#/$defs/PostprocessingModel'
-        default:
-          aggregation:
-            value:
-              assets: '?'
-              spatial: '?'
-              temporal: '?'
-          disaggregation:
-            value:
-              assets: '?'
-              spatial: '?'
-              temporal: '?'
-          financial:
-            value:
-              asset_accounts: '?'
-              contract_settlement: '?'
-              levelised_cost: '?'
-              marginal_price: '?'
-              net_present_value: '?'
-              water_value: '?'
-          impact_assessment:
-            value:
-              emissions: '?'
-              resource_use: '?'
-              socioeconomic: '?'
-          network_transfer_metrics:
-            value:
-              flow_sensitivity: '?'
-              transfer_capacity: '?'
-          operational:
-            value:
-              capacity_factor: '?'
-              curtailment: '?'
-              full_load_hours: '?'
-          probabilistic_reliability_assessment:
-            value:
-              capacity_credit: '?'
-              loss_of_load: '?'
-              unserved_energy: '?'
-          scenario_comparison:
-            value: '?'
         description: Postprocessing analyses that can be triggered by the tool based
           on model outputs, on a per-asset or system-wide basis.
       preprocessing:
         $ref: '#/$defs/PreprocessingModel'
-        default:
-          download:
-            value: '?'
-          forecasting:
-            value: '?'
-          input_validation:
-            value: '?'
-          model_catalogue:
-            value: '?'
-          numeric_scaling:
-            value: '?'
-          scenario_generation:
-            value: '?'
-          spatial_distribution:
-            value:
-              demand: '?'
-              network_geometry: '?'
-              slack: '?'
         description: Options to generate parameters derived from user-defined input
-          data before running the model. Moving/storing data is `data__io`.
-      system__processes:
-        $ref: '#/$defs/SystemProcessesModel'
-        default:
-          boundary_exchange:
-            value: '?'
-          buffered_transfer:
-            value: '?'
-          conversion:
-            value: '?'
-          delayed_transfer:
-            value: '?'
-          discrete_transport:
-            value: '?'
-          explicit_demand:
-            value: '?'
-          spatial_transfer:
-            value: '?'
-          state_changing_transfer:
-            value: '?'
-          temporal_transfer:
-            value: '?'
+          data before running the model. Moving/storing data is `io`.
+      processes:
+        $ref: '#/$defs/ProcessesModel'
         description: Fundamental carrier-flow capabilities the tool can represent,
           defined by their mathematical role rather than by named technologies. `Carriers`
           are the energy or non-energy commodities that flow between processes (e.g.
           electricity, heat, hydrogen, CO2, water, materials). Only physical processes
           are in scope; decision-making agents are `actors`.
-      system__reliability:
-        $ref: '#/$defs/SystemReliabilityModel'
-        default:
-          contingency_constrained:
-            value: '?'
-          margin_requirement:
-            value:
-              capacity: '?'
-              operating_reserve: '?'
-          probabilistic_reliability_limit:
-            value:
-              loss_of_load: '?'
-              unserved_energy: '?'
-          unserved_demand:
-            value: '?'
-        description: Reliability requirements imposed as constraints or penalty costs
-          within the optimisation, under deterministic inputs. Post-hoc adequacy assessment
-          is `postprocessing.probabilistic_reliability_assessment`; probabilistic
-          decision methods are `uncertainty`.
-      time__pathway:
-        $ref: '#/$defs/TimePathwayModel'
-        default:
-          myopic_foresight:
-            value:
-              investment: '?'
-              operation: '?'
-          perfect_foresight:
-            value:
-              investment: '?'
-              operation: '?'
-          singular:
-            value:
-              investment: '?'
-              operation: '?'
-        description: Foresight extent and planning direction across operational (intra-annual)
-          or investment (inter-annual) time periods.
-      tractability__dimension_reduction:
-        $ref: '#/$defs/TractabilityDimensionReductionModel'
-        default:
-          assets:
-            value:
-              black_boxing: '?'
-              clustering: '?'
-              component_removal: '?'
-          spatial:
-            value:
-              clustering: '?'
-              network_reduction: '?'
-          temporal:
-            value:
-              dimension_non_contiguity: '?'
-              load_duration_curves: '?'
-              resampling: '?'
-              typical_periods: '?'
-        description: Options to reduce the size of a given dimension of the problem.
-      tractability__reformulation:
-        $ref: '#/$defs/TractabilityReformulationModel'
-        default:
-          approximation:
-            value: '?'
-          constraint_screening:
-            value: '?'
-          convex_relaxation:
-            value: '?'
-          decomposition:
-            value: '?'
-          function_conversion:
-            value: '?'
-          linearised_unit_commitment:
-            value: '?'
-          variable_fidelity:
-            value: '?'
-        description: Approximations of discrete or non-linear formulations that preserve
-          (mixed-integer) linear tractability.
-      uncertainty:
-        $ref: '#/$defs/UncertaintyModel'
-        default:
-          multi_stage_stochastic:
-            value: '?'
-          near_optimal:
-            value: '?'
-          risk_aversion:
-            value: '?'
-          robust_optimisation:
-            value: '?'
-          two_stage_stochastic:
-            value: '?'
-        description: Methods that restructure the decision problem to account for
-          parametric or structural uncertainty.
-      workflow__transparency:
-        $ref: '#/$defs/WorkflowTransparencyModel'
-        default:
-          infeasibility_diagnosis:
-            value: '?'
-          intermediate_access:
-            value: '?'
-          metadata_propagation:
-            value:
-              provenance: '?'
-              units: '?'
-          run_logs:
-            value: '?'
+      tractability:
+        $ref: '#/$defs/TractabilityModel'
+        description: Approaches to reduce the computational cost of building and solving
+          the problem, trading exactness for speed.
+      transparency:
+        $ref: '#/$defs/TransparencyModel'
         description: 'Transparency of the modelling pipeline: logs, diagnostics, and
           traceability of data as it moves through the workflow.'
+      uncertainty:
+        $ref: '#/$defs/UncertaintyModel'
+        description: Methods that restructure the decision problem to account for
+          parametric or structural uncertainty.
     title: FeatureSetModel
     type: object
-  InterfaceApiFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/InterfaceApiValueModel'
-        default:
-          analyse: '?'
-          build: '?'
-          run: '?'
-        description: Per-slice feature value.
-    title: InterfaceApiFeatureModel
-    type: object
-  InterfaceApiValueModel:
+  InterfaceApiModel:
     additionalProperties: false
     properties:
       analyse:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Programmatic interface to analyse results.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Analyse
-        type: string
       build:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Can be configured using scripting specific to the tool programming
           language or another programming language for which an API is provided (e.g.
           a Python API for a package written in C).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Build
-        type: string
       run:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Programmatic interface to launch and manage runs.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Run
-        type: string
-    title: InterfaceApiValueModel
+    title: InterfaceApiModel
     type: object
-  InterfaceCliFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/InterfaceCliValueModel'
-        default:
-          analyse: '?'
-          build: '?'
-          run: '?'
-        description: Per-slice feature value.
-    title: InterfaceCliFeatureModel
-    type: object
-  InterfaceCliValueModel:
+  InterfaceCliModel:
     additionalProperties: false
     properties:
       analyse:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: CLI commands to create reports to enable result analysis.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Analyse
-        type: string
       build:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: CLI commands that enable model building. This is usually used
           to convert between data formats for a given model definition, but may also
           be used to redefine a model (e.g. reduce dimensions).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Build
-        type: string
       run:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: CLI commands that launch and manage a model run.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Run
-        type: string
-    title: InterfaceCliValueModel
+    title: InterfaceCliModel
     type: object
-  InterfaceGuiFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/InterfaceGuiValueModel'
-        default:
-          analyse: '?'
-          build: '?'
-          run: '?'
-        description: Per-slice feature value.
-    title: InterfaceGuiFeatureModel
-    type: object
-  InterfaceGuiValueModel:
+  InterfaceGuiModel:
     additionalProperties: false
     properties:
       analyse:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: A GUI is available for interacting with model outputs.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Analyse
-        type: string
       build:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: A GUI is available for defining, configuring, and structuring
           a model.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Build
-        type: string
       run:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: A GUI is available for executing a model run.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Run
-        type: string
-    title: InterfaceGuiValueModel
-    type: object
-  InterfaceMathModel:
-    additionalProperties: false
-    properties:
-      dual_extraction:
-        $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
-        description: The built optimisation problem's constraint duals can be extracted
-          (e.g. to approximate wholesale market prices via `postprocessing.financial[marginal_price]`,
-          or to construct a future cost function via `postprocessing.financial[water_value]`).
-      formulation_transparency:
-        $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
-        description: The tool's mathematical formulation is accessible and inspectable.
-          (e.g. as rendered equations or a math specification traceable to the built
-          problem).
-      piecewise_formulation:
-        $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
-        description: Piecewise formulations of nonlinear relationships can be defined
-          in the math (e.g. using LP chord-line or MIP SOS2 constraints).
-      problem_file_export:
-        $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
-        description: The built optimisation problem can be exported in standard formats
-          (e.g. LP/MPS).
-      soft_constraints:
-        $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
-        description: User-defined or built-in constraints can be reformulated as soft
-          constraints without bespoke implementation per constraint. This is usually
-          via a generic slack-variable-plus-penalty mechanism. Built-in economic threshold
-          costs are instead `asset__cost.threshold_deviation[investment]` / `asset__cost.threshold_deviation[operation]`.
-      user_defined_math:
-        $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
-        description: Users can define their own constraints on the optimisation problem,
-          applied to existing or new decision variables, and write their own objective
-          expression.
-    title: InterfaceMathModel
+    title: InterfaceGuiModel
     type: object
   InterfaceModel:
     additionalProperties: false
     properties:
       analysis_templates:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Templates can be used to generate consistent reports or dashboards
           to consolidate model outputs for dissemination.
       api:
-        $ref: '#/$defs/InterfaceApiFeatureModel'
-        default:
-          value:
-            analyse: '?'
-            build: '?'
-            run: '?'
+        $ref: '#/$defs/InterfaceApiModel'
         description: Programmatic interface (e.g. language API, web API).
       cli:
-        $ref: '#/$defs/InterfaceCliFeatureModel'
-        default:
-          value:
-            analyse: '?'
-            build: '?'
-            run: '?'
+        $ref: '#/$defs/InterfaceCliModel'
         description: Command line interface.
+      gui:
+        $ref: '#/$defs/InterfaceGuiModel'
+        description: Graphical user interface.
+      remote_execution:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Runs can be dispatched to and managed on remote compute (cloud,
+          HPC, hosted service) from the tool.
+      solver_configuration:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Optimiser parameters can be directly configured, including convergence
+          parameters & warm-starting options.
+    title: InterfaceModel
+    type: object
+  IoBinaryModel:
+    additionalProperties: false
+    properties:
+      input:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Input data can be provided in this format.
+      output:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Output data is written in this format.
+    title: IoBinaryModel
+    type: object
+  IoDatabaseModel:
+    additionalProperties: false
+    properties:
+      input:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Input data can be read from a database.
+      output:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Output data can be written to a database.
+    title: IoDatabaseModel
+    type: object
+  IoLazyLoadingModel:
+    additionalProperties: false
+    properties:
+      input:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Input data can be loaded lazily.
+      output:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Output data can be written lazily / streamed rather than held
+          fully in memory.
+    title: IoLazyLoadingModel
+    type: object
+  IoModel:
+    additionalProperties: false
+    properties:
+      binary:
+        $ref: '#/$defs/IoBinaryModel'
+        description: Data in compact / compressible, non-human-readable binary formats
+          (e.g. Excel, NetCDF, HDF5, Parquet).
+      database:
+        $ref: '#/$defs/IoDatabaseModel'
+        description: Data in databases (relational or otherwise).
+      lazy_loading:
+        $ref: '#/$defs/IoLazyLoadingModel'
+        description: Data can be loaded lazily / out-of-core, allowing datasets larger
+          than memory.
+      plain_text:
+        $ref: '#/$defs/IoPlainTextModel'
+        description: Data in human-readable, diff- and version-control-friendly text
+          formats (e.g. CSV, JSON, YAML).
+      remote_storage:
+        $ref: '#/$defs/IoRemoteStorageModel'
+        description: Data can be read from / written to remote storage (e.g. object
+          stores, cloud drives).
+      standardised:
+        $ref: '#/$defs/IoStandardisedModel'
+        description: Accepts or emits data following a community-recognised convention
+          or ontology (e.g. Open Energy Ontology <OEO>, IAMC template, the Energy
+          System Description Language <ESDL>, Common Energy System Model <CESM>, SiennaSchemas).
+    title: IoModel
+    type: object
+  IoPlainTextModel:
+    additionalProperties: false
+    properties:
+      input:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Input data can be provided in this format.
+      output:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Output data is written in this format.
+    title: IoPlainTextModel
+    type: object
+  IoRemoteStorageModel:
+    additionalProperties: false
+    properties:
+      input:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Input data can be read from remote storage.
+      output:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Output data can be written to remote storage.
+    title: IoRemoteStorageModel
+    type: object
+  IoStandardisedModel:
+    additionalProperties: false
+    properties:
+      input:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Accepts input data following a community-recognised convention
+          or ontology.
+      output:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Outputs follow a community-recognised convention or ontology.
+          This is useful for regulatory reporting or frictionless data transfer with
+          a downstream process.
+    title: IoStandardisedModel
+    type: object
+  MathModel:
+    additionalProperties: false
+    properties:
+      dual_extraction:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: The built optimisation problem's constraint duals can be extracted
+          (e.g. to approximate wholesale market prices via `postprocessing.financial.marginal_price`,
+          or to construct a future cost function via `postprocessing.financial.water_value`).
+      formulation_transparency:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: The tool's mathematical formulation is accessible and inspectable.
+          (e.g. as rendered equations or a math specification traceable to the built
+          problem).
+      piecewise_formulation:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Piecewise formulations of nonlinear relationships can be defined
+          in the math (e.g. using LP chord-line or MIP SOS2 constraints).
+      problem_file_export:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: The built optimisation problem can be exported in standard formats
+          (e.g. LP/MPS).
+      soft_constraints:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: User-defined or built-in constraints can be reformulated as soft
+          constraints without bespoke implementation per constraint. This is usually
+          via a generic slack-variable-plus-penalty mechanism. Built-in economic threshold
+          costs are instead `asset.cost.threshold_deviation.investment` / `asset.cost.threshold_deviation.operation`.
+      user_defined_math:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Users can define their own constraints on the optimisation problem,
+          applied to existing or new decision variables, and write their own objective
+          expression.
+    title: MathModel
+    type: object
+  ModelDefinitionModel:
+    additionalProperties: false
+    properties:
       component_templating:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Components can inherit parameterisation from a shared template
           (e.g. an abstract technology definition), with edits to the template cascading
           to every inheriting component, rather than requiring per-component data
           entry.
+      configurable_dimensions:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: The dimensionality of an asset characteristic or cost can be
+          configured by the user, limited to a set of tool-defined dimensions.
       dimension_groups:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Dimension members can be tagged into named, potentially overlapping
           groups independent of the model's built-in structural dimensions (e.g. a
           "coastal assets" or "2030-vintage" tag spanning multiple asset types/nodes).
@@ -1836,283 +768,109 @@ $defs:
           spatial nodes to zones), for filtering on dimensions when applying constraints
           (e.g. total capacity across group X; seasonal limits), and for analysis/visualisation
           (`postprocessing.aggregation`/`postprocessing.disaggregation`).
-      gui:
-        $ref: '#/$defs/InterfaceGuiFeatureModel'
-        default:
-          value:
-            analyse: '?'
-            build: '?'
-            run: '?'
-        description: Graphical user interface.
-      remote_execution:
+      extensible_dimensions:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
-        description: Runs can be dispatched to and managed on remote compute (cloud,
-          HPC, hosted service) from the tool.
-      solver_configuration:
-        $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
-        description: Optimiser parameters can be directly configured, including convergence
-          parameters & warm-starting options.
-      standardised_data:
-        $ref: '#/$defs/InterfaceStandardisedDataFeatureModel'
-        default:
-          value:
-            analyse: '?'
-            build: '?'
-        description: Accepts or emits data following a community-recognised convention
-          or ontology (e.g. Open Energy Ontology <OEO>, IAMC template, the Energy
-          System Description Language <ESDL>, Common Energy System Model <CESM>, SiennaSchemas).
-    title: InterfaceModel
-    type: object
-  InterfaceStandardisedDataFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/InterfaceStandardisedDataValueModel'
-        default:
-          analyse: '?'
-          build: '?'
-        description: Per-slice feature value.
-    title: InterfaceStandardisedDataFeatureModel
-    type: object
-  InterfaceStandardisedDataValueModel:
-    additionalProperties: false
-    properties:
-      analyse:
-        default: '?'
-        description: Outputs follow a community-recognised convention or ontology.
-          This is useful for regulatory reporting or frictionless data transfer with
-          a downstream process.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Analyse
-        type: string
-      build:
-        default: '?'
-        description: Accepts input data following a community-recognised convention
-          or ontology.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Build
-        type: string
-    title: InterfaceStandardisedDataValueModel
+        description: A dimension not natively defined by the tool (e.g. a custom vintage,
+          cohort, or scenario axis) can be introduced by the user. Asset characteristics/costs
+          and math variables and constraints can be indexed over this new dimension
+          (usually requires custom math - `math.user_defined_math`).
+    title: ModelDefinitionModel
     type: object
   NetworkElectricityModel:
     additionalProperties: false
     properties:
       network_devices:
-        $ref: '#/$defs/NetworkElectricityNetworkDevicesFeatureModel'
-        default:
-          value:
-            facts_devices: '?'
-            hvdc_converters: '?'
-            transformers: '?'
+        $ref: '#/$defs/NetworkElectricityNetworkDevicesModel'
         description: Network components beyond simple lines and buses, carrying their
           own mathematical formulations.
       network_limits:
-        $ref: '#/$defs/NetworkElectricityNetworkLimitsFeatureModel'
-        default:
-          value:
-            phase_angle: '?'
-            thermal: '?'
+        $ref: '#/$defs/NetworkElectricityNetworkLimitsModel'
         description: Network operating limits representable in the power-flow formulation.
       optimal_power_flow:
-        $ref: '#/$defs/NetworkElectricityOptimalPowerFlowFeatureModel'
-        default:
-          value:
-            ac_opf: '?'
-            dc_opf: '?'
+        $ref: '#/$defs/NetworkElectricityOptimalPowerFlowModel'
         description: Linearised optimal power flow can be modelled.
       sensitivity_limits:
-        $ref: '#/$defs/NetworkElectricitySensitivityLimitsFeatureModel'
-        default:
-          value:
-            generic_constraints: '?'
-            outage_factors: '?'
-            ptdf: '?'
+        $ref: '#/$defs/NetworkElectricitySensitivityLimitsModel'
         description: Flows can be limited using supplied linear sensitivities, as
           an alternative to physical network limits.
       unbalanced_flows:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Unbalanced flows (asymmetric phases) can be handled in optimal
           power flow, usually using linearised DistFlow branch equations.
     title: NetworkElectricityModel
     type: object
-  NetworkElectricityNetworkDevicesFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/NetworkElectricityNetworkDevicesValueModel'
-        default:
-          facts_devices: '?'
-          hvdc_converters: '?'
-          transformers: '?'
-        description: Per-slice feature value.
-    title: NetworkElectricityNetworkDevicesFeatureModel
-    type: object
-  NetworkElectricityNetworkDevicesValueModel:
+  NetworkElectricityNetworkDevicesModel:
     additionalProperties: false
     properties:
       facts_devices:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Flexible AC Transmission System <FACTS> devices.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Facts Devices
-        type: string
       hvdc_converters:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Rectifiers, inverters, and HVDC converter stations.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Hvdc Converters
-        type: string
       transformers:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Shunt and phase-shifting transformers.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Transformers
-        type: string
-    title: NetworkElectricityNetworkDevicesValueModel
+    title: NetworkElectricityNetworkDevicesModel
     type: object
-  NetworkElectricityNetworkLimitsFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/NetworkElectricityNetworkLimitsValueModel'
-        default:
-          phase_angle: '?'
-          thermal: '?'
-        description: Per-slice feature value.
-    title: NetworkElectricityNetworkLimitsFeatureModel
-    type: object
-  NetworkElectricityNetworkLimitsValueModel:
+  NetworkElectricityNetworkLimitsModel:
     additionalProperties: false
     properties:
       phase_angle:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Phase-angle difference limits between connected buses.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Phase Angle
-        type: string
       thermal:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Thermal (branch flow magnitude) limits.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Thermal
-        type: string
-    title: NetworkElectricityNetworkLimitsValueModel
+    title: NetworkElectricityNetworkLimitsModel
     type: object
-  NetworkElectricityOptimalPowerFlowFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/NetworkElectricityOptimalPowerFlowValueModel'
-        default:
-          ac_opf: '?'
-          dc_opf: '?'
-        description: Per-slice feature value.
-    title: NetworkElectricityOptimalPowerFlowFeatureModel
-    type: object
-  NetworkElectricityOptimalPowerFlowValueModel:
+  NetworkElectricityOptimalPowerFlowModel:
     additionalProperties: false
     properties:
       ac_opf:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Linearised AC optimal power flow
-        enum:
-        - y
-        - n
-        - '?'
-        title: Ac Opf
-        type: string
       dc_opf:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: DC optimal power flow
-        enum:
-        - y
-        - n
-        - '?'
-        title: Dc Opf
-        type: string
-    title: NetworkElectricityOptimalPowerFlowValueModel
+    title: NetworkElectricityOptimalPowerFlowModel
     type: object
-  NetworkElectricitySensitivityLimitsFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/NetworkElectricitySensitivityLimitsValueModel'
-        default:
-          generic_constraints: '?'
-          outage_factors: '?'
-          ptdf: '?'
-        description: Per-slice feature value.
-    title: NetworkElectricitySensitivityLimitsFeatureModel
-    type: object
-  NetworkElectricitySensitivityLimitsValueModel:
+  NetworkElectricitySensitivityLimitsModel:
     additionalProperties: false
     properties:
       generic_constraints:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Generic transmission Constraints defined by user-supplied sensitivity
           coefficients not tied to a named physical factor.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Generic Constraints
-        type: string
       outage_factors:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Line/Branch Outage Distribution Factor <LODF/BODF> limits, describing
           the sensitivity of a branch flow to the outage of another branch.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Outage Factors
-        type: string
       ptdf:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Power Transfer Distribution Factor <PTDF> limits, describing
           the sensitivity of a branch flow to a nodal injection.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Ptdf
-        type: string
-    title: NetworkElectricitySensitivityLimitsValueModel
+    title: NetworkElectricitySensitivityLimitsModel
+    type: object
+  NetworkModel:
+    additionalProperties: false
+    properties:
+      electricity:
+        $ref: '#/$defs/NetworkElectricityModel'
+        description: Electrical network representation beyond the `processes.spatial_transfer`
+          baseline.
+      pipeline:
+        $ref: '#/$defs/NetworkPipelineModel'
+        description: Pressure-driven network representation for carriers transported
+          through pipes, beyond the `processes.spatial_transfer` baseline (e.g. methane,
+          hydrogen, CO2, district heat/cooling, water).
+    title: NetworkModel
     type: object
   NetworkPipelineModel:
     additionalProperties: false
     properties:
       composition_tracking:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: A single transfer asset carries a mixture whose constituents
           are balanced individually, allowing limits on the resulting blend (e.g.
           hydrogen blend-fraction limits, minimum gross calorific value <GCV>, Wobbe
@@ -2120,8 +878,6 @@ $defs:
           pressure-drop coefficient) are out of scope.
       linearised_flow:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Nodal pressure/head is a decision variable which couples flows
           using a linearised pressure-drop relationship. Operating limits on that
           state are representable in the same formulation (e.g. minimum/maximum nodal
@@ -2129,43 +885,33 @@ $defs:
           pressure).
     title: NetworkPipelineModel
     type: object
-  OptimisationObjectiveModel:
+  ObjectiveModel:
     additionalProperties: false
     properties:
       multi_objective_pareto:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Built-in generation of Pareto-optimal solution sets across objectives
           (e.g. epsilon-constraint, evolutionary methods).
       multi_objective_weighted:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Multiple objective terms combined via user-set weights into a
           single objectives. Trade-offs explored by manual weight variation.
       quadratic:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Quadratic objective terms passed natively to the solver (e.g.
           quadratic generation cost curves, welfare maximisation with linear demand
           curves).
-    title: OptimisationObjectiveModel
+    title: ObjectiveModel
     type: object
   OrchestrationModel:
     additionalProperties: false
     properties:
       rolling_horizon:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Myopic foresight pathway optimisation windows are optimised sequentially,
           with automatic handling of data pass-through between runs.
       sampled_runs:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Execution of run ensembles over a sampled uncertainty space (e.g.
           Monte Carlo), with collated outputs. Used e.g. for post-hoc resource adequacy
           assessment (`postprocessing.probabilistic_reliability_assessment`) or portfolio
@@ -2173,1101 +919,483 @@ $defs:
           scenarios).
       scenario_runs:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Batch execution of discrete, named scenario ensembles in series/parallel
           with collated outputs.
       simulation_optimisation:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Iterate between a simulation and optimisation phase until convergence
           with respect to (often nonlinear) constraints (e.g. competitive market simulation,
           optimal power flow).
     title: OrchestrationModel
     type: object
-  PostprocessingAggregationFeatureModel:
+  PathwayModel:
     additionalProperties: false
     properties:
-      value:
-        $ref: '#/$defs/PostprocessingAggregationValueModel'
-        default:
-          assets: '?'
-          spatial: '?'
-          temporal: '?'
-        description: Per-slice feature value.
-    title: PostprocessingAggregationFeatureModel
+      myopic_foresight:
+        $ref: '#/$defs/PathwayMyopicForesightModel'
+        description: Time periods are optimised sequentially, with each decision made
+          without knowledge / with limited knowledge of later periods.
+      perfect_foresight:
+        $ref: '#/$defs/PathwayPerfectForesightModel'
+        description: Perfect foresight capacity expansion / dispatch.
+    title: PathwayModel
     type: object
-  PostprocessingAggregationValueModel:
+  PathwayMyopicForesightModel:
+    additionalProperties: false
+    properties:
+      investment:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Investment decisions are optimised sequentially per period /
+          set of periods.
+      operation:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Dispatch decisions are optimised sequentially per set of timesteps
+          (e.g. days).
+    title: PathwayMyopicForesightModel
+    type: object
+  PathwayPerfectForesightModel:
+    additionalProperties: false
+    properties:
+      investment:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: All investment periods are optimised simultaneously with perfect
+          foresight of future periods.
+      operation:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: All dispatch periods are optimised simultaneously with perfect
+          foresight of future timesteps in the investment period(s).
+    title: PathwayPerfectForesightModel
+    type: object
+  PostprocessingAggregationModel:
     additionalProperties: false
     properties:
       assets:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Aggregation across assets that are members of user-defined groups
           (e.g., separately costed "wind turbine" assets aggregated back to "wind
           turbine").
-        enum:
-        - y
-        - n
-        - '?'
-        title: Assets
-        type: string
       spatial:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Aggregation across spatial regions that are members of user-defined
           groups (e.g. results per country in a nodal analysis).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Spatial
-        type: string
       temporal:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Aggregation across time using standard datetime operations (e.g.
           seasonal, annual, decadal summations).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Temporal
-        type: string
-    title: PostprocessingAggregationValueModel
+    title: PostprocessingAggregationModel
     type: object
-  PostprocessingDisaggregationFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/PostprocessingDisaggregationValueModel'
-        default:
-          assets: '?'
-          spatial: '?'
-          temporal: '?'
-        description: Per-slice feature value.
-    title: PostprocessingDisaggregationFeatureModel
-    type: object
-  PostprocessingDisaggregationValueModel:
+  PostprocessingDisaggregationModel:
     additionalProperties: false
     properties:
       assets:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Disaggregation across assets, usually to return output to align
-          with the dimension prior to applying asset aggregation (`tractability__dimension_reduction`).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Assets
-        type: string
+          with the dimension prior to applying asset aggregation (`tractability.dimension_reduction`).
       spatial:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Disaggregation across space, usually to return output to align
-          with the dimension prior to applying spatial aggregation (`tractability__dimension_reduction`).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Spatial
-        type: string
+          with the dimension prior to applying spatial aggregation (`tractability.dimension_reduction`).
       temporal:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Disaggregation across time, usually to align output data with
-          the dimension prior to applying temporal aggregation (`tractability__dimension_reduction`).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Temporal
-        type: string
-    title: PostprocessingDisaggregationValueModel
+          the dimension prior to applying temporal aggregation (`tractability.dimension_reduction`).
+    title: PostprocessingDisaggregationModel
     type: object
-  PostprocessingFinancialFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/PostprocessingFinancialValueModel'
-        default:
-          asset_accounts: '?'
-          contract_settlement: '?'
-          levelised_cost: '?'
-          marginal_price: '?'
-          net_present_value: '?'
-          water_value: '?'
-        description: Per-slice feature value.
-    title: PostprocessingFinancialFeatureModel
-    type: object
-  PostprocessingFinancialValueModel:
+  PostprocessingFinancialModel:
     additionalProperties: false
     properties:
       asset_accounts:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Asset-level revenue / cost accounting.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Asset Accounts
-        type: string
       contract_settlement:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Post-hoc settlement of financial contracts against realised dispatch
           and prices, without altering the underlying optimisation (e.g. Contracts-for-difference
           <CfD>, Power/energy purchase agreement <PPA>, Cap-and-floor scheme settlement).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Contract Settlement
-        type: string
       levelised_cost:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Levelised cost of electricity or other carriers.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Levelised Cost
-        type: string
       marginal_price:
-        default: '?'
-        description: Shadow prices extracted via `interface__math.dual_extraction`,
-          used to approximate wholesale market prices or as an input to `contract_settlement`
-          and soft-constraint interpretation.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Marginal Price
-        type: string
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Shadow prices extracted via `math.dual_extraction`, used to approximate
+          wholesale market prices or as an input to `contract_settlement` and soft-constraint
+          interpretation.
       net_present_value:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Net present value of the modelled system or a subset of assets.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Net Present Value
-        type: string
       water_value:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: A future cost function (water value) constructed as a reusable,
-          exportable artefact from shadow prices extracted via `interface__math.dual_extraction`
+          exportable artefact from shadow prices extracted via `math.dual_extraction`
           (e.g. from Benders / SDDP cuts), forecasting the marginal cost of hydro
           and other seasonal storage devices for use in shorter-term scheduling under
           uncertain input parameters.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Water Value
-        type: string
-    title: PostprocessingFinancialValueModel
+    title: PostprocessingFinancialModel
     type: object
-  PostprocessingImpactAssessmentFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/PostprocessingImpactAssessmentValueModel'
-        default:
-          emissions: '?'
-          resource_use: '?'
-          socioeconomic: '?'
-        description: Per-slice feature value.
-    title: PostprocessingImpactAssessmentFeatureModel
-    type: object
-  PostprocessingImpactAssessmentValueModel:
+  PostprocessingImpactAssessmentModel:
     additionalProperties: false
     properties:
       emissions:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: GHG or other pollutant emissions.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Emissions
-        type: string
       resource_use:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Non-carrier resource consumption (e.g. water, land, materials).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Resource Use
-        type: string
       socioeconomic:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Socioeconomic impacts (e.g. job creation).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Socioeconomic
-        type: string
-    title: PostprocessingImpactAssessmentValueModel
+    title: PostprocessingImpactAssessmentModel
     type: object
   PostprocessingModel:
     additionalProperties: false
     properties:
       aggregation:
-        $ref: '#/$defs/PostprocessingAggregationFeatureModel'
-        default:
-          value:
-            assets: '?'
-            spatial: '?'
-            temporal: '?'
+        $ref: '#/$defs/PostprocessingAggregationModel'
         description: Method to aggregate across dimensions into broader groups for
-          analysis and dissemination This usually requires `interface.dimension_groups`
+          analysis and dissemination This usually requires `model_definition.dimension_groups`
           to define aggregation membership.
       disaggregation:
-        $ref: '#/$defs/PostprocessingDisaggregationFeatureModel'
-        default:
-          value:
-            assets: '?'
-            spatial: '?'
-            temporal: '?'
+        $ref: '#/$defs/PostprocessingDisaggregationModel'
         description: Model outputs are redistributed back to pre-simplification resolution
           (e.g. capacity-expansion results handed off to a full-resolution power-flow
           model).
       financial:
-        $ref: '#/$defs/PostprocessingFinancialFeatureModel'
-        default:
-          value:
-            asset_accounts: '?'
-            contract_settlement: '?'
-            levelised_cost: '?'
-            marginal_price: '?'
-            net_present_value: '?'
-            water_value: '?'
+        $ref: '#/$defs/PostprocessingFinancialModel'
         description: Financial analyses for business cases, derived from model outputs.
       impact_assessment:
-        $ref: '#/$defs/PostprocessingImpactAssessmentFeatureModel'
-        default:
-          value:
-            emissions: '?'
-            resource_use: '?'
-            socioeconomic: '?'
+        $ref: '#/$defs/PostprocessingImpactAssessmentModel'
         description: Auxiliary impacts calculated from model outputs.
       network_transfer_metrics:
-        $ref: '#/$defs/PostprocessingNetworkTransferMetricsFeatureModel'
-        default:
-          value:
-            flow_sensitivity: '?'
-            transfer_capacity: '?'
+        $ref: '#/$defs/PostprocessingNetworkTransferMetricsModel'
         description: Network transfer capability and flow-sensitivity metrics derived
           from model outputs.
       operational:
-        $ref: '#/$defs/PostprocessingOperationalFeatureModel'
-        default:
-          value:
-            capacity_factor: '?'
-            curtailment: '?'
-            full_load_hours: '?'
+        $ref: '#/$defs/PostprocessingOperationalModel'
         description: Operational analyses derived from model outputs.
       probabilistic_reliability_assessment:
-        $ref: '#/$defs/PostprocessingProbabilisticReliabilityAssessmentFeatureModel'
-        default:
-          value:
-            capacity_credit: '?'
-            loss_of_load: '?'
-            unserved_energy: '?'
+        $ref: '#/$defs/PostprocessingProbabilisticReliabilityAssessmentModel'
         description: Probabilistic resource-adequacy metrics calculated post-hoc.
           Sampling-based run orchestration to produce them is `orchestration.sampled_runs`.
       scenario_comparison:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Outputs of multiple scenario/ensemble runs are collated and compared.
     title: PostprocessingModel
     type: object
-  PostprocessingNetworkTransferMetricsFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/PostprocessingNetworkTransferMetricsValueModel'
-        default:
-          flow_sensitivity: '?'
-          transfer_capacity: '?'
-        description: Per-slice feature value.
-    title: PostprocessingNetworkTransferMetricsFeatureModel
-    type: object
-  PostprocessingNetworkTransferMetricsValueModel:
+  PostprocessingNetworkTransferMetricsModel:
     additionalProperties: false
     properties:
       flow_sensitivity:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Flow-sensitivity metrics (e.g. power transfer distribution factors,
           line outage distribution factors).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Flow Sensitivity
-        type: string
       transfer_capacity:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Grid transfer capacities between regions or zones.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Transfer Capacity
-        type: string
-    title: PostprocessingNetworkTransferMetricsValueModel
+    title: PostprocessingNetworkTransferMetricsModel
     type: object
-  PostprocessingOperationalFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/PostprocessingOperationalValueModel'
-        default:
-          capacity_factor: '?'
-          curtailment: '?'
-          full_load_hours: '?'
-        description: Per-slice feature value.
-    title: PostprocessingOperationalFeatureModel
-    type: object
-  PostprocessingOperationalValueModel:
+  PostprocessingOperationalModel:
     additionalProperties: false
     properties:
       capacity_factor:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Asset generation relative to full load generation.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Capacity Factor
-        type: string
       curtailment:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Asset generation curtailment.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Curtailment
-        type: string
       full_load_hours:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Number or fraction of timesteps in the model horizon that assets
           are operating at or close their full load.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Full Load Hours
-        type: string
-    title: PostprocessingOperationalValueModel
+    title: PostprocessingOperationalModel
     type: object
-  PostprocessingProbabilisticReliabilityAssessmentFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/PostprocessingProbabilisticReliabilityAssessmentValueModel'
-        default:
-          capacity_credit: '?'
-          loss_of_load: '?'
-          unserved_energy: '?'
-        description: Per-slice feature value.
-    title: PostprocessingProbabilisticReliabilityAssessmentFeatureModel
-    type: object
-  PostprocessingProbabilisticReliabilityAssessmentValueModel:
+  PostprocessingProbabilisticReliabilityAssessmentModel:
     additionalProperties: false
     properties:
       capacity_credit:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Effective load carrying capacity <ELCC>.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Capacity Credit
-        type: string
       loss_of_load:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Loss of load probability/expectation <LOLP>.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Loss Of Load
-        type: string
       unserved_energy:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Expected energy not served <EENS>.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Unserved Energy
-        type: string
-    title: PostprocessingProbabilisticReliabilityAssessmentValueModel
+    title: PostprocessingProbabilisticReliabilityAssessmentModel
     type: object
   PreprocessingModel:
     additionalProperties: false
     properties:
       download:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Data can be downloaded directly within the tool from an open
           or proprietary source rather than being specified by the user.
       forecasting:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: A user-defined generation / load profile can be automatically
           updated given user-defined forecasting parameters (e.g. change in total
           or peak).
       input_validation:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Input data is validated against the tool's expected structure
           and value ranges before a run, with informative failures.
       model_catalogue:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Pre-built model datasets/examples can be retrieved from a catalogue
           as starting points for new models.
       numeric_scaling:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Data can be scaled (e.g. by converting base units) to reduce
           numeric instability and constraint violations in the downstream solver.
       scenario_generation:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Scenario ensembles can be generated from user-defined parameters
           or sampling rules, for execution as `orchestration.scenario_runs` or `orchestration.sampled_runs`.
       spatial_distribution:
-        $ref: '#/$defs/PreprocessingSpatialDistributionFeatureModel'
-        default:
-          value:
-            demand: '?'
-            network_geometry: '?'
-            slack: '?'
+        $ref: '#/$defs/PreprocessingSpatialDistributionModel'
         description: A user-defined parameter can be automatically distributed spatially
           using other spatial parameters.
     title: PreprocessingModel
     type: object
-  PreprocessingSpatialDistributionFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/PreprocessingSpatialDistributionValueModel'
-        default:
-          demand: '?'
-          network_geometry: '?'
-          slack: '?'
-        description: Per-slice feature value.
-    title: PreprocessingSpatialDistributionFeatureModel
-    type: object
-  PreprocessingSpatialDistributionValueModel:
+  PreprocessingSpatialDistributionModel:
     additionalProperties: false
     properties:
       demand:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Nodal demand distribution from an aggregate total.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Demand
-        type: string
       network_geometry:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Transmission/pipeline line distances or routing derived from
           node coordinates.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Network Geometry
-        type: string
       slack:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Distributed slack allocation across nodes.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Slack
-        type: string
-    title: PreprocessingSpatialDistributionValueModel
+    title: PreprocessingSpatialDistributionModel
     type: object
-  SystemProcessesModel:
+  ProcessesModel:
     additionalProperties: false
     properties:
       boundary_exchange:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Carriers enter or leave the system across its boundary at a defined
           cost and availability (e.g. fuel supply, primary resource extraction, imports/exports
           to unmodelled regions).
       buffered_transfer:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: 'Flow in space with an endogenous in-transit inventory, to enable
           the flow to accumulate in time (e.g. pipeline linepack).
 
           '
       conversion:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Carriers are transformed into other carriers within the system
           boundary (e.g. power plants, electrolysers, heat pumps, CO2 capture). This
           enables coupled multi-carrier optimisation.
       delayed_transfer:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Continuous flow in space with a time delay between injection
           and withdrawal (e.g., river flows, district-heating transit).
       discrete_transport:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Carriers are moved in space or exchanged across the system boundary
           in discrete packets by mobile units with loading/unloading decisions (e.g.
           shipping, trucking, rail).
       explicit_demand:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Demand is represented by explicit consuming processes with their
           own constraints, enabling demand-side management. Demanded carriers may
           be non-energy commodities with their own balances.
       spatial_transfer:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Carriers are moved between regions as continuous flow subject
-          to transfer-capacity limits, without network physics. See `network__electricity`
-          / `network__pipeline` for network physics features.
+          to transfer-capacity limits, without network physics. See `network.electricity`
+          / `network.pipeline` for network physics features.
       state_changing_transfer:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Carrier movement requiring the carrier's physical state to be
           tracked or converted en route (e.g. gas pressure levels with compressors,
           heat-network temperature levels).
       temporal_transfer:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Carriers are moved in time (e.g. storage, demand shifting), linking
           system states across timesteps.
-    title: SystemProcessesModel
+    title: ProcessesModel
     type: object
-  SystemReliabilityMarginRequirementFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/SystemReliabilityMarginRequirementValueModel'
-        default:
-          capacity: '?'
-          operating_reserve: '?'
-        description: Per-slice feature value.
-    title: SystemReliabilityMarginRequirementFeatureModel
-    type: object
-  SystemReliabilityMarginRequirementValueModel:
-    additionalProperties: false
-    properties:
-      capacity:
-        default: '?'
-        description: Firm capacity requirement, held against peak demand or a resource-adequacy
-          target.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Capacity
-        type: string
-      operating_reserve:
-        default: '?'
-        description: Operating reserve requirement, held against short-term contingencies
-          (e.g. spinning reserve, ramping reserve).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Operating Reserve
-        type: string
-    title: SystemReliabilityMarginRequirementValueModel
-    type: object
-  SystemReliabilityModel:
-    additionalProperties: false
-    properties:
-      contingency_constrained:
-        $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
-        description: The optimisation is constrained to remain feasible following
-          the loss of individual components, over an enumerated set of discrete failure
-          states (e.g. N-1 security-constrained optimal power flow, loss of a compressor
-          station or pipeline segment). Post-contingency corrective action can be
-          co-optimised where the tool supports it.
-      margin_requirement:
-        $ref: '#/$defs/SystemReliabilityMarginRequirementFeatureModel'
-        default:
-          value:
-            capacity: '?'
-            operating_reserve: '?'
-        description: Minimum requirement on firm capacity/margin held in reserve.
-          This could be applied at the system level or on single / subsets of assets,
-          if `interface.dimension_groups` is available.
-      probabilistic_reliability_limit:
-        $ref: '#/$defs/SystemReliabilityProbabilisticReliabilityLimitFeatureModel'
-        default:
-          value:
-            loss_of_load: '?'
-            unserved_energy: '?'
-        description: Probabilistic reliability constraints within the optimisation.
-      unserved_demand:
-        $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
-        description: Demand can go unserved at a penalty cost (value of lost load
-          <VOLL>), placing a soft constraint on load shedding within the optimisation.
-    title: SystemReliabilityModel
-    type: object
-  SystemReliabilityProbabilisticReliabilityLimitFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/SystemReliabilityProbabilisticReliabilityLimitValueModel'
-        default:
-          loss_of_load: '?'
-          unserved_energy: '?'
-        description: Per-slice feature value.
-    title: SystemReliabilityProbabilisticReliabilityLimitFeatureModel
-    type: object
-  SystemReliabilityProbabilisticReliabilityLimitValueModel:
-    additionalProperties: false
-    properties:
-      loss_of_load:
-        default: '?'
-        description: Loss-of-load-probability <LOLP> limit.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Loss Of Load
-        type: string
-      unserved_energy:
-        default: '?'
-        description: Expected-energy-not-served <EENS> limit.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Unserved Energy
-        type: string
-    title: SystemReliabilityProbabilisticReliabilityLimitValueModel
-    type: object
-  TimePathwayModel:
-    additionalProperties: false
-    properties:
-      myopic_foresight:
-        $ref: '#/$defs/TimePathwayMyopicForesightFeatureModel'
-        default:
-          value:
-            investment: '?'
-            operation: '?'
-        description: Time periods are optimised sequentially, with each decision made
-          without knowledge / with limited knowledge of later periods.
-      perfect_foresight:
-        $ref: '#/$defs/TimePathwayPerfectForesightFeatureModel'
-        default:
-          value:
-            investment: '?'
-            operation: '?'
-        description: Perfect foresight capacity expansion / dispatch.
-      singular:
-        $ref: '#/$defs/TimePathwaySingularFeatureModel'
-        default:
-          value:
-            investment: '?'
-            operation: '?'
-        description: A single snapshot of a future system can be analysed.
-    title: TimePathwayModel
-    type: object
-  TimePathwayMyopicForesightFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/TimePathwayMyopicForesightValueModel'
-        default:
-          investment: '?'
-          operation: '?'
-        description: Per-slice feature value.
-    title: TimePathwayMyopicForesightFeatureModel
-    type: object
-  TimePathwayMyopicForesightValueModel:
-    additionalProperties: false
-    properties:
-      investment:
-        default: '?'
-        description: Investment decisions are optimised sequentially per period /
-          set of periods.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Investment
-        type: string
-      operation:
-        default: '?'
-        description: Dispatch decisions are optimised sequentially per set of timesteps
-          (e.g. days).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Operation
-        type: string
-    title: TimePathwayMyopicForesightValueModel
-    type: object
-  TimePathwayPerfectForesightFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/TimePathwayPerfectForesightValueModel'
-        default:
-          investment: '?'
-          operation: '?'
-        description: Per-slice feature value.
-    title: TimePathwayPerfectForesightFeatureModel
-    type: object
-  TimePathwayPerfectForesightValueModel:
-    additionalProperties: false
-    properties:
-      investment:
-        default: '?'
-        description: All investment periods are optimised simultaneously with perfect
-          foresight of future periods.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Investment
-        type: string
-      operation:
-        default: '?'
-        description: All dispatch periods are optimised simultaneously with perfect
-          foresight of future timesteps in the investment period(s).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Operation
-        type: string
-    title: TimePathwayPerfectForesightValueModel
-    type: object
-  TimePathwaySingularFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/TimePathwaySingularValueModel'
-        default:
-          investment: '?'
-          operation: '?'
-        description: Per-slice feature value.
-    title: TimePathwaySingularFeatureModel
-    type: object
-  TimePathwaySingularValueModel:
-    additionalProperties: false
-    properties:
-      investment:
-        default: '?'
-        description: '"Overnight" capacity expansion, focussing on the end-state design
-          of a system without considering how that design is reached.'
-        enum:
-        - y
-        - n
-        - '?'
-        title: Investment
-        type: string
-      operation:
-        default: '?'
-        description: Single snapshot operation dispatch, i.e. allowing optimisation
-          without a time dimension.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Operation
-        type: string
-    title: TimePathwaySingularValueModel
-    type: object
-  TractabilityDimensionReductionAssetsFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/TractabilityDimensionReductionAssetsValueModel'
-        default:
-          black_boxing: '?'
-          clustering: '?'
-          component_removal: '?'
-        description: Per-slice feature value.
-    title: TractabilityDimensionReductionAssetsFeatureModel
-    type: object
-  TractabilityDimensionReductionAssetsValueModel:
+  TractabilityDimensionReductionAssetsModel:
     additionalProperties: false
     properties:
       black_boxing:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: A chain of interconnected assets is collapsed into a single component
-          with an in/out interface. This usually requires `asset__constraints.dedicated_flow_routing`
+          with an in/out interface. This usually requires `constraints.dedicated_flow_routing`
           between interconnected components.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Black Boxing
-        type: string
       clustering:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Individually defined assets are automatically aggregated into
-          asset groups for optimisation. This usually requires `interface.dimension_groups`
+          asset groups for optimisation. This usually requires `model_definition.dimension_groups`
           to define aggregation membership.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Clustering
-        type: string
       component_removal:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Individual or groups of assets (e.g. sharing a node or a carrier)
           can be systematically filtered out of the built problem.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Component Removal
-        type: string
-    title: TractabilityDimensionReductionAssetsValueModel
+    title: TractabilityDimensionReductionAssetsModel
     type: object
   TractabilityDimensionReductionModel:
     additionalProperties: false
     properties:
       assets:
-        $ref: '#/$defs/TractabilityDimensionReductionAssetsFeatureModel'
-        default:
-          value:
-            black_boxing: '?'
-            clustering: '?'
-            component_removal: '?'
+        $ref: '#/$defs/TractabilityDimensionReductionAssetsModel'
         description: Asset resolution adjustment options.
       spatial:
-        $ref: '#/$defs/TractabilityDimensionReductionSpatialFeatureModel'
-        default:
-          value:
-            clustering: '?'
-            network_reduction: '?'
+        $ref: '#/$defs/TractabilityDimensionReductionSpatialModel'
         description: Spatial resolution adjustment options.
       temporal:
-        $ref: '#/$defs/TractabilityDimensionReductionTemporalFeatureModel'
-        default:
-          value:
-            dimension_non_contiguity: '?'
-            load_duration_curves: '?'
-            resampling: '?'
-            typical_periods: '?'
+        $ref: '#/$defs/TractabilityDimensionReductionTemporalModel'
         description: Temporal resolution adjustment options (may apply to within-year
           timesteps or between-year investment periods).
     title: TractabilityDimensionReductionModel
     type: object
-  TractabilityDimensionReductionSpatialFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/TractabilityDimensionReductionSpatialValueModel'
-        default:
-          clustering: '?'
-          network_reduction: '?'
-        description: Per-slice feature value.
-    title: TractabilityDimensionReductionSpatialFeatureModel
-    type: object
-  TractabilityDimensionReductionSpatialValueModel:
+  TractabilityDimensionReductionSpatialModel:
     additionalProperties: false
     properties:
       clustering:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Automatic spatial zone aggregation/disaggregation. Usually from
           nodal (bus) level to regional/bidding zone level. This usually requires
-          `interface.dimension_groups` to define aggregation membership.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Clustering
-        type: string
+          `model_definition.dimension_groups` to define aggregation membership.
       network_reduction:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Network element equivalencing (e.g., reducing to a single voltage
           level).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Network Reduction
-        type: string
-    title: TractabilityDimensionReductionSpatialValueModel
+    title: TractabilityDimensionReductionSpatialModel
     type: object
-  TractabilityDimensionReductionTemporalFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/TractabilityDimensionReductionTemporalValueModel'
-        default:
-          dimension_non_contiguity: '?'
-          load_duration_curves: '?'
-          resampling: '?'
-          typical_periods: '?'
-        description: Per-slice feature value.
-    title: TractabilityDimensionReductionTemporalFeatureModel
-    type: object
-  TractabilityDimensionReductionTemporalValueModel:
+  TractabilityDimensionReductionTemporalModel:
     additionalProperties: false
     properties:
       dimension_non_contiguity:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Mathematical constraints to manage inter-temporal model features
           when using non-contiguous temporal aggregation (e.g., linking storage levels
           across typical periods).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Dimension Non Contiguity
-        type: string
       load_duration_curves:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Full timeseries is represented by load duration curves.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Load Duration Curves
-        type: string
       resampling:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Temporal resolution of the input timeseries is coarsened while
           remaining contiguous (e.g. hourly to daily) before the model is built.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Resampling
-        type: string
       typical_periods:
-        default: '?'
+        $ref: '#/$defs/UseCaseFeatureModel'
         description: Full timeseries is represented by non-contiguous typical periods
           (days, weeks, months).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Typical Periods
-        type: string
-    title: TractabilityDimensionReductionTemporalValueModel
+    title: TractabilityDimensionReductionTemporalModel
+    type: object
+  TractabilityModel:
+    additionalProperties: false
+    properties:
+      dimension_reduction:
+        $ref: '#/$defs/TractabilityDimensionReductionModel'
+        description: Options to reduce the size of a given dimension of the problem.
+      reformulation:
+        $ref: '#/$defs/TractabilityReformulationModel'
+        description: Approximations of discrete or non-linear formulations that preserve
+          (mixed-integer) linear tractability.
+    title: TractabilityModel
     type: object
   TractabilityReformulationModel:
     additionalProperties: false
     properties:
       approximation:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: The solution algorithm is reformulated to reach a near-optimal
           answer within tolerance at reduced cost (e.g. progressive hedging, Stochastic
           Dual Dynamic Programming <SDDP>-style cut selection).
       constraint_screening:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Constraints unlikely to bind are omitted or lazily added.
       convex_relaxation:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: A non-convex relationship is approximated by a convex relaxation,
           retaining solver tractability (e.g. second-order-cone relaxation of AC power
           flow).
       decomposition:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: The problem is split into coordinated sub-problems solved iteratively
           or in parallel until convergence (e.g. Benders decomposition; Stochastic
           Dual Dynamic Programming <SDDP> for multi-stage stochastic hydropower scheduling).
       function_conversion:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: User-defined arbitrary non-linear functions are automatically
           converted into valid model inputs (e.g. piecewise segments) without manual
           discretisation.
       linearised_unit_commitment:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Unit commitment approximated with continuous (linearised) commitment
           variables, avoiding integer decision variables.
       variable_fidelity:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: The mathematical fidelity of the same physical attribute can
           differ across the model's scope within one model definition (e.g. discrete
           units in some investment periods and aggregated capacity in others; unit
           commitment over the near-term horizon, continuous economic dispatch beyond).
     title: TractabilityReformulationModel
     type: object
+  TransparencyMetadataPropagationModel:
+    additionalProperties: false
+    properties:
+      provenance:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Data sources, versions, and licences are propagated from inputs
+          through to outputs.
+      units:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Physical units attached to data are tracked and validated through
+          the pipeline (to enable e.g., unit-consistency checking, automatic conversion,
+          auto-scaling).
+    title: TransparencyMetadataPropagationModel
+    type: object
+  TransparencyModel:
+    additionalProperties: false
+    properties:
+      infeasibility_diagnosis:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Infeasible problems can be diagnosed (e.g. irreducible infeasible
+          subset (IIS) generation, named constraint violations).
+      intermediate_access:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Intermediate pipeline artefacts (e.g. built problem data, solver
+          state) can be exposed to the user.
+      metadata_propagation:
+        $ref: '#/$defs/TransparencyMetadataPropagationModel'
+        description: Metadata is propagated from inputs through to outputs.
+      run_logs:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Run logs available (e.g. in text files), for use in debugging
+          failing model runs.
+    title: TransparencyModel
+    type: object
   UncertaintyModel:
     additionalProperties: false
     properties:
       multi_stage_stochastic:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Multi-stage stochastic optimisation, in which decisions are revised
           as uncertainty resolves stage by stage. Primarily used for scheduling seasonal
           storage (e.g. hydropower water values) under uncertain inflows.
       near_optimal:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Generate a near-optimal solution set by relaxing constraints
           / objectives in the optimisation problem. (e.g., Modelling to Generate Alternatives
           <MGA>).
       risk_aversion:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Risk measures (e.g. Conditional Value at Risk <CVaR>) applied
           to a stochastic optimisation as chance constraints. It weights tail-end
           outcomes according to a configurable risk tolerance.
       robust_optimisation:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Worst-case cost minimisation over an uncertainty set.
       two_stage_stochastic:
         $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
         description: Two-stage stochastic optimisation; used in investment decision
           making under uncertainty.
     title: UncertaintyModel
@@ -3289,73 +1417,6 @@ $defs:
         type: string
     title: UseCaseFeatureModel
     type: object
-  WorkflowTransparencyMetadataPropagationFeatureModel:
-    additionalProperties: false
-    properties:
-      value:
-        $ref: '#/$defs/WorkflowTransparencyMetadataPropagationValueModel'
-        default:
-          provenance: '?'
-          units: '?'
-        description: Per-slice feature value.
-    title: WorkflowTransparencyMetadataPropagationFeatureModel
-    type: object
-  WorkflowTransparencyMetadataPropagationValueModel:
-    additionalProperties: false
-    properties:
-      provenance:
-        default: '?'
-        description: Data sources, versions, and licences are propagated from inputs
-          through to outputs.
-        enum:
-        - y
-        - n
-        - '?'
-        title: Provenance
-        type: string
-      units:
-        default: '?'
-        description: Physical units attached to data are tracked and validated through
-          the pipeline (to enable e.g., unit-consistency checking, automatic conversion,
-          auto-scaling).
-        enum:
-        - y
-        - n
-        - '?'
-        title: Units
-        type: string
-    title: WorkflowTransparencyMetadataPropagationValueModel
-    type: object
-  WorkflowTransparencyModel:
-    additionalProperties: false
-    properties:
-      infeasibility_diagnosis:
-        $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
-        description: Infeasible problems can be diagnosed (e.g. irreducible infeasible
-          subset (IIS) generation, named constraint violations).
-      intermediate_access:
-        $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
-        description: Intermediate pipeline artefacts (e.g. built problem data, solver
-          state) can be exposed to the user.
-      metadata_propagation:
-        $ref: '#/$defs/WorkflowTransparencyMetadataPropagationFeatureModel'
-        default:
-          value:
-            provenance: '?'
-            units: '?'
-        description: Metadata is propagated from inputs through to outputs.
-      run_logs:
-        $ref: '#/$defs/UseCaseFeatureModel'
-        default:
-          value: '?'
-        description: Run logs available (e.g. in text files), for use in debugging
-          failing model runs.
-    title: WorkflowTransparencyModel
-    type: object
 additionalProperties: false
 properties:
   assumptions:
@@ -3372,120 +1433,123 @@ properties:
           value: '?'
         portfolio:
           value: '?'
-      asset__capacity_representation:
-        continuous_capacity:
-          value: '?'
-        exogenous_capacity:
-          value: '?'
-        integer_investment_continuous_capacity:
-          value: '?'
-        integer_investment_exogenous_capacity:
-          value: '?'
-      asset__characteristics:
-        configurable_dimensions:
-          value:
-            investment: '?'
-            operation: '?'
-        extensible_dimensions:
-          value:
-            investment: '?'
-            operation: '?'
-        linear:
-          value:
-            investment: '?'
-            operation: '?'
-        nonlinear:
-          value:
-            investment: '?'
-            operation: '?'
-        path_dependent:
-          value:
-            investment: '?'
-            operation: '?'
-        quadratic:
-          value:
-            investment: '?'
-            operation: '?'
-      asset__constraints:
+      asset:
+        capacity_representation:
+          continuous_capacity:
+            value: '?'
+          exogenous_capacity:
+            value: '?'
+          integer_investment_continuous_capacity:
+            value: '?'
+          integer_investment_exogenous_capacity:
+            value: '?'
+        characteristics:
+          linear:
+            investment:
+              value: '?'
+            operation:
+              value: '?'
+          nonlinear:
+            investment:
+              value: '?'
+            operation:
+              value: '?'
+          path_dependent:
+            investment:
+              value: '?'
+            operation:
+              value: '?'
+          quadratic:
+            investment:
+              value: '?'
+            operation:
+              value: '?'
+        cost:
+          annuitisation:
+            value: '?'
+          inter_temporal:
+            investment:
+              value: '?'
+            operation:
+              value: '?'
+          linear:
+            investment:
+              value: '?'
+            operation:
+              value: '?'
+          nonlinear:
+            investment:
+              value: '?'
+            operation:
+              value: '?'
+          threshold_deviation:
+            investment:
+              value: '?'
+            operation:
+              value: '?'
+          unit:
+            investment:
+              value: '?'
+            operation:
+              value: '?'
+        operating_representation:
+          maintenance_scheduling:
+            value: '?'
+          unit_commitment:
+            value: '?'
+      constraints:
         boundary_conditions:
-          value:
-            investment: '?'
-            operation: '?'
+          investment:
+            value: '?'
+          operation:
+            value: '?'
         commitment:
-          value:
-            investment: '?'
-            operation: '?'
+          investment:
+            value: '?'
+          operation:
+            value: '?'
         dedicated_flow_routing:
           value: '?'
         inter_asset:
-          value:
-            investment: '?'
-            operation: '?'
+          investment:
+            value: '?'
+          operation:
+            value: '?'
         inter_spatial:
-          value:
-            investment: '?'
-            operation: '?'
+          investment:
+            value: '?'
+          operation:
+            value: '?'
         inter_temporal:
-          value:
-            investment: '?'
-            operation: '?'
+          investment:
+            value: '?'
+          operation:
+            value: '?'
         intra_temporal:
-          value:
-            investment: '?'
-            operation: '?'
+          investment:
+            value: '?'
+          operation:
+            value: '?'
+        reliability:
+          contingency_constrained:
+            value: '?'
+          margin_requirement:
+            capacity:
+              value: '?'
+            operating_reserve:
+              value: '?'
+          probabilistic_reliability_limit:
+            loss_of_load:
+              value: '?'
+            unserved_energy:
+              value: '?'
+          unserved_demand:
+            value: '?'
         total:
-          value:
-            investment: '?'
-            operation: '?'
-      asset__cost:
-        annuitisation:
-          value: '?'
-        inter_temporal:
-          value:
-            investment: '?'
-            operation: '?'
-        linear:
-          value:
-            investment: '?'
-            operation: '?'
-        nonlinear:
-          value:
-            investment: '?'
-            operation: '?'
-        threshold_deviation:
-          value:
-            investment: '?'
-            operation: '?'
-        unit:
-          value:
-            investment: '?'
-            operation: '?'
-      asset__operating_representation:
-        maintenance_scheduling:
-          value: '?'
-        unit_commitment:
-          value: '?'
-      data__io:
-        binary:
-          value:
-            input: '?'
-            output: '?'
-        database:
-          value:
-            input: '?'
-            output: '?'
-        lazy_loading:
-          value:
-            input: '?'
-            output: '?'
-        plain_text:
-          value:
-            input: '?'
-            output: '?'
-        remote_storage:
-          value:
-            input: '?'
-            output: '?'
+          investment:
+            value: '?'
+          operation:
+            value: '?'
       edge_effects:
         energy_balance:
           value: '?'
@@ -3497,33 +1561,62 @@ properties:
         analysis_templates:
           value: '?'
         api:
-          value:
-            analyse: '?'
-            build: '?'
-            run: '?'
+          analyse:
+            value: '?'
+          build:
+            value: '?'
+          run:
+            value: '?'
         cli:
-          value:
-            analyse: '?'
-            build: '?'
-            run: '?'
-        component_templating:
-          value: '?'
-        dimension_groups:
-          value: '?'
+          analyse:
+            value: '?'
+          build:
+            value: '?'
+          run:
+            value: '?'
         gui:
-          value:
-            analyse: '?'
-            build: '?'
-            run: '?'
+          analyse:
+            value: '?'
+          build:
+            value: '?'
+          run:
+            value: '?'
         remote_execution:
           value: '?'
         solver_configuration:
           value: '?'
-        standardised_data:
-          value:
-            analyse: '?'
-            build: '?'
-      interface__math:
+      io:
+        binary:
+          input:
+            value: '?'
+          output:
+            value: '?'
+        database:
+          input:
+            value: '?'
+          output:
+            value: '?'
+        lazy_loading:
+          input:
+            value: '?'
+          output:
+            value: '?'
+        plain_text:
+          input:
+            value: '?'
+          output:
+            value: '?'
+        remote_storage:
+          input:
+            value: '?'
+          output:
+            value: '?'
+        standardised:
+          input:
+            value: '?'
+          output:
+            value: '?'
+      math:
         dual_extraction:
           value: '?'
         formulation_transparency:
@@ -3536,33 +1629,49 @@ properties:
           value: '?'
         user_defined_math:
           value: '?'
-      network__electricity:
-        network_devices:
-          value:
-            facts_devices: '?'
-            hvdc_converters: '?'
-            transformers: '?'
-        network_limits:
-          value:
-            phase_angle: '?'
-            thermal: '?'
-        optimal_power_flow:
-          value:
-            ac_opf: '?'
-            dc_opf: '?'
-        sensitivity_limits:
-          value:
-            generic_constraints: '?'
-            outage_factors: '?'
-            ptdf: '?'
-        unbalanced_flows:
+      model_definition:
+        component_templating:
           value: '?'
-      network__pipeline:
-        composition_tracking:
+        configurable_dimensions:
           value: '?'
-        linearised_flow:
+        dimension_groups:
           value: '?'
-      optimisation__objective:
+        extensible_dimensions:
+          value: '?'
+      network:
+        electricity:
+          network_devices:
+            facts_devices:
+              value: '?'
+            hvdc_converters:
+              value: '?'
+            transformers:
+              value: '?'
+          network_limits:
+            phase_angle:
+              value: '?'
+            thermal:
+              value: '?'
+          optimal_power_flow:
+            ac_opf:
+              value: '?'
+            dc_opf:
+              value: '?'
+          sensitivity_limits:
+            generic_constraints:
+              value: '?'
+            outage_factors:
+              value: '?'
+            ptdf:
+              value: '?'
+          unbalanced_flows:
+            value: '?'
+        pipeline:
+          composition_tracking:
+            value: '?'
+          linearised_flow:
+            value: '?'
+      objective:
         multi_objective_pareto:
           value: '?'
         multi_objective_weighted:
@@ -3578,44 +1687,71 @@ properties:
           value: '?'
         simulation_optimisation:
           value: '?'
+      pathway:
+        myopic_foresight:
+          investment:
+            value: '?'
+          operation:
+            value: '?'
+        perfect_foresight:
+          investment:
+            value: '?'
+          operation:
+            value: '?'
       postprocessing:
         aggregation:
-          value:
-            assets: '?'
-            spatial: '?'
-            temporal: '?'
+          assets:
+            value: '?'
+          spatial:
+            value: '?'
+          temporal:
+            value: '?'
         disaggregation:
-          value:
-            assets: '?'
-            spatial: '?'
-            temporal: '?'
+          assets:
+            value: '?'
+          spatial:
+            value: '?'
+          temporal:
+            value: '?'
         financial:
-          value:
-            asset_accounts: '?'
-            contract_settlement: '?'
-            levelised_cost: '?'
-            marginal_price: '?'
-            net_present_value: '?'
-            water_value: '?'
+          asset_accounts:
+            value: '?'
+          contract_settlement:
+            value: '?'
+          levelised_cost:
+            value: '?'
+          marginal_price:
+            value: '?'
+          net_present_value:
+            value: '?'
+          water_value:
+            value: '?'
         impact_assessment:
-          value:
-            emissions: '?'
-            resource_use: '?'
-            socioeconomic: '?'
+          emissions:
+            value: '?'
+          resource_use:
+            value: '?'
+          socioeconomic:
+            value: '?'
         network_transfer_metrics:
-          value:
-            flow_sensitivity: '?'
-            transfer_capacity: '?'
+          flow_sensitivity:
+            value: '?'
+          transfer_capacity:
+            value: '?'
         operational:
-          value:
-            capacity_factor: '?'
-            curtailment: '?'
-            full_load_hours: '?'
+          capacity_factor:
+            value: '?'
+          curtailment:
+            value: '?'
+          full_load_hours:
+            value: '?'
         probabilistic_reliability_assessment:
-          value:
-            capacity_credit: '?'
-            loss_of_load: '?'
-            unserved_energy: '?'
+          capacity_credit:
+            value: '?'
+          loss_of_load:
+            value: '?'
+          unserved_energy:
+            value: '?'
         scenario_comparison:
           value: '?'
       preprocessing:
@@ -3632,11 +1768,13 @@ properties:
         scenario_generation:
           value: '?'
         spatial_distribution:
-          value:
-            demand: '?'
-            network_geometry: '?'
-            slack: '?'
-      system__processes:
+          demand:
+            value: '?'
+          network_geometry:
+            value: '?'
+          slack:
+            value: '?'
+      processes:
         boundary_exchange:
           value: '?'
         buffered_transfer:
@@ -3655,62 +1793,55 @@ properties:
           value: '?'
         temporal_transfer:
           value: '?'
-      system__reliability:
-        contingency_constrained:
+      tractability:
+        dimension_reduction:
+          assets:
+            black_boxing:
+              value: '?'
+            clustering:
+              value: '?'
+            component_removal:
+              value: '?'
+          spatial:
+            clustering:
+              value: '?'
+            network_reduction:
+              value: '?'
+          temporal:
+            dimension_non_contiguity:
+              value: '?'
+            load_duration_curves:
+              value: '?'
+            resampling:
+              value: '?'
+            typical_periods:
+              value: '?'
+        reformulation:
+          approximation:
+            value: '?'
+          constraint_screening:
+            value: '?'
+          convex_relaxation:
+            value: '?'
+          decomposition:
+            value: '?'
+          function_conversion:
+            value: '?'
+          linearised_unit_commitment:
+            value: '?'
+          variable_fidelity:
+            value: '?'
+      transparency:
+        infeasibility_diagnosis:
           value: '?'
-        margin_requirement:
-          value:
-            capacity: '?'
-            operating_reserve: '?'
-        probabilistic_reliability_limit:
-          value:
-            loss_of_load: '?'
-            unserved_energy: '?'
-        unserved_demand:
+        intermediate_access:
           value: '?'
-      time__pathway:
-        myopic_foresight:
-          value:
-            investment: '?'
-            operation: '?'
-        perfect_foresight:
-          value:
-            investment: '?'
-            operation: '?'
-        singular:
-          value:
-            investment: '?'
-            operation: '?'
-      tractability__dimension_reduction:
-        assets:
-          value:
-            black_boxing: '?'
-            clustering: '?'
-            component_removal: '?'
-        spatial:
-          value:
-            clustering: '?'
-            network_reduction: '?'
-        temporal:
-          value:
-            dimension_non_contiguity: '?'
-            load_duration_curves: '?'
-            resampling: '?'
-            typical_periods: '?'
-      tractability__reformulation:
-        approximation:
-          value: '?'
-        constraint_screening:
-          value: '?'
-        convex_relaxation:
-          value: '?'
-        decomposition:
-          value: '?'
-        function_conversion:
-          value: '?'
-        linearised_unit_commitment:
-          value: '?'
-        variable_fidelity:
+        metadata_propagation:
+          provenance:
+            value: '?'
+          units:
+            value: '?'
+        run_logs:
           value: '?'
       uncertainty:
         multi_stage_stochastic:
@@ -3722,17 +1853,6 @@ properties:
         robust_optimisation:
           value: '?'
         two_stage_stochastic:
-          value: '?'
-      workflow__transparency:
-        infeasibility_diagnosis:
-          value: '?'
-        intermediate_access:
-          value: '?'
-        metadata_propagation:
-          value:
-            provenance: '?'
-            units: '?'
-        run_logs:
           value: '?'
     description: Use-case feature requirements.
 title: UseCaseFeatureModel

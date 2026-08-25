@@ -8,372 +8,431 @@
 
 assumptions: []
 features:
-  actors:
-    distributed_objectives:
+  processes:
+    boundary_exchange:
       value: '?'
-    equilibrium:
+    conversion:
       value: '?'
-    portfolio:
+    temporal_transfer:
       value: '?'
-  asset__capacity_representation:
-    continuous_capacity:
+    spatial_transfer:
       value: '?'
-    exogenous_capacity:
+    delayed_transfer:
       value: '?'
-    integer_investment_continuous_capacity:
+    buffered_transfer:
       value: '?'
-    integer_investment_exogenous_capacity:
+    discrete_transport:
       value: '?'
-  asset__characteristics:
-    configurable_dimensions:
-      value:
-        investment: '?'
-        operation: '?'
-    extensible_dimensions:
-      value:
-        investment: '?'
-        operation: '?'
-    linear:
-      value:
-        investment: '?'
-        operation: '?'
-    nonlinear:
-      value:
-        investment: '?'
-        operation: '?'
-    path_dependent:
-      value:
-        investment: '?'
-        operation: '?'
-    quadratic:
-      value:
-        investment: '?'
-        operation: '?'
-  asset__constraints:
-    boundary_conditions:
-      value:
-        investment: '?'
-        operation: '?'
+    state_changing_transfer:
+      value: '?'
+    explicit_demand:
+      value: '?'
+  network:
+    electricity:
+      optimal_power_flow:
+        dc_opf:
+          value: '?'
+        ac_opf:
+          value: '?'
+      sensitivity_limits:
+        ptdf:
+          value: '?'
+        outage_factors:
+          value: '?'
+        generic_constraints:
+          value: '?'
+      network_limits:
+        thermal:
+          value: '?'
+        phase_angle:
+          value: '?'
+      network_devices:
+        transformers:
+          value: '?'
+        facts_devices:
+          value: '?'
+        hvdc_converters:
+          value: '?'
+      unbalanced_flows:
+        value: '?'
+    pipeline:
+      linearised_flow:
+        value: '?'
+      composition_tracking:
+        value: '?'
+  asset:
+    capacity_representation:
+      exogenous_capacity:
+        value: '?'
+      continuous_capacity:
+        value: '?'
+      integer_investment_exogenous_capacity:
+        value: '?'
+      integer_investment_continuous_capacity:
+        value: '?'
+    operating_representation:
+      unit_commitment:
+        value: '?'
+      maintenance_scheduling:
+        value: '?'
+    characteristics:
+      linear:
+        investment:
+          value: '?'
+        operation:
+          value: '?'
+      quadratic:
+        investment:
+          value: '?'
+        operation:
+          value: '?'
+      nonlinear:
+        investment:
+          value: '?'
+        operation:
+          value: '?'
+      path_dependent:
+        investment:
+          value: '?'
+        operation:
+          value: '?'
+    cost:
+      linear:
+        investment:
+          value: '?'
+        operation:
+          value: '?'
+      unit:
+        investment:
+          value: '?'
+        operation:
+          value: '?'
+      nonlinear:
+        investment:
+          value: '?'
+        operation:
+          value: '?'
+      threshold_deviation:
+        investment:
+          value: '?'
+        operation:
+          value: '?'
+      annuitisation:
+        value: '?'
+      inter_temporal:
+        investment:
+          value: '?'
+        operation:
+          value: '?'
+  constraints:
+    inter_spatial:
+      investment:
+        value: '?'
+      operation:
+        value: '?'
+    inter_asset:
+      investment:
+        value: '?'
+      operation:
+        value: '?'
+    total:
+      investment:
+        value: '?'
+      operation:
+        value: '?'
+    inter_temporal:
+      investment:
+        value: '?'
+      operation:
+        value: '?'
+    intra_temporal:
+      investment:
+        value: '?'
+      operation:
+        value: '?'
     commitment:
-      value:
-        investment: '?'
-        operation: '?'
+      investment:
+        value: '?'
+      operation:
+        value: '?'
+    boundary_conditions:
+      investment:
+        value: '?'
+      operation:
+        value: '?'
     dedicated_flow_routing:
       value: '?'
-    inter_asset:
-      value:
-        investment: '?'
-        operation: '?'
-    inter_spatial:
-      value:
-        investment: '?'
-        operation: '?'
-    inter_temporal:
-      value:
-        investment: '?'
-        operation: '?'
-    intra_temporal:
-      value:
-        investment: '?'
-        operation: '?'
-    total:
-      value:
-        investment: '?'
-        operation: '?'
-  asset__cost:
-    annuitisation:
-      value: '?'
-    inter_temporal:
-      value:
-        investment: '?'
-        operation: '?'
-    linear:
-      value:
-        investment: '?'
-        operation: '?'
-    nonlinear:
-      value:
-        investment: '?'
-        operation: '?'
-    threshold_deviation:
-      value:
-        investment: '?'
-        operation: '?'
-    unit:
-      value:
-        investment: '?'
-        operation: '?'
-  asset__operating_representation:
-    maintenance_scheduling:
-      value: '?'
-    unit_commitment:
-      value: '?'
-  data__io:
-    binary:
-      value:
-        input: '?'
-        output: '?'
-    database:
-      value:
-        input: '?'
-        output: '?'
-    lazy_loading:
-      value:
-        input: '?'
-        output: '?'
-    plain_text:
-      value:
-        input: '?'
-        output: '?'
-    remote_storage:
-      value:
-        input: '?'
-        output: '?'
-  edge_effects:
-    energy_balance:
-      value: '?'
-    time_financial:
-      value: '?'
-    time_operational:
-      value: '?'
-  interface:
-    analysis_templates:
-      value: '?'
-    api:
-      value:
-        analyse: '?'
-        build: '?'
-        run: '?'
-    cli:
-      value:
-        analyse: '?'
-        build: '?'
-        run: '?'
-    component_templating:
-      value: '?'
+    reliability:
+      margin_requirement:
+        capacity:
+          value: '?'
+        operating_reserve:
+          value: '?'
+      probabilistic_reliability_limit:
+        loss_of_load:
+          value: '?'
+        unserved_energy:
+          value: '?'
+      unserved_demand:
+        value: '?'
+      contingency_constrained:
+        value: '?'
+  model_definition:
     dimension_groups:
       value: '?'
+    component_templating:
+      value: '?'
+    configurable_dimensions:
+      value: '?'
+    extensible_dimensions:
+      value: '?'
+  math:
+    formulation_transparency:
+      value: '?'
+    problem_file_export:
+      value: '?'
+    dual_extraction:
+      value: '?'
+    piecewise_formulation:
+      value: '?'
+    user_defined_math:
+      value: '?'
+    soft_constraints:
+      value: '?'
+  interface:
     gui:
-      value:
-        analyse: '?'
-        build: '?'
-        run: '?'
+      build:
+        value: '?'
+      run:
+        value: '?'
+      analyse:
+        value: '?'
+    api:
+      build:
+        value: '?'
+      run:
+        value: '?'
+      analyse:
+        value: '?'
+    cli:
+      build:
+        value: '?'
+      run:
+        value: '?'
+      analyse:
+        value: '?'
     remote_execution:
       value: '?'
     solver_configuration:
       value: '?'
-    standardised_data:
-      value:
-        analyse: '?'
-        build: '?'
-  interface__math:
-    dual_extraction:
+    analysis_templates:
       value: '?'
-    formulation_transparency:
+  io:
+    plain_text:
+      input:
+        value: '?'
+      output:
+        value: '?'
+    binary:
+      input:
+        value: '?'
+      output:
+        value: '?'
+    database:
+      input:
+        value: '?'
+      output:
+        value: '?'
+    remote_storage:
+      input:
+        value: '?'
+      output:
+        value: '?'
+    lazy_loading:
+      input:
+        value: '?'
+      output:
+        value: '?'
+    standardised:
+      input:
+        value: '?'
+      output:
+        value: '?'
+  edge_effects:
+    time_operational:
       value: '?'
-    piecewise_formulation:
+    time_financial:
       value: '?'
-    problem_file_export:
+    energy_balance:
       value: '?'
-    soft_constraints:
+  actors:
+    portfolio:
       value: '?'
-    user_defined_math:
+    distributed_objectives:
       value: '?'
-  network__electricity:
-    network_devices:
-      value:
-        facts_devices: '?'
-        hvdc_converters: '?'
-        transformers: '?'
-    network_limits:
-      value:
-        phase_angle: '?'
-        thermal: '?'
-    optimal_power_flow:
-      value:
-        ac_opf: '?'
-        dc_opf: '?'
-    sensitivity_limits:
-      value:
-        generic_constraints: '?'
-        outage_factors: '?'
-        ptdf: '?'
-    unbalanced_flows:
+    equilibrium:
       value: '?'
-  network__pipeline:
-    composition_tracking:
-      value: '?'
-    linearised_flow:
-      value: '?'
-  optimisation__objective:
-    multi_objective_pareto:
-      value: '?'
+  pathway:
+    perfect_foresight:
+      investment:
+        value: '?'
+      operation:
+        value: '?'
+    myopic_foresight:
+      investment:
+        value: '?'
+      operation:
+        value: '?'
+  objective:
     multi_objective_weighted:
+      value: '?'
+    multi_objective_pareto:
       value: '?'
     quadratic:
       value: '?'
-  orchestration:
-    rolling_horizon:
-      value: '?'
-    sampled_runs:
-      value: '?'
-    scenario_runs:
-      value: '?'
-    simulation_optimisation:
-      value: '?'
-  postprocessing:
-    aggregation:
-      value:
-        assets: '?'
-        spatial: '?'
-        temporal: '?'
-    disaggregation:
-      value:
-        assets: '?'
-        spatial: '?'
-        temporal: '?'
-    financial:
-      value:
-        asset_accounts: '?'
-        contract_settlement: '?'
-        levelised_cost: '?'
-        marginal_price: '?'
-        net_present_value: '?'
-        water_value: '?'
-    impact_assessment:
-      value:
-        emissions: '?'
-        resource_use: '?'
-        socioeconomic: '?'
-    network_transfer_metrics:
-      value:
-        flow_sensitivity: '?'
-        transfer_capacity: '?'
-    operational:
-      value:
-        capacity_factor: '?'
-        curtailment: '?'
-        full_load_hours: '?'
-    probabilistic_reliability_assessment:
-      value:
-        capacity_credit: '?'
-        loss_of_load: '?'
-        unserved_energy: '?'
-    scenario_comparison:
-      value: '?'
-  preprocessing:
-    download:
-      value: '?'
-    forecasting:
-      value: '?'
-    input_validation:
-      value: '?'
-    model_catalogue:
-      value: '?'
-    numeric_scaling:
-      value: '?'
-    scenario_generation:
-      value: '?'
-    spatial_distribution:
-      value:
-        demand: '?'
-        network_geometry: '?'
-        slack: '?'
-  system__processes:
-    boundary_exchange:
-      value: '?'
-    buffered_transfer:
-      value: '?'
-    conversion:
-      value: '?'
-    delayed_transfer:
-      value: '?'
-    discrete_transport:
-      value: '?'
-    explicit_demand:
-      value: '?'
-    spatial_transfer:
-      value: '?'
-    state_changing_transfer:
-      value: '?'
-    temporal_transfer:
-      value: '?'
-  system__reliability:
-    contingency_constrained:
-      value: '?'
-    margin_requirement:
-      value:
-        capacity: '?'
-        operating_reserve: '?'
-    probabilistic_reliability_limit:
-      value:
-        loss_of_load: '?'
-        unserved_energy: '?'
-    unserved_demand:
-      value: '?'
-  time__pathway:
-    myopic_foresight:
-      value:
-        investment: '?'
-        operation: '?'
-    perfect_foresight:
-      value:
-        investment: '?'
-        operation: '?'
-    singular:
-      value:
-        investment: '?'
-        operation: '?'
-  tractability__dimension_reduction:
-    assets:
-      value:
-        black_boxing: '?'
-        clustering: '?'
-        component_removal: '?'
-    spatial:
-      value:
-        clustering: '?'
-        network_reduction: '?'
-    temporal:
-      value:
-        dimension_non_contiguity: '?'
-        load_duration_curves: '?'
-        resampling: '?'
-        typical_periods: '?'
-  tractability__reformulation:
-    approximation:
-      value: '?'
-    constraint_screening:
-      value: '?'
-    convex_relaxation:
-      value: '?'
-    decomposition:
-      value: '?'
-    function_conversion:
-      value: '?'
-    linearised_unit_commitment:
-      value: '?'
-    variable_fidelity:
-      value: '?'
   uncertainty:
-    multi_stage_stochastic:
+    two_stage_stochastic:
       value: '?'
-    near_optimal:
+    multi_stage_stochastic:
       value: '?'
     risk_aversion:
       value: '?'
+    near_optimal:
+      value: '?'
     robust_optimisation:
       value: '?'
-    two_stage_stochastic:
+  tractability:
+    dimension_reduction:
+      temporal:
+        resampling:
+          value: '?'
+        typical_periods:
+          value: '?'
+        load_duration_curves:
+          value: '?'
+        dimension_non_contiguity:
+          value: '?'
+      spatial:
+        clustering:
+          value: '?'
+        network_reduction:
+          value: '?'
+      assets:
+        clustering:
+          value: '?'
+        black_boxing:
+          value: '?'
+        component_removal:
+          value: '?'
+    reformulation:
+      constraint_screening:
+        value: '?'
+      linearised_unit_commitment:
+        value: '?'
+      convex_relaxation:
+        value: '?'
+      function_conversion:
+        value: '?'
+      variable_fidelity:
+        value: '?'
+      decomposition:
+        value: '?'
+      approximation:
+        value: '?'
+  orchestration:
+    rolling_horizon:
       value: '?'
-  workflow__transparency:
+    simulation_optimisation:
+      value: '?'
+    scenario_runs:
+      value: '?'
+    sampled_runs:
+      value: '?'
+  preprocessing:
+    forecasting:
+      value: '?'
+    spatial_distribution:
+      demand:
+        value: '?'
+      network_geometry:
+        value: '?'
+      slack:
+        value: '?'
+    download:
+      value: '?'
+    model_catalogue:
+      value: '?'
+    scenario_generation:
+      value: '?'
+    input_validation:
+      value: '?'
+    numeric_scaling:
+      value: '?'
+  postprocessing:
+    impact_assessment:
+      emissions:
+        value: '?'
+      resource_use:
+        value: '?'
+      socioeconomic:
+        value: '?'
+    operational:
+      curtailment:
+        value: '?'
+      capacity_factor:
+        value: '?'
+      full_load_hours:
+        value: '?'
+    financial:
+      levelised_cost:
+        value: '?'
+      net_present_value:
+        value: '?'
+      asset_accounts:
+        value: '?'
+      marginal_price:
+        value: '?'
+      water_value:
+        value: '?'
+      contract_settlement:
+        value: '?'
+    network_transfer_metrics:
+      transfer_capacity:
+        value: '?'
+      flow_sensitivity:
+        value: '?'
+    aggregation:
+      temporal:
+        value: '?'
+      spatial:
+        value: '?'
+      assets:
+        value: '?'
+    disaggregation:
+      temporal:
+        value: '?'
+      spatial:
+        value: '?'
+      assets:
+        value: '?'
+    scenario_comparison:
+      value: '?'
+    probabilistic_reliability_assessment:
+      loss_of_load:
+        value: '?'
+      unserved_energy:
+        value: '?'
+      capacity_credit:
+        value: '?'
+  transparency:
+    run_logs:
+      value: '?'
     infeasibility_diagnosis:
       value: '?'
-    intermediate_access:
-      value: '?'
     metadata_propagation:
-      value:
-        provenance: '?'
-        units: '?'
-    run_logs:
+      provenance:
+        value: '?'
+      units:
+        value: '?'
+    intermediate_access:
       value: '?'
