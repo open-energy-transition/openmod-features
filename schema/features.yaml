@@ -727,30 +727,11 @@ postprocessing:
         flow_sensitivity: >-
           Flow-sensitivity metrics (e.g. power transfer distribution factors, line outage distribution factors).
     aggregation:
-      description: >-
-        Method to aggregate across dimensions into broader groups for analysis and dissemination
-        This usually requires `model_definition.dimension_groups` to define aggregation membership.
-      members:
-        temporal: >-
-          Aggregation across time using standard datetime operations
-          (e.g. seasonal, annual, decadal summations).
-        spatial: >-
-          Aggregation across spatial regions that are members of user-defined groups
-          (e.g. results per country in a nodal analysis).
-        assets: >-
-          Aggregation across assets that are members of user-defined groups
-          (e.g., separately costed "wind turbine" assets aggregated back to "wind turbine").
+      Method to aggregate across dimensions into broader groups for analysis and dissemination.
+      This usually requires `model_definition.dimension_groups` to define aggregation membership.
     disaggregation:
-      description: >-
-        Model outputs are redistributed back to pre-simplification resolution
-        (e.g. capacity-expansion results handed off to a full-resolution power-flow model).
-      members:
-        temporal: >-
-          Disaggregation across time, usually to align output data with the dimension prior to applying temporal aggregation (`tractability.dimension_reduction`).
-        spatial: >-
-          Disaggregation across space, usually to return output to align with the dimension prior to applying spatial aggregation (`tractability.dimension_reduction`).
-        assets: >-
-          Disaggregation across assets, usually to return output to align with the dimension prior to applying asset aggregation (`tractability.dimension_reduction`).
+      Method to redistribute outputs back to an initial, pre-`tractability.dimension_reduction` resolution.
+      (e.g. so that capacity-expansion results can be handed off to a full-resolution power-flow model).
     scenario_comparison: >-
       Outputs of multiple scenario/ensemble runs are collated and compared.
     probabilistic_reliability_assessment:
