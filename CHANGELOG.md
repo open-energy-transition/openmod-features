@@ -31,7 +31,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 A breaking restructure of the feature taxonomy (~33 groups / ~140 members), resolving issues #19, #28, #29, #30, #32, #35, #39, #65-#103 (as applicable) and #108-#113.
 All tool and use-case lists have been migrated; entries whose old feature dissolved without a clean successor are flagged with `?` values and `TODO: re-review` comments for maintainer re-validation.
-Where merges absorbed previously explicit features, inline `absorbed:` comments in `schema/features.yaml` record the old keys so they can be reintroduced later as feature slices (#114).
+Where merges absorbed previously explicit features, inline `absorbed:` comments in `schema/features.yaml` record the old keys so they can be reintroduced later as nested members (#114).
+
+#### Nested feature taxonomy
+
+The taxonomy is now a single recursive structure of arbitrary depth, replacing the previous fixed group → member (→ slice) layering.
+A taxonomy node is either a **leaf** (`key: "description"`) or a **branch** (`description` plus a `members` mapping of further nodes), and branches and leaves can be siblings.
+
+- **Removed feature slices.** A feature's `value` is always a plain scalar and its `source` always a plain list of URLs; both appear only on leaves. What was `asset__cost.linear` with `investment`/`operation` slices is now the branch `asset.cost.linear` with `investment`/`operation` leaves. The slice-scoped `source` form (`- operation: <url>`) is gone — repeat the URL on each leaf it evidences instead.
+- **Removed `__` from taxonomy names.** Namespaces are expressed as real nesting: `asset__cost` → `asset.cost`, `network__electricity` → `network.electricity`, `system__processes` → `system.processes`, `tractability__reformulation` → `tractability.reformulation`, `interface__math` → `interface.math`. The four single-child namespaces are flattened to their child: `time__pathway` → `pathway`, `data__io` → `io`, `optimisation__objective` → `objective`, `workflow__transparency` → `transparency`.
+- Cross-references in feature descriptions use a single dotted path throughout; the `group.feature[slice]` bracket notation is gone (`postprocessing.financial[marginal_price]` → `postprocessing.financial.marginal_price`).
+- The generator now validates the taxonomy directly: branches must declare exactly `description` and `members` with at least two members, member names must be valid identifiers that avoid `__` and the reserved names `source`/`value`/`description`/`members`, and two paths may not generate the same model name.
+
+#### Re-nested categories
+
+With nesting now unconstrained in depth, several categories were reshaped to make each feature findable under a name that predicts its contents. No feature was added or removed by this change — every leaf that existed before still exists, only its path changed.
+
+- `system.processes` → `processes`; `system.reliability` → `constraints.reliability`. `system` no longer exists: it was a two-member wrapper whose name predicted neither child.
+- `asset.constraints` → `constraints`, now also holding `reliability`. "What limits can I impose?" previously had two separate homes at two different scopes.
+- `interface.math` → `math`. Writing your own constraints or extracting shadow prices is a property of the optimisation problem, not of how you talk to the tool.
+- New top-level `model_definition`, holding `interface.dimension_groups`, `interface.component_templating`, and `asset.characteristics.{configurable_dimensions,extensible_dimensions}`. These all answer "how can the model's parameter space be shaped, grouped, or reused?" — a question distinct from `asset.characteristics`' remaining functional-form axis (`linear`/`quadratic`/`nonlinear`/`path_dependent`).
+- `interface.standardised_data.{build,analyse}` → `io.standardised.{input,output}`, aligning it with `io`'s other five formats, all sliced `input`/`output`.
+- All dotted cross-references inside descriptions were repointed to match.
+- The generated tool/use-case templates are now written in taxonomy order rather than alphabetical order, so the file a maintainer edits reads in the same order as the file they read for reference (`schema_generator.py`'s `yaml.safe_dump` call gained `sort_keys=False`).
+- Generated JSON schemas roughly halved in size (`tool-schema.yaml`: 3967 → ~2100 lines) by switching `Field(default=...)` to `Field(default_factory=...)`, which stops Pydantic inlining a fully-materialised default subtree into every `$def`. The generated templates are unaffected.
+- `constraints.inter_spatial.{investment,operation}` descriptions given distinct examples (regional build-share quota vs. regional self-sufficiency requirement) — the two are real, independent policy instruments and were kept separate, but their near-identical wording invited confusion with the pairs above that were genuinely collapsed.
 
 #### Removed
 
@@ -40,6 +64,7 @@ Where merges absorbed previously explicit features, inline `absorbed:` comments 
 - `system__carriers` group: `decoupled` was a universal baseline; `coupled`/`non_energy` are folded into `system__processes` descriptions (#88).
 - `asset__operating_characteristics.static_non_dimensional` / `.static_dimensional`, replaced by `configurable_dimensions` / `extensible_dimensions` (#112).
 - `transmission__opf.transport` and `transmission__limits.gtc`, folded into the `system__processes.spatial_transfer` baseline (#28).
+- `model_definition.configurable_dimensions.{investment,operation}` and `.extensible_dimensions.{investment,operation}` collapsed to single leaves: no distinguishing example or use case was found between "applies to investment characteristics" and "applies to operating characteristics" for either — a tool's parameter system either supports user-chosen/extensible dimensionality or it doesn't, independent of which side of the ledger a given parameter sits on.
 
 #### Changed
 

@@ -54,68 +54,97 @@ class ToolFeatureModel(pydantic.BaseModel):
     This is usually used to validate a `y` (documentation link) or `dev` (issue or pull request link) but can feasibly be used to validate an `n`."""
 
 
+RESERVED_NAMES = frozenset({"source", "value", "description", "members"})
+"""Names a taxonomy member may not take, as they collide with schema-level keys."""
+
+
 def _pascal(name: str) -> str:
-    """Convert a `snake_case` or `dunder__case` taxonomy name into a PascalCase model-name fragment."""
+    """Convert a `snake_case` taxonomy name into a PascalCase model-name fragment."""
     return name.replace("_", " ").title().replace(" ", "")
 
 
-def create_sliced_feature_model(
-    feature_model: type[pydantic.BaseModel],
-    grp: str,
-    feature: str,
-    slices: dict[str, str],
-) -> type[pydantic.BaseModel]:
-    """Create a Pydantic model for a feature whose `value` (and `source`) are keyed by slice.
+def _validate_branch(node: dict, path: tuple[str, ...]) -> dict[str, Any]:
+    """Check a branch node's shape and return its members.
 
     Args:
-        feature_model (type[pydantic.BaseModel]): The unsliced feature model
-            (`ToolFeatureModel` or `UseCaseFeatureModel`) to derive slice-level field types from.
-        grp (str): Taxonomy group name the feature belongs to.
-        feature (str): Feature (taxonomy member) name.
-        slices (dict[str, str]): Mapping of slice name to slice description.
+        node (dict): Branch node, expected to hold exactly `description` and `members`.
+        path (tuple[str, ...]): Taxonomy path to the node, for error messages.
 
     Returns:
-        type[pydantic.BaseModel]: Sliced feature schema.
+        dict[str, Any]: The branch's members.
     """
-    if len(slices) < 2:
+    label = ".".join(path) or "<root>"
+    if set(node) != {"description", "members"}:
         raise ValueError(
-            f"`{grp}.{feature}` declares {len(slices)} slice(s); a sliced feature "
-            "must declare at least two slices, otherwise leave it unsliced."
+            f"`{label}` must declare exactly `description` and `members`; "
+            f"got {sorted(node)}."
         )
-    name = _pascal(grp) + _pascal(feature)
-    value_type = feature_model.model_fields["value"].annotation
-    value_model = create_model(
-        f"{name}ValueModel",
-        __config__={"extra": "forbid"},
-        **{
-            slice_name: (value_type, Field(default="?", description=slice_desc))
-            for slice_name, slice_desc in slices.items()
-        },
-    )
+    members = node["members"]
+    if not isinstance(members, dict) or len(members) < 2:
+        raise ValueError(
+            f"`{label}` declares {len(members) if isinstance(members, dict) else 0} "
+            "member(s); a branch must declare at least two members, "
+            "otherwise leave it a leaf."
+        )
+    for member in members:
+        if not member.isidentifier() or "__" in member:
+            raise ValueError(
+                f"`{label}.{member}` is not a valid taxonomy name: names must be "
+                "valid Python identifiers and must not contain a double underscore "
+                "(nest the members instead)."
+            )
+        if member in RESERVED_NAMES:
+            raise ValueError(
+                f"`{label}.{member}` uses the reserved name `{member}`; "
+                f"reserved names are {sorted(RESERVED_NAMES)}."
+            )
+    return members
 
-    fields: dict[str, Any] = {
-        "value": (
-            value_model,
-            Field(default=value_model(), description="Per-slice feature value."),
+
+def build_node(
+    node: str | dict,
+    path: tuple[str, ...],
+    leaf_model: type[pydantic.BaseModel],
+    seen: dict[str, tuple[str, ...]],
+) -> tuple[type[pydantic.BaseModel], str]:
+    """Recursively build a Pydantic model for a taxonomy node.
+
+    A node is either a leaf (a string, which is its description) or a branch
+    (a mapping of `description` and `members`, whose members are themselves nodes).
+
+    Args:
+        node (str | dict): The taxonomy node to build a model for.
+        path (tuple[str, ...]): Taxonomy path to the node, used for model naming and errors.
+        leaf_model (type[pydantic.BaseModel]): Model to use for leaves
+            (`ToolFeatureModel` or `UseCaseFeatureModel`).
+        seen (dict[str, tuple[str, ...]]): Registry of generated model names to the path
+            that generated them, used to detect name collisions.
+
+    Returns:
+        tuple[type[pydantic.BaseModel], str]: The node's model and its description.
+    """
+    if isinstance(node, str):
+        return leaf_model, node
+
+    members = _validate_branch(node, path)
+    name = _pascal("_".join(path)) + "Model" if path else "FeatureSetModel"
+    if name in seen:
+        raise ValueError(
+            f"`{'.'.join(path)}` and `{'.'.join(seen[name])}` both generate the model "
+            f"name `{name}`; rename one of them."
         )
-    }
-    if "source" in feature_model.model_fields:
-        slice_literal = Literal[tuple(slices)]
-        # `min_length`/`max_length` on a dict field constrain its number of entries and are
-        # exported as `minProperties`/`maxProperties` in the JSON Schema, so a slice-scoped
-        # source entry mapping more than one slice to a URL is rejected both by Pydantic and
-        # by the plain-jsonschema `validate-yaml-schemas` pre-commit hook.
-        slice_source_map = Annotated[
-            dict[slice_literal, HttpsUrl], Field(min_length=1, max_length=1)
-        ]
-        fields["source"] = (
-            list[HttpsUrl | slice_source_map],
-            Field(
-                default_factory=list,
-                description=feature_model.model_fields["source"].description,
-            ),
+    seen[name] = path
+
+    fields: dict[str, Any] = {}
+    for member, member_node in members.items():
+        member_model, desc = build_node(member_node, (*path, member), leaf_model, seen)
+        fields[member] = (
+            member_model,
+            Field(default_factory=member_model, description=desc),
         )
-    return create_model(f"{name}FeatureModel", __config__={"extra": "forbid"}, **fields)
+    return create_model(name, __config__={"extra": "forbid"}, **fields), node[
+        "description"
+    ]
 
 
 def create_feature_model(
@@ -126,30 +155,9 @@ def create_feature_model(
     Returns:
         ToolFeatureModel: Tool feature schema.
     """
-    feature_models: dict[str, Any] = {}
-    for grp, grp_info in FEATURES.items():
-        member_model: dict[str, Any] = {}
-        for feature, feature_info in grp_info["members"].items():
-            if isinstance(feature_info, dict):
-                this_feature_model = create_sliced_feature_model(
-                    feature_model, grp, feature, feature_info["slices"]
-                )
-                desc = feature_info["description"]
-            else:
-                this_feature_model = feature_model
-                desc = feature_info
-            member_model[feature] = (
-                this_feature_model,
-                Field(default=this_feature_model(), description=desc),
-            )
-        group_model = create_model(
-            _pascal(grp) + "Model", __config__={"extra": "forbid"}, **member_model
-        )
-        feature_models[grp] = (
-            group_model,
-            Field(default=group_model(), description=grp_info["description"]),
-        )
-    feature_set = create_model("FeatureSetModel", **feature_models)
+    feature_set, _ = build_node(
+        {"description": "Feature set.", "members": FEATURES}, (), feature_model, {}
+    )
     return feature_set
 
 
@@ -227,7 +235,9 @@ def dump_feature_template(
 
     # yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/{{{{ _copier_answers._commit }}}}/schema/{list_type}-schema.yaml
     """)
-    feature_template_path.write_text(f"{header}\n{yaml.safe_dump(feature_dict)}")
+    feature_template_path.write_text(
+        f"{header}\n{yaml.safe_dump(feature_dict, sort_keys=False)}"
+    )
 
 
 @click.command()
