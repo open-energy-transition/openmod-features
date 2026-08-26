@@ -29,14 +29,23 @@ processes:
       Flow in space with an endogenous in-transit inventory, to enable the flow to accumulate in time
       (e.g. pipeline linepack).
     discrete_transport: >-
-      Carriers are moved in space or exchanged across the system boundary in discrete packets by mobile units with loading/unloading decisions
+      Carriers are moved in space or exchanged across the system boundary in discrete packets with loading/unloading decisions
       (e.g. shipping, trucking, rail).
     state_changing_transfer: >-
       Carrier movement requiring the carrier's physical state to be tracked or converted en route
       (e.g. gas pressure levels with compressors, heat-network temperature levels).
-    explicit_demand: >-
-      Demand is represented by explicit consuming processes with their own constraints, enabling demand-side management.
-      Demanded carriers may be non-energy commodities with their own balances.
+    explicit_demand:
+      description: >-
+        Carriers are consumed within the system boundary by explicit processes with their own balances and constraints,
+        rather than by a fixed exogenous profile parameter.
+      members:
+        inelastic: >-
+          A fixed quantity of a carrier is consumed by a process whose in-flow is balanced like any other process flow.
+          The process can therefore be parameterised and constrained (e.g., to shift consumption in space and time to reflect demand-side management).
+        price_responsive: >-
+          The consumed quantity is decided in the optimisation against price / willingness-to-pay, via demand bids or stepwise/linear demand curves.
+        mobile_storage: >-
+          A consuming process with embedded storage whose network attachment and availability vary in space and time, according to user-defined patterns.
 
 network:
   description: >-
@@ -126,6 +135,11 @@ asset:
           Investment is also endogenous and represented by a binary decision variable.
           An optional maximum capacity can be specified in the input data
           (e.g. gas turbines that you want to track as individual units and whose capacity is not fixed by the manufacturer).
+        retrofit: >-
+          Endogenous investment in modifications to an existing asset, with their own build economics,
+          that change the asset's characteristics or costs rather than adding standalone capacity
+          (e.g. emissions-abatement retrofits such as flue-gas desulphurisation or CO2 capture,
+          efficiency upgrades, fuel-switching conversions).
 
     operating_representation:
       description: >-
@@ -139,6 +153,7 @@ asset:
         maintenance_scheduling: >-
           Asset maintenance / outage schedules are derived endogenously, co-optimised with operation.
           Exogenously fixed maintenance windows are instead `constraints.commitment`.
+          Resource-constrained maintenance limits are instead `constraints.total`.
 
     characteristics:
       description: >-
@@ -266,7 +281,8 @@ constraints:
         investment: >-
           Limit on aggregate investment (e.g. policy targets).
         operation: >-
-          Limit on total asset carrier in-/out-flow (e.g. limits on storage cycling, annual throughput limits, uptime).
+          Limit on total asset carrier in-/out-flow
+          (e.g. limits on storage cycling, annual throughput limits, uptime, maintenance events limited by available spare-parts/crew resources).
     inter_temporal:
       description: >-
         Limits that link across time periods.
@@ -282,7 +298,8 @@ constraints:
         investment: >-
           Limits on investment within investment periods (e.g. minimum/maximum size).
         operation: >-
-          Limits on operation within timesteps (e.g. capacity de-rating profiles, minimum/maximum load levels, renewables capacity factors).
+          Limits on operation within timesteps
+          (e.g. capacity de-rating profiles, minimum/maximum load levels, renewables capacity factors).
     commitment:
       description: >-
         Limits on commitment to investing in or operating an asset in a given time period.
@@ -346,6 +363,8 @@ model_definition:
     component_templating: >-
       Components can inherit parameterisation from a shared template (e.g. an abstract technology definition),
       with edits to the template cascading to every inheriting component, rather than requiring per-component data entry.
+      Includes programmatic, model-side generation of components from a template
+      (e.g. auto-cloned vintaged expansion candidates approximating path-dependent characteristics).
     configurable_dimensions: >-
       The dimensionality of an asset characteristic or cost can be configured by the user, limited to a set of tool-defined dimensions.
     extensible_dimensions: >-
@@ -420,6 +439,16 @@ interface:
       Optimiser parameters can be directly configured, including convergence parameters & warm-starting options.
     analysis_templates: >-
       Templates can be used to generate consistent reports or dashboards to consolidate model outputs for dissemination.
+    visualisation:
+      description: >-
+        Built-in rendering of model inputs or outputs as visual artefacts,
+        independent of whether a `gui` is available to interact with them.
+      members:
+        charts: >-
+          Plots of input or result data (e.g. dispatch stacks, time series, duration curves).
+        network_maps: >-
+          Rendering of network topology, schematically (auto-layout diagrams) or geographically
+          (coordinate-based maps, exports to geographic formats such as KML/GML).
 
 io:
   description: >-
@@ -469,7 +498,8 @@ io:
     standardised:
       description: >-
         Accepts or emits data following a community-recognised convention or ontology
-        (e.g. Open Energy Ontology <OEO>, IAMC template, the Energy System Description Language <ESDL>, Common Energy System Model <CESM>, SiennaSchemas).
+        (e.g. Open Energy Ontology <OEO>, IAMC template, the Energy System Description Language <ESDL>, Common Energy System Model <CESM>, SiennaSchemas),
+        including standardised network-data formats (e.g. PSSE RAW, matpower case files, Common Information Model <CIM>).
       members:
         input: >-
           Accepts input data following a community-recognised convention or ontology.
@@ -500,9 +530,12 @@ actors:
       Per-agent profit maximising / risk minimising objectives can be represented within the larger system-level optimisation
       (e.g. bidding in day-ahead / intra-day markets, behind-the-meter prosumer decisions)
     equilibrium: >-
-      Market equilibrium found across actors with competing objectives.
-      This could be applied via complementarity/MCP/bi-level formulations or a quadratic-markup reformulation of the cost-minimisation objective
-      (e.g. Cournot-Nash oligopoly modelling).
+      Market equilibrium computed across actors with competing objectives
+      (e.g. Cournot-Nash oligopoly or Bertrand competition),
+      via complementarity/MCP/bi-level formulations or a quadratic-markup reformulation of the cost-minimisation objective.
+    heuristic_markup: >-
+      Strategic-behaviour price/offer markups applied by heuristic or index-based rules rather than computed equilibrium
+      (e.g. Residual Supply Index <RSI>-driven markups, fixed bid adders).
 
 pathway:
   description: >-
@@ -633,6 +666,9 @@ orchestration:
   members:
     rolling_horizon: >-
       Myopic foresight pathway optimisation windows are optimised sequentially, with automatic handling of data pass-through between runs.
+    coupled_models: >-
+      Two or more model instances of different temporal or market fidelity executed together, with bidirectional data exchange between them
+      (e.g. interleaved day-ahead/real-time runs passing offers and dispatch baselines forward and initial conditions back).
     simulation_optimisation: >-
       Iterate between a simulation and optimisation phase until convergence with respect to (often nonlinear) constraints
       (e.g. competitive market simulation, optimal power flow).
@@ -640,8 +676,7 @@ orchestration:
       Batch execution of discrete, named scenario ensembles in series/parallel with collated outputs.
     sampled_runs: >-
       Execution of run ensembles over a sampled uncertainty space (e.g. Monte Carlo), with collated outputs.
-      Used e.g. for post-hoc resource adequacy assessment (`postprocessing.probabilistic_reliability_assessment`)
-      or portfolio price-risk quantification.
+      Used e.g. for post-hoc resource adequacy assessment (`postprocessing.probabilistic_reliability_assessment`) or portfolio price-risk quantification.
       Distinct from `scenario_runs` (discrete, named scenarios).
 
 preprocessing:
@@ -650,8 +685,12 @@ preprocessing:
     Moving/storing data is `io`.
   members:
     forecasting: >-
-      A user-defined generation / load profile can be automatically updated given user-defined forecasting parameters
-      (e.g. change in total or peak).
+      A user-defined generation / load profile can be automatically scaled or reshaped to meet user-defined forecast targets
+      (e.g. change in annual total or peak).
+    resource_conversion: >-
+      Model profiles are derived within the tool from primary resource or weather data via physical response models.
+      This may be technology models converting resource to availability or efficiency (e.g. wind speed to turbine capacity factor, temperature to heat pump COP).
+      It may also be weather-response demand functions (e.g. temperature-driven gas or heating demand).
     spatial_distribution:
       description: >-
         A user-defined parameter can be automatically distributed spatially using other spatial parameters.
@@ -694,9 +733,10 @@ postprocessing:
         curtailment: >-
           Asset generation curtailment.
         capacity_factor: >-
-          Asset generation relative to full load generation.
+          Asset generation relative to full-load generation, averaged over the model horizon.
         full_load_hours: >-
-          Number or fraction of timesteps in the model horizon that assets are operating at or close their full load.
+          Number or fraction of timesteps in the model horizon that assets are operating at or close to their full load.
+          Distinct from `capacity_factor` as the same average output can arise from very different duty cycles, affecting e.g. asset lifetime.
     financial:
       description: >-
         Financial analyses for business cases, derived from model outputs.
@@ -709,14 +749,18 @@ postprocessing:
           Asset-level revenue / cost accounting.
         marginal_price: >-
           Shadow prices extracted via `math.dual_extraction`, used to approximate wholesale market prices or as an input to
-          `contract_settlement` and soft-constraint interpretation.
+          `price_formation`, `contract_settlement` and soft-constraint interpretation.
+        price_formation: >-
+          Prices constructed by a documented market rule rather than taken directly from optimisation duals
+          (e.g. uniform pricing via a relaxed re-solve, uplift / fixed-cost-recovery adders,
+          iterative markup calibration to recover long-run marginal cost, marginal-loss-factor settlement).
         water_value: >-
           A future cost function (water value) constructed as a reusable, exportable artefact from shadow prices extracted via
           `math.dual_extraction` (e.g. from Benders / SDDP cuts), forecasting the marginal cost of hydro and other seasonal
           storage devices for use in shorter-term scheduling under uncertain input parameters.
         contract_settlement: >-
-          Post-hoc settlement of financial contracts against realised dispatch and prices, without altering the underlying optimisation
-          (e.g. Contracts-for-difference <CfD>, Power/energy purchase agreement <PPA>, Cap-and-floor scheme settlement).
+          Post-hoc settlement of contracts against realised dispatch and prices, without altering the underlying optimisation.
+          (e.g. Contracts-for-Difference <CfD>, Power/energy Purchase Agreements <PPA>, swaps, caps/floors, Financial Transmission Rights <FTR>, Settlement Residue Auctions <SRA>).
 
     network_transfer_metrics:
       description: >-

@@ -33,8 +33,15 @@ features:
       value: '?'
       source: []
     explicit_demand:
-      value: '?'
-      source: []
+      inelastic:
+        value: '?'
+        source: []
+      price_responsive:
+        value: '?'
+        source: []
+      mobile_storage:
+        value: '?'
+        source: []
   network:
     electricity:
       optimal_power_flow:
@@ -93,6 +100,9 @@ features:
         value: '?'
         source: []
       integer_investment_continuous_capacity:
+        value: '?'
+        source: []
+      retrofit:
         value: '?'
         source: []
     operating_representation:
@@ -316,6 +326,13 @@ features:
     analysis_templates:
       value: '?'
       source: []
+    visualisation:
+      charts:
+        value: '?'
+        source: []
+      network_maps:
+        value: '?'
+        source: []
   io:
     plain_text:
       input:
@@ -377,6 +394,9 @@ features:
       value: '?'
       source: []
     equilibrium:
+      value: '?'
+      source: []
+    heuristic_markup:
       value: '?'
       source: []
   pathway:
@@ -478,6 +498,9 @@ features:
     rolling_horizon:
       value: '?'
       source: []
+    coupled_models:
+      value: '?'
+      source: []
     simulation_optimisation:
       value: '?'
       source: []
@@ -489,6 +512,9 @@ features:
       source: []
   preprocessing:
     forecasting:
+      value: '?'
+      source: []
+    resource_conversion:
       value: '?'
       source: []
     spatial_distribution:
@@ -550,6 +576,9 @@ features:
       marginal_price:
         value: '?'
         source: []
+      price_formation:
+        value: '?'
+        source: []
       water_value:
         value: '?'
         source: []
@@ -564,25 +593,11 @@ features:
         value: '?'
         source: []
     aggregation:
-      temporal:
-        value: '?'
-        source: []
-      spatial:
-        value: '?'
-        source: []
-      assets:
-        value: '?'
-        source: []
+      value: '?'
+      source: []
     disaggregation:
-      temporal:
-        value: '?'
-        source: []
-      spatial:
-        value: '?'
-        source: []
-      assets:
-        value: '?'
-        source: []
+      value: '?'
+      source: []
     scenario_comparison:
       value: '?'
       source: []

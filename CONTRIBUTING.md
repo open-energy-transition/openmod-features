@@ -39,6 +39,8 @@ Ultimately, this can be used to identify tool **feature gaps**.
    >while its sibling `asset.cost.annuitisation` is a leaf in its own right because it only ever applies to investment.
    >Every leaf comes pre-filled with `?`, so you only need to change the values you know.
    >Where a single source evidences several sibling leaves, repeat the URL on each of them.
+   >When a feature splits into several sub-leaves, cite each sub-leaf individually —
+   >a YAML comment next to each sub-leaf's `source` entry explaining what the source evidences is the recommended style.
 1. **Submit**: Open a PR with your new entry
 1. **Review**:
    - All listed maintainers must explicitly approve in PR comments
