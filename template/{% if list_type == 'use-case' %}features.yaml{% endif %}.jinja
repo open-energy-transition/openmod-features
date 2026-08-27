@@ -26,7 +26,12 @@ features:
     state_changing_transfer:
       value: '?'
     explicit_demand:
-      value: '?'
+      inelastic:
+        value: '?'
+      price_responsive:
+        value: '?'
+      mobile_storage:
+        value: '?'
   network:
     electricity:
       optimal_power_flow:
@@ -69,6 +74,8 @@ features:
       integer_investment_exogenous_capacity:
         value: '?'
       integer_investment_continuous_capacity:
+        value: '?'
+      retrofit:
         value: '?'
     operating_representation:
       unit_commitment:
@@ -227,6 +234,11 @@ features:
       value: '?'
     analysis_templates:
       value: '?'
+    visualisation:
+      charts:
+        value: '?'
+      network_maps:
+        value: '?'
   io:
     plain_text:
       input:
@@ -271,6 +283,8 @@ features:
     distributed_objectives:
       value: '?'
     equilibrium:
+      value: '?'
+    heuristic_markup:
       value: '?'
   pathway:
     perfect_foresight:
@@ -342,6 +356,8 @@ features:
   orchestration:
     rolling_horizon:
       value: '?'
+    coupled_models:
+      value: '?'
     simulation_optimisation:
       value: '?'
     scenario_runs:
@@ -350,6 +366,8 @@ features:
       value: '?'
   preprocessing:
     forecasting:
+      value: '?'
+    resource_conversion:
       value: '?'
     spatial_distribution:
       demand:
@@ -392,6 +410,8 @@ features:
         value: '?'
       marginal_price:
         value: '?'
+      price_formation:
+        value: '?'
       water_value:
         value: '?'
       contract_settlement:
@@ -402,19 +422,9 @@ features:
       flow_sensitivity:
         value: '?'
     aggregation:
-      temporal:
-        value: '?'
-      spatial:
-        value: '?'
-      assets:
-        value: '?'
+      value: '?'
     disaggregation:
-      temporal:
-        value: '?'
-      spatial:
-        value: '?'
-      assets:
-        value: '?'
+      value: '?'
     scenario_comparison:
       value: '?'
     probabilistic_reliability_assessment:

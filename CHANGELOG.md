@@ -95,6 +95,31 @@ With nesting now unconstrained in depth, several categories were reshaped to mak
 - `preprocessing.input_validation` (#68), `.scenario_generation` (#99), and `.model_catalogue`.
 - `postprocessing.elcc` (#103).
 
+### feedback round
+
+Additions and clarifications arising from populating the feature list for some tools, which surfaced gaps around market simulation, EV fleets, and resource/weather preprocessing, plus keys whose definitions absorbed too many distinct capabilities.
+
+#### Added
+
+- `orchestration.coupled_models`: two or more model instances of different fidelity executed together with bidirectional data exchange (e.g. interleaved day-ahead/real-time runs), distinct from stepping one model through time (`rolling_horizon`).
+- `postprocessing.financial.price_formation`: prices constructed by a documented market rule (uniform-price re-solve, uplift adders, long-run marginal cost markup calibration, marginal-loss-factor settlement) rather than taken from optimisation duals.
+- `preprocessing.resource_conversion`: profiles derived from primary resource/weather data via physical response models — both resource-to-availability (irradiance→PV, wind power curves) and weather-response demand (temperature-driven gas/heating demand).
+- `asset.capacity_representation.retrofit`: endogenous investment in modifications to existing assets with their own build economics (abatement retrofits, CO2 capture, efficiency upgrades, fuel switching).
+- `actors.heuristic_markup`: rule/index-based strategic markups (e.g. RSI-driven), split out from `actors.equilibrium`, which is rescoped to *computed* equilibrium (Cournot-Nash, Bertrand).
+- `interface.visualisation.{charts,network_maps}`: built-in rendering of inputs/outputs as plots and schematic/geographic network maps.
+
+#### Changed
+
+- `processes.explicit_demand` converted from a leaf to a branch with members `inelastic` (fixed quantity met by an explicit consuming process), `price_responsive` (quantity decided against bids or demand curves), and `mobile_storage` (EV fleets / V2G: demand with embedded storage whose grid attachment and availability follow a travel pattern).
+- `preprocessing.forecasting` rescoped to scaling/reshaping existing profiles to forecast targets, delimited against the new `resource_conversion`.
+- `model_definition.component_templating` broadened to include programmatic, model-side generation of components from a template (e.g. wildcard/vintaged expansion candidates).
+- `math.user_defined_math` clarified on nonlinear user-supplied relations (in scope where `tractability.reformulation.function_conversion` or `math.piecewise_formulation` applies).
+- `postprocessing.financial.contract_settlement` definition enumerates the in-scope instrument classes: financial derivatives (CfD, PPA, swaps, caps/floors), financial transmission rights (FTR/SRA), and physical fuel/delivery contracts.
+- `asset.operating_representation.maintenance_scheduling` and `constraints.intra_temporal.operation` clarified: resource-limited maintenance (spare-parts/crew inventories) files as an intra-temporal operating constraint, not a separate scheduling capability.
+- `postprocessing.operational.capacity_factor` / `.full_load_hours` definitions now state why both exist: the same average output can arise from different duty cycles, with different asset-lifetime implications.
+- `io.standardised` examples extended with standardised network-data formats (PSSE RAW, matpower case files, CIM).
+- CONTRIBUTING.md now recommends per-sub-leaf source comments when citing features that split into several sub-leaves.
+
 ### Removed
 
 - Removed "a.k.a." in feature descriptions in preparation for a separate `also_known_as` option.

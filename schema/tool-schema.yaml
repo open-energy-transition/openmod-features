@@ -9,10 +9,15 @@ $defs:
           in day-ahead / intra-day markets, behind-the-meter prosumer decisions)
       equilibrium:
         $ref: '#/$defs/ToolFeatureModel'
-        description: Market equilibrium found across actors with competing objectives.
-          This could be applied via complementarity/MCP/bi-level formulations or a
-          quadratic-markup reformulation of the cost-minimisation objective (e.g.
-          Cournot-Nash oligopoly modelling).
+        description: Market equilibrium computed across actors with competing objectives
+          (e.g. Cournot-Nash oligopoly or Bertrand competition), via complementarity/MCP/bi-level
+          formulations or a quadratic-markup reformulation of the cost-minimisation
+          objective.
+      heuristic_markup:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Strategic-behaviour price/offer markups applied by heuristic
+          or index-based rules rather than computed equilibrium (e.g. Residual Supply
+          Index <RSI>-driven markups, fixed bid adders).
       portfolio:
         $ref: '#/$defs/ToolFeatureModel'
         description: Agent asset portfolios and associated constraints and cost considerations
@@ -45,6 +50,13 @@ $defs:
           is modeled as a discrete (i.e., integer) decision variable (e.g. nuclear
           power plants whose capacity is fixed & indivisible due to external constraints
           but the decision to invest in this capacity is as-yet undecided).
+      retrofit:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Endogenous investment in modifications to an existing asset,
+          with their own build economics, that change the asset's characteristics
+          or costs rather than adding standalone capacity (e.g. emissions-abatement
+          retrofits such as flue-gas desulphurisation or CO2 capture, efficiency upgrades,
+          fuel-switching conversions).
     title: AssetCapacityRepresentationModel
     type: object
   AssetCharacteristicsLinearModel:
@@ -238,7 +250,8 @@ $defs:
         $ref: '#/$defs/ToolFeatureModel'
         description: Asset maintenance / outage schedules are derived endogenously,
           co-optimised with operation. Exogenously fixed maintenance windows are instead
-          `constraints.commitment`.
+          `constraints.commitment`. Resource-constrained maintenance limits are instead
+          `constraints.total`.
       unit_commitment:
         $ref: '#/$defs/ToolFeatureModel'
         description: Assets can be committed as units and _then_ economically dispatched.
@@ -424,7 +437,8 @@ $defs:
       operation:
         $ref: '#/$defs/ToolFeatureModel'
         description: Limit on total asset carrier in-/out-flow (e.g. limits on storage
-          cycling, annual throughput limits, uptime).
+          cycling, annual throughput limits, uptime, maintenance events limited by
+          available spare-parts/crew resources).
     title: ConstraintsTotalModel
     type: object
   EdgeEffectsModel:
@@ -605,7 +619,25 @@ $defs:
         $ref: '#/$defs/ToolFeatureModel'
         description: Optimiser parameters can be directly configured, including convergence
           parameters & warm-starting options.
+      visualisation:
+        $ref: '#/$defs/InterfaceVisualisationModel'
+        description: Built-in rendering of model inputs or outputs as visual artefacts,
+          independent of whether a `gui` is available to interact with them.
     title: InterfaceModel
+    type: object
+  InterfaceVisualisationModel:
+    additionalProperties: false
+    properties:
+      charts:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Plots of input or result data (e.g. dispatch stacks, time series,
+          duration curves).
+      network_maps:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Rendering of network topology, schematically (auto-layout diagrams)
+          or geographically (coordinate-based maps, exports to geographic formats
+          such as KML/GML).
+    title: InterfaceVisualisationModel
     type: object
   IoBinaryModel:
     additionalProperties: false
@@ -667,7 +699,9 @@ $defs:
         $ref: '#/$defs/IoStandardisedModel'
         description: Accepts or emits data following a community-recognised convention
           or ontology (e.g. Open Energy Ontology <OEO>, IAMC template, the Energy
-          System Description Language <ESDL>, Common Energy System Model <CESM>, SiennaSchemas).
+          System Description Language <ESDL>, Common Energy System Model <CESM>, SiennaSchemas),
+          including standardised network-data formats (e.g. PSSE RAW, matpower case
+          files, Common Information Model <CIM>).
     title: IoModel
     type: object
   IoPlainTextModel:
@@ -748,7 +782,9 @@ $defs:
         description: Components can inherit parameterisation from a shared template
           (e.g. an abstract technology definition), with edits to the template cascading
           to every inheriting component, rather than requiring per-component data
-          entry.
+          entry. Includes programmatic, model-side generation of components from a
+          template (e.g. auto-cloned vintaged expansion candidates approximating path-dependent
+          characteristics).
       configurable_dimensions:
         $ref: '#/$defs/ToolFeatureModel'
         description: The dimensionality of an asset characteristic or cost can be
@@ -900,6 +936,12 @@ $defs:
   OrchestrationModel:
     additionalProperties: false
     properties:
+      coupled_models:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Two or more model instances of different temporal or market fidelity
+          executed together, with bidirectional data exchange between them (e.g. interleaved
+          day-ahead/real-time runs passing offers and dispatch baselines forward and
+          initial conditions back).
       rolling_horizon:
         $ref: '#/$defs/ToolFeatureModel'
         description: Myopic foresight pathway optimisation windows are optimised sequentially,
@@ -960,41 +1002,6 @@ $defs:
           foresight of future timesteps in the investment period(s).
     title: PathwayPerfectForesightModel
     type: object
-  PostprocessingAggregationModel:
-    additionalProperties: false
-    properties:
-      assets:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Aggregation across assets that are members of user-defined groups
-          (e.g., separately costed "wind turbine" assets aggregated back to "wind
-          turbine").
-      spatial:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Aggregation across spatial regions that are members of user-defined
-          groups (e.g. results per country in a nodal analysis).
-      temporal:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Aggregation across time using standard datetime operations (e.g.
-          seasonal, annual, decadal summations).
-    title: PostprocessingAggregationModel
-    type: object
-  PostprocessingDisaggregationModel:
-    additionalProperties: false
-    properties:
-      assets:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Disaggregation across assets, usually to return output to align
-          with the dimension prior to applying asset aggregation (`tractability.dimension_reduction`).
-      spatial:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Disaggregation across space, usually to return output to align
-          with the dimension prior to applying spatial aggregation (`tractability.dimension_reduction`).
-      temporal:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Disaggregation across time, usually to align output data with
-          the dimension prior to applying temporal aggregation (`tractability.dimension_reduction`).
-    title: PostprocessingDisaggregationModel
-    type: object
   PostprocessingFinancialModel:
     additionalProperties: false
     properties:
@@ -1003,20 +1010,27 @@ $defs:
         description: Asset-level revenue / cost accounting.
       contract_settlement:
         $ref: '#/$defs/ToolFeatureModel'
-        description: Post-hoc settlement of financial contracts against realised dispatch
-          and prices, without altering the underlying optimisation (e.g. Contracts-for-difference
-          <CfD>, Power/energy purchase agreement <PPA>, Cap-and-floor scheme settlement).
+        description: Post-hoc settlement of contracts against realised dispatch and
+          prices, without altering the underlying optimisation. (e.g. Contracts-for-Difference
+          <CfD>, Power/energy Purchase Agreements <PPA>, swaps, caps/floors, Financial
+          Transmission Rights <FTR>, Settlement Residue Auctions <SRA>).
       levelised_cost:
         $ref: '#/$defs/ToolFeatureModel'
         description: Levelised cost of electricity or other carriers.
       marginal_price:
         $ref: '#/$defs/ToolFeatureModel'
         description: Shadow prices extracted via `math.dual_extraction`, used to approximate
-          wholesale market prices or as an input to `contract_settlement` and soft-constraint
-          interpretation.
+          wholesale market prices or as an input to `price_formation`, `contract_settlement`
+          and soft-constraint interpretation.
       net_present_value:
         $ref: '#/$defs/ToolFeatureModel'
         description: Net present value of the modelled system or a subset of assets.
+      price_formation:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Prices constructed by a documented market rule rather than taken
+          directly from optimisation duals (e.g. uniform pricing via a relaxed re-solve,
+          uplift / fixed-cost-recovery adders, iterative markup calibration to recover
+          long-run marginal cost, marginal-loss-factor settlement).
       water_value:
         $ref: '#/$defs/ToolFeatureModel'
         description: A future cost function (water value) constructed as a reusable,
@@ -1044,15 +1058,15 @@ $defs:
     additionalProperties: false
     properties:
       aggregation:
-        $ref: '#/$defs/PostprocessingAggregationModel'
+        $ref: '#/$defs/ToolFeatureModel'
         description: Method to aggregate across dimensions into broader groups for
-          analysis and dissemination This usually requires `model_definition.dimension_groups`
+          analysis and dissemination. This usually requires `model_definition.dimension_groups`
           to define aggregation membership.
       disaggregation:
-        $ref: '#/$defs/PostprocessingDisaggregationModel'
-        description: Model outputs are redistributed back to pre-simplification resolution
-          (e.g. capacity-expansion results handed off to a full-resolution power-flow
-          model).
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Method to redistribute outputs back to an initial, pre-`tractability.dimension_reduction`
+          resolution. (e.g. so that capacity-expansion results can be handed off to
+          a full-resolution power-flow model).
       financial:
         $ref: '#/$defs/PostprocessingFinancialModel'
         description: Financial analyses for business cases, derived from model outputs.
@@ -1092,14 +1106,17 @@ $defs:
     properties:
       capacity_factor:
         $ref: '#/$defs/ToolFeatureModel'
-        description: Asset generation relative to full load generation.
+        description: Asset generation relative to full-load generation, averaged over
+          the model horizon.
       curtailment:
         $ref: '#/$defs/ToolFeatureModel'
         description: Asset generation curtailment.
       full_load_hours:
         $ref: '#/$defs/ToolFeatureModel'
         description: Number or fraction of timesteps in the model horizon that assets
-          are operating at or close their full load.
+          are operating at or close to their full load. Distinct from `capacity_factor`
+          as the same average output can arise from very different duty cycles, affecting
+          e.g. asset lifetime.
     title: PostprocessingOperationalModel
     type: object
   PostprocessingProbabilisticReliabilityAssessmentModel:
@@ -1126,8 +1143,8 @@ $defs:
       forecasting:
         $ref: '#/$defs/ToolFeatureModel'
         description: A user-defined generation / load profile can be automatically
-          updated given user-defined forecasting parameters (e.g. change in total
-          or peak).
+          scaled or reshaped to meet user-defined forecast targets (e.g. change in
+          annual total or peak).
       input_validation:
         $ref: '#/$defs/ToolFeatureModel'
         description: Input data is validated against the tool's expected structure
@@ -1140,6 +1157,13 @@ $defs:
         $ref: '#/$defs/ToolFeatureModel'
         description: Data can be scaled (e.g. by converting base units) to reduce
           numeric instability and constraint violations in the downstream solver.
+      resource_conversion:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Model profiles are derived within the tool from primary resource
+          or weather data via physical response models. This may be technology models
+          converting resource to availability or efficiency (e.g. wind speed to turbine
+          capacity factor, temperature to heat pump COP). It may also be weather-response
+          demand functions (e.g. temperature-driven gas or heating demand).
       scenario_generation:
         $ref: '#/$defs/ToolFeatureModel'
         description: Scenario ensembles can be generated from user-defined parameters
@@ -1164,6 +1188,25 @@ $defs:
         $ref: '#/$defs/ToolFeatureModel'
         description: Distributed slack allocation across nodes.
     title: PreprocessingSpatialDistributionModel
+    type: object
+  ProcessesExplicitDemandModel:
+    additionalProperties: false
+    properties:
+      inelastic:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: A fixed quantity of a carrier is consumed by a process whose
+          in-flow is balanced like any other process flow. The process can therefore
+          be parameterised and constrained (e.g., to shift consumption in space and
+          time to reflect demand-side management).
+      mobile_storage:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: A consuming process with embedded storage whose network attachment
+          and availability vary in space and time, according to user-defined patterns.
+      price_responsive:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: The consumed quantity is decided in the optimisation against
+          price / willingness-to-pay, via demand bids or stepwise/linear demand curves.
+    title: ProcessesExplicitDemandModel
     type: object
   ProcessesModel:
     additionalProperties: false
@@ -1191,13 +1234,13 @@ $defs:
       discrete_transport:
         $ref: '#/$defs/ToolFeatureModel'
         description: Carriers are moved in space or exchanged across the system boundary
-          in discrete packets by mobile units with loading/unloading decisions (e.g.
-          shipping, trucking, rail).
+          in discrete packets with loading/unloading decisions (e.g. shipping, trucking,
+          rail).
       explicit_demand:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Demand is represented by explicit consuming processes with their
-          own constraints, enabling demand-side management. Demanded carriers may
-          be non-energy commodities with their own balances.
+        $ref: '#/$defs/ProcessesExplicitDemandModel'
+        description: Carriers are consumed within the system boundary by explicit
+          processes with their own balances and constraints, rather than by a fixed
+          exogenous profile parameter.
       spatial_transfer:
         $ref: '#/$defs/ToolFeatureModel'
         description: Carriers are moved between regions as continuous flow subject
@@ -1437,6 +1480,9 @@ properties:
         equilibrium:
           source: []
           value: '?'
+        heuristic_markup:
+          source: []
+          value: '?'
         portfolio:
           source: []
           value: '?'
@@ -1452,6 +1498,9 @@ properties:
             source: []
             value: '?'
           integer_investment_exogenous_capacity:
+            source: []
+            value: '?'
+          retrofit:
             source: []
             value: '?'
         characteristics:
@@ -1653,6 +1702,13 @@ properties:
         solver_configuration:
           source: []
           value: '?'
+        visualisation:
+          charts:
+            source: []
+            value: '?'
+          network_maps:
+            source: []
+            value: '?'
       io:
         binary:
           input:
@@ -1785,6 +1841,9 @@ properties:
           source: []
           value: '?'
       orchestration:
+        coupled_models:
+          source: []
+          value: '?'
         rolling_horizon:
           source: []
           value: '?'
@@ -1814,25 +1873,11 @@ properties:
             value: '?'
       postprocessing:
         aggregation:
-          assets:
-            source: []
-            value: '?'
-          spatial:
-            source: []
-            value: '?'
-          temporal:
-            source: []
-            value: '?'
+          source: []
+          value: '?'
         disaggregation:
-          assets:
-            source: []
-            value: '?'
-          spatial:
-            source: []
-            value: '?'
-          temporal:
-            source: []
-            value: '?'
+          source: []
+          value: '?'
         financial:
           asset_accounts:
             source: []
@@ -1847,6 +1892,9 @@ properties:
             source: []
             value: '?'
           net_present_value:
+            source: []
+            value: '?'
+          price_formation:
             source: []
             value: '?'
           water_value:
@@ -1908,6 +1956,9 @@ properties:
         numeric_scaling:
           source: []
           value: '?'
+        resource_conversion:
+          source: []
+          value: '?'
         scenario_generation:
           source: []
           value: '?'
@@ -1938,8 +1989,15 @@ properties:
           source: []
           value: '?'
         explicit_demand:
-          source: []
-          value: '?'
+          inelastic:
+            source: []
+            value: '?'
+          mobile_storage:
+            source: []
+            value: '?'
+          price_responsive:
+            source: []
+            value: '?'
         spatial_transfer:
           source: []
           value: '?'
