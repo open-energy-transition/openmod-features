@@ -280,8 +280,8 @@ class TestTemplateValidation:
         """Test that a known nested feature scaffolds every one of its child leaves."""
         features_file = tool_project_from_generated_template / "features.yaml"
         features = yaml.safe_load(features_file.read_text())
-        linear = features["features"]["asset"]["cost"]["linear"]
-        assert linear == {
+        unit = features["features"]["asset"]["cost"]["unit"]
+        assert unit == {
             "investment": {"value": "?", "source": []},
             "operation": {"value": "?", "source": []},
         }
@@ -436,7 +436,7 @@ class TestNestedFeatureValidation:
     ):
         """A leaf nested three levels deep accepts a filled-in `value` and `source`."""
         features = copy.deepcopy(valid_features)
-        features["features"]["asset"]["cost"]["linear"]["investment"] = {
+        features["features"]["asset"]["cost"]["unit"]["investment"] = {
             "value": "y",
             "source": ["https://example.com/a"],
         }
@@ -445,13 +445,13 @@ class TestNestedFeatureValidation:
     def test_omitted_leaf_is_valid(self, valid_features: dict, tool_schema: dict):
         """A leaf left out of the data entirely is valid; it falls back to its default."""
         features = copy.deepcopy(valid_features)
-        del features["features"]["asset"]["cost"]["linear"]["investment"]
+        del features["features"]["asset"]["cost"]["unit"]["investment"]
         jsonschema.validate(features, tool_schema)
 
     def test_unknown_member_rejected(self, valid_features: dict, tool_schema: dict):
         """A member name not declared in the taxonomy is rejected at any depth."""
         features = copy.deepcopy(valid_features)
-        features["features"]["asset"]["cost"]["linear"]["bogus"] = {
+        features["features"]["asset"]["cost"]["unit"]["bogus"] = {
             "value": "y",
             "source": [],
         }
@@ -463,7 +463,7 @@ class TestNestedFeatureValidation:
     ):
         """`value`/`source` on a branch are rejected: they belong on leaves only."""
         features = copy.deepcopy(valid_features)
-        features["features"]["asset"]["cost"]["linear"]["value"] = "y"
+        features["features"]["asset"]["cost"]["unit"]["value"] = "y"
         with pytest.raises(jsonschema.ValidationError):
             jsonschema.validate(features, tool_schema)
 

@@ -33,7 +33,7 @@ features:
       mobile_storage:
         value: '?'
   network:
-    electricity:
+    power_flow:
       optimal_power_flow:
         dc_opf:
           value: '?'
@@ -60,7 +60,7 @@ features:
           value: '?'
       unbalanced_flows:
         value: '?'
-    pipeline:
+    hydraulic_flow:
       linearised_flow:
         value: '?'
       composition_tracking:
@@ -82,33 +82,7 @@ features:
         value: '?'
       maintenance_scheduling:
         value: '?'
-    characteristics:
-      linear:
-        investment:
-          value: '?'
-        operation:
-          value: '?'
-      quadratic:
-        investment:
-          value: '?'
-        operation:
-          value: '?'
-      nonlinear:
-        investment:
-          value: '?'
-        operation:
-          value: '?'
-      path_dependent:
-        investment:
-          value: '?'
-        operation:
-          value: '?'
     cost:
-      linear:
-        investment:
-          value: '?'
-        operation:
-          value: '?'
       unit:
         investment:
           value: '?'
@@ -132,37 +106,54 @@ features:
         operation:
           value: '?'
   constraints:
-    inter_spatial:
-      investment:
-        value: '?'
-      operation:
-        value: '?'
-    inter_asset:
-      investment:
-        value: '?'
-      operation:
-        value: '?'
-    total:
-      investment:
-        value: '?'
-      operation:
-        value: '?'
-    inter_temporal:
-      investment:
-        value: '?'
-      operation:
-        value: '?'
-    intra_temporal:
-      investment:
-        value: '?'
-      operation:
-        value: '?'
-    commitment:
-      investment:
-        value: '?'
-      operation:
-        value: '?'
-    boundary_conditions:
+    scope:
+      inter_spatial:
+        investment:
+          value: '?'
+        operation:
+          value: '?'
+      inter_asset:
+        investment:
+          value: '?'
+        operation:
+          value: '?'
+      total:
+        investment:
+          value: '?'
+        operation:
+          value: '?'
+      inter_temporal:
+        investment:
+          value: '?'
+        operation:
+          value: '?'
+      intra_temporal:
+        investment:
+          value: '?'
+        operation:
+          value: '?'
+      commitment:
+        investment:
+          value: '?'
+        operation:
+          value: '?'
+      boundary_conditions:
+        investment:
+          value: '?'
+        operation:
+          value: '?'
+    functional_form:
+      quadratic:
+        investment:
+          value: '?'
+        operation:
+          value: '?'
+      nonlinear:
+        investment:
+          value: '?'
+        operation:
+          value: '?'
+    path_dependent:
       investment:
         value: '?'
       operation:

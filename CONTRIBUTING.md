@@ -32,10 +32,10 @@ Ultimately, this can be used to identify tool **feature gaps**.
    Features in development could be linked to e.g., Pull Requests or academic publications.
 
    >[!NOTE]
-   >Features are **nested** to whatever depth the taxonomy needs (e.g. `asset.cost.linear.investment`, `interface.gui.build`).
+   >Features are **nested** to whatever depth the taxonomy needs (e.g. `asset.cost.unit.investment`, `interface.gui.build`).
    >`value` and `source` appear together on the **leaves** of that tree and nowhere else.
    >A leaf always has a plain scalar `value` and a plain list of URLs as its `source`.
-   >Leaves and further nesting can sit side by side: `asset.cost.linear` splits into `investment` / `operation`,
+   >Leaves and further nesting can sit side by side: `asset.cost.unit` splits into `investment` / `operation`,
    >while its sibling `asset.cost.annuitisation` is a leaf in its own right because it only ever applies to investment.
    >Every leaf comes pre-filled with `?`, so you only need to change the values you know.
    >Where a single source evidences several sibling leaves, repeat the URL on each of them.
