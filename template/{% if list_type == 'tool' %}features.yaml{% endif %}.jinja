@@ -12,8 +12,15 @@ features:
       value: '?'
       source: []
     conversion:
-      value: '?'
-      source: []
+      one_to_one:
+        value: '?'
+        source: []
+      multi_carrier_io:
+        value: '?'
+        source: []
+      flexible_ratio:
+        value: '?'
+        source: []
     temporal_transfer:
       value: '?'
       source: []
@@ -43,7 +50,7 @@ features:
         value: '?'
         source: []
   network:
-    electricity:
+    power_flow:
       optimal_power_flow:
         dc_opf:
           value: '?'
@@ -81,7 +88,7 @@ features:
       unbalanced_flows:
         value: '?'
         source: []
-    pipeline:
+    hydraulic_flow:
       linearised_flow:
         value: '?'
         source: []
@@ -112,43 +119,7 @@ features:
       maintenance_scheduling:
         value: '?'
         source: []
-    characteristics:
-      linear:
-        investment:
-          value: '?'
-          source: []
-        operation:
-          value: '?'
-          source: []
-      quadratic:
-        investment:
-          value: '?'
-          source: []
-        operation:
-          value: '?'
-          source: []
-      nonlinear:
-        investment:
-          value: '?'
-          source: []
-        operation:
-          value: '?'
-          source: []
-      path_dependent:
-        investment:
-          value: '?'
-          source: []
-        operation:
-          value: '?'
-          source: []
     cost:
-      linear:
-        investment:
-          value: '?'
-          source: []
-        operation:
-          value: '?'
-          source: []
       unit:
         investment:
           value: '?'
@@ -181,49 +152,79 @@ features:
           value: '?'
           source: []
   constraints:
-    inter_spatial:
-      investment:
-        value: '?'
-        source: []
-      operation:
-        value: '?'
-        source: []
-    inter_asset:
-      investment:
-        value: '?'
-        source: []
-      operation:
-        value: '?'
-        source: []
-    total:
-      investment:
-        value: '?'
-        source: []
-      operation:
-        value: '?'
-        source: []
-    inter_temporal:
-      investment:
-        value: '?'
-        source: []
-      operation:
-        value: '?'
-        source: []
-    intra_temporal:
-      investment:
-        value: '?'
-        source: []
-      operation:
-        value: '?'
-        source: []
-    commitment:
-      investment:
-        value: '?'
-        source: []
-      operation:
-        value: '?'
-        source: []
-    boundary_conditions:
+    scope:
+      inter_spatial:
+        investment:
+          value: '?'
+          source: []
+        operation:
+          value: '?'
+          source: []
+      inter_asset:
+        investment:
+          value: '?'
+          source: []
+        operation:
+          value: '?'
+          source: []
+      total:
+        investment:
+          value: '?'
+          source: []
+        operation:
+          value: '?'
+          source: []
+      inter_temporal:
+        investment:
+          value: '?'
+          source: []
+        operation:
+          value: '?'
+          source: []
+      intra_temporal:
+        investment:
+          value: '?'
+          source: []
+        operation:
+          value: '?'
+          source: []
+      commitment:
+        investment:
+          value: '?'
+          source: []
+        operation:
+          value: '?'
+          source: []
+      boundary_conditions:
+        investment:
+          value: '?'
+          source: []
+        operation:
+          value: '?'
+          source: []
+    functional_form:
+      linear_multi_variable:
+        investment:
+          value: '?'
+          source: []
+        operation:
+          value: '?'
+          source: []
+      quadratic:
+        investment:
+          value: '?'
+          source: []
+        operation:
+          value: '?'
+          source: []
+      nonlinear:
+        investment:
+          value: '?'
+          source: []
+        operation:
+          value: '?'
+          source: []
+    path_dependent:
       investment:
         value: '?'
         source: []

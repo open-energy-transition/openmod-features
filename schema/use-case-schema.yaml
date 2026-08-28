@@ -179,9 +179,28 @@ $defs:
       type: string
     title: AssumptionsModel
     type: array
+  ConstraintsFunctionalFormLinearMultiVariableModel:
+    additionalProperties: false
+    properties:
+      investment:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: A linear relationship linking several investment decision variables
+          (e.g. energy-to-power ratio envelopes on storage capacity).
+      operation:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: A linear relationship linking several operating decision variables,
+          defining a feasible operating envelope (e.g. CHP heat-power operating regions,
+          combined active/reactive power limits).
+    title: ConstraintsFunctionalFormLinearMultiVariableModel
+    type: object
   ConstraintsFunctionalFormModel:
     additionalProperties: false
     properties:
+      linear_multi_variable:
+        $ref: '#/$defs/ConstraintsFunctionalFormLinearMultiVariableModel'
+        description: Linear relationships linking several decision variables, defining
+          a polyhedral feasible region beyond simple upper/lower bounds on individual
+          variables.
       nonlinear:
         $ref: '#/$defs/ConstraintsFunctionalFormNonlinearModel'
         description: Constraints linking together several decision variables in a
@@ -1187,6 +1206,25 @@ $defs:
         description: Distributed slack allocation across nodes.
     title: PreprocessingSpatialDistributionModel
     type: object
+  ProcessesConversionModel:
+    additionalProperties: false
+    properties:
+      flexible_ratio:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: The ratio between a conversion process's flows is a decision
+          variable, freely allocated or constrained within a feasible operating region
+          (e.g. heat pumps serving heat and cooling, extraction-condensing CHP).
+      multi_carrier_io:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: A single conversion process has several in-flowing and/or out-flowing
+          carriers, each balanced individually, with fixed ratios between them (e.g.
+          back-pressure CHP, fixed heat-recovery fractions).
+      one_to_one:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: A single in-flowing carrier is converted to a single out-flowing
+          carrier (e.g. power plants, electrolysers without heat recovery).
+    title: ProcessesConversionModel
+    type: object
   ProcessesExplicitDemandModel:
     additionalProperties: false
     properties:
@@ -1221,7 +1259,7 @@ $defs:
 
           '
       conversion:
-        $ref: '#/$defs/UseCaseFeatureModel'
+        $ref: '#/$defs/ProcessesConversionModel'
         description: Carriers are transformed into other carriers within the system
           boundary (e.g. power plants, electrolysers, heat pumps, CO2 capture). This
           enables coupled multi-carrier optimisation.
@@ -1514,6 +1552,11 @@ properties:
         dedicated_flow_routing:
           value: '?'
         functional_form:
+          linear_multi_variable:
+            investment:
+              value: '?'
+            operation:
+              value: '?'
           nonlinear:
             investment:
               value: '?'
@@ -1811,7 +1854,12 @@ properties:
         buffered_transfer:
           value: '?'
         conversion:
-          value: '?'
+          flexible_ratio:
+            value: '?'
+          multi_carrier_io:
+            value: '?'
+          one_to_one:
+            value: '?'
         delayed_transfer:
           value: '?'
         discrete_transport:

@@ -13,10 +13,23 @@ processes:
     boundary_exchange: >-
       Carriers enter or leave the system across its boundary at a defined cost and availability
       (e.g. fuel supply, primary resource extraction, imports/exports to unmodelled regions).
-    conversion: >-
-      Carriers are transformed into other carriers within the system boundary
-      (e.g. power plants, electrolysers, heat pumps, CO2 capture).
-      This enables coupled multi-carrier optimisation.
+    conversion:
+      description: >-
+        Carriers are transformed into other carriers within the system boundary
+        (e.g. power plants, electrolysers, heat pumps, CO2 capture).
+        This enables coupled multi-carrier optimisation.
+      members:
+        one_to_one: >-
+          A single in-flowing carrier is converted to a single out-flowing carrier
+          (e.g. power plants, electrolysers without heat recovery).
+        multi_carrier_io: >-
+          A single conversion process has several in-flowing and/or out-flowing carriers,
+          each balanced individually, with fixed ratios between them
+          (e.g. back-pressure CHP, fixed heat-recovery fractions).
+        flexible_ratio: >-
+          The ratio between a conversion process's flows is a decision variable,
+          freely allocated or constrained within a feasible operating region
+          (e.g. heat pumps serving heat and cooling, extraction-condensing CHP).
     temporal_transfer: >-
       Carriers are moved in time (e.g. storage, demand shifting), linking system states across timesteps.
     spatial_transfer: >-
@@ -290,6 +303,17 @@ constraints:
         Non-linear and quadratic terms in the objective are instead
         `asset.cost.nonlinear` / `objective.quadratic`.
       members:
+        linear_multi_variable:
+          description: >-
+            Linear relationships linking several decision variables,
+            defining a polyhedral feasible region beyond simple upper/lower bounds on individual variables.
+          members:
+            investment: >-
+              A linear relationship linking several investment decision variables
+              (e.g. energy-to-power ratio envelopes on storage capacity).
+            operation: >-
+              A linear relationship linking several operating decision variables, defining a feasible operating envelope
+              (e.g. CHP heat-power operating regions, combined active/reactive power limits).
         quadratic:
           description: >-
             Constraints requiring the product of decision variables, creating a quadratic constraint which is passed natively to a QP/QCP-capable solver.

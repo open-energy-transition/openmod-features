@@ -89,8 +89,8 @@ class TestToolTemplate:
         features = yaml.safe_load((tool_minimal_dst / "features.yaml").read_text())
         assert "features" in features
         # Tool features have 'source' field
-        assert "source" in features["features"]["processes"]["conversion"]
-        assert "value" in features["features"]["processes"]["conversion"]
+        assert "source" in features["features"]["processes"]["boundary_exchange"]
+        assert "value" in features["features"]["processes"]["boundary_exchange"]
 
     @pytest.fixture(scope="class")
     def tool_with_docs_dst(self, run_copier, tmp_path_factory):
@@ -185,8 +185,8 @@ class TestUseCaseTemplate:
         assert "features" in features
         assert "assumptions" in features
         # Use-case features do NOT have 'source' field
-        assert "source" not in features["features"]["processes"]["conversion"]
-        assert "value" in features["features"]["processes"]["conversion"]
+        assert "source" not in features["features"]["processes"]["boundary_exchange"]
+        assert "value" in features["features"]["processes"]["boundary_exchange"]
 
 
 class TestValidators:
