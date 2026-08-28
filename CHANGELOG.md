@@ -25,104 +25,61 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## Unreleased (v0.3.0)
 
-### v0.3 taxonomy restructure
+A ground-up overhaul of the feature taxonomy and of the schema that expresses it.
+No group or feature path from 0.2.0 survives unchanged: the taxonomy is now a single recursive tree of 18 top-level categories, named for the question each answers rather than for the technology it describes.
+Resolves #19, #28, #29, #30, #32, #35, #39, #65-#103 (as applicable) and #108-#114.
 
-A breaking restructure of the feature taxonomy (~33 groups / ~140 members), resolving issues #19, #28, #29, #30, #32, #35, #39, #65-#103 (as applicable) and #108-#113.
-All tool and use-case lists have been migrated; entries whose old feature dissolved without a clean successor are flagged with `?` values and `TODO: re-review` comments for maintainer re-validation.
-Where merges absorbed previously explicit features, inline `absorbed:` comments in `schema/features.yaml` record the old keys so they can be reintroduced later as nested members (#114).
+### Changed
 
-#### Nested feature taxonomy
+#### Schema and tooling
 
-The taxonomy is now a single recursive structure of arbitrary depth, replacing the previous fixed group → member (→ slice) layering.
-A taxonomy node is either a **leaf** (`key: "description"`) or a **branch** (`description` plus a `members` mapping of further nodes), and branches and leaves can be siblings.
+- **Features nest to arbitrary depth.** A taxonomy node is either a **leaf** (`key: "description"`) or a **branch** (`description` plus a `members` mapping of further nodes), and branches and leaves can be siblings. This replaces the fixed group → member layering, in which every capability had to be flattened into a two-level name.
+- **`value` and `source` live on leaves only.** A leaf's `value` is a plain scalar and its `source` a plain list of URLs. Capabilities that differ between investment and operation are sibling leaves rather than a qualified single value: `asset.cost.unit` is a branch with `investment` / `operation` leaves. Where one source evidences several sibling leaves, the URL is repeated on each.
+- **No `__` in taxonomy names.** Namespaces are expressed as real nesting (`asset__cost__investment.unit` → `asset.cost.unit.investment`, `transmission__opf` → `network.power_flow.optimal_power_flow`, `time__resolution__simplification` → `tractability.dimension_reduction.temporal`). Cross-references inside descriptions use a single dotted path throughout.
+- The generator validates the taxonomy directly: branches must declare exactly `description` and `members` with at least two members; member names must be valid identifiers that avoid `__` and the reserved names `source` / `value` / `description` / `members`; and two paths may not generate the same model name.
+- Feature values default to the explicit `?` (unknown) rather than a bare `null`, so an unanswered feature is visibly unanswered in a list a maintainer is part-way through filling.
+- Generated tool/use-case templates are written in taxonomy order rather than alphabetical order, so the file a maintainer edits reads in the same order as the file they read for reference.
+- Generated JSON schemas are roughly half the size they would otherwise be, by using `Field(default_factory=...)` in place of `Field(default=...)` so Pydantic does not inline a fully-materialised default subtree into every `$def`.
+- Feature descriptions no longer use "a.k.a."; alternative names will be carried by a separate `also_known_as` option.
+- CONTRIBUTING.md documents the nested schema and recommends per-sub-leaf source comments when citing a feature that splits into several sub-leaves.
 
-- **Removed feature slices.** A feature's `value` is always a plain scalar and its `source` always a plain list of URLs; both appear only on leaves. What was `asset__cost.linear` with `investment`/`operation` slices is now the branch `asset.cost.linear` with `investment`/`operation` leaves. The slice-scoped `source` form (`- operation: <url>`) is gone — repeat the URL on each leaf it evidences instead.
-- **Removed `__` from taxonomy names.** Namespaces are expressed as real nesting: `asset__cost` → `asset.cost`, `network__electricity` → `network.electricity`, `system__processes` → `system.processes`, `tractability__reformulation` → `tractability.reformulation`, `interface__math` → `interface.math`. The four single-child namespaces are flattened to their child: `time__pathway` → `pathway`, `data__io` → `io`, `optimisation__objective` → `objective`, `workflow__transparency` → `transparency`.
-- Cross-references in feature descriptions use a single dotted path throughout; the `group.feature[slice]` bracket notation is gone (`postprocessing.financial[marginal_price]` → `postprocessing.financial.marginal_price`).
-- The generator now validates the taxonomy directly: branches must declare exactly `description` and `members` with at least two members, member names must be valid identifiers that avoid `__` and the reserved names `source`/`value`/`description`/`members`, and two paths may not generate the same model name.
+#### Taxonomy
 
-#### Re-nested categories
+- **`processes`** replaces `asset__candidates`: fundamental carrier-flow capabilities defined by mathematical role (`boundary_exchange`, `conversion`, temporal / spatial / delayed / buffered / discrete / state-changing transfer, `explicit_demand`) rather than by named asset types. `conversion` splits by flow topology into `one_to_one`, `multi_carrier_io` (several carriers per process at fixed ratios, e.g. back-pressure CHP), and `flexible_ratio` (optimiser-chosen flow ratios, e.g. extraction-condensing CHP, heat pumps serving heat and cooling). `explicit_demand` splits into `inelastic`, `price_responsive`, and `mobile_storage` (EV fleets / V2G: demand with embedded storage whose grid attachment follows a travel pattern). `system__carriers` is gone: multi-carrier coupling is a property of `conversion`, not a separate feature.
+- **`network`** consolidates `transmission__opf`, `transmission__limits`, `transmission__network` and the `power_flow__*` groups into `network.power_flow` (`optimal_power_flow`, `sensitivity_limits`, `network_limits`, `network_devices`, `unbalanced_flows`) alongside a new `network.hydraulic_flow` (`linearised_flow`, `composition_tracking`). `ptdf` is redefined as the input-side flow-based power-flow formulation.
+- **`asset`** covers what an asset *is*: `capacity_representation` (including `retrofit`), `operating_representation`, and `cost` (`unit`, `nonlinear`, `threshold_deviation`, `annuitisation`, `inter_temporal`), each sliced `investment` / `operation` where both apply.
+- **`constraints`** is the single home for "how can the problem be constrained?", split along two axes: `scope` — what a limit spans (`inter_spatial`, `inter_asset`, `total`, `inter_temporal`, `intra_temporal`, `commitment`, `boundary_conditions`) — and `functional_form` — the mathematical form of relationships between decision variables (`linear_multi_variable`, `quadratic`, `nonlinear`) — plus `path_dependent` (quantities evolving endogenously from cumulative historical decisions, e.g. learning curves, degradation), `dedicated_flow_routing`, and `reliability` (`margin_requirement`, `probabilistic_reliability_limit`, `unserved_demand`, `contingency_constrained`). It absorbs `asset__operating_constraints`, `asset__operating_characteristics` (functional form is a property of the constraints a tool can build, not of an asset), `asset__chaining`, `system__limits`, and the deterministic half of `robustness`.
+- **`model_definition`** is new, holding `dimension_groups`, `component_templating`, `configurable_dimensions`, and `extensible_dimensions` — how the model's parameter space can be shaped, grouped, or reused, as distinct from what an asset does.
+- **`math`** holds properties of the optimisation problem itself: `formulation_transparency`, `problem_file_export`, `dual_extraction`, `piecewise_formulation`, `user_defined_math`, `soft_constraints`.
+- **`interface`** is organised by access mode (`gui`, `api`, `cli`), each sliced by workflow stage (`build` / `run` / `analyse`), plus `remote_execution`, `solver_configuration`, `analysis_templates`, and `visualisation` (`charts`, `network_maps`).
+- **`io`** replaces the I/O half of `interface__input` / `interface__output`: `plain_text`, `binary`, `database`, `remote_storage`, `lazy_loading`, and `standardised` (community conventions and ontologies, including network-data formats such as PSSE RAW, matpower and CIM), each sliced `input` / `output`.
+- **`tractability`** gathers all simplification and solution-strategy features into `dimension_reduction` (`temporal`, `spatial`, `assets`), `reformulation`, and `algorithm`, replacing `time__resolution__simplification`, `spatial__resolution__simplification` and the solver-side half of `optimisation_problem`.
+- **`orchestration`** covers how many model runs happen and how they relate: `rolling_horizon`, `coupled_models`, `simulation_optimisation`, `scenario_runs`, `sampled_runs`.
+- **`uncertainty`** is rescoped to stochastic decision methods (`two_stage_stochastic`, `multi_stage_stochastic`, `risk_aversion`, `near_optimal`, `robust_optimisation`), with the deterministic reliability constraints it used to hold moved to `constraints.reliability`.
+- **`actors`** replaces `competition`, adding `equilibrium` (computed: Cournot-Nash, Bertrand) and `heuristic_markup` (rule/index-based strategic markups) to `portfolio` and `distributed_objectives`.
+- **`pathway`** replaces `time__foresight` and `time__horizon` (`perfect_foresight`, `myopic_foresight`, each sliced `investment` / `operation`); horizon length is no longer a feature.
+- **`objective`** is new: `multi_objective_weighted`, `multi_objective_pareto`, `quadratic`.
+- **`preprocessing`** adds `resource_conversion` (physical response models turning weather/resource data into availability or demand profiles), `scenario_generation`, `input_validation`, `numeric_scaling`, and `model_catalogue`, with `forecasting` rescoped to scaling and reshaping existing profiles.
+- **`postprocessing`** is grouped by what is being reported: `impact_assessment`, `operational`, `financial` (including `levelised_cost`, `marginal_price`, `price_formation`, `contract_settlement`), `network_transfer_metrics`, `aggregation`, `disaggregation`, `scenario_comparison`, and `probabilistic_reliability_assessment` (`loss_of_load`, `unserved_energy`, `capacity_credit`).
+- **`transparency`** is new, consolidating debugging and provenance concerns: `run_logs`, `infeasibility_diagnosis`, `metadata_propagation`, `intermediate_access`, `unit_tracking`.
 
-With nesting now unconstrained in depth, several categories were reshaped to make each feature findable under a name that predicts its contents. No feature was added or removed by this change — every leaf that existed before still exists, only its path changed.
+### Removed
 
-- `system.processes` → `processes`; `system.reliability` → `constraints.reliability`. `system` no longer exists: it was a two-member wrapper whose name predicted neither child.
-- `asset.constraints` → `constraints`, now also holding `reliability`. "What limits can I impose?" previously had two separate homes at two different scopes.
-- `interface.math` → `math`. Writing your own constraints or extracting shadow prices is a property of the optimisation problem, not of how you talk to the tool.
-- New top-level `model_definition`, holding `interface.dimension_groups`, `interface.component_templating`, and `asset.characteristics.{configurable_dimensions,extensible_dimensions}`. These all answer "how can the model's parameter space be shaped, grouped, or reused?" — a question distinct from `asset.characteristics`' remaining functional-form axis (`linear`/`quadratic`/`nonlinear`/`path_dependent`).
-- `interface.standardised_data.{build,analyse}` → `io.standardised.{input,output}`, aligning it with `io`'s other five formats, all sliced `input`/`output`.
-- All dotted cross-references inside descriptions were repointed to match.
-- The generated tool/use-case templates are now written in taxonomy order rather than alphabetical order, so the file a maintainer edits reads in the same order as the file they read for reference (`schema_generator.py`'s `yaml.safe_dump` call gained `sort_keys=False`).
-- Generated JSON schemas roughly halved in size (`tool-schema.yaml`: 3967 → ~2100 lines) by switching `Field(default=...)` to `Field(default_factory=...)`, which stops Pydantic inlining a fully-materialised default subtree into every `$def`. The generated templates are unaffected.
-- `constraints.inter_spatial.{investment,operation}` descriptions given distinct examples (regional build-share quota vs. regional self-sufficiency requirement) — the two are real, independent policy instruments and were kept separate, but their near-identical wording invited confusion with the pairs above that were genuinely collapsed.
+- The `baseline` field on every feature. Members are now flat `key: "description"` entries; whether a capability is fundamental or advanced is a property of the tool landscape, not of the taxonomy.
+- `time__horizon`: horizon length is no longer a feature, being absorbed into `pathway` and `orchestration.rolling_horizon` (#87).
+- `asset__resolution`: `units` / `grouped` are the two sides of `asset.capacity_representation`, while aggregating physical assets is `tractability.dimension_reduction.assets.clustering` and `mixed` generalises to `tractability.reformulation.variable_fidelity`.
+- `edge_effects.spatial`, subsumed by `processes.boundary_exchange`.
+- `resource_adequacy` and `optimisation_problem` as groups; their members are distributed across `constraints.reliability`, `postprocessing`, `orchestration`, `tractability`, `uncertainty`, `interface`, and `math` according to what they describe rather than what they were used for.
+- Features that stated a baseline capability every tool has, rather than a distinguishing one: `system__carriers.decoupled` (single-carrier modelling), `transmission__opf.transport` and `transmission__limits.gtc` (both folded into `processes.spatial_transfer`), `asset__operating_characteristics.static_non_dimensional` / `.static_dimensional` (replaced by `model_definition.configurable_dimensions` / `.extensible_dimensions`, #112), `asset__operating_characteristics.linear` (a linear parameter-to-variable relationship is the LP baseline), and `asset__cost__investment.linear` / `asset__cost__operation.linear` (linear EUR/MW capital and EUR/MWh operating costs are the baseline cost representation).
 
-#### Removed
-
-- The per-member `baseline` field — members are now flat `key: "description"` entries.
-- `time__horizon` group, absorbed into `time__pathway` / `orchestration.rolling_horizon` (#87).
-- `system__carriers` group: `decoupled` was a universal baseline; `coupled`/`non_energy` are folded into `system__processes` descriptions (#88).
-- `asset__operating_characteristics.static_non_dimensional` / `.static_dimensional`, replaced by `configurable_dimensions` / `extensible_dimensions` (#112).
-- `transmission__opf.transport` and `transmission__limits.gtc`, folded into the `system__processes.spatial_transfer` baseline (#28).
-- `model_definition.configurable_dimensions.{investment,operation}` and `.extensible_dimensions.{investment,operation}` collapsed to single leaves: no distinguishing example or use case was found between "applies to investment characteristics" and "applies to operating characteristics" for either — a tool's parameter system either supports user-chosen/extensible dimensionality or it doesn't, independent of which side of the ledger a given parameter sits on.
-
-#### Changed
-
-- `asset__candidates` replaced by `system__processes`: fundamental carrier-flow capabilities (boundary_exchange, conversion, temporal/spatial/delayed/state-changing transfer, discrete transport, explicit demand) instead of named asset types (#86, #29, #85).
-- `robustness` split into `system__reliability` (deterministic in-optimisation constraints: `margin_requirement`, `probabilistic_reliability_limit`, `unserved_demand` (ex-`voll`)) and a rescoped `uncertainty` group (stochastic decision methods, incl. new `risk_aversion` and `robust_optimisation`) (#98, #95, #96, #97); `asset_outages` merged into `asset__operating_constraints.operating` (#32).
-- `transmission__opf` + `transmission__limits` consolidated into `network__electricity`, with merged `network_limits`, new `network_devices`, and `ptdf` redefined as the input-side flow-based (PTDF) power-flow formulation (#28).
-- Tractability/simplification features reorganised into `tractability__temporal` / `__spatial` / `__structural` / `__reformulation` / `__algorithm` (#30, #73, #79, #81, #84, #89, #90, #93); `asset__resolution.mixed` generalised to `tractability__reformulation.variable_fidelity`.
-- `optimisation_problem` dissolved into `orchestration`, `tractability__algorithm`, `uncertainty.near_optimal`, `interface__run.solver_configuration`, and `interface__math` (#73, #74, #75, #97).
-- Interfaces split by workflow stage: `interface__build` / `interface__run` / `interface__analysis` / `interface__math`; `no_code` renamed `config_files`, `interface__build.scripting` renamed `interface__build.api` (parity with `interface__run.api`), new `interface__run.remote_execution` (cloud/HPC/hosted dispatch), `standardised` redefined as community convention/ontology (`standardised_data`) (#65, #67, #71, #75, #102, #110).
-- `competition` renamed `actors`, with new `equilibrium` and `aggregated_prosumers` members (#77, #78).
-- `subsidy/penalty` renamed `threshold_deviation` in both cost groups (#92).
-- `time__foresight` rescoped to `time__pathway` (`perfect_foresight`, `myopic_foresight`, new `backcasting`) (#76, #87).
-- `asset__chaining` (`stockpiling` + `asset_linking`) merged into `asset__operating_constraints.reserved_flows`.
-- `resource_adequacy` group dissolved: `lolp`+`eens` merged into new `postprocessing.probabilistic_reliability_assessment`; `elcc` moved to `postprocessing`; `maintenance_scheduling` moved to `asset__operating_representation` (endogenous, co-optimised with operation); `monte_carlo`/`sampling` generalised into `orchestration.sampled_runs` (#83, #99, #103).
-- `workflow` debugging/provenance concerns consolidated as `workflow__transparency` (`run_logs` (ex-`interface__output.logs`), `infeasibility_diagnosis`, `metadata_propagation`, `intermediate_access`, `unit_tracking`) (#66, #69).
-- `postprocessing`: `gtc`+`ptdf`+`lodf` merged into `network_transfer_metrics`; `lcoe` folded into `financial`.
-
-#### Added
-
-- `asset__investment_constraints` group (`minimum_size`, `inter_period`, `total`, `brownfield`) (#19, #94).
-- `interface__build.component_groups` and `interface__build.component_templating` (#113).
-- `optimisation__objective` group (`multi_objective_weighted`, `multi_objective_pareto`, `quadratic`) (#39, #72).
-- `data__io` group (`plain_text` and `binary` format members, plus `database`, `remote_storage`, `lazy_loading`) (#70).
-- `asset__operating_characteristics.quadratic` (#39) and `.path_dependent` (storage/asset degradation, #108).
-- `asset__cost__operation.inter_temporal` (ramping costs, #109).
-- `interface__math.soft_constraints` (generic slack-plus-penalty reformulation, #110) and `.problem_file_export` (#67).
-- `postprocessing.contract_settlement` (post-hoc CfD/PPA settlement, #111), `.scenario_comparison` (#83), and `.disaggregation` (#82).
-- `preprocessing.input_validation` (#68), `.scenario_generation` (#99), and `.model_catalogue`.
-- `postprocessing.elcc` (#103).
-
-### feedback round
-
-Additions and clarifications arising from populating the feature list for some tools, which surfaced gaps around market simulation, EV fleets, and resource/weather preprocessing, plus keys whose definitions absorbed too many distinct capabilities.
-
-#### Added
-
-- `orchestration.coupled_models`: two or more model instances of different fidelity executed together with bidirectional data exchange (e.g. interleaved day-ahead/real-time runs), distinct from stepping one model through time (`rolling_horizon`).
-- `postprocessing.financial.price_formation`: prices constructed by a documented market rule (uniform-price re-solve, uplift adders, long-run marginal cost markup calibration, marginal-loss-factor settlement) rather than taken from optimisation duals.
-- `preprocessing.resource_conversion`: profiles derived from primary resource/weather data via physical response models — both resource-to-availability (irradiance→PV, wind power curves) and weather-response demand (temperature-driven gas/heating demand).
-- `asset.capacity_representation.retrofit`: endogenous investment in modifications to existing assets with their own build economics (abatement retrofits, CO2 capture, efficiency upgrades, fuel switching).
-- `actors.heuristic_markup`: rule/index-based strategic markups (e.g. RSI-driven), split out from `actors.equilibrium`, which is rescoped to *computed* equilibrium (Cournot-Nash, Bertrand).
-- `interface.visualisation.{charts,network_maps}`: built-in rendering of inputs/outputs as plots and schematic/geographic network maps.
-
-#### Changed
-
-- `processes.explicit_demand` converted from a leaf to a branch with members `inelastic` (fixed quantity met by an explicit consuming process), `price_responsive` (quantity decided against bids or demand curves), and `mobile_storage` (EV fleets / V2G: demand with embedded storage whose grid attachment and availability follow a travel pattern).
-- `preprocessing.forecasting` rescoped to scaling/reshaping existing profiles to forecast targets, delimited against the new `resource_conversion`.
-- `model_definition.component_templating` broadened to include programmatic, model-side generation of components from a template (e.g. wildcard/vintaged expansion candidates).
-- `math.user_defined_math` clarified on nonlinear user-supplied relations (in scope where `tractability.reformulation.function_conversion` or `math.piecewise_formulation` applies).
-- `postprocessing.financial.contract_settlement` definition enumerates the in-scope instrument classes: financial derivatives (CfD, PPA, swaps, caps/floors), financial transmission rights (FTR/SRA), and physical fuel/delivery contracts.
-- `asset.operating_representation.maintenance_scheduling` and `constraints.intra_temporal.operation` clarified: resource-limited maintenance (spare-parts/crew inventories) files as an intra-temporal operating constraint, not a separate scheduling capability.
-- `postprocessing.operational.capacity_factor` / `.full_load_hours` definitions now state why both exist: the same average output can arise from different duty cycles, with different asset-lifetime implications.
-- `io.standardised` examples extended with standardised network-data formats (PSSE RAW, matpower case files, CIM).
-- CONTRIBUTING.md now recommends per-sub-leaf source comments when citing features that split into several sub-leaves.
+## 0.2.0 (2026-08-26)
 
 ### Removed
 
 - Removed "a.k.a." in feature descriptions in preparation for a separate `also_known_as` option.
+- Detailed power-system simulation groups (`transmission__network`, `power_flow__controls`, `power_flow__contingency_analysis`, `power_flow__sensitivity_analysis`, `power_flow__dynamic_simulations`), which are out of scope for a planning-tool feature list.
 
 ### Changed
 
@@ -139,7 +96,8 @@ Additions and clarifications arising from populating the feature list for some t
 - Added `baseline` for every feature value to differentiate between fundamental and advance feature.
 - Pull request template checklist item, to remind contributors to update the changelog.
 - README preamble.
-- Use-cases and a specific template and schema for them (#16).
+- Use-cases and a specific template and schema for them (#16), with lists for bidding zone review, integrated resource planning, network development planning, policy target setting, and portfolio planning.
+- Tool feature lists for GenX, OSeMOSYS, Calliope, and TIMES.
 - CI workflow to keep CODEOWNERS file up-to-date when changes are made to feature list metadata (#8).
 - Added source link checker in CI and as a local, optional `pixi` task.
 - Added `asset__operating_constraints.inter_spatial` to capture operating constraints that span spatial regions.

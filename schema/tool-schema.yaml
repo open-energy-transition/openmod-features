@@ -53,81 +53,11 @@ $defs:
       retrofit:
         $ref: '#/$defs/ToolFeatureModel'
         description: Endogenous investment in modifications to an existing asset,
-          with their own build economics, that change the asset's characteristics
+          with their own build economics, that change the asset's technical parameters
           or costs rather than adding standalone capacity (e.g. emissions-abatement
           retrofits such as flue-gas desulphurisation or CO2 capture, efficiency upgrades,
           fuel-switching conversions).
     title: AssetCapacityRepresentationModel
-    type: object
-  AssetCharacteristicsLinearModel:
-    additionalProperties: false
-    properties:
-      investment:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Varies linearly with an investment decision variable (e.g. resource
-          availability increasing with asset capacity).
-      operation:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Varies linearly with an operating decision variable.
-    title: AssetCharacteristicsLinearModel
-    type: object
-  AssetCharacteristicsModel:
-    additionalProperties: false
-    properties:
-      linear:
-        $ref: '#/$defs/AssetCharacteristicsLinearModel'
-        description: Asset characteristics vary linearly with a single decision variable.
-      nonlinear:
-        $ref: '#/$defs/AssetCharacteristicsNonlinearModel'
-        description: Asset characteristics link together several decision variables.
-          This creates a non-linear relationship that can be described by e.g. a piecewise
-          linear curve or through iterative solving.
-      path_dependent:
-        $ref: '#/$defs/AssetCharacteristicsPathDependentModel'
-        description: Asset characteristics evolve based on cumulative historical conditions.
-      quadratic:
-        $ref: '#/$defs/AssetCharacteristicsQuadraticModel'
-        description: Asset characteristics vary quadratically with a decision variable,
-          passed natively to a QP/QCP-capable solver.
-    title: AssetCharacteristicsModel
-    type: object
-  AssetCharacteristicsNonlinearModel:
-    additionalProperties: false
-    properties:
-      investment:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Varies with an investment decision variable (e.g. storage head
-          effects, pressurisation energy curves linked to capacity).
-      operation:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Varies with an operating decision variable (e.g., part-load efficiency,
-          line losses).
-    title: AssetCharacteristicsNonlinearModel
-    type: object
-  AssetCharacteristicsPathDependentModel:
-    additionalProperties: false
-    properties:
-      investment:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Investment characteristics evolve based on investments made in
-          previous periods (e.g. learning curves).
-      operation:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Operational characteristics evolve based on operation in previous
-          timesteps (e.g. battery cycling/calendar degradation, filter fouling).
-    title: AssetCharacteristicsPathDependentModel
-    type: object
-  AssetCharacteristicsQuadraticModel:
-    additionalProperties: false
-    properties:
-      investment:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Varies quadratically with an investment decision variable.
-      operation:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Varies quadratically with an operating decision variable (e.g.
-          quadratic fuel curves, loss approximations).
-    title: AssetCharacteristicsQuadraticModel
     type: object
   AssetCostInterTemporalModel:
     additionalProperties: false
@@ -141,19 +71,6 @@ $defs:
         description: Costs applied between timesteps (e.g. ramping wear cost).
     title: AssetCostInterTemporalModel
     type: object
-  AssetCostLinearModel:
-    additionalProperties: false
-    properties:
-      investment:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Capital cost which varies linearly with asset nameplate capacity
-          (e.g. EUR/MW).
-      operation:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Operating cost which varies linearly with unit in-/out-flow (e.g.
-          EUR/MWh).
-    title: AssetCostLinearModel
-    type: object
   AssetCostModel:
     additionalProperties: false
     properties:
@@ -166,13 +83,11 @@ $defs:
         $ref: '#/$defs/AssetCostInterTemporalModel'
         description: Costs applied to the magnitude of change in a decision variable
           between time periods.
-      linear:
-        $ref: '#/$defs/AssetCostLinearModel'
-        description: Cost which varies linearly with a decision variable.
       nonlinear:
         $ref: '#/$defs/AssetCostNonlinearModel'
         description: Cost which varies non-linearly, usually described in the objective
-          using piecewise linear curves.
+          using piecewise linear curves. Non-linear relationships in constraints rather
+          than the objective are `constraints.functional_form.nonlinear`.
       threshold_deviation:
         $ref: '#/$defs/AssetCostThresholdDeviationModel'
         description: Costs on deviations above/below a contracted or reference level.
@@ -230,13 +145,12 @@ $defs:
         $ref: '#/$defs/AssetCapacityRepresentationModel'
         description: How asset capacities can be represented in the model and optimisation
           problem.
-      characteristics:
-        $ref: '#/$defs/AssetCharacteristicsModel'
-        description: Representation of asset investment and operating characteristics
-          (e.g. efficiency, resource availability).
       cost:
         $ref: '#/$defs/AssetCostModel'
-        description: Asset investment and operating cost representation.
+        description: Asset investment and operating cost representation. Cost which
+          varies linearly with a decision variable (e.g. EUR/MW capital cost on nameplate
+          capacity, EUR/MWh operating cost on flow) is the baseline; we do not track
+          it explicitly here.
       operating_representation:
         $ref: '#/$defs/AssetOperatingRepresentationModel'
         description: The resolution of asset operation representation in the model.
@@ -250,8 +164,8 @@ $defs:
         $ref: '#/$defs/ToolFeatureModel'
         description: Asset maintenance / outage schedules are derived endogenously,
           co-optimised with operation. Exogenously fixed maintenance windows are instead
-          `constraints.commitment`. Resource-constrained maintenance limits are instead
-          `constraints.total`.
+          `constraints.scope.commitment`. Resource-constrained maintenance limits
+          are instead `constraints.scope.total`.
       unit_commitment:
         $ref: '#/$defs/ToolFeatureModel'
         description: Assets can be committed as units and _then_ economically dispatched.
@@ -259,126 +173,110 @@ $defs:
           assets 1-to-1.
     title: AssetOperatingRepresentationModel
     type: object
-  ConstraintsBoundaryConditionsModel:
+  ConstraintsFunctionalFormLinearMultiVariableModel:
     additionalProperties: false
     properties:
       investment:
         $ref: '#/$defs/ToolFeatureModel'
-        description: Investment optimisation can start from an existing asset stock
-          rather than from an empty (greenfield) system or can define a desired end-state.
-          This allows pre-existing capacities to be represented (initial) and for
-          backcasting system design (end-state).
+        description: A linear relationship linking several investment decision variables
+          (e.g. energy-to-power ratio envelopes on storage capacity).
       operation:
         $ref: '#/$defs/ToolFeatureModel'
-        description: Initial or end-state operational conditions can be set (e.g.
-          start or end storage level requirements).
-    title: ConstraintsBoundaryConditionsModel
+        description: A linear relationship linking several operating decision variables,
+          defining a feasible operating envelope (e.g. CHP heat-power operating regions,
+          combined active/reactive power limits).
+    title: ConstraintsFunctionalFormLinearMultiVariableModel
     type: object
-  ConstraintsCommitmentModel:
+  ConstraintsFunctionalFormModel:
     additionalProperties: false
     properties:
-      investment:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Limits on investment unit purchase within investment periods.
-          Usually requires `asset.capacity_representation.integer_investment_...`.
-      operation:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Limits on operational unit commit within timesteps (e.g., forced/planned
-          outage windows). Usually requires `asset.operating_representation.unit_commitment`.
-    title: ConstraintsCommitmentModel
+      linear_multi_variable:
+        $ref: '#/$defs/ConstraintsFunctionalFormLinearMultiVariableModel'
+        description: Linear relationships linking several decision variables, defining
+          a polyhedral feasible region beyond simple upper/lower bounds on individual
+          variables.
+      nonlinear:
+        $ref: '#/$defs/ConstraintsFunctionalFormNonlinearModel'
+        description: Constraints linking together several decision variables in a
+          general non-linear relationship, which can be described by e.g. a piecewise
+          linear curve (`math.piecewise_formulation`) or through iterative solving.
+      quadratic:
+        $ref: '#/$defs/ConstraintsFunctionalFormQuadraticModel'
+        description: Constraints requiring the product of decision variables, creating
+          a quadratic constraint which is passed natively to a QP/QCP-capable solver.
+    title: ConstraintsFunctionalFormModel
     type: object
-  ConstraintsInterAssetModel:
+  ConstraintsFunctionalFormNonlinearModel:
     additionalProperties: false
     properties:
       investment:
         $ref: '#/$defs/ToolFeatureModel'
-        description: Investment limits that link assets (e.g., land-use competition,
-          system-wide embodied emissions limits).
+        description: A non-linear relationship involving an investment decision variable
+          (e.g. storage head effects, pressurisation energy curves linked to capacity).
       operation:
         $ref: '#/$defs/ToolFeatureModel'
-        description: Operating limits that link assets (e.g., regional emissions limits
-          applied across all emitting assets).
-    title: ConstraintsInterAssetModel
+        description: A non-linear relationship involving an operating decision variable
+          (e.g., part-load efficiency, line losses).
+    title: ConstraintsFunctionalFormNonlinearModel
     type: object
-  ConstraintsInterSpatialModel:
+  ConstraintsFunctionalFormQuadraticModel:
     additionalProperties: false
     properties:
       investment:
         $ref: '#/$defs/ToolFeatureModel'
-        description: Investment limits that link geographic regions (e.g. a minimum
-          share of new capacity built in each region).
+        description: A quadratic relationship involving an investment decision variable.
       operation:
         $ref: '#/$defs/ToolFeatureModel'
-        description: Operating limits that link geographic regions (e.g. a regional
-          self-sufficiency requirement on generation relative to demand).
-    title: ConstraintsInterSpatialModel
-    type: object
-  ConstraintsInterTemporalModel:
-    additionalProperties: false
-    properties:
-      investment:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Investment limits linking investment periods (e.g. build-rate
-          limits, phased retirement, availability windows).
-      operation:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Operating limits that link time periods (e.g., ramping, run up,
-          load shifting).
-    title: ConstraintsInterTemporalModel
-    type: object
-  ConstraintsIntraTemporalModel:
-    additionalProperties: false
-    properties:
-      investment:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Limits on investment within investment periods (e.g. minimum/maximum
-          size).
-      operation:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Limits on operation within timesteps (e.g. capacity de-rating
-          profiles, minimum/maximum load levels, renewables capacity factors).
-    title: ConstraintsIntraTemporalModel
+        description: A quadratic relationship involving an operating decision variable
+          (e.g. quadratic fuel curves, loss approximations).
+    title: ConstraintsFunctionalFormQuadraticModel
     type: object
   ConstraintsModel:
     additionalProperties: false
     properties:
-      boundary_conditions:
-        $ref: '#/$defs/ConstraintsBoundaryConditionsModel'
-        description: Initial and end-state conditions can be set.
-      commitment:
-        $ref: '#/$defs/ConstraintsCommitmentModel'
-        description: Limits on commitment to investing in or operating an asset in
-          a given time period.
       dedicated_flow_routing:
         $ref: '#/$defs/ToolFeatureModel'
         description: Carrier out-flow from one asset can be reserved as in-flow to
           a specific subset of other assets (e.g. fuel stockpiling ahead of conversion,
           hydropower cascades, CHP internal steam flows).
-      inter_asset:
-        $ref: '#/$defs/ConstraintsInterAssetModel'
-        description: Limits that link assets, within or across regions and time.
-      inter_spatial:
-        $ref: '#/$defs/ConstraintsInterSpatialModel'
-        description: Limits that link geographic regions (e.g. to ensure regional
-          equity).
-      inter_temporal:
-        $ref: '#/$defs/ConstraintsInterTemporalModel'
-        description: Limits that link across time periods.
-      intra_temporal:
-        $ref: '#/$defs/ConstraintsIntraTemporalModel'
-        description: Limits on how much assets can output in a given time period
+      functional_form:
+        $ref: '#/$defs/ConstraintsFunctionalFormModel'
+        description: The mathematical form of the relationships the tool can impose
+          between decision variables, and hence the problem class handed to the solver.
+          A linear relationship between an input parameter and a single decision variable
+          (e.g. a fixed efficiency applied to a flow, resource availability scaled
+          by capacity) is the baseline; we do not track it explicitly here. Non-linear
+          and quadratic terms in the objective are instead `asset.cost.nonlinear`
+          / `objective.quadratic`.
+      path_dependent:
+        $ref: '#/$defs/ConstraintsPathDependentModel'
+        description: Constraints in which a quantity evolves endogenously based on
+          cumulative historical decisions, rather than from input parameters alone.
+          Approximating this by pre-generating vintaged components is instead `model_definition.component_templating`.
       reliability:
         $ref: '#/$defs/ConstraintsReliabilityModel'
         description: Reliability requirements imposed as constraints or penalty costs
           within the optimisation, under deterministic inputs. Post-hoc adequacy assessment
           is `postprocessing.probabilistic_reliability_assessment`; probabilistic
           decision methods are `uncertainty`.
-      total:
-        $ref: '#/$defs/ConstraintsTotalModel'
-        description: Limit on an aggregate quantity over a subset or the entire time
-          horizon / spatial scope. This can represent real contract arrangements /
-          regulation.
+      scope:
+        $ref: '#/$defs/ConstraintsScopeModel'
+        description: 'What a limit spans: the regions, assets, or time periods that
+          a constraint links or applies within.'
     title: ConstraintsModel
+    type: object
+  ConstraintsPathDependentModel:
+    additionalProperties: false
+    properties:
+      investment:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Evolves based on investments made in previous periods (e.g. learning
+          curves).
+      operation:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Evolves based on operation in previous timesteps (e.g. battery
+          cycling/calendar degradation, filter fouling).
+    title: ConstraintsPathDependentModel
     type: object
   ConstraintsReliabilityMarginRequirementModel:
     additionalProperties: false
@@ -428,7 +326,117 @@ $defs:
         description: Expected-energy-not-served <EENS> limit.
     title: ConstraintsReliabilityProbabilisticReliabilityLimitModel
     type: object
-  ConstraintsTotalModel:
+  ConstraintsScopeBoundaryConditionsModel:
+    additionalProperties: false
+    properties:
+      investment:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Investment optimisation can start from an existing asset stock
+          rather than from an empty (greenfield) system or can define a desired end-state.
+          This allows pre-existing capacities to be represented (initial) and for
+          backcasting system design (end-state).
+      operation:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Initial or end-state operational conditions can be set (e.g.
+          start or end storage level requirements).
+    title: ConstraintsScopeBoundaryConditionsModel
+    type: object
+  ConstraintsScopeCommitmentModel:
+    additionalProperties: false
+    properties:
+      investment:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Limits on investment unit purchase within investment periods.
+          Usually requires `asset.capacity_representation.integer_investment_...`.
+      operation:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Limits on operational unit commit within timesteps (e.g., forced/planned
+          outage windows). Usually requires `asset.operating_representation.unit_commitment`.
+    title: ConstraintsScopeCommitmentModel
+    type: object
+  ConstraintsScopeInterAssetModel:
+    additionalProperties: false
+    properties:
+      investment:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Investment limits that link assets (e.g., land-use competition,
+          system-wide embodied emissions limits).
+      operation:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Operating limits that link assets (e.g., regional emissions limits
+          applied across all emitting assets).
+    title: ConstraintsScopeInterAssetModel
+    type: object
+  ConstraintsScopeInterSpatialModel:
+    additionalProperties: false
+    properties:
+      investment:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Investment limits that link geographic regions (e.g. a minimum
+          share of new capacity built in each region).
+      operation:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Operating limits that link geographic regions (e.g. a regional
+          self-sufficiency requirement on generation relative to demand).
+    title: ConstraintsScopeInterSpatialModel
+    type: object
+  ConstraintsScopeInterTemporalModel:
+    additionalProperties: false
+    properties:
+      investment:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Investment limits linking investment periods (e.g. build-rate
+          limits, phased retirement, availability windows).
+      operation:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Operating limits that link time periods (e.g., ramping, run up,
+          load shifting).
+    title: ConstraintsScopeInterTemporalModel
+    type: object
+  ConstraintsScopeIntraTemporalModel:
+    additionalProperties: false
+    properties:
+      investment:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Limits on investment within investment periods (e.g. minimum/maximum
+          size).
+      operation:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Limits on operation within timesteps (e.g. capacity de-rating
+          profiles, minimum/maximum load levels, renewables capacity factors).
+    title: ConstraintsScopeIntraTemporalModel
+    type: object
+  ConstraintsScopeModel:
+    additionalProperties: false
+    properties:
+      boundary_conditions:
+        $ref: '#/$defs/ConstraintsScopeBoundaryConditionsModel'
+        description: Initial and end-state conditions can be set.
+      commitment:
+        $ref: '#/$defs/ConstraintsScopeCommitmentModel'
+        description: Limits on commitment to investing in or operating an asset in
+          a given time period.
+      inter_asset:
+        $ref: '#/$defs/ConstraintsScopeInterAssetModel'
+        description: Limits that link assets, within or across regions and time.
+      inter_spatial:
+        $ref: '#/$defs/ConstraintsScopeInterSpatialModel'
+        description: Limits that link geographic regions (e.g. to ensure regional
+          equity).
+      inter_temporal:
+        $ref: '#/$defs/ConstraintsScopeInterTemporalModel'
+        description: Limits that link across time periods.
+      intra_temporal:
+        $ref: '#/$defs/ConstraintsScopeIntraTemporalModel'
+        description: Limits on how much assets can output in a given time period
+      total:
+        $ref: '#/$defs/ConstraintsScopeTotalModel'
+        description: Limit on an aggregate quantity over a subset or the entire time
+          horizon / spatial scope. This can represent real contract arrangements /
+          regulation.
+    title: ConstraintsScopeModel
+    type: object
+  ConstraintsScopeTotalModel:
     additionalProperties: false
     properties:
       investment:
@@ -439,7 +447,7 @@ $defs:
         description: Limit on total asset carrier in-/out-flow (e.g. limits on storage
           cycling, annual throughput limits, uptime, maintenance events limited by
           available spare-parts/crew resources).
-    title: ConstraintsTotalModel
+    title: ConstraintsScopeTotalModel
     type: object
   EdgeEffectsModel:
     additionalProperties: false
@@ -468,14 +476,16 @@ $defs:
       asset:
         $ref: '#/$defs/AssetModel'
         description: 'Representation of the individual assets that make up the system:
-          how their capacities and operation are modelled, the characteristics they
-          carry, and the costs they incur. Limits placed on asset investment and operation
-          are `constraints`.'
+          how their capacities are represented, how their operation is resolved, and
+          the costs they incur. Limits on asset investment and operation, and the
+          mathematical form those limits take, are `constraints`.'
       constraints:
         $ref: '#/$defs/ConstraintsModel'
-        description: Upper/lower limits on asset investment and operating decisions,
-          and reliability requirements imposed on the system as a whole, whether enforced
-          as hard constraints or as penalty costs.
+        description: Limits on asset investment and operating decisions, and reliability
+          requirements imposed on the system as a whole, whether enforced as hard
+          constraints or as penalty costs. `scope` describes what a limit spans; `functional_form`
+          describes the mathematical form of the relationships between decision variables
+          that the tool can express.
       edge_effects:
         $ref: '#/$defs/EdgeEffectsModel'
         description: Distortive effects of system boundaries and linearising model
@@ -498,8 +508,8 @@ $defs:
       model_definition:
         $ref: '#/$defs/ModelDefinitionModel'
         description: How the model's parameter space and dimensions can be shaped,
-          grouped, and reused, independent of any single characteristic, constraint,
-          or cost.
+          grouped, and reused, independent of any single parameter, constraint, or
+          cost.
       network:
         $ref: '#/$defs/NetworkModel'
         description: Network physics representation beyond the `processes.spatial_transfer`
@@ -755,8 +765,8 @@ $defs:
           problem).
       piecewise_formulation:
         $ref: '#/$defs/ToolFeatureModel'
-        description: Piecewise formulations of nonlinear relationships can be defined
-          in the math (e.g. using LP chord-line or MIP SOS2 constraints).
+        description: Piecewise formulations of nonlinear relationships (`constraints.functional_form.nonlinear`)
+          can be defined in the math (e.g. using LP chord-line or MIP SOS2 constraints).
       problem_file_export:
         $ref: '#/$defs/ToolFeatureModel'
         description: The built optimisation problem can be exported in standard formats
@@ -783,12 +793,13 @@ $defs:
           (e.g. an abstract technology definition), with edits to the template cascading
           to every inheriting component, rather than requiring per-component data
           entry. Includes programmatic, model-side generation of components from a
-          template (e.g. auto-cloned vintaged expansion candidates approximating path-dependent
-          characteristics).
+          template (e.g. auto-cloned vintaged expansion candidates approximating `constraints.path_dependent`
+          relationships).
       configurable_dimensions:
         $ref: '#/$defs/ToolFeatureModel'
-        description: The dimensionality of an asset characteristic or cost can be
-          configured by the user, limited to a set of tool-defined dimensions.
+        description: The dimensionality of an asset parameter (e.g. efficiency, availability)
+          or cost can be configured by the user, limited to a set of tool-defined
+          dimensions.
       dimension_groups:
         $ref: '#/$defs/ToolFeatureModel'
         description: Dimension members can be tagged into named, potentially overlapping
@@ -801,102 +812,12 @@ $defs:
       extensible_dimensions:
         $ref: '#/$defs/ToolFeatureModel'
         description: A dimension not natively defined by the tool (e.g. a custom vintage,
-          cohort, or scenario axis) can be introduced by the user. Asset characteristics/costs
+          cohort, or scenario axis) can be introduced by the user. Asset parameters/costs
           and math variables and constraints can be indexed over this new dimension
           (usually requires custom math - `math.user_defined_math`).
     title: ModelDefinitionModel
     type: object
-  NetworkElectricityModel:
-    additionalProperties: false
-    properties:
-      network_devices:
-        $ref: '#/$defs/NetworkElectricityNetworkDevicesModel'
-        description: Network components beyond simple lines and buses, carrying their
-          own mathematical formulations.
-      network_limits:
-        $ref: '#/$defs/NetworkElectricityNetworkLimitsModel'
-        description: Network operating limits representable in the power-flow formulation.
-      optimal_power_flow:
-        $ref: '#/$defs/NetworkElectricityOptimalPowerFlowModel'
-        description: Linearised optimal power flow can be modelled.
-      sensitivity_limits:
-        $ref: '#/$defs/NetworkElectricitySensitivityLimitsModel'
-        description: Flows can be limited using supplied linear sensitivities, as
-          an alternative to physical network limits.
-      unbalanced_flows:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Unbalanced flows (asymmetric phases) can be handled in optimal
-          power flow, usually using linearised DistFlow branch equations.
-    title: NetworkElectricityModel
-    type: object
-  NetworkElectricityNetworkDevicesModel:
-    additionalProperties: false
-    properties:
-      facts_devices:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Flexible AC Transmission System <FACTS> devices.
-      hvdc_converters:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Rectifiers, inverters, and HVDC converter stations.
-      transformers:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Shunt and phase-shifting transformers.
-    title: NetworkElectricityNetworkDevicesModel
-    type: object
-  NetworkElectricityNetworkLimitsModel:
-    additionalProperties: false
-    properties:
-      phase_angle:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Phase-angle difference limits between connected buses.
-      thermal:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Thermal (branch flow magnitude) limits.
-    title: NetworkElectricityNetworkLimitsModel
-    type: object
-  NetworkElectricityOptimalPowerFlowModel:
-    additionalProperties: false
-    properties:
-      ac_opf:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Linearised AC optimal power flow
-      dc_opf:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: DC optimal power flow
-    title: NetworkElectricityOptimalPowerFlowModel
-    type: object
-  NetworkElectricitySensitivityLimitsModel:
-    additionalProperties: false
-    properties:
-      generic_constraints:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Generic transmission Constraints defined by user-supplied sensitivity
-          coefficients not tied to a named physical factor.
-      outage_factors:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Line/Branch Outage Distribution Factor <LODF/BODF> limits, describing
-          the sensitivity of a branch flow to the outage of another branch.
-      ptdf:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Power Transfer Distribution Factor <PTDF> limits, describing
-          the sensitivity of a branch flow to a nodal injection.
-    title: NetworkElectricitySensitivityLimitsModel
-    type: object
-  NetworkModel:
-    additionalProperties: false
-    properties:
-      electricity:
-        $ref: '#/$defs/NetworkElectricityModel'
-        description: Electrical network representation beyond the `processes.spatial_transfer`
-          baseline.
-      pipeline:
-        $ref: '#/$defs/NetworkPipelineModel'
-        description: Pressure-driven network representation for carriers transported
-          through pipes, beyond the `processes.spatial_transfer` baseline (e.g. methane,
-          hydrogen, CO2, district heat/cooling, water).
-    title: NetworkModel
-    type: object
-  NetworkPipelineModel:
+  NetworkHydraulicFlowModel:
     additionalProperties: false
     properties:
       composition_tracking:
@@ -913,7 +834,97 @@ $defs:
           state are representable in the same formulation (e.g. minimum/maximum nodal
           pressure, maximum allowable operating pressure <MAOP>, contracted delivery
           pressure).
-    title: NetworkPipelineModel
+    title: NetworkHydraulicFlowModel
+    type: object
+  NetworkModel:
+    additionalProperties: false
+    properties:
+      hydraulic_flow:
+        $ref: '#/$defs/NetworkHydraulicFlowModel'
+        description: Pressure-driven network representation for carriers transported
+          through pipes, beyond the `processes.spatial_transfer` baseline (e.g. methane,
+          hydrogen, CO2, district heat/cooling, water).
+      power_flow:
+        $ref: '#/$defs/NetworkPowerFlowModel'
+        description: Electrical network representation beyond the `processes.spatial_transfer`
+          baseline.
+    title: NetworkModel
+    type: object
+  NetworkPowerFlowModel:
+    additionalProperties: false
+    properties:
+      network_devices:
+        $ref: '#/$defs/NetworkPowerFlowNetworkDevicesModel'
+        description: Network components beyond simple lines and buses, carrying their
+          own mathematical formulations.
+      network_limits:
+        $ref: '#/$defs/NetworkPowerFlowNetworkLimitsModel'
+        description: Network operating limits representable in the power-flow formulation.
+      optimal_power_flow:
+        $ref: '#/$defs/NetworkPowerFlowOptimalPowerFlowModel'
+        description: Linearised optimal power flow can be modelled.
+      sensitivity_limits:
+        $ref: '#/$defs/NetworkPowerFlowSensitivityLimitsModel'
+        description: Flows can be limited using supplied linear sensitivities, as
+          an alternative to physical network limits.
+      unbalanced_flows:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Unbalanced flows (asymmetric phases) can be handled in optimal
+          power flow, usually using linearised DistFlow branch equations.
+    title: NetworkPowerFlowModel
+    type: object
+  NetworkPowerFlowNetworkDevicesModel:
+    additionalProperties: false
+    properties:
+      facts_devices:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Flexible AC Transmission System <FACTS> devices.
+      hvdc_converters:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Rectifiers, inverters, and HVDC converter stations.
+      transformers:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Shunt and phase-shifting transformers.
+    title: NetworkPowerFlowNetworkDevicesModel
+    type: object
+  NetworkPowerFlowNetworkLimitsModel:
+    additionalProperties: false
+    properties:
+      phase_angle:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Phase-angle difference limits between connected buses.
+      thermal:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Thermal (branch flow magnitude) limits.
+    title: NetworkPowerFlowNetworkLimitsModel
+    type: object
+  NetworkPowerFlowOptimalPowerFlowModel:
+    additionalProperties: false
+    properties:
+      ac_opf:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Linearised AC optimal power flow
+      dc_opf:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: DC optimal power flow
+    title: NetworkPowerFlowOptimalPowerFlowModel
+    type: object
+  NetworkPowerFlowSensitivityLimitsModel:
+    additionalProperties: false
+    properties:
+      generic_constraints:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Generic transmission Constraints defined by user-supplied sensitivity
+          coefficients not tied to a named physical factor.
+      outage_factors:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Line/Branch Outage Distribution Factor <LODF/BODF> limits, describing
+          the sensitivity of a branch flow to the outage of another branch.
+      ptdf:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Power Transfer Distribution Factor <PTDF> limits, describing
+          the sensitivity of a branch flow to a nodal injection.
+    title: NetworkPowerFlowSensitivityLimitsModel
     type: object
   ObjectiveModel:
     additionalProperties: false
@@ -930,7 +941,7 @@ $defs:
         $ref: '#/$defs/ToolFeatureModel'
         description: Quadratic objective terms passed natively to the solver (e.g.
           quadratic generation cost curves, welfare maximisation with linear demand
-          curves).
+          curves). Quadratic terms in constraints rather than the objective are `constraints.functional_form.quadratic`.
     title: ObjectiveModel
     type: object
   OrchestrationModel:
@@ -1189,6 +1200,25 @@ $defs:
         description: Distributed slack allocation across nodes.
     title: PreprocessingSpatialDistributionModel
     type: object
+  ProcessesConversionModel:
+    additionalProperties: false
+    properties:
+      flexible_ratio:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: The ratio between a conversion process's flows is a decision
+          variable, freely allocated or constrained within a feasible operating region
+          (e.g. heat pumps serving heat and cooling, extraction-condensing CHP).
+      multi_carrier_io:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: A single conversion process has several in-flowing and/or out-flowing
+          carriers, each balanced individually, with fixed ratios between them (e.g.
+          back-pressure CHP, fixed heat-recovery fractions).
+      one_to_one:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: A single in-flowing carrier is converted to a single out-flowing
+          carrier (e.g. power plants, electrolysers without heat recovery).
+    title: ProcessesConversionModel
+    type: object
   ProcessesExplicitDemandModel:
     additionalProperties: false
     properties:
@@ -1223,7 +1253,7 @@ $defs:
 
           '
       conversion:
-        $ref: '#/$defs/ToolFeatureModel'
+        $ref: '#/$defs/ProcessesConversionModel'
         description: Carriers are transformed into other carriers within the system
           boundary (e.g. power plants, electrolysers, heat pumps, CO2 capture). This
           enables coupled multi-carrier optimisation.
@@ -1244,8 +1274,8 @@ $defs:
       spatial_transfer:
         $ref: '#/$defs/ToolFeatureModel'
         description: Carriers are moved between regions as continuous flow subject
-          to transfer-capacity limits, without network physics. See `network.electricity`
-          / `network.pipeline` for network physics features.
+          to transfer-capacity limits, without network physics. See `network.power_flow`
+          / `network.hydraulic_flow` for network physics features.
       state_changing_transfer:
         $ref: '#/$defs/ToolFeatureModel'
         description: Carrier movement requiring the carrier's physical state to be
@@ -1382,9 +1412,9 @@ $defs:
         description: Constraints unlikely to bind are omitted or lazily added.
       convex_relaxation:
         $ref: '#/$defs/ToolFeatureModel'
-        description: A non-convex relationship is approximated by a convex relaxation,
-          retaining solver tractability (e.g. second-order-cone relaxation of AC power
-          flow).
+        description: A non-convex relationship (`constraints.functional_form.nonlinear`)
+          is approximated by a convex relaxation, retaining solver tractability (e.g.
+          second-order-cone relaxation of AC power flow).
       decomposition:
         $ref: '#/$defs/ToolFeatureModel'
         description: The problem is split into coordinated sub-problems solved iteratively
@@ -1392,9 +1422,9 @@ $defs:
           Dual Dynamic Programming <SDDP> for multi-stage stochastic hydropower scheduling).
       function_conversion:
         $ref: '#/$defs/ToolFeatureModel'
-        description: User-defined arbitrary non-linear functions are automatically
-          converted into valid model inputs (e.g. piecewise segments) without manual
-          discretisation.
+        description: User-defined arbitrary non-linear functions (`constraints.functional_form.nonlinear`)
+          are automatically converted into valid model inputs (e.g. piecewise segments)
+          without manual discretisation.
       linearised_unit_commitment:
         $ref: '#/$defs/ToolFeatureModel'
         description: Unit commitment approximated with continuous (linearised) commitment
@@ -1503,47 +1533,11 @@ properties:
           retrofit:
             source: []
             value: '?'
-        characteristics:
-          linear:
-            investment:
-              source: []
-              value: '?'
-            operation:
-              source: []
-              value: '?'
-          nonlinear:
-            investment:
-              source: []
-              value: '?'
-            operation:
-              source: []
-              value: '?'
-          path_dependent:
-            investment:
-              source: []
-              value: '?'
-            operation:
-              source: []
-              value: '?'
-          quadratic:
-            investment:
-              source: []
-              value: '?'
-            operation:
-              source: []
-              value: '?'
         cost:
           annuitisation:
             source: []
             value: '?'
           inter_temporal:
-            investment:
-              source: []
-              value: '?'
-            operation:
-              source: []
-              value: '?'
-          linear:
             investment:
               source: []
               value: '?'
@@ -1579,45 +1573,32 @@ properties:
             source: []
             value: '?'
       constraints:
-        boundary_conditions:
-          investment:
-            source: []
-            value: '?'
-          operation:
-            source: []
-            value: '?'
-        commitment:
-          investment:
-            source: []
-            value: '?'
-          operation:
-            source: []
-            value: '?'
         dedicated_flow_routing:
           source: []
           value: '?'
-        inter_asset:
-          investment:
-            source: []
-            value: '?'
-          operation:
-            source: []
-            value: '?'
-        inter_spatial:
-          investment:
-            source: []
-            value: '?'
-          operation:
-            source: []
-            value: '?'
-        inter_temporal:
-          investment:
-            source: []
-            value: '?'
-          operation:
-            source: []
-            value: '?'
-        intra_temporal:
+        functional_form:
+          linear_multi_variable:
+            investment:
+              source: []
+              value: '?'
+            operation:
+              source: []
+              value: '?'
+          nonlinear:
+            investment:
+              source: []
+              value: '?'
+            operation:
+              source: []
+              value: '?'
+          quadratic:
+            investment:
+              source: []
+              value: '?'
+            operation:
+              source: []
+              value: '?'
+        path_dependent:
           investment:
             source: []
             value: '?'
@@ -1645,13 +1626,56 @@ properties:
           unserved_demand:
             source: []
             value: '?'
-        total:
-          investment:
-            source: []
-            value: '?'
-          operation:
-            source: []
-            value: '?'
+        scope:
+          boundary_conditions:
+            investment:
+              source: []
+              value: '?'
+            operation:
+              source: []
+              value: '?'
+          commitment:
+            investment:
+              source: []
+              value: '?'
+            operation:
+              source: []
+              value: '?'
+          inter_asset:
+            investment:
+              source: []
+              value: '?'
+            operation:
+              source: []
+              value: '?'
+          inter_spatial:
+            investment:
+              source: []
+              value: '?'
+            operation:
+              source: []
+              value: '?'
+          inter_temporal:
+            investment:
+              source: []
+              value: '?'
+            operation:
+              source: []
+              value: '?'
+          intra_temporal:
+            investment:
+              source: []
+              value: '?'
+            operation:
+              source: []
+              value: '?'
+          total:
+            investment:
+              source: []
+              value: '?'
+            operation:
+              source: []
+              value: '?'
       edge_effects:
         energy_balance:
           source: []
@@ -1785,7 +1809,14 @@ properties:
           source: []
           value: '?'
       network:
-        electricity:
+        hydraulic_flow:
+          composition_tracking:
+            source: []
+            value: '?'
+          linearised_flow:
+            source: []
+            value: '?'
+        power_flow:
           network_devices:
             facts_devices:
               source: []
@@ -1821,13 +1852,6 @@ properties:
               source: []
               value: '?'
           unbalanced_flows:
-            source: []
-            value: '?'
-        pipeline:
-          composition_tracking:
-            source: []
-            value: '?'
-          linearised_flow:
             source: []
             value: '?'
       objective:
@@ -1980,8 +2004,15 @@ properties:
           source: []
           value: '?'
         conversion:
-          source: []
-          value: '?'
+          flexible_ratio:
+            source: []
+            value: '?'
+          multi_carrier_io:
+            source: []
+            value: '?'
+          one_to_one:
+            source: []
+            value: '?'
         delayed_transfer:
           source: []
           value: '?'
