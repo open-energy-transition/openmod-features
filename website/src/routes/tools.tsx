@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 openmod-features contributors
+//
+// SPDX-License-Identifier: MIT
+
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import { useDashboardContext } from '../components/dashboard-layout'

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 openmod-features contributors
+//
+// SPDX-License-Identifier: MIT
+
 import { describe, expect, it } from 'vitest'
 import {
   calculateToolCoverage,

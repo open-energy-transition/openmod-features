@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 openmod-features contributors
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Cloudflare Pages Deployment
 
 This dashboard is deployed as a static Cloudflare Pages site. It does not use a Worker or Pages Functions.

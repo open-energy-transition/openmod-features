@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 openmod-features contributors
+//
+// SPDX-License-Identifier: MIT
+
 import { Checkbox } from '@base-ui/react/checkbox'
 import { Switch } from '@base-ui/react/switch'
 import { Tooltip } from '@base-ui/react/tooltip'

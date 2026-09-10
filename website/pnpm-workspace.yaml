@@ -1,2 +1,6 @@
+# SPDX-FileCopyrightText: 2026 openmod-features contributors
+#
+# SPDX-License-Identifier: CC-BY-4.0
+
 allowBuilds:
   esbuild: true

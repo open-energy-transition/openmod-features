@@ -6,13 +6,16 @@ SPDX-PackageDownloadLocation = "https://github.com/open-energy-transition/openmo
 [[annotations]]
 path = [
     ".github/pull_request_template.md",
-    "schema/*schema.yaml"
+    "schema/*schema.yaml",
+    "website/**/*.json"
 ]
 SPDX-FileCopyrightText = "openmod-features contributors"
 SPDX-License-Identifier = "CC-BY-4.0"
 
 [[annotations]]
 path = [
+    "website/public/_headers",
+    "website/pnpm-lock.yaml",
     "pixi.lock",
 ]
 SPDX-FileCopyrightText = "openmod-features contributors"

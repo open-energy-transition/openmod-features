@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 openmod-features contributors
+//
+// SPDX-License-Identifier: MIT
+
 import tailwindcss from '@tailwindcss/vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import viteReact from '@vitejs/plugin-react'

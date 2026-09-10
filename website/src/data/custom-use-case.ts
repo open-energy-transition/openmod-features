@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 openmod-features contributors
+//
+// SPDX-License-Identifier: MIT
+
 import type { TaxonomyCategory, UseCaseRecord } from './types'
 
 export const CUSTOM_USE_CASE_PARAM = 'custom_features'

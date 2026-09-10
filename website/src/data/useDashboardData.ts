@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 openmod-features contributors
+//
+// SPDX-License-Identifier: MIT
+
 import { useEffect, useState } from 'react'
 import type { DashboardData } from './types'
 

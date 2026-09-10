@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 openmod-features contributors
+//
+// SPDX-License-Identifier: MIT
+
 import { Tooltip } from '@base-ui/react/tooltip'
 import { Switch } from '@base-ui/react/switch'
 import { Link, Outlet, useLocation } from '@tanstack/react-router'

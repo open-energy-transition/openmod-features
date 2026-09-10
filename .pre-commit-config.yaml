@@ -19,6 +19,7 @@ repos:
       - id: codespell
         args: [
           "--exclude-file=pixi.lock",
+          "--exclude-file=website/pnpm-lock.yaml",
           "--skip=user_analysis/config/*.yaml",
           "--skip=inventory/*.yaml",
           "--skip=*.csv"

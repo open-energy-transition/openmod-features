@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 openmod-features contributors
+//
+// SPDX-License-Identifier: MIT
+
 import { Drawer } from '@base-ui/react/drawer'
 import {
   FaArrowUpRightFromSquare,
