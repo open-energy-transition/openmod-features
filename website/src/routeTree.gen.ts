@@ -1,7 +1,3 @@
-// SPDX-FileCopyrightText: 2026 openmod-features contributors
-//
-// SPDX-License-Identifier: MIT
-
 /* eslint-disable */
 
 // @ts-nocheck

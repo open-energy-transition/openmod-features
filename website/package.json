@@ -6,7 +6,7 @@
     "dev": "pnpm generate:data && vite dev",
     "build": "pnpm generate:data && vite build && pnpm export:static && tsc --noEmit",
     "build:cloudflare": "DEPLOY_BASE=/ pnpm build",
-    "deploy:cloudflare": "pnpm build:cloudflare && pnpm dlx wrangler pages deploy dist/client --project-name openmod-features-dashboard",
+    "deploy:cloudflare": "pnpm build:cloudflare && pnpm dlx --allow-build esbuild --allow-build workerd wrangler pages deploy dist/client --project-name openmod-features-dashboard",
     "export:static": "node scripts/export-static.mjs",
     "preview": "vite preview",
     "generate:data": "node scripts/generate-data.mjs",
