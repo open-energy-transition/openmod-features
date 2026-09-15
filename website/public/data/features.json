@@ -1,177 +1,712 @@
 {
-  "generatedAt": "2026-09-14T09:13:09.432Z",
+  "generatedAt": "2026-09-15T16:41:05.885Z",
   "taxonomy": [
     {
-      "id": "time__horizon",
-      "label": "time > horizon",
-      "description": "The modelled time horizon",
+      "id": "processes",
+      "label": "processes",
+      "description": "Fundamental carrier-flow capabilities the tool can represent, defined by their mathematical role rather than by named technologies. `Carriers` are the energy or non-energy commodities that flow between processes (e.g. electricity, heat, hydrogen, CO2, water, materials). Only physical processes are in scope; decision-making agents are `actors`.",
       "members": [
         {
-          "id": "multi_year",
-          "label": "multi year",
-          "description": "multiple years",
-          "baseline": "n"
+          "id": "boundary_exchange",
+          "label": "boundary exchange",
+          "description": "",
+          "baseline": "?"
         },
         {
-          "id": "single_year",
-          "label": "single year",
-          "description": "single year",
-          "baseline": "y"
+          "id": "conversion",
+          "label": "conversion",
+          "description": "Carriers are transformed into other carriers within the system boundary (e.g. power plants, electrolysers, heat pumps, CO2 capture). This enables coupled multi-carrier optimisation.",
+          "baseline": "?"
         },
         {
-          "id": "sub_year",
-          "label": "sub year",
-          "description": "between one day and one year",
-          "baseline": "y"
+          "id": "temporal_transfer",
+          "label": "temporal transfer",
+          "description": "",
+          "baseline": "?"
         },
         {
-          "id": "sub_day",
-          "label": "sub day",
-          "description": "less than one day",
-          "baseline": "n"
+          "id": "spatial_transfer",
+          "label": "spatial transfer",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "delayed_transfer",
+          "label": "delayed transfer",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "buffered_transfer",
+          "label": "buffered transfer",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "discrete_transport",
+          "label": "discrete transport",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "state_changing_transfer",
+          "label": "state changing transfer",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "explicit_demand",
+          "label": "explicit demand",
+          "description": "Carriers are consumed within the system boundary by explicit processes with their own balances and constraints, rather than by a fixed exogenous profile parameter.",
+          "baseline": "?"
         }
       ]
     },
     {
-      "id": "time__foresight",
-      "label": "time > foresight",
-      "description": "The modelling horizon per optimisation iteration",
+      "id": "network",
+      "label": "network",
+      "description": "Network physics representation beyond the `processes.spatial_transfer` baseline, where flows are coupled by the physics of the transporting medium rather than by capacity limits alone.",
       "members": [
         {
-          "id": "perfect",
-          "label": "perfect",
-          "description": "perfect foresight",
-          "baseline": "n"
+          "id": "power_flow",
+          "label": "power flow",
+          "description": "Electrical network representation beyond the `processes.spatial_transfer` baseline.",
+          "baseline": "?"
         },
         {
-          "id": "myopic",
-          "label": "myopic",
-          "description": "myopic foresight",
-          "baseline": "n"
+          "id": "hydraulic_flow",
+          "label": "hydraulic flow",
+          "description": "Pressure-driven network representation for carriers transported through pipes, beyond the `processes.spatial_transfer` baseline (e.g. methane, hydrogen, CO2, district heat/cooling, water).",
+          "baseline": "?"
+        }
+      ]
+    },
+    {
+      "id": "asset",
+      "label": "asset",
+      "description": "Representation of the individual assets that make up the system: how their capacities are represented, how their operation is resolved, and the costs they incur. Limits on asset investment and operation, and the mathematical form those limits take, are `constraints`.",
+      "members": [
+        {
+          "id": "capacity_representation",
+          "label": "capacity representation",
+          "description": "How asset capacities can be represented in the model and optimisation problem.",
+          "baseline": "?"
+        },
+        {
+          "id": "operating_representation",
+          "label": "operating representation",
+          "description": "The resolution of asset operation representation in the model. A linearised approximation of unit commitment is `tractability.reformulation.linearised_unit_commitment`.",
+          "baseline": "?"
+        },
+        {
+          "id": "cost",
+          "label": "cost",
+          "description": "Asset investment and operating cost representation. Cost which varies linearly with a decision variable (e.g. EUR/MW capital cost on nameplate capacity, EUR/MWh operating cost on flow) is the baseline; we do not track it explicitly here.",
+          "baseline": "?"
+        }
+      ]
+    },
+    {
+      "id": "constraints",
+      "label": "constraints",
+      "description": "Limits on asset investment and operating decisions, and reliability requirements imposed on the system as a whole, whether enforced as hard constraints or as penalty costs. `scope` describes what a limit spans; `functional_form` describes the mathematical form of the relationships between decision variables that the tool can express.",
+      "members": [
+        {
+          "id": "scope",
+          "label": "scope",
+          "description": "What a limit spans: the regions, assets, or time periods that a constraint links or applies within.",
+          "baseline": "?"
+        },
+        {
+          "id": "functional_form",
+          "label": "functional form",
+          "description": "The mathematical form of the relationships the tool can impose between decision variables, and hence the problem class handed to the solver. A linear relationship between an input parameter and a single decision variable (e.g. a fixed efficiency applied to a flow, resource availability scaled by capacity) is the baseline; we do not track it explicitly here. Non-linear and quadratic terms in the objective are instead `asset.cost.nonlinear` / `objective.quadratic`.",
+          "baseline": "?"
+        },
+        {
+          "id": "path_dependent",
+          "label": "path dependent",
+          "description": "Constraints in which a quantity evolves endogenously based on cumulative historical decisions, rather than from input parameters alone. Approximating this by pre-generating vintaged components is instead `model_definition.component_templating`.",
+          "baseline": "?"
+        },
+        {
+          "id": "dedicated_flow_routing",
+          "label": "dedicated flow routing",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "reliability",
+          "label": "reliability",
+          "description": "Reliability requirements imposed as constraints or penalty costs within the optimisation, under deterministic inputs. Post-hoc adequacy assessment is `postprocessing.probabilistic_reliability_assessment`; probabilistic decision methods are `uncertainty`.",
+          "baseline": "?"
+        }
+      ]
+    },
+    {
+      "id": "model_definition",
+      "label": "model definition",
+      "description": "How the model's parameter space and dimensions can be shaped, grouped, and reused, independent of any single parameter, constraint, or cost.",
+      "members": [
+        {
+          "id": "dimension_groups",
+          "label": "dimension groups",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "component_templating",
+          "label": "component templating",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "configurable_dimensions",
+          "label": "configurable dimensions",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "extensible_dimensions",
+          "label": "extensible dimensions",
+          "description": "",
+          "baseline": "?"
+        }
+      ]
+    },
+    {
+      "id": "math",
+      "label": "math",
+      "description": "Access to, and user extension of, the underlying mathematical formulation.",
+      "members": [
+        {
+          "id": "formulation_transparency",
+          "label": "formulation transparency",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "problem_file_export",
+          "label": "problem file export",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "dual_extraction",
+          "label": "dual extraction",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "piecewise_formulation",
+          "label": "piecewise formulation",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "user_defined_math",
+          "label": "user defined math",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "soft_constraints",
+          "label": "soft constraints",
+          "description": "",
+          "baseline": "?"
+        }
+      ]
+    },
+    {
+      "id": "interface",
+      "label": "interface",
+      "description": "Available options for users and machines to drive the tool: defining, configuring, and structuring a model (`build`); executing a model run (`run`); interacting with model outputs (`analyse`); plus tool-level execution and solver configuration.",
+      "members": [
+        {
+          "id": "gui",
+          "label": "gui",
+          "description": "Graphical user interface.",
+          "baseline": "?"
+        },
+        {
+          "id": "api",
+          "label": "api",
+          "description": "Programmatic interface (e.g. language API, web API).",
+          "baseline": "?"
+        },
+        {
+          "id": "cli",
+          "label": "cli",
+          "description": "Command line interface.",
+          "baseline": "?"
+        },
+        {
+          "id": "remote_execution",
+          "label": "remote execution",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "solver_configuration",
+          "label": "solver configuration",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "analysis_templates",
+          "label": "analysis templates",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "visualisation",
+          "label": "visualisation",
+          "description": "Built-in rendering of model inputs or outputs as visual artefacts, independent of whether a `gui` is available to interact with them.",
+          "baseline": "?"
+        }
+      ]
+    },
+    {
+      "id": "io",
+      "label": "io",
+      "description": "Data formats, conventions, and mechanisms for moving model input/output data. Computing new parameters is `preprocessing`.",
+      "members": [
+        {
+          "id": "plain_text",
+          "label": "plain text",
+          "description": "Data in human-readable, diff- and version-control-friendly text formats (e.g. CSV, JSON, YAML).",
+          "baseline": "?"
+        },
+        {
+          "id": "binary",
+          "label": "binary",
+          "description": "Data in compact / compressible, non-human-readable binary formats (e.g. Excel, NetCDF, HDF5, Parquet).",
+          "baseline": "?"
+        },
+        {
+          "id": "database",
+          "label": "database",
+          "description": "Data in databases (relational or otherwise).",
+          "baseline": "?"
+        },
+        {
+          "id": "remote_storage",
+          "label": "remote storage",
+          "description": "Data can be read from / written to remote storage (e.g. object stores, cloud drives).",
+          "baseline": "?"
+        },
+        {
+          "id": "lazy_loading",
+          "label": "lazy loading",
+          "description": "Data can be loaded lazily / out-of-core, allowing datasets larger than memory.",
+          "baseline": "?"
+        },
+        {
+          "id": "standardised",
+          "label": "standardised",
+          "description": "Accepts or emits data following a community-recognised convention or ontology (e.g. Open Energy Ontology <OEO>, IAMC template, the Energy System Description Language <ESDL>, Common Energy System Model <CESM>, SiennaSchemas), including standardised network-data formats (e.g. PSSE RAW, matpower case files, Common Information Model <CIM>).",
+          "baseline": "?"
         }
       ]
     },
     {
       "id": "edge_effects",
       "label": "edge effects",
-      "description": "Distortive effects of system boundaries and linearising model components can be mitigated against",
+      "description": "Distortive effects of system boundaries and linearising model components can be mitigated against. Flows across the spatial boundary are `processes.boundary_exchange`.",
       "members": [
         {
           "id": "time_operational",
           "label": "time operational",
-          "description": "start/end-of-horizon operational effects (e.g. storage level wrapping)",
-          "baseline": "n"
+          "description": "",
+          "baseline": "?"
         },
         {
           "id": "time_financial",
           "label": "time financial",
-          "description": "start/end-of-horizon financial effects (e.g. asset investment annuitisation)",
-          "baseline": "n"
-        },
-        {
-          "id": "spatial",
-          "label": "spatial",
-          "description": "energy flows into/out of the modelled region",
-          "baseline": "y"
+          "description": "",
+          "baseline": "?"
         },
         {
           "id": "energy_balance",
           "label": "energy balance",
-          "description": "energy 'destruction' caused by simultaneous in- & out-flow from a lossy transmission/storage asset",
-          "baseline": "n"
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "spatial",
+          "label": "spatial",
+          "description": "",
+          "baseline": "?"
         }
       ]
     },
     {
-      "id": "time__resolution__simplification",
-      "label": "time > resolution > simplification",
-      "description": "Temporal resolution adjustment options",
+      "id": "actors",
+      "label": "actors",
+      "description": "Representation of heterogeneous decision-making actors, deviating from the single, central-planner baseline.",
       "members": [
         {
-          "id": "resampling",
-          "label": "resampling",
-          "description": "temporal up/down-sampling",
-          "baseline": "n"
+          "id": "portfolio",
+          "label": "portfolio",
+          "description": "",
+          "baseline": "?"
         },
         {
-          "id": "typical_periods",
-          "label": "typical periods",
-          "description": "full timeseries is represented by typical periods (days, weeks, months)",
-          "baseline": "n"
+          "id": "distributed_objectives",
+          "label": "distributed objectives",
+          "description": "",
+          "baseline": "?"
         },
         {
-          "id": "load_duration_curves",
-          "label": "load duration curves",
-          "description": "full timeseries is represented by load duration curves",
-          "baseline": "n"
+          "id": "equilibrium",
+          "label": "equilibrium",
+          "description": "",
+          "baseline": "?"
         },
         {
-          "id": "distortion_mitigation",
-          "label": "distortion mitigation",
-          "description": "methods to manage inter-temporal model features in a temporally simplified model",
-          "baseline": "n"
+          "id": "heuristic_markup",
+          "label": "heuristic markup",
+          "description": "",
+          "baseline": "?"
         }
       ]
     },
     {
-      "id": "spatial__resolution__simplification",
-      "label": "spatial > resolution > simplification",
-      "description": "Spatial resolution adjustment options",
+      "id": "pathway",
+      "label": "pathway",
+      "description": "Foresight extent and planning direction across operational (intra-annual) or investment (inter-annual) time periods. A single-snapshot run — \"overnight\" capacity expansion, or dispatch without a time dimension - is the baseline; we do not track it explicitly here.",
       "members": [
         {
-          "id": "resampling",
-          "label": "resampling",
-          "description": "spatial zone aggregation/disaggregation. Usually from nodal (bus) level to regional/bidding zone level",
-          "baseline": "n"
+          "id": "perfect_foresight",
+          "label": "perfect foresight",
+          "description": "Perfect foresight capacity expansion / dispatch.",
+          "baseline": "?"
         },
         {
-          "id": "network",
-          "label": "network",
-          "description": "network element equivalencing",
-          "baseline": "n"
+          "id": "myopic_foresight",
+          "label": "myopic foresight",
+          "description": "Time periods are optimised sequentially, with each decision made without knowledge / with limited knowledge of later periods.",
+          "baseline": "?"
+        }
+      ]
+    },
+    {
+      "id": "objective",
+      "label": "objective",
+      "description": "Objective-function options beyond minimisation of a single linear cost term.",
+      "members": [
+        {
+          "id": "multi_objective_weighted",
+          "label": "multi objective weighted",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "multi_objective_pareto",
+          "label": "multi objective pareto",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "quadratic",
+          "label": "quadratic",
+          "description": "",
+          "baseline": "?"
+        }
+      ]
+    },
+    {
+      "id": "uncertainty",
+      "label": "uncertainty",
+      "description": "Methods that restructure the decision problem to account for parametric or structural uncertainty.",
+      "members": [
+        {
+          "id": "two_stage_stochastic",
+          "label": "two stage stochastic",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "multi_stage_stochastic",
+          "label": "multi stage stochastic",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "risk_aversion",
+          "label": "risk aversion",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "near_optimal",
+          "label": "near optimal",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "robust_optimisation",
+          "label": "robust optimisation",
+          "description": "",
+          "baseline": "?"
+        }
+      ]
+    },
+    {
+      "id": "tractability",
+      "label": "tractability",
+      "description": "Approaches to reduce the computational cost of building and solving the problem, trading exactness for speed.",
+      "members": [
+        {
+          "id": "dimension_reduction",
+          "label": "dimension reduction",
+          "description": "Options to reduce the size of a given dimension of the problem.",
+          "baseline": "?"
+        },
+        {
+          "id": "reformulation",
+          "label": "reformulation",
+          "description": "Approximations of discrete or non-linear formulations that preserve (mixed-integer) linear tractability.",
+          "baseline": "?"
+        }
+      ]
+    },
+    {
+      "id": "orchestration",
+      "label": "orchestration",
+      "description": "Tool-managed workflows coordinating multiple complete runs in series/parallel, where the result emerges from the ensemble or its convergence.",
+      "members": [
+        {
+          "id": "rolling_horizon",
+          "label": "rolling horizon",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "coupled_models",
+          "label": "coupled models",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "simulation_optimisation",
+          "label": "simulation optimisation",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "scenario_runs",
+          "label": "scenario runs",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "sampled_runs",
+          "label": "sampled runs",
+          "description": "",
+          "baseline": "?"
+        }
+      ]
+    },
+    {
+      "id": "preprocessing",
+      "label": "preprocessing",
+      "description": "Options to generate parameters derived from user-defined input data before running the model. Moving/storing data is `io`.",
+      "members": [
+        {
+          "id": "forecasting",
+          "label": "forecasting",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "resource_conversion",
+          "label": "resource conversion",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "spatial_distribution",
+          "label": "spatial distribution",
+          "description": "A user-defined parameter can be automatically distributed spatially using other spatial parameters.",
+          "baseline": "?"
+        },
+        {
+          "id": "download",
+          "label": "download",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "model_catalogue",
+          "label": "model catalogue",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "scenario_generation",
+          "label": "scenario generation",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "input_validation",
+          "label": "input validation",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "numeric_scaling",
+          "label": "numeric scaling",
+          "description": "",
+          "baseline": "?"
+        }
+      ]
+    },
+    {
+      "id": "postprocessing",
+      "label": "postprocessing",
+      "description": "Postprocessing analyses that can be triggered by the tool based on model outputs, on a per-asset or system-wide basis.",
+      "members": [
+        {
+          "id": "impact_assessment",
+          "label": "impact assessment",
+          "description": "Auxiliary impacts calculated from model outputs.",
+          "baseline": "?"
+        },
+        {
+          "id": "operational",
+          "label": "operational",
+          "description": "Operational analyses derived from model outputs.",
+          "baseline": "?"
+        },
+        {
+          "id": "financial",
+          "label": "financial",
+          "description": "Financial analyses for business cases, derived from model outputs.",
+          "baseline": "?"
+        },
+        {
+          "id": "network_transfer_metrics",
+          "label": "network transfer metrics",
+          "description": "Network transfer capability and flow-sensitivity metrics derived from model outputs.",
+          "baseline": "?"
+        },
+        {
+          "id": "aggregation",
+          "label": "aggregation",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "disaggregation",
+          "label": "disaggregation",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "scenario_comparison",
+          "label": "scenario comparison",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "probabilistic_reliability_assessment",
+          "label": "probabilistic reliability assessment",
+          "description": "Probabilistic resource-adequacy metrics calculated post-hoc. Sampling-based run orchestration to produce them is `orchestration.sampled_runs`.",
+          "baseline": "?"
+        },
+        {
+          "id": "curtailment",
+          "label": "curtailment",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "future_cost_function",
+          "label": "future cost function",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "gtc",
+          "label": "gtc",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "lcoe",
+          "label": "lcoe",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "lodf",
+          "label": "lodf",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "ptdf",
+          "label": "ptdf",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "shadow_prices",
+          "label": "shadow prices",
+          "description": "",
+          "baseline": "?"
+        }
+      ]
+    },
+    {
+      "id": "transparency",
+      "label": "transparency",
+      "description": "Transparency of the modelling pipeline: logs, diagnostics, and traceability of data as it moves through the workflow.",
+      "members": [
+        {
+          "id": "run_logs",
+          "label": "run logs",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "infeasibility_diagnosis",
+          "label": "infeasibility diagnosis",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "metadata_propagation",
+          "label": "metadata propagation",
+          "description": "Metadata is propagated from inputs through to outputs.",
+          "baseline": "?"
+        },
+        {
+          "id": "intermediate_access",
+          "label": "intermediate access",
+          "description": "",
+          "baseline": "?"
         }
       ]
     },
     {
       "id": "asset__candidates",
       "label": "asset > candidates",
-      "description": "Asset types and whether or not assets capacity decisions are decision variables in the model",
+      "description": "",
       "members": [
-        {
-          "id": "generators",
-          "label": "generators",
-          "description": "carrier generator, consuming resources from outside the system boundary ",
-          "baseline": "y"
-        },
         {
           "id": "converters",
           "label": "converters",
-          "description": "carrier generator, consuming other carriers from inside the system boundary. Necessary for coupled carrier optimisation",
-          "baseline": "n"
-        },
-        {
-          "id": "storage",
-          "label": "storage",
-          "description": "carrier storage, to delay carrier flows in time",
-          "baseline": "n"
-        },
-        {
-          "id": "fluid_or_gas_distribution",
-          "label": "fluid or gas distribution",
-          "description": "carrier distribution through pressurised pipework",
-          "baseline": "n"
+          "description": "",
+          "baseline": "?"
         },
         {
           "id": "electricity_transmission",
           "label": "electricity transmission",
-          "description": "carrier distribution through electrical transmission lines",
-          "baseline": "y"
-        },
-        {
-          "id": "loads",
-          "label": "loads",
-          "description": "carrier consumers, explicitly defined to allow for e.g. demand-side management",
-          "baseline": "y"
+          "description": "",
+          "baseline": "?"
         },
         {
           "id": "endogenous",
@@ -184,38 +719,38 @@
           "label": "exogenous",
           "description": "",
           "baseline": "?"
+        },
+        {
+          "id": "fluid_or_gas_distribution",
+          "label": "fluid or gas distribution",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "generators",
+          "label": "generators",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "loads",
+          "label": "loads",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "storage",
+          "label": "storage",
+          "description": "",
+          "baseline": "?"
         }
       ]
     },
     {
       "id": "asset__capacity_representation",
       "label": "asset > capacity representation",
-      "description": "Asset capacity representation (e.g. fixed or endogenous, discrete or continuous)",
+      "description": "",
       "members": [
-        {
-          "id": "exogenous_capacity",
-          "label": "exogenous capacity",
-          "description": "asset capacity is fixed and fully defined in the input data (e.g. for modelling dispatch only)",
-          "baseline": "y"
-        },
-        {
-          "id": "continuous_capacity",
-          "label": "continuous capacity",
-          "description": "asset capacity is fully endogenous and modeled as a continuous (linear) decision variable; an optional maximum capacity can be specified in the input data (e.g. PV capacity that can be installed at any capacity from zero to a maximum defined by land-use constraints)",
-          "baseline": "n"
-        },
-        {
-          "id": "integer_investment_exogenous_capacity",
-          "label": "integer investment exogenous capacity",
-          "description": "asset capacity magnitude is fixed in the input data; investment is modeled as a discrete (e.g., integer) decision variable (e.g. nuclear power plants whose capacity is fixed & indivisible due to external constraints but the decision to invest in this capacity is as-yet undecided)",
-          "baseline": "n"
-        },
-        {
-          "id": "integer_investment_continuous_capacity",
-          "label": "integer investment continuous capacity",
-          "description": "asset capacity magnitude is endogenous and modeled as a continuous (linear) decision variable; investment is also endogenous and represented by a binary decision variable; an optional maximum capacity can be specified in the input data (e.g. gas turbines that you want to track as individual units (to which other constraints will apply) and whose capacity is not fixed by the manufacturer)",
-          "baseline": "n"
-        },
         {
           "id": "grouped",
           "label": "grouped",
@@ -237,621 +772,604 @@
       ]
     },
     {
-      "id": "asset__resolution",
-      "label": "asset > resolution",
-      "description": "The level of physical detail at which assets are represented",
-      "members": [
-        {
-          "id": "units",
-          "label": "units",
-          "description": "assets are modelled as discrete units which reflect physical assets 1-to-1",
-          "baseline": "n"
-        },
-        {
-          "id": "grouped",
-          "label": "grouped",
-          "description": "physical assets are aggregated into asset groups when modelled.",
-          "baseline": "y"
-        },
-        {
-          "id": "mixed",
-          "label": "mixed",
-          "description": "in a multi-year optimisation, physical assets can be aggregated in some years and discretised in others.",
-          "baseline": "n"
-        }
-      ]
-    },
-    {
-      "id": "asset__operating_representation",
-      "label": "asset > operating representation",
-      "description": "The resolution of asset operation representation in the model",
-      "members": [
-        {
-          "id": "uced",
-          "label": "uced",
-          "description": "assets can be committed as units and then economically dispatched. This requires unit-level asset capacity representation",
-          "baseline": "n"
-        },
-        {
-          "id": "ed",
-          "label": "ed",
-          "description": "assets can only be economically dispatched. This is possible with unit-level or grouped asset capacity representation",
-          "baseline": "y"
-        }
-      ]
-    },
-    {
-      "id": "asset__operating_constraints",
-      "label": "asset > operating constraints",
-      "description": "Upper/lower limits on asset operation",
-      "members": [
-        {
-          "id": "inter_temporal",
-          "label": "inter temporal",
-          "description": "limits that link time periods (e.g., ramping, run up, load shifting)",
-          "baseline": "n"
-        },
-        {
-          "id": "inter_spatial",
-          "label": "inter spatial",
-          "description": "limits that link geographic regions",
-          "baseline": "n"
-        },
-        {
-          "id": "operating",
-          "label": "operating",
-          "description": "limits applied to operating time periods (maintenance schedule) or when operating (load rate). Usually requires unit-level asset capacity representation.",
-          "baseline": "n"
-        },
-        {
-          "id": "total",
-          "label": "total",
-          "description": "limit on total asset carrier in-/out-flow over a subset or the entire time horizon / spatial scope. This can represent real contract arrangements / regulation.",
-          "baseline": "n"
-        }
-      ]
-    },
-    {
-      "id": "asset__operating_characteristics",
-      "label": "asset > operating characteristics",
-      "description": "Asset operating characteristics representation (e.g. efficiency, resource availability)",
-      "members": [
-        {
-          "id": "static non_dimensional",
-          "label": "static non dimensional",
-          "description": "asset characteristics are independent of decision variables and model dimensions (e.g. space, time)",
-          "baseline": "y"
-        },
-        {
-          "id": "static_dimensional",
-          "label": "static dimensional",
-          "description": "asset characteristics are independent of decision variables but dependent on model dimensions (e.g. space, time)",
-          "baseline": "y"
-        },
-        {
-          "id": "linear",
-          "label": "linear",
-          "description": "asset characteristics vary linearly with a single decision variable (e.g. resource availability increasing with asset capacity)",
-          "baseline": "y"
-        },
-        {
-          "id": "piecewise",
-          "label": "piecewise",
-          "description": "asset characteristics vary depending on operating decision variables creating a non-linear relationship that can be described by a piecewise linear curve (e.g., part-load efficiency, linked to capacity, storage head effects)",
-          "baseline": "n"
-        },
-        {
-          "id": "iterative",
-          "label": "iterative",
-          "description": "asset characteristics vary depending on operating decision variables creating a non-linear relationship that can only be converged upon iteratively (e.g. transmission line losses)",
-          "baseline": "n"
-        }
-      ]
-    },
-    {
       "id": "asset__chaining",
       "label": "asset > chaining",
-      "description": "Options to explicitly chain / link specific assets or asset types such that certain carrier flows can only occur between each other",
+      "description": "",
       "members": [
-        {
-          "id": "stockpiling",
-          "label": "stockpiling",
-          "description": "storage of a specific generation asset's input material energy carrier (e.g., fuel, biomass, water) before conversion",
-          "baseline": "n"
-        },
         {
           "id": "asset_linking",
           "label": "asset linking",
-          "description": "carrier out-flow from one asset can be reserved as an in-flow in a specific subset of other assets (e.g. hydropower cascading, CCGT asset internal steam flow considerations)",
-          "baseline": "n"
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "stockpiling",
+          "label": "stockpiling",
+          "description": "",
+          "baseline": "?"
         }
       ]
     },
     {
       "id": "asset__cost__investment",
       "label": "asset > cost > investment",
-      "description": "Asset investment cost representation",
+      "description": "",
       "members": [
+        {
+          "id": "annuitisation",
+          "label": "annuitisation",
+          "description": "",
+          "baseline": "?"
+        },
         {
           "id": "linear",
           "label": "linear",
-          "description": "initial asset capital cost which varies linearly with asset nameplate capacity (e.g. EUR/MW)",
-          "baseline": "y"
-        },
-        {
-          "id": "unit",
-          "label": "unit",
-          "description": "initial asset capital cost which is incurred on asset purchase, irrespective of capacity (e.g. land purchase).",
-          "baseline": "n"
+          "description": "",
+          "baseline": "?"
         },
         {
           "id": "piecewise",
           "label": "piecewise",
-          "description": "initial asset capital cost which varies non-linearly, represented by a piecewise linear curve (e.g. economies of scale, where cost per capacity decreases with increasing capacity).\nThis may be represented by multiple assets of the same class (e.g. \"wind turbine\") but with different costs and maximum capacities.\n",
-          "baseline": "n"
-        },
-        {
-          "id": "annuitisation",
-          "label": "annuitisation",
-          "description": "an asset's capital investment can be annuitised to account for factors linked to its expected economic life and financing arrangements, such as weighted cost of capital, inflation and tax rates, and other sources of depreciation",
-          "baseline": "n"
+          "description": "",
+          "baseline": "?"
         },
         {
           "id": "subsidy/penalty",
           "label": "subsidy/penalty",
-          "description": "costs to (dis)incentivise investment above/below given thresholds, representing soft constraints (e.g. rebate for providing firm capacity, penalty for exceeding land use limits)",
-          "baseline": "n"
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "unit",
+          "label": "unit",
+          "description": "",
+          "baseline": "?"
         }
       ]
     },
     {
       "id": "asset__cost__operation",
       "label": "asset > cost > operation",
-      "description": "Asset operating cost representation",
+      "description": "",
       "members": [
         {
           "id": "linear",
           "label": "linear",
-          "description": "operating costs which vary linearly with unit in-/out-flow (e.g. EUR/MWh)",
-          "baseline": "y"
-        },
-        {
-          "id": "unit",
-          "label": "unit",
-          "description": "operating costs which are incurred on unit commitment (e.g. start-up costs)",
-          "baseline": "n"
+          "description": "",
+          "baseline": "?"
         },
         {
           "id": "piecewise",
           "label": "piecewise",
-          "description": "operating costs which vary non-linearly, represented by a piecewise linear curve (e.g. generation bid increment / decrement levels)",
-          "baseline": "n"
+          "description": "",
+          "baseline": "?"
         },
         {
           "id": "subsidy/penalty",
           "label": "subsidy/penalty",
-          "description": "costs to (dis)incentivise operating above/below given thresholds, representing soft constraints (e.g. feed-in tariff, emissions)",
-          "baseline": "n"
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "unit",
+          "label": "unit",
+          "description": "",
+          "baseline": "?"
         }
       ]
     },
     {
-      "id": "transmission__opf",
-      "label": "transmission > opf",
-      "description": "Transmission network optimal power flow representation",
+      "id": "asset__operating_characteristics",
+      "label": "asset > operating characteristics",
+      "description": "",
       "members": [
         {
-          "id": "transport",
-          "label": "transport",
-          "description": "energy transport only (no Kirchhoff's laws defined)",
-          "baseline": "y"
+          "id": "iterative",
+          "label": "iterative",
+          "description": "",
+          "baseline": "?"
         },
         {
-          "id": "dc_opf",
-          "label": "dc opf",
-          "description": "linearised DC optimal power flow",
-          "baseline": "n"
+          "id": "linear",
+          "label": "linear",
+          "description": "",
+          "baseline": "?"
         },
         {
-          "id": "ac_opf",
-          "label": "ac opf",
-          "description": "linearised AC optimal power flow",
-          "baseline": "n"
+          "id": "piecewise",
+          "label": "piecewise",
+          "description": "",
+          "baseline": "?"
         },
         {
-          "id": "sec_opf",
-          "label": "sec opf",
-          "description": "security-constrained AC optimal power flow",
-          "baseline": "n"
+          "id": "static non_dimensional",
+          "label": "static non dimensional",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "static_dimensional",
+          "label": "static dimensional",
+          "description": "",
+          "baseline": "?"
         }
       ]
     },
     {
-      "id": "transmission__limits",
-      "label": "transmission > limits",
-      "description": "Transmission capacity limit representation",
+      "id": "asset__operating_constraints",
+      "label": "asset > operating constraints",
+      "description": "",
       "members": [
         {
-          "id": "gtc",
-          "label": "gtc",
-          "description": "grid transfer capacities",
-          "baseline": "y"
+          "id": "inter_spatial",
+          "label": "inter spatial",
+          "description": "",
+          "baseline": "?"
         },
         {
-          "id": "ptdf",
-          "label": "ptdf",
-          "description": "power transfer distribution factors",
-          "baseline": "n"
+          "id": "inter_temporal",
+          "label": "inter temporal",
+          "description": "",
+          "baseline": "?"
         },
         {
-          "id": "thermal",
-          "label": "thermal",
-          "description": "thermal limits",
-          "baseline": "n"
+          "id": "operating",
+          "label": "operating",
+          "description": "",
+          "baseline": "?"
         },
         {
-          "id": "phase_angle",
-          "label": "phase angle",
-          "description": "phase angles",
-          "baseline": "n"
+          "id": "total",
+          "label": "total",
+          "description": "",
+          "baseline": "?"
         }
       ]
     },
     {
-      "id": "system__carriers",
-      "label": "system > carriers",
-      "description": "Energy carrier representation",
+      "id": "asset__operating_representation",
+      "label": "asset > operating representation",
+      "description": "",
       "members": [
         {
-          "id": "decoupled",
-          "label": "decoupled",
-          "description": "only one energy carrier (e.g. electricity, gas, water) represented at a time or, if represented simultaneously, do not interact.",
-          "baseline": "y"
+          "id": "ed",
+          "label": "ed",
+          "description": "",
+          "baseline": "?"
         },
         {
-          "id": "coupled",
-          "label": "coupled",
-          "description": "multiple energy carriers represented with the ability to interact via carrier converting assets. Usually used in multi-vector/sector co-optimisation (e.g. power & gas systems; power, transport, & building sectors)",
-          "baseline": "n"
-        }
-      ]
-    },
-    {
-      "id": "system__limits",
-      "label": "system > limits",
-      "description": "System-wide limits to represent physical or policy constraints",
-      "members": [
-        {
-          "id": "capacity",
-          "label": "capacity",
-          "description": "limit multi-asset capacity decisions  (e.g. land availability, procurement plans)",
-          "baseline": "n"
-        },
-        {
-          "id": "operation",
-          "label": "operation",
-          "description": "limit multi-asset operational factors  (e.g. max emissions, fuel availability, capacity factor)",
-          "baseline": "n"
-        }
-      ]
-    },
-    {
-      "id": "robustness",
-      "label": "robustness",
-      "description": "Methods to embed robustness into system design & operation",
-      "members": [
-        {
-          "id": "asset_outages",
-          "label": "asset outages",
-          "description": "asset outages represented by fixed downtime periods or capacity derating",
-          "baseline": "n"
-        },
-        {
-          "id": "reserve_limit",
-          "label": "reserve limit",
-          "description": "minimum requirement on firm capacity available in reserve",
-          "baseline": "n"
-        },
-        {
-          "id": "lolp_limit",
-          "label": "lolp limit",
-          "description": "loss of load probability limit",
-          "baseline": "n"
-        },
-        {
-          "id": "eens_limit",
-          "label": "eens limit",
-          "description": "expected energy not served limit",
-          "baseline": "n"
-        },
-        {
-          "id": "voll",
-          "label": "voll",
-          "description": "value of lost load, to place a soft constraint on load shedding that will be included in the optimisation",
-          "baseline": "n"
-        },
-        {
-          "id": "ram",
-          "label": "ram",
-          "description": "remaining Available Margins over an element or a corridor",
-          "baseline": "n"
-        },
-        {
-          "id": "two_stage_stochastic",
-          "label": "two stage stochastic",
-          "description": "two-stage stochastic optimisation; used in investment decision making under uncertainty",
-          "baseline": "n"
-        },
-        {
-          "id": "multi_stage_stochastic",
-          "label": "multi stage stochastic",
-          "description": "multi-stage stochastic optimisation; used in UCED decision making under uncertainty",
-          "baseline": "n"
-        }
-      ]
-    },
-    {
-      "id": "resource_adequacy",
-      "label": "resource adequacy",
-      "description": "Methods to quantify resource adequacy / system robustness",
-      "members": [
-        {
-          "id": "maintenance_scheduling",
-          "label": "maintenance scheduling",
-          "description": "model-derived asset maintenance schedule",
-          "baseline": "n"
-        },
-        {
-          "id": "lolp",
-          "label": "lolp",
-          "description": "loss of load probability calculated in postprocessing",
-          "baseline": "n"
-        },
-        {
-          "id": "eens",
-          "label": "eens",
-          "description": "expected energy not served calculated in postprocessing",
-          "baseline": "n"
-        },
-        {
-          "id": "monte_carlo",
-          "label": "monte carlo",
-          "description": "uncertainty space explored with Monte Carlo analysis",
-          "baseline": "n"
-        },
-        {
-          "id": "sampling",
-          "label": "sampling",
-          "description": "techniques to sample the uncertainty space",
-          "baseline": "n"
-        }
-      ]
-    },
-    {
-      "id": "preprocessing",
-      "label": "preprocessing",
-      "description": "Options to generate parameters derived from user-defined input data before running the model.",
-      "members": [
-        {
-          "id": "forecasting",
-          "label": "forecasting",
-          "description": "a user-defined generation / load profile can be automatically updated given user-defined forecasting parameters (e.g. change in total or peak)",
-          "baseline": "n"
-        },
-        {
-          "id": "spatial_distribution",
-          "label": "spatial distribution",
-          "description": "a user-defined parameter can be automatically distributed spatially using other spatial parameters (e.g. nodal demand distribution, transmission line distances, distributed slack)",
-          "baseline": "n"
-        },
-        {
-          "id": "download",
-          "label": "download",
-          "description": "data can be downloaded directly within the tool from an open or proprietary source rather than being specified by the user",
-          "baseline": "n"
-        }
-      ]
-    },
-    {
-      "id": "postprocessing",
-      "label": "postprocessing",
-      "description": "Postprocessing analyses that can be triggered by the tool based on model outputs, on a per-asset or system-wide basis.",
-      "members": [
-        {
-          "id": "impact_assessment",
-          "label": "impact assessment",
-          "description": "auxiliary impacts (e.g., GHG emissions, water consumption, job creation)",
-          "baseline": "n"
-        },
-        {
-          "id": "lcoe",
-          "label": "lcoe",
-          "description": "levelised cost of electricity (or other carriers)",
-          "baseline": "n"
-        },
-        {
-          "id": "curtailment",
-          "label": "curtailment",
-          "description": "asset generation curtailment",
-          "baseline": "n"
-        },
-        {
-          "id": "shadow_prices",
-          "label": "shadow prices",
-          "description": "optimisation problem shadow prices (e.g. to approximate wholesale market prices)",
-          "baseline": "n"
-        },
-        {
-          "id": "financial",
-          "label": "financial",
-          "description": "financial analyses for business cases",
-          "baseline": "n"
-        },
-        {
-          "id": "gtc",
-          "label": "gtc",
-          "description": "grid transfer capacities between nodes/zones/regions",
-          "baseline": "n"
-        },
-        {
-          "id": "ptdf",
-          "label": "ptdf",
-          "description": "power transfer distribution factors",
-          "baseline": "n"
-        },
-        {
-          "id": "lodf",
-          "label": "lodf",
-          "description": "line Outage Distribution Factor, used in contingency flow constraints",
-          "baseline": "n"
-        },
-        {
-          "id": "future_cost_function",
-          "label": "future cost function",
-          "description": "future cost function (water value) used to forecast the marginal cost of hydro and other seasonal storage devices for use in shorter term scheduling, given uncertain input parameters",
-          "baseline": "n"
-        },
-        {
-          "id": "aggregation",
-          "label": "aggregation",
-          "description": "Method to aggregate modelled components into broader classifications for analysis and dissemination (e.g., separately costed \"wind turbine\" assets aggregated back to \"wind turbine\")",
-          "baseline": "n"
-        }
-      ]
-    },
-    {
-      "id": "interface__input",
-      "label": "interface > input",
-      "description": "Available options for configuring model inputs and running models",
-      "members": [
-        {
-          "id": "gui",
-          "label": "gui",
-          "description": "graphical user interface",
-          "baseline": "n"
-        },
-        {
-          "id": "no_code",
-          "label": "no code",
-          "description": "configurable without knowledge of the programming language in which the tool has been written.",
-          "baseline": "n"
-        },
-        {
-          "id": "cli",
-          "label": "cli",
-          "description": "command line interface",
-          "baseline": "n"
-        },
-        {
-          "id": "scripting",
-          "label": "scripting",
-          "description": "can be configured and run using scripting specific to the tool programming language.",
-          "baseline": "n"
-        },
-        {
-          "id": "standardised",
-          "label": "standardised",
-          "description": "accepts data in an ISO standard input data format.",
-          "baseline": "n"
-        }
-      ]
-    },
-    {
-      "id": "interface__output",
-      "label": "interface > output",
-      "description": "Available options for interacting with model outputs",
-      "members": [
-        {
-          "id": "gui",
-          "label": "gui",
-          "description": "graphical user interface",
-          "baseline": "n"
-        },
-        {
-          "id": "reports",
-          "label": "reports",
-          "description": "static reports consolidating model outputs",
-          "baseline": "n"
-        },
-        {
-          "id": "tables",
-          "label": "tables",
-          "description": "pre-prepared tables that can be analysed in a spreadsheet application such as Excel.",
-          "baseline": "n"
-        },
-        {
-          "id": "logs",
-          "label": "logs",
-          "description": "run logs available in text files, for use in debugging failing model runs",
-          "baseline": "n"
-        },
-        {
-          "id": "standardised",
-          "label": "standardised",
-          "description": "outputs are in an ISO standard output data format, for regulatory reporting or for frictionless data transfer with a downstream process.",
-          "baseline": "n"
+          "id": "uced",
+          "label": "uced",
+          "description": "",
+          "baseline": "?"
         }
       ]
     },
     {
       "id": "competition",
       "label": "competition",
-      "description": "Asset-owning agents (e.g. private utility companies) can be represented in the model with their own constraints and/or objectives",
+      "description": "",
       "members": [
-        {
-          "id": "portfolio",
-          "label": "portfolio",
-          "description": "agent asset portfolios and associated constraints and cost considerations (e.g. limited cross-portfolio capital investment, risk appetite)",
-          "baseline": "n"
-        },
         {
           "id": "distributed_objectives",
           "label": "distributed objectives",
-          "description": "per-agent profit maximising / risk minimising bidding in day-ahead / intra-day markets",
-          "baseline": "n"
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "portfolio",
+          "label": "portfolio",
+          "description": "",
+          "baseline": "?"
+        }
+      ]
+    },
+    {
+      "id": "interface__input",
+      "label": "interface > input",
+      "description": "",
+      "members": [
+        {
+          "id": "cli",
+          "label": "cli",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "gui",
+          "label": "gui",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "no_code",
+          "label": "no code",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "scripting",
+          "label": "scripting",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "standardised",
+          "label": "standardised",
+          "description": "",
+          "baseline": "?"
+        }
+      ]
+    },
+    {
+      "id": "interface__output",
+      "label": "interface > output",
+      "description": "",
+      "members": [
+        {
+          "id": "gui",
+          "label": "gui",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "logs",
+          "label": "logs",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "reports",
+          "label": "reports",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "standardised",
+          "label": "standardised",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "tables",
+          "label": "tables",
+          "description": "",
+          "baseline": "?"
         }
       ]
     },
     {
       "id": "optimisation_problem",
       "label": "optimisation problem",
-      "description": "Available options for interacting with the optimisation problem",
+      "description": "",
       "members": [
+        {
+          "id": "configuration",
+          "label": "configuration",
+          "description": "",
+          "baseline": "?"
+        },
         {
           "id": "decomposition",
           "label": "decomposition",
-          "description": "decompose the problem into different stages that can be optimised in parallel with outputs of one stage acting as inputs to another. The different stages tend to represent the same system at different levels of complexity (higher/lower temporal resolution, unit commitment vs.  continuous dispatch). The process is iterated until solutions converge within a pre-defined tolerance.",
-          "baseline": "n"
-        },
-        {
-          "id": "sim + opt",
-          "label": "sim + opt",
-          "description": "iterate between a simulation and optimisation phase until convergence with respect to operational constraints (e.g. competitive market simulation, optimal power flow).",
-          "baseline": "n"
+          "description": "",
+          "baseline": "?"
         },
         {
           "id": "near_optimal",
           "label": "near optimal",
-          "description": "generate a near-optimal solution set by relaxing constraints / objectives in the optimisation problem. Includes Modelling to Generate Alternatives (MGA)",
-          "baseline": "n"
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "sim + opt",
+          "label": "sim + opt",
+          "description": "",
+          "baseline": "?"
         },
         {
           "id": "user_defined_constraints",
           "label": "user defined constraints",
-          "description": "users can define their own constraints to the optimisation problem, applied to existing decision variables.",
-          "baseline": "n"
+          "description": "",
+          "baseline": "?"
         },
         {
           "id": "user_defined_variables",
           "label": "user defined variables",
-          "description": "users can define their own decision variables to the optimisation problem.",
-          "baseline": "n"
+          "description": "",
+          "baseline": "?"
+        }
+      ]
+    },
+    {
+      "id": "resource_adequacy",
+      "label": "resource adequacy",
+      "description": "",
+      "members": [
+        {
+          "id": "eens",
+          "label": "eens",
+          "description": "",
+          "baseline": "?"
         },
         {
-          "id": "configuration",
-          "label": "configuration",
-          "description": "optimiser parameters can be directly configured, including convergence parameters & warm-starting options",
-          "baseline": "n"
+          "id": "lolp",
+          "label": "lolp",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "maintenance_scheduling",
+          "label": "maintenance scheduling",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "monte_carlo",
+          "label": "monte carlo",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "sampling",
+          "label": "sampling",
+          "description": "",
+          "baseline": "?"
+        }
+      ]
+    },
+    {
+      "id": "robustness",
+      "label": "robustness",
+      "description": "",
+      "members": [
+        {
+          "id": "asset_outages",
+          "label": "asset outages",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "eens_limit",
+          "label": "eens limit",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "lolp_limit",
+          "label": "lolp limit",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "multi_stage_stochastic",
+          "label": "multi stage stochastic",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "ram",
+          "label": "ram",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "reserve_limit",
+          "label": "reserve limit",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "two_stage_stochastic",
+          "label": "two stage stochastic",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "voll",
+          "label": "voll",
+          "description": "",
+          "baseline": "?"
+        }
+      ]
+    },
+    {
+      "id": "spatial__resolution__simplification",
+      "label": "spatial > resolution > simplification",
+      "description": "",
+      "members": [
+        {
+          "id": "network",
+          "label": "network",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "resampling",
+          "label": "resampling",
+          "description": "",
+          "baseline": "?"
+        }
+      ]
+    },
+    {
+      "id": "system__carriers",
+      "label": "system > carriers",
+      "description": "",
+      "members": [
+        {
+          "id": "coupled",
+          "label": "coupled",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "decoupled",
+          "label": "decoupled",
+          "description": "",
+          "baseline": "?"
+        }
+      ]
+    },
+    {
+      "id": "system__limits",
+      "label": "system > limits",
+      "description": "",
+      "members": [
+        {
+          "id": "capacity",
+          "label": "capacity",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "operation",
+          "label": "operation",
+          "description": "",
+          "baseline": "?"
+        }
+      ]
+    },
+    {
+      "id": "time__foresight",
+      "label": "time > foresight",
+      "description": "",
+      "members": [
+        {
+          "id": "myopic",
+          "label": "myopic",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "perfect",
+          "label": "perfect",
+          "description": "",
+          "baseline": "?"
+        }
+      ]
+    },
+    {
+      "id": "time__horizon",
+      "label": "time > horizon",
+      "description": "",
+      "members": [
+        {
+          "id": "multi_year",
+          "label": "multi year",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "single_year",
+          "label": "single year",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "sub_day",
+          "label": "sub day",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "sub_year",
+          "label": "sub year",
+          "description": "",
+          "baseline": "?"
+        }
+      ]
+    },
+    {
+      "id": "time__resolution__simplification",
+      "label": "time > resolution > simplification",
+      "description": "",
+      "members": [
+        {
+          "id": "distortion_mitigation",
+          "label": "distortion mitigation",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "load_duration_curves",
+          "label": "load duration curves",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "resampling",
+          "label": "resampling",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "typical_periods",
+          "label": "typical periods",
+          "description": "",
+          "baseline": "?"
+        }
+      ]
+    },
+    {
+      "id": "transmission__limits",
+      "label": "transmission > limits",
+      "description": "",
+      "members": [
+        {
+          "id": "gtc",
+          "label": "gtc",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "phase_angle",
+          "label": "phase angle",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "ptdf",
+          "label": "ptdf",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "thermal",
+          "label": "thermal",
+          "description": "",
+          "baseline": "?"
+        }
+      ]
+    },
+    {
+      "id": "transmission__opf",
+      "label": "transmission > opf",
+      "description": "",
+      "members": [
+        {
+          "id": "ac_opf",
+          "label": "ac opf",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "dc_opf",
+          "label": "dc opf",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "sec_opf",
+          "label": "sec opf",
+          "description": "",
+          "baseline": "?"
+        },
+        {
+          "id": "transport",
+          "label": "transport",
+          "description": "",
+          "baseline": "?"
         }
       ]
     }
@@ -1141,7 +1659,7 @@
           "gui": {
             "value": "dev",
             "sources": [
-              "https://engage.nrel.gov/"
+              "https://engage.nlr.gov/"
             ]
           },
           "no_code": {
@@ -1262,7 +1780,7 @@
           "lcoe": {
             "value": "y",
             "sources": [
-              "https://calliope.readthedocs.io/en/latest/reference/api/postprocess/#calliope.postprocess.postprocess.systemwide_levelised_cost"
+              "https://calliope.readthedocs.io/en/latest/math/base/#systemwide_levelised_cost"
             ]
           },
           "lodf": {
@@ -3182,15 +3700,15 @@
           "download": {
             "value": "dev",
             "sources": [
-              "https://pypsa-eur.readthedocs.io/en/latest/retrieve.html",
-              "https://pypsa-earth.readthedocs.io/en/latest/data_workflow.html"
+              "https://pypsa-eur.readthedocs.io/en/latest/retrieve",
+              "https://pypsa-earth.readthedocs.io/en/latest/user-guide/data-workflow"
             ]
           },
           "forecasting": {
             "value": "dev",
             "sources": [
               "https://atlite.readthedocs.io/en/latest/",
-              "https://pypsa-eur.readthedocs.io/en/latest/configuration.html#solar"
+              "https://pypsa-eur.readthedocs.io/en/latest/configuration/#solar"
             ]
           },
           "spatial_distribution": {
@@ -3217,7 +3735,7 @@
             "value": "dev",
             "sources": [
               "https://docs.pypsa.org/latest/user-guide/faq/#can-you-do-generation-adequacy-studies-with-monte-carlo-unplanned-outages",
-              "https://pypsa-earth.readthedocs.io/en/latest/monte_carlo.html"
+              "https://pypsa-earth.readthedocs.io/en/latest/api-reference/monte-carlo"
             ]
           },
           "sampling": {
