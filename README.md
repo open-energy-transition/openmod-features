@@ -30,6 +30,39 @@ Some key features of our repository are:
 1. Install [pixi](https://pixi.prefix.dev/latest/).
 1. Install pre-commit: `pixi run pre-commit install`
 
+## Dashboard
+
+This repository includes a static dashboard in [`website/`](website/) for exploring tool coverage, use-case fit, validation links, and custom use-case requirements.
+
+The dashboard uses the dedicated `website` pixi environment, which provides Node.js and pnpm. From the repository root, install the JavaScript dependencies with:
+
+```sh
+pixi run -e website pnpm --dir website install
+```
+
+To run the dashboard locally:
+
+```sh
+pixi run -e website pnpm --dir website dev
+```
+
+The development server regenerates `website/public/data/features.json` from the repository data before starting. Open the local URL printed by Vite.
+
+To build and preview the static dashboard locally:
+
+```sh
+pixi run -e website pnpm --dir website build
+pixi run -e website pnpm --dir website preview
+```
+
+The static output is written to `website/dist/client`.
+
+To deploy the dashboard to Cloudflare Pages, use the pixi task:
+
+```sh
+pixi run -e website deploy-cloudflare
+```
+
 ## Add your tool
 
 You can generate a configuration file for your tool using:
