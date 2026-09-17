@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useLocation } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import { useDashboardContext } from '../components/dashboard-layout'
 import {
@@ -31,14 +31,19 @@ export const Route = createFileRoute('/tools')({
   component: ToolMatrixPage,
 })
 
+const USE_CASES_PARAM = 'use_cases'
+
 function ToolMatrixPage() {
   const { data, coverageOptions } = useDashboardContext()
+  const location = useLocation()
   const [query, setQuery] = useState('')
   const [selectedToolIds, setSelectedToolIds] = useState(
     new Set(data.tools.map((tool) => tool.id)),
   )
   const [selectedUseCaseIds, setSelectedUseCaseIds] = useState(
-    new Set(data.useCases.map((useCase) => useCase.id)),
+    () =>
+      selectedUseCasesFromUrl(data.useCases) ??
+      new Set(data.useCases.map((useCase) => useCase.id)),
   )
   const [hideInactiveRows, setHideInactiveRows] = useState(false)
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
@@ -48,8 +53,11 @@ function ToolMatrixPage() {
   }, [data.tools])
 
   useEffect(() => {
-    setSelectedUseCaseIds((current) => syncSelectedIds(current, data.useCases))
-  }, [data.useCases])
+    const urlSelection = selectedUseCasesFromUrl(data.useCases)
+    setSelectedUseCaseIds((current) =>
+      urlSelection ?? syncSelectedIds(current, data.useCases),
+    )
+  }, [data.useCases, location.search])
 
   const selectedTools = data.tools.filter((tool) => selectedToolIds.has(tool.id))
   const useCaseScopedTaxonomy = filterTaxonomyByUseCases(
@@ -82,7 +90,10 @@ function ToolMatrixPage() {
         onToolChange={(ids) => setSelectedToolIds(new Set(ids))}
         tools={data.tools}
         selectedUseCaseIds={selectedUseCaseIds}
-        onUseCaseChange={(ids) => setSelectedUseCaseIds(new Set(ids))}
+        onUseCaseChange={(ids) => {
+          setSelectedUseCaseIds(new Set(ids))
+          updateSelectedUseCasesUrl(ids, data.useCases.length)
+        }}
         useCases={data.useCases}
         resultCount={filteredTaxonomy.length}
       />
@@ -200,4 +211,37 @@ function isCategoryInactive(
 
 function featureKey(categoryId: string, featureId: string) {
   return `${categoryId}:${featureId}`
+}
+
+function selectedUseCasesFromUrl(useCases: { id: string }[]) {
+  if (typeof window === 'undefined') {
+    return null
+  }
+
+  const value = new URLSearchParams(window.location.search).get(USE_CASES_PARAM)
+  if (!value) {
+    return null
+  }
+
+  const validIds = new Set(useCases.map((useCase) => useCase.id))
+  const selectedIds = value
+    .split(',')
+    .map((id) => id.trim())
+    .filter((id) => validIds.has(id))
+
+  return selectedIds.length > 0 ? new Set(selectedIds) : null
+}
+
+function updateSelectedUseCasesUrl(useCaseIds: string[], totalUseCases: number) {
+  if (typeof window === 'undefined') {
+    return
+  }
+
+  const url = new URL(window.location.href)
+  if (useCaseIds.length === 0 || useCaseIds.length === totalUseCases) {
+    url.searchParams.delete(USE_CASES_PARAM)
+  } else {
+    url.searchParams.set(USE_CASES_PARAM, useCaseIds.join(','))
+  }
+  window.history.replaceState(null, '', url)
 }

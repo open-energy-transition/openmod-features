@@ -142,7 +142,7 @@ export function DashboardLayout() {
             <DashboardNav customUseCase={customUseCase} />
             <CoverageControls options={coverageOptions} onChange={setCoverageOptions} />
           </div>
-          {location.pathname === '/overview' ? <HomeIntro data={dashboardData} /> : null}
+          {location.pathname === '/' ? <HomeIntro data={dashboardData} /> : null}
           <DashboardContext.Provider
             value={{
               data: dashboardData,
