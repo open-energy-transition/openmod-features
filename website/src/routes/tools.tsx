@@ -12,7 +12,7 @@ import {
   TableToolbar,
 } from '../components/table'
 import { ColumnHead, EmptyState, FeatureTable } from '../components/page-shell'
-import { CheckPill, CoverageBadge, StatusLegend, ToolName } from '../components/ui'
+import { CheckPill, CoverageBadge, Hint, StatusLegend, ToolName } from '../components/ui'
 import { StatusCell } from '../components/status-cells'
 import {
   calculateCategoryCoverage,
@@ -126,7 +126,11 @@ function ToolMatrixPage() {
               ))}
             </tr>
             <tr>
-              <StickyHead>Overall</StickyHead>
+              <StickyHead>
+                <Hint label="Coverage across rows required by the selected use cases. Change the use-case filter to change this scope.">
+                  Selected scope
+                </Hint>
+              </StickyHead>
               {selectedTools.map((tool) => (
                 <td
                   key={tool.id}
