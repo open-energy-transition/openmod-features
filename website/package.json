@@ -1,0 +1,36 @@
+{
+  "name": "openmod-features-dashboard",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm generate:data && vite dev",
+    "build": "pnpm generate:data && vite build && pnpm export:static && tsc --noEmit",
+    "build:cloudflare": "DEPLOY_BASE=/ pnpm build",
+    "deploy:cloudflare": "pnpm build:cloudflare && pnpm dlx --allow-build esbuild --allow-build workerd wrangler pages deploy dist/client --project-name openmod-features-dashboard",
+    "export:static": "node scripts/export-static.mjs",
+    "preview": "vite preview",
+    "generate:data": "node scripts/generate-data.mjs",
+    "test": "vitest run --config vitest.config.ts",
+    "check": "pnpm test && pnpm build"
+  },
+  "dependencies": {
+    "@base-ui/react": "^1.0.0",
+    "@tanstack/react-router": "^1.120.0",
+    "@tanstack/react-start": "^1.120.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-icons": "^5.5.0",
+    "yaml": "^2.8.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.0",
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.0",
+    "typescript": "^5.7.0",
+    "vite": "^6.0.0",
+    "vitest": "^2.1.0"
+  },
+  "packageManager": "pnpm@11.10.0+sha512.0b7f8b98060031904c017e3a41eb187a16d40eeb829b95c4f8cb03681761fc4ab53dd219115b9b447f4dce1a05a214764461e7d3703392a9f32f9511ce8c86c8"
+}
