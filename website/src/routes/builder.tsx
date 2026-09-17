@@ -185,7 +185,7 @@ function UseCaseBuilderPage() {
       <section className="grid gap-4 lg:grid-cols-[minmax(0,1.3fr)_minmax(320px,0.7fr)]">
         <Panel
           title="Use Case Builder"
-          description="Compose required feature rows, then save the draft as a shareable custom use case for the matrix pages."
+          description="Define a custom benchmark, save it to the URL, then compare tool fit on the matrix pages."
         >
           <div className="grid gap-4 p-4">
             <label className="atlas-label grid gap-1 text-sm font-medium">
@@ -340,7 +340,7 @@ function UseCaseBuilderPage() {
         <Tabs.Panel value="yaml" className="outline-none">
           <Panel
             title="YAML Export"
-            description="Use this content as a starting point for a repository use-case features.yaml file."
+            description="Export the current benchmark as a use-case features.yaml draft."
             actions={<ExportAction onExport={exportYaml} />}
           >
             <pre className="max-h-[36rem] overflow-auto bg-[var(--atlas-surface-inset)] p-4 text-xs leading-5 text-[var(--atlas-ink-soft)]">

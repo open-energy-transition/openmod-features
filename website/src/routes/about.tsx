@@ -36,7 +36,7 @@ function AboutPage() {
     <div className="grid gap-5">
       <Panel
         title="Project Purpose"
-        description="What openmod-features is built to answer."
+        description="Why this inventory exists."
       >
         <div className="grid gap-4 p-4 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.55fr)]">
           <div>
@@ -44,8 +44,7 @@ function AboutPage() {
               openmod-features is a community-maintained feature inventory for
               open-source energy system modelling tools and common planning use
               cases. Matching tool feature lists to use-case requirements helps
-              identify which tools fit a decision-making workflow and where
-              feature gaps remain.
+              identify which tools fit a workflow and where feature gaps remain.
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
               <AboutAction to="/tools" icon={<FaChartSimple aria-hidden="true" />}>
@@ -76,7 +75,7 @@ function AboutPage() {
       <section className="grid gap-4 xl:grid-cols-2">
         <Panel
           title="What The Scores Mean"
-          description="Coverage is a feature-fit signal, not a runtime benchmark."
+          description="How to interpret benchmark-style percentages."
         >
           <div className="grid gap-3 p-4 text-sm">
             <InfoItem
@@ -92,7 +91,7 @@ function AboutPage() {
             <InfoItem
               icon={<FaChartSimple aria-hidden="true" />}
               title="Scores compare coverage"
-              detail="Percentages show how many required features are met under the active coverage rules. They do not judge performance, scale, or solution quality."
+              detail="Percentages show how many required features are met under the active coverage rules. They do not measure runtime performance, scale, or solution quality."
             />
           </div>
         </Panel>
@@ -149,7 +148,7 @@ function AboutPage() {
 
         <Panel
           title="Release, Taxonomy & Reuse"
-          description="How the dataset evolves and how it can be reused."
+          description="How the shared dataset evolves."
         >
           <div className="grid gap-3 p-4 text-sm">
             <InfoItem

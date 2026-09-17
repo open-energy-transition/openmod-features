@@ -116,14 +116,14 @@ function ToolMatrixPage() {
           title="No matching features"
           detail={
             selectedUseCaseIds.size === 0
-              ? 'Select at least one use case to scope feature rows.'
-              : 'Clear the search or adjust filters to show more features.'
+              ? 'Select at least one use case to scope the evidence rows.'
+              : 'Clear the search or adjust filters to inspect more feature evidence.'
           }
         />
       ) : selectedTools.length === 0 ? (
         <EmptyState
           title="No tools selected"
-          detail="Select at least one tool to compare feature coverage."
+          detail="Select at least one tool to inspect its feature evidence."
         />
       ) : (
         <FeatureTable minWidth="1100px">

@@ -88,9 +88,9 @@ function HomePage() {
             Compare use-case scores before opening the matrix.
           </h2>
           <p className="atlas-copy mt-3 max-w-3xl text-sm leading-6 sm:text-base">
-            Start with the features that matter for the built-in planning use
-            cases. Each benchmark ranks energy models by fit, then links to the
-            detailed evidence, assumptions, and feature rows behind the score.
+            Start with workflow-relevant feature coverage. Each chart ranks
+            energy models by fit, then links to the matrix rows and evidence
+            behind the score.
           </p>
           <div className="mt-5 flex flex-wrap gap-2">
             <HomeAction to="/use-cases" icon={<FaClipboardCheck aria-hidden="true" />}>
@@ -130,7 +130,7 @@ function HomePage() {
 
       <BenchmarkPanel
         title="Unified default use cases"
-        description={`Coverage across the combined required features from ${builtInUseCases.length} built-in use cases. Use this as the broad tool-selection benchmark before opening individual use-case details.`}
+        description={`A broad benchmark across the combined required features from ${builtInUseCases.length} built-in use cases. Open the matrix to inspect the scoped rows.`}
         cta="Inspect tool matrix"
         to="/tools"
         icon={<FaClipboardCheck aria-hidden="true" />}

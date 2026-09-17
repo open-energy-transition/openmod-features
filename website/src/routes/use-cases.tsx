@@ -131,8 +131,8 @@ function UseCaseFitPage() {
               <CustomBadge />
             </div>
             <p className="mt-1 text-sm text-[var(--atlas-hydro-strong)]">
-              Comparing the shareable custom use case. Add built-in use cases from
-              the filter when you need a side-by-side review.
+              Comparing a shareable custom benchmark. Add built-in use cases when
+              you need a side-by-side workflow review.
             </p>
           </div>
           <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
@@ -191,17 +191,17 @@ function UseCaseFitPage() {
       {selectedUseCases.length === 0 ? (
         <EmptyState
           title="No use cases selected"
-          detail="Select at least one use case to compare requirements."
+          detail="Select at least one workflow to compare tool fit."
         />
       ) : displayedTools.length === 0 ? (
         <EmptyState
           title="No tools selected"
-          detail="Select at least one tool to compare use-case fit."
+          detail="Select at least one tool to rank against the selected workflows."
         />
       ) : filteredTaxonomy.length === 0 ? (
         <EmptyState
           title="No matching features"
-          detail="Clear the search to show the full taxonomy."
+          detail="Clear the search to show the feature rows behind each fit score."
         />
       ) : (
         <FeatureTable minWidth="980px">

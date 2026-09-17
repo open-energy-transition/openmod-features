@@ -162,28 +162,24 @@ export function DashboardLayout() {
 
 function HomeIntro({ data }: { data: DashboardData }) {
   return (
-    <section className="atlas-preamble grid gap-5 p-4 lg:grid-cols-[minmax(0,1.35fr)_minmax(300px,0.65fr)] lg:items-center">
+    <section className="atlas-preamble grid gap-4 p-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
       <div className="max-w-4xl">
-        <p className="atlas-eyebrow">Project Preamble</p>
-        <h2 className="atlas-panel-title mt-1 text-lg font-semibold sm:text-xl">
-          Open energy modelling feature coverage
-        </h2>
-        <p className="atlas-copy mt-2 max-w-3xl text-sm leading-6">
-          Explore and compare open-source energy modelling tools by capability,
-          evidence, and planning use-case fit. The dashboard is generated from
-          repository feature inventory files, with coverage percentages controlled
-          by the rules beside the navigation.
+        <p className="atlas-eyebrow">Inventory Snapshot</p>
+        <p className="atlas-copy mt-1 max-w-3xl text-sm leading-6">
+          Scores are generated from repository feature lists and respond to the
+          active coverage rules. Project background, governance, and licensing now
+          live on the About page.
         </p>
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div className="mt-3 flex flex-wrap gap-2">
           <PreambleLink
-            href="https://github.com/open-energy-transition/openmod-features#add-your-tool"
+            href="https://github.com/open-energy-transition/openmod-features"
             icon={<FaScrewdriverWrench aria-hidden="true" />}
-            text="Contribute or update a tool"
+            text="Repository"
           />
           <PreambleLink
-            href="https://github.com/open-energy-transition/openmod-features#add-a-use-case"
+            href="https://github.com/open-energy-transition/openmod-features/blob/main/CONTRIBUTING.md"
             icon={<FaFileCircleCheck aria-hidden="true" />}
-            text="Contribute or update a use case"
+            text="Contributing"
           />
           <PreambleLink
             href="https://github.com/open-energy-transition/openmod-features/blob/main/GOVERNANCE.md"
@@ -193,7 +189,7 @@ function HomeIntro({ data }: { data: DashboardData }) {
         </div>
       </div>
 
-      <dl className="grid gap-3 text-sm sm:grid-cols-3 lg:grid-cols-1">
+      <dl className="grid gap-3 text-sm sm:grid-cols-3">
         <ProvenanceItem
           label="Generated"
           value={new Date(data.generatedAt).toLocaleString()}
