@@ -112,6 +112,9 @@ features:
       retrofit:
         value: '?'
         source: []
+      multi_period:
+        value: '?'
+        source: []
     operating_representation:
       unit_commitment:
         value: '?'
@@ -400,21 +403,6 @@ features:
     heuristic_markup:
       value: '?'
       source: []
-  pathway:
-    perfect_foresight:
-      investment:
-        value: '?'
-        source: []
-      operation:
-        value: '?'
-        source: []
-    myopic_foresight:
-      investment:
-        value: '?'
-        source: []
-      operation:
-        value: '?'
-        source: []
   objective:
     multi_objective_weighted:
       value: '?'
@@ -423,6 +411,9 @@ features:
       value: '?'
       source: []
     quadratic:
+      value: '?'
+      source: []
+    tie_breaking:
       value: '?'
       source: []
   uncertainty:
@@ -443,36 +434,60 @@ features:
       source: []
   tractability:
     dimension_reduction:
-      temporal:
-        resampling:
+      adjacency_aggregation:
+        temporal:
           value: '?'
           source: []
-        typical_periods:
+        spatial:
           value: '?'
           source: []
-        load_duration_curves:
+      similarity_aggregation:
+        temporal:
           value: '?'
           source: []
-        dimension_non_contiguity:
+        spatial:
           value: '?'
           source: []
-      spatial:
-        clustering:
+        assets:
           value: '?'
           source: []
-        network_reduction:
+        scenarios:
           value: '?'
           source: []
-      assets:
-        clustering:
+      equivalencing:
+        spatial:
           value: '?'
           source: []
-        black_boxing:
+        assets:
           value: '?'
           source: []
-        component_removal:
+      filtering:
+        temporal:
           value: '?'
           source: []
+        spatial:
+          value: '?'
+          source: []
+        assets:
+          value: '?'
+          source: []
+        scenarios:
+          value: '?'
+          source: []
+      non_contiguity_handling:
+        temporal:
+          value: '?'
+          source: []
+        spatial:
+          value: '?'
+          source: []
+    variable_fidelity:
+      formulation:
+        value: '?'
+        source: []
+      resolution:
+        value: '?'
+        source: []
     reformulation:
       constraint_screening:
         value: '?'
@@ -480,31 +495,37 @@ features:
       linearised_unit_commitment:
         value: '?'
         source: []
-      convex_relaxation:
-        value: '?'
-        source: []
-      function_conversion:
-        value: '?'
-        source: []
-      variable_fidelity:
-        value: '?'
-        source: []
+      nonlinear_handling:
+        convex_relaxation:
+          value: '?'
+          source: []
+        function_conversion:
+          value: '?'
+          source: []
       decomposition:
         value: '?'
         source: []
       approximation:
         value: '?'
         source: []
+      numeric_scaling:
+        value: '?'
+        source: []
   orchestration:
-    rolling_horizon:
-      value: '?'
-      source: []
     coupled_models:
-      value: '?'
-      source: []
-    simulation_optimisation:
-      value: '?'
-      source: []
+      limited_foresight:
+        investment:
+          value: '?'
+          source: []
+        operation:
+          value: '?'
+          source: []
+      market_sequence:
+        value: '?'
+        source: []
+      convergence_iteration:
+        value: '?'
+        source: []
     scenario_runs:
       value: '?'
       source: []
@@ -540,90 +561,92 @@ features:
     input_validation:
       value: '?'
       source: []
-    numeric_scaling:
-      value: '?'
-      source: []
   postprocessing:
-    impact_assessment:
-      emissions:
+    metrics:
+      impact_assessment:
+        emissions:
+          value: '?'
+          source: []
+        resource_use:
+          value: '?'
+          source: []
+        socioeconomic:
+          value: '?'
+          source: []
+      operational:
+        curtailment:
+          value: '?'
+          source: []
+        capacity_factor:
+          value: '?'
+          source: []
+        full_load_hours:
+          value: '?'
+          source: []
+      financial:
+        levelised_cost:
+          value: '?'
+          source: []
+        net_present_value:
+          value: '?'
+          source: []
+        asset_accounts:
+          value: '?'
+          source: []
+        marginal_price:
+          value: '?'
+          source: []
+        price_formation:
+          value: '?'
+          source: []
+        water_value:
+          value: '?'
+          source: []
+        contract_settlement:
+          value: '?'
+          source: []
+      network_transfer_metrics:
+        transfer_capacity:
+          value: '?'
+          source: []
+        flow_sensitivity:
+          value: '?'
+          source: []
+      probabilistic_reliability_assessment:
+        loss_of_load:
+          value: '?'
+          source: []
+        unserved_energy:
+          value: '?'
+          source: []
+        capacity_credit:
+          value: '?'
+          source: []
+    transformation:
+      aggregation:
         value: '?'
         source: []
-      resource_use:
+      disaggregation:
         value: '?'
         source: []
-      socioeconomic:
+      scenario_comparison:
         value: '?'
         source: []
-    operational:
-      curtailment:
-        value: '?'
-        source: []
-      capacity_factor:
-        value: '?'
-        source: []
-      full_load_hours:
-        value: '?'
-        source: []
-    financial:
-      levelised_cost:
-        value: '?'
-        source: []
-      net_present_value:
-        value: '?'
-        source: []
-      asset_accounts:
-        value: '?'
-        source: []
-      marginal_price:
-        value: '?'
-        source: []
-      price_formation:
-        value: '?'
-        source: []
-      water_value:
-        value: '?'
-        source: []
-      contract_settlement:
-        value: '?'
-        source: []
-    network_transfer_metrics:
-      transfer_capacity:
-        value: '?'
-        source: []
-      flow_sensitivity:
-        value: '?'
-        source: []
-    aggregation:
-      value: '?'
-      source: []
-    disaggregation:
-      value: '?'
-      source: []
-    scenario_comparison:
-      value: '?'
-      source: []
-    probabilistic_reliability_assessment:
-      loss_of_load:
-        value: '?'
-        source: []
-      unserved_energy:
-        value: '?'
-        source: []
-      capacity_credit:
-        value: '?'
-        source: []
-  transparency:
+  traceability:
     run_logs:
       value: '?'
       source: []
     infeasibility_diagnosis:
       value: '?'
       source: []
-    metadata_propagation:
+    metadata:
       provenance:
         value: '?'
         source: []
       units:
+        value: '?'
+        source: []
+      propagation:
         value: '?'
         source: []
     intermediate_access:

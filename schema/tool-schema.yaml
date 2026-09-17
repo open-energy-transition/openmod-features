@@ -50,6 +50,11 @@ $defs:
           is modeled as a discrete (i.e., integer) decision variable (e.g. nuclear
           power plants whose capacity is fixed & indivisible due to external constraints
           but the decision to invest in this capacity is as-yet undecided).
+      multi_period:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Asset capacities are defined across multiple investment periods.
+          These may be endogenous and decided per investment period with perfect foresight
+          or using a limited foresight method (see `orchestration.coupled_models.limited_foresight`).
       retrofit:
         $ref: '#/$defs/ToolFeatureModel'
         description: Endogenous investment in modifications to an existing asset,
@@ -257,7 +262,7 @@ $defs:
         $ref: '#/$defs/ConstraintsReliabilityModel'
         description: Reliability requirements imposed as constraints or penalty costs
           within the optimisation, under deterministic inputs. Post-hoc adequacy assessment
-          is `postprocessing.probabilistic_reliability_assessment`; probabilistic
+          is `postprocessing.metrics.probabilistic_reliability_assessment`; probabilistic
           decision methods are `uncertainty`.
       scope:
         $ref: '#/$defs/ConstraintsScopeModel'
@@ -523,12 +528,6 @@ $defs:
         $ref: '#/$defs/OrchestrationModel'
         description: Tool-managed workflows coordinating multiple complete runs in
           series/parallel, where the result emerges from the ensemble or its convergence.
-      pathway:
-        $ref: '#/$defs/PathwayModel'
-        description: "Foresight extent and planning direction across operational (intra-annual)\
-          \ or investment (inter-annual) time periods. A single-snapshot run \u2014\
-          \ \"overnight\" capacity expansion, or dispatch without a time dimension\
-          \ - is the baseline; we do not track it explicitly here."
       postprocessing:
         $ref: '#/$defs/PostprocessingModel'
         description: Postprocessing analyses that can be triggered by the tool based
@@ -544,14 +543,14 @@ $defs:
           are the energy or non-energy commodities that flow between processes (e.g.
           electricity, heat, hydrogen, CO2, water, materials). Only physical processes
           are in scope; decision-making agents are `actors`.
+      traceability:
+        $ref: '#/$defs/TraceabilityModel'
+        description: Ability to trace information throughout the modelling pipeline,
+          including for debugging, diagnostics, and transparency.
       tractability:
         $ref: '#/$defs/TractabilityModel'
         description: Approaches to reduce the computational cost of building and solving
           the problem, trading exactness for speed.
-      transparency:
-        $ref: '#/$defs/TransparencyModel'
-        description: 'Transparency of the modelling pipeline: logs, diagnostics, and
-          traceability of data as it moves through the workflow.'
       uncertainty:
         $ref: '#/$defs/UncertaintyModel'
         description: Methods that restructure the decision problem to account for
@@ -756,8 +755,8 @@ $defs:
       dual_extraction:
         $ref: '#/$defs/ToolFeatureModel'
         description: The built optimisation problem's constraint duals can be extracted
-          (e.g. to approximate wholesale market prices via `postprocessing.financial.marginal_price`,
-          or to construct a future cost function via `postprocessing.financial.water_value`).
+          (e.g. to approximate wholesale market prices via `postprocessing.metrics.financial.marginal_price`,
+          or to construct a future cost function via `postprocessing.metrics.financial.water_value`).
       formulation_transparency:
         $ref: '#/$defs/ToolFeatureModel'
         description: The tool's mathematical formulation is accessible and inspectable.
@@ -808,7 +807,7 @@ $defs:
           These can be used for dimension aggregation to achieve tractability (e.g.
           spatial nodes to zones), for filtering on dimensions when applying constraints
           (e.g. total capacity across group X; seasonal limits), and for analysis/visualisation
-          (`postprocessing.aggregation`/`postprocessing.disaggregation`).
+          (`postprocessing.transformation.aggregation`/`postprocessing.transformation.disaggregation`).
       extensible_dimensions:
         $ref: '#/$defs/ToolFeatureModel'
         description: A dimension not natively defined by the tool (e.g. a custom vintage,
@@ -942,78 +941,73 @@ $defs:
         description: Quadratic objective terms passed natively to the solver (e.g.
           quadratic generation cost curves, welfare maximisation with linear demand
           curves). Quadratic terms in constraints rather than the objective are `constraints.functional_form.quadratic`.
+      tie_breaking:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Degenerate solutions (many distinct solutions sharing the same
+          objective value, within tolerance) are resolved by a documented rule rather
+          than left to solver arbitrariness (e.g. small penalty coefficients applied
+          to otherwise zero-cost decision variables so that they enter the objective
+          explicitly, or a lexicographic secondary objective).
     title: ObjectiveModel
     type: object
-  OrchestrationModel:
-    additionalProperties: false
-    properties:
-      coupled_models:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Two or more model instances of different temporal or market fidelity
-          executed together, with bidirectional data exchange between them (e.g. interleaved
-          day-ahead/real-time runs passing offers and dispatch baselines forward and
-          initial conditions back).
-      rolling_horizon:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Myopic foresight pathway optimisation windows are optimised sequentially,
-          with automatic handling of data pass-through between runs.
-      sampled_runs:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Execution of run ensembles over a sampled uncertainty space (e.g.
-          Monte Carlo), with collated outputs. Used e.g. for post-hoc resource adequacy
-          assessment (`postprocessing.probabilistic_reliability_assessment`) or portfolio
-          price-risk quantification. Distinct from `scenario_runs` (discrete, named
-          scenarios).
-      scenario_runs:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Batch execution of discrete, named scenario ensembles in series/parallel
-          with collated outputs.
-      simulation_optimisation:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Iterate between a simulation and optimisation phase until convergence
-          with respect to (often nonlinear) constraints (e.g. competitive market simulation,
-          optimal power flow).
-    title: OrchestrationModel
-    type: object
-  PathwayModel:
-    additionalProperties: false
-    properties:
-      myopic_foresight:
-        $ref: '#/$defs/PathwayMyopicForesightModel'
-        description: Time periods are optimised sequentially, with each decision made
-          without knowledge / with limited knowledge of later periods.
-      perfect_foresight:
-        $ref: '#/$defs/PathwayPerfectForesightModel'
-        description: Perfect foresight capacity expansion / dispatch.
-    title: PathwayModel
-    type: object
-  PathwayMyopicForesightModel:
+  OrchestrationCoupledModelsLimitedForesightModel:
     additionalProperties: false
     properties:
       investment:
         $ref: '#/$defs/ToolFeatureModel'
         description: Investment decisions are optimised sequentially per period /
-          set of periods.
+          set of periods, each made without knowledge / with limited knowledge of
+          later periods. Also known as myopic foresight optimisation.
       operation:
         $ref: '#/$defs/ToolFeatureModel'
         description: Dispatch decisions are optimised sequentially per set of timesteps
-          (e.g. days).
-    title: PathwayMyopicForesightModel
+          (e.g. days), each made without knowledge / with limited knowledge of later
+          timesteps. Also known as rolling horizon optimisation.
+    title: OrchestrationCoupledModelsLimitedForesightModel
     type: object
-  PathwayPerfectForesightModel:
+  OrchestrationCoupledModelsModel:
     additionalProperties: false
     properties:
-      investment:
+      convergence_iteration:
         $ref: '#/$defs/ToolFeatureModel'
-        description: All investment periods are optimised simultaneously with perfect
-          foresight of future periods.
-      operation:
+        description: Runs are repeated, exchanging data each time, until convergence
+          with respect to (often nonlinear) relationships that cannot be represented
+          directly in a single problem (e.g. competitive market simulation, iterating
+          on line reactances, simulation-optimisation loops).
+      limited_foresight:
+        $ref: '#/$defs/OrchestrationCoupledModelsLimitedForesightModel'
+        description: Sequential optimisation windows emulating absent information
+          about later periods, with automatic pass-through of end-state data between
+          runs.
+      market_sequence:
         $ref: '#/$defs/ToolFeatureModel'
-        description: All dispatch periods are optimised simultaneously with perfect
-          foresight of future timesteps in the investment period(s).
-    title: PathwayPerfectForesightModel
+        description: Model instances representing successive market stages are executed
+          together with bidirectional data exchange (e.g. interleaved day-ahead/real-time
+          runs passing offers and dispatch baselines forward and initial conditions
+          back).
+    title: OrchestrationCoupledModelsModel
     type: object
-  PostprocessingFinancialModel:
+  OrchestrationModel:
+    additionalProperties: false
+    properties:
+      coupled_models:
+        $ref: '#/$defs/OrchestrationCoupledModelsModel'
+        description: Two or more model runs are executed together with tool-managed
+          data exchange between them.
+      sampled_runs:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Execution of run ensembles over a sampled uncertainty space (e.g.
+          Monte Carlo), with collated outputs. Used e.g. for post-hoc resource adequacy
+          assessment (`postprocessing.metrics.probabilistic_reliability_assessment`)
+          or portfolio price-risk quantification. Distinct from `scenario_runs` (discrete,
+          named scenarios).
+      scenario_runs:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Batch execution of discrete, named scenario ensembles in series/parallel
+          with collated outputs.
+    title: OrchestrationModel
+    type: object
+  PostprocessingMetricsFinancialModel:
     additionalProperties: false
     properties:
       asset_accounts:
@@ -1049,9 +1043,9 @@ $defs:
           (e.g. from Benders / SDDP cuts), forecasting the marginal cost of hydro
           and other seasonal storage devices for use in shorter-term scheduling under
           uncertain input parameters.
-    title: PostprocessingFinancialModel
+    title: PostprocessingMetricsFinancialModel
     type: object
-  PostprocessingImpactAssessmentModel:
+  PostprocessingMetricsImpactAssessmentModel:
     additionalProperties: false
     properties:
       emissions:
@@ -1063,44 +1057,31 @@ $defs:
       socioeconomic:
         $ref: '#/$defs/ToolFeatureModel'
         description: Socioeconomic impacts (e.g. job creation).
-    title: PostprocessingImpactAssessmentModel
+    title: PostprocessingMetricsImpactAssessmentModel
     type: object
-  PostprocessingModel:
+  PostprocessingMetricsModel:
     additionalProperties: false
     properties:
-      aggregation:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Method to aggregate across dimensions into broader groups for
-          analysis and dissemination. This usually requires `model_definition.dimension_groups`
-          to define aggregation membership.
-      disaggregation:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Method to redistribute outputs back to an initial, pre-`tractability.dimension_reduction`
-          resolution. (e.g. so that capacity-expansion results can be handed off to
-          a full-resolution power-flow model).
       financial:
-        $ref: '#/$defs/PostprocessingFinancialModel'
+        $ref: '#/$defs/PostprocessingMetricsFinancialModel'
         description: Financial analyses for business cases, derived from model outputs.
       impact_assessment:
-        $ref: '#/$defs/PostprocessingImpactAssessmentModel'
+        $ref: '#/$defs/PostprocessingMetricsImpactAssessmentModel'
         description: Auxiliary impacts calculated from model outputs.
       network_transfer_metrics:
-        $ref: '#/$defs/PostprocessingNetworkTransferMetricsModel'
+        $ref: '#/$defs/PostprocessingMetricsNetworkTransferMetricsModel'
         description: Network transfer capability and flow-sensitivity metrics derived
           from model outputs.
       operational:
-        $ref: '#/$defs/PostprocessingOperationalModel'
+        $ref: '#/$defs/PostprocessingMetricsOperationalModel'
         description: Operational analyses derived from model outputs.
       probabilistic_reliability_assessment:
-        $ref: '#/$defs/PostprocessingProbabilisticReliabilityAssessmentModel'
+        $ref: '#/$defs/PostprocessingMetricsProbabilisticReliabilityAssessmentModel'
         description: Probabilistic resource-adequacy metrics calculated post-hoc.
           Sampling-based run orchestration to produce them is `orchestration.sampled_runs`.
-      scenario_comparison:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Outputs of multiple scenario/ensemble runs are collated and compared.
-    title: PostprocessingModel
+    title: PostprocessingMetricsModel
     type: object
-  PostprocessingNetworkTransferMetricsModel:
+  PostprocessingMetricsNetworkTransferMetricsModel:
     additionalProperties: false
     properties:
       flow_sensitivity:
@@ -1110,9 +1091,9 @@ $defs:
       transfer_capacity:
         $ref: '#/$defs/ToolFeatureModel'
         description: Grid transfer capacities between regions or zones.
-    title: PostprocessingNetworkTransferMetricsModel
+    title: PostprocessingMetricsNetworkTransferMetricsModel
     type: object
-  PostprocessingOperationalModel:
+  PostprocessingMetricsOperationalModel:
     additionalProperties: false
     properties:
       capacity_factor:
@@ -1128,9 +1109,9 @@ $defs:
           are operating at or close to their full load. Distinct from `capacity_factor`
           as the same average output can arise from very different duty cycles, affecting
           e.g. asset lifetime.
-    title: PostprocessingOperationalModel
+    title: PostprocessingMetricsOperationalModel
     type: object
-  PostprocessingProbabilisticReliabilityAssessmentModel:
+  PostprocessingMetricsProbabilisticReliabilityAssessmentModel:
     additionalProperties: false
     properties:
       capacity_credit:
@@ -1142,7 +1123,38 @@ $defs:
       unserved_energy:
         $ref: '#/$defs/ToolFeatureModel'
         description: Expected energy not served <EENS>.
-    title: PostprocessingProbabilisticReliabilityAssessmentModel
+    title: PostprocessingMetricsProbabilisticReliabilityAssessmentModel
+    type: object
+  PostprocessingModel:
+    additionalProperties: false
+    properties:
+      metrics:
+        $ref: '#/$defs/PostprocessingMetricsModel'
+        description: Quantities computed from model outputs and reported per-asset
+          or system-wide.
+      transformation:
+        $ref: '#/$defs/PostprocessingTransformationModel'
+        description: Reshaping and collation of model outputs, without deriving new
+          quantities from them.
+    title: PostprocessingModel
+    type: object
+  PostprocessingTransformationModel:
+    additionalProperties: false
+    properties:
+      aggregation:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Method to aggregate across dimensions into broader groups for
+          analysis and dissemination. This usually requires `model_definition.dimension_groups`
+          to define aggregation membership.
+      disaggregation:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Method to redistribute outputs back to an initial, pre-`tractability.dimension_reduction`
+          resolution. (e.g. so that capacity-expansion results can be handed off to
+          a full-resolution power-flow model).
+      scenario_comparison:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Outputs of multiple scenario/ensemble runs are collated and compared.
+    title: PostprocessingTransformationModel
     type: object
   PreprocessingModel:
     additionalProperties: false
@@ -1164,10 +1176,6 @@ $defs:
         $ref: '#/$defs/ToolFeatureModel'
         description: Pre-built model datasets/examples can be retrieved from a catalogue
           as starting points for new models.
-      numeric_scaling:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Data can be scaled (e.g. by converting base units) to reduce
-          numeric instability and constraint violations in the downstream solver.
       resource_conversion:
         $ref: '#/$defs/ToolFeatureModel'
         description: Model profiles are derived within the tool from primary resource
@@ -1318,85 +1326,177 @@ $defs:
         type: string
     title: ToolFeatureModel
     type: object
-  TractabilityDimensionReductionAssetsModel:
+  TraceabilityMetadataModel:
     additionalProperties: false
     properties:
-      black_boxing:
+      propagation:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Outputs can be linked back to the inputs and settings used to
+          create them.
+      provenance:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Data sources, versions, and licences defined for inputs.
+      units:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Physical units attached to data are tracked and validated through
+          the pipeline (to enable e.g., unit-consistency checking, automatic conversion,
+          auto-scaling).
+    title: TraceabilityMetadataModel
+    type: object
+  TraceabilityModel:
+    additionalProperties: false
+    properties:
+      infeasibility_diagnosis:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Infeasible problems can be diagnosed (e.g. irreducible infeasible
+          subset (IIS) generation, named constraint violations).
+      intermediate_access:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Intermediate pipeline artefacts (e.g. built problem data, solver
+          state) can be exposed to the user.
+      metadata:
+        $ref: '#/$defs/TraceabilityMetadataModel'
+        description: Metadata can be defined for modelling inputs and outputs.
+      run_logs:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Run logs available (e.g. in text files), for use in debugging
+          failing model runs.
+    title: TraceabilityModel
+    type: object
+  TractabilityDimensionReductionAdjacencyAggregationModel:
+    additionalProperties: false
+    properties:
+      spatial:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Bordering spatial units are merged into contiguous zones (e.g.
+          nodal/bus level to regional/bidding zone level). This usually requires `model_definition.dimension_groups`
+          to define aggregation membership.
+      temporal:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Temporal resolution is coarsened while remaining contiguous (e.g.
+          hourly to daily) before the model is built. May apply to within-year timesteps
+          or between-year investment periods.
+    title: TractabilityDimensionReductionAdjacencyAggregationModel
+    type: object
+  TractabilityDimensionReductionEquivalencingModel:
+    additionalProperties: false
+    properties:
+      assets:
         $ref: '#/$defs/ToolFeatureModel'
         description: A chain of interconnected assets is collapsed into a single component
-          with an in/out interface. This usually requires `constraints.dedicated_flow_routing`
-          between interconnected components.
-      clustering:
+          with an in/out interface, also called black boxing or lumping. This usually
+          requires `constraints.dedicated_flow_routing` between interconnected components.
+      spatial:
         $ref: '#/$defs/ToolFeatureModel'
-        description: Individually defined assets are automatically aggregated into
-          asset groups for optimisation. This usually requires `model_definition.dimension_groups`
-          to define aggregation membership.
-      component_removal:
+        description: Network element equivalencing, also called network reduction
+          (e.g. reducing to a single voltage level; Ward, Radial Equivalent Independent
+          <REI>, or Kron-reduced equivalents of an external network).
+    title: TractabilityDimensionReductionEquivalencingModel
+    type: object
+  TractabilityDimensionReductionFilteringModel:
+    additionalProperties: false
+    properties:
+      assets:
         $ref: '#/$defs/ToolFeatureModel'
         description: Individual or groups of assets (e.g. sharing a node or a carrier)
           can be systematically filtered out of the built problem.
-    title: TractabilityDimensionReductionAssetsModel
+      scenarios:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Scenarios / uncertainty samples can be systematically filtered
+          out of the built problem.
+      spatial:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Spatial units (e.g. below a voltage level, or outside a study
+          region) can be systematically filtered out of the built problem.
+      temporal:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Timesteps or investment periods (e.g. a user-selected subset
+          of representative weeks) can be systematically filtered out of the built
+          problem.
+    title: TractabilityDimensionReductionFilteringModel
     type: object
   TractabilityDimensionReductionModel:
     additionalProperties: false
     properties:
-      assets:
-        $ref: '#/$defs/TractabilityDimensionReductionAssetsModel'
-        description: Asset resolution adjustment options.
-      spatial:
-        $ref: '#/$defs/TractabilityDimensionReductionSpatialModel'
-        description: Spatial resolution adjustment options.
-      temporal:
-        $ref: '#/$defs/TractabilityDimensionReductionTemporalModel'
-        description: Temporal resolution adjustment options (may apply to within-year
-          timesteps or between-year investment periods).
+      adjacency_aggregation:
+        $ref: '#/$defs/TractabilityDimensionReductionAdjacencyAggregationModel'
+        description: Neighbouring dimension members are merged, preserving the dimension's
+          ordering / adjacency. Only applicable to dimensions whose members have a
+          natural adjacency.
+      equivalencing:
+        $ref: '#/$defs/TractabilityDimensionReductionEquivalencingModel'
+        description: A sub-system's internal detail is discarded and replaced by a
+          reduced representation that preserves the behaviour observed at its boundary.
+      filtering:
+        $ref: '#/$defs/TractabilityDimensionReductionFilteringModel'
+        description: Dimension members are systematically removed from the built problem
+          rather than represented by a proxy.
+      non_contiguity_handling:
+        $ref: '#/$defs/TractabilityDimensionReductionNonContiguityHandlingModel'
+        description: Mathematical constraints to manage model features that span dimension
+          members, when `similarity_aggregation` has left the retained members non-contiguous.
+      similarity_aggregation:
+        $ref: '#/$defs/TractabilityDimensionReductionSimilarityAggregationModel'
+        description: Dimension members are grouped by likeness and each group represented
+          by a proxy member. The resulting groups need not be contiguous, which is
+          what creates the need for `non_contiguity_handling`.
     title: TractabilityDimensionReductionModel
     type: object
-  TractabilityDimensionReductionSpatialModel:
+  TractabilityDimensionReductionNonContiguityHandlingModel:
     additionalProperties: false
     properties:
-      clustering:
+      spatial:
         $ref: '#/$defs/ToolFeatureModel'
-        description: Automatic spatial zone aggregation/disaggregation. Usually from
-          nodal (bus) level to regional/bidding zone level. This usually requires
-          `model_definition.dimension_groups` to define aggregation membership.
-      network_reduction:
+        description: Inter-spatial features are linked across geographically discontiguous
+          aggregated zones (e.g. representing transfer capacity between the disjoint
+          parts of a zone).
+      temporal:
         $ref: '#/$defs/ToolFeatureModel'
-        description: Network element equivalencing (e.g., reducing to a single voltage
-          level).
-    title: TractabilityDimensionReductionSpatialModel
+        description: Inter-temporal features are linked across non-contiguous aggregated
+          periods (e.g. linking storage levels across typical periods).
+    title: TractabilityDimensionReductionNonContiguityHandlingModel
     type: object
-  TractabilityDimensionReductionTemporalModel:
+  TractabilityDimensionReductionSimilarityAggregationModel:
     additionalProperties: false
     properties:
-      dimension_non_contiguity:
+      assets:
         $ref: '#/$defs/ToolFeatureModel'
-        description: Mathematical constraints to manage inter-temporal model features
-          when using non-contiguous temporal aggregation (e.g., linking storage levels
-          across typical periods).
-      load_duration_curves:
+        description: Individually defined assets are automatically aggregated into
+          asset groups for optimisation. This usually requires `model_definition.dimension_groups`
+          to define aggregation membership.
+      scenarios:
         $ref: '#/$defs/ToolFeatureModel'
-        description: Full timeseries is represented by load duration curves.
-      resampling:
+        description: An ensemble of scenarios / uncertainty samples is reduced to
+          a smaller representative set with associated weights (e.g. scenario reduction
+          ahead of `uncertainty.multi_stage_stochastic`).
+      spatial:
         $ref: '#/$defs/ToolFeatureModel'
-        description: Temporal resolution of the input timeseries is coarsened while
-          remaining contiguous (e.g. hourly to daily) before the model is built.
-      typical_periods:
+        description: Spatial units are clustered by likeness rather than adjacency
+          (e.g. by resource quality or demand profile), so a zone may be geographically
+          discontiguous. This usually requires `model_definition.dimension_groups`
+          to define aggregation membership.
+      temporal:
         $ref: '#/$defs/ToolFeatureModel'
         description: Full timeseries is represented by non-contiguous typical periods
-          (days, weeks, months).
-    title: TractabilityDimensionReductionTemporalModel
+          (days, weeks, months) or by load duration curves.
+    title: TractabilityDimensionReductionSimilarityAggregationModel
     type: object
   TractabilityModel:
     additionalProperties: false
     properties:
       dimension_reduction:
         $ref: '#/$defs/TractabilityDimensionReductionModel'
-        description: Options to reduce the size of a given dimension of the problem.
+        description: Automated reduction of the number of members along a dimension
+          of the problem, grouped by the method used rather than by the dimension
+          it acts on. Each method names the dimensions it can be applied to.
       reformulation:
         $ref: '#/$defs/TractabilityReformulationModel'
         description: Approximations of discrete or non-linear formulations that preserve
           (mixed-integer) linear tractability.
+      variable_fidelity:
+        $ref: '#/$defs/TractabilityVariableFidelityModel'
+        description: The fidelity with which the same attribute is represented differs
+          across the model's scope, within one model definition.
     title: TractabilityModel
     type: object
   TractabilityReformulationModel:
@@ -1410,66 +1510,56 @@ $defs:
       constraint_screening:
         $ref: '#/$defs/ToolFeatureModel'
         description: Constraints unlikely to bind are omitted or lazily added.
-      convex_relaxation:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: A non-convex relationship (`constraints.functional_form.nonlinear`)
-          is approximated by a convex relaxation, retaining solver tractability (e.g.
-          second-order-cone relaxation of AC power flow).
       decomposition:
         $ref: '#/$defs/ToolFeatureModel'
         description: The problem is split into coordinated sub-problems solved iteratively
           or in parallel until convergence (e.g. Benders decomposition; Stochastic
           Dual Dynamic Programming <SDDP> for multi-stage stochastic hydropower scheduling).
-      function_conversion:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: User-defined arbitrary non-linear functions (`constraints.functional_form.nonlinear`)
-          are automatically converted into valid model inputs (e.g. piecewise segments)
-          without manual discretisation.
       linearised_unit_commitment:
         $ref: '#/$defs/ToolFeatureModel'
         description: Unit commitment approximated with continuous (linearised) commitment
           variables, avoiding integer decision variables.
-      variable_fidelity:
+      nonlinear_handling:
+        $ref: '#/$defs/TractabilityReformulationNonlinearHandlingModel'
+        description: Automatic treatment of non-linear relationships (`constraints.functional_form.nonlinear`)
+          so that the built problem remains solvable.
+      numeric_scaling:
         $ref: '#/$defs/ToolFeatureModel'
-        description: The mathematical fidelity of the same physical attribute can
-          differ across the model's scope within one model definition (e.g. discrete
-          units in some investment periods and aggregated capacity in others; unit
-          commitment over the near-term horizon, continuous economic dispatch beyond).
+        description: Data can be scaled (e.g. by converting base units) to reduce
+          numeric instability and constraint violations in the downstream solver.
     title: TractabilityReformulationModel
     type: object
-  TransparencyMetadataPropagationModel:
+  TractabilityReformulationNonlinearHandlingModel:
     additionalProperties: false
     properties:
-      provenance:
+      convex_relaxation:
         $ref: '#/$defs/ToolFeatureModel'
-        description: Data sources, versions, and licences are propagated from inputs
-          through to outputs.
-      units:
+        description: A non-convex relationship in the model's own formulation is approximated
+          by a convex relaxation, retaining solver tractability (e.g. second-order-cone
+          relaxation of AC power flow).
+      function_conversion:
         $ref: '#/$defs/ToolFeatureModel'
-        description: Physical units attached to data are tracked and validated through
-          the pipeline (to enable e.g., unit-consistency checking, automatic conversion,
-          auto-scaling).
-    title: TransparencyMetadataPropagationModel
+        description: User-defined arbitrary non-linear functions are automatically
+          converted into valid model inputs (e.g. piecewise segments) without manual
+          discretisation.
+    title: TractabilityReformulationNonlinearHandlingModel
     type: object
-  TransparencyModel:
+  TractabilityVariableFidelityModel:
     additionalProperties: false
     properties:
-      infeasibility_diagnosis:
+      formulation:
         $ref: '#/$defs/ToolFeatureModel'
-        description: Infeasible problems can be diagnosed (e.g. irreducible infeasible
-          subset (IIS) generation, named constraint violations).
-      intermediate_access:
+        description: The mathematical fidelity of the same physical attribute differs
+          across the model's scope (e.g. discrete units in some investment periods
+          and aggregated capacity in others; unit commitment over the near-term horizon,
+          continuous economic dispatch beyond).
+      resolution:
         $ref: '#/$defs/ToolFeatureModel'
-        description: Intermediate pipeline artefacts (e.g. built problem data, solver
-          state) can be exposed to the user.
-      metadata_propagation:
-        $ref: '#/$defs/TransparencyMetadataPropagationModel'
-        description: Metadata is propagated from inputs through to outputs.
-      run_logs:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Run logs available (e.g. in text files), for use in debugging
-          failing model runs.
-    title: TransparencyModel
+        description: The resolution of a dimension differs across the model's scope
+          (e.g. hourly timesteps within the study region and daily elsewhere; nodal
+          spatial detail in near-term investment periods and zonal detail beyond;
+          individually resolved assets in some regions and aggregated groups in others).
+    title: TractabilityVariableFidelityModel
     type: object
   UncertaintyModel:
     additionalProperties: false
@@ -1528,6 +1618,9 @@ properties:
             source: []
             value: '?'
           integer_investment_exogenous_capacity:
+            source: []
+            value: '?'
+          multi_period:
             source: []
             value: '?'
           retrofit:
@@ -1864,106 +1957,101 @@ properties:
         quadratic:
           source: []
           value: '?'
+        tie_breaking:
+          source: []
+          value: '?'
       orchestration:
         coupled_models:
-          source: []
-          value: '?'
-        rolling_horizon:
-          source: []
-          value: '?'
+          convergence_iteration:
+            source: []
+            value: '?'
+          limited_foresight:
+            investment:
+              source: []
+              value: '?'
+            operation:
+              source: []
+              value: '?'
+          market_sequence:
+            source: []
+            value: '?'
         sampled_runs:
           source: []
           value: '?'
         scenario_runs:
           source: []
           value: '?'
-        simulation_optimisation:
-          source: []
-          value: '?'
-      pathway:
-        myopic_foresight:
-          investment:
-            source: []
-            value: '?'
-          operation:
-            source: []
-            value: '?'
-        perfect_foresight:
-          investment:
-            source: []
-            value: '?'
-          operation:
-            source: []
-            value: '?'
       postprocessing:
-        aggregation:
-          source: []
-          value: '?'
-        disaggregation:
-          source: []
-          value: '?'
-        financial:
-          asset_accounts:
+        metrics:
+          financial:
+            asset_accounts:
+              source: []
+              value: '?'
+            contract_settlement:
+              source: []
+              value: '?'
+            levelised_cost:
+              source: []
+              value: '?'
+            marginal_price:
+              source: []
+              value: '?'
+            net_present_value:
+              source: []
+              value: '?'
+            price_formation:
+              source: []
+              value: '?'
+            water_value:
+              source: []
+              value: '?'
+          impact_assessment:
+            emissions:
+              source: []
+              value: '?'
+            resource_use:
+              source: []
+              value: '?'
+            socioeconomic:
+              source: []
+              value: '?'
+          network_transfer_metrics:
+            flow_sensitivity:
+              source: []
+              value: '?'
+            transfer_capacity:
+              source: []
+              value: '?'
+          operational:
+            capacity_factor:
+              source: []
+              value: '?'
+            curtailment:
+              source: []
+              value: '?'
+            full_load_hours:
+              source: []
+              value: '?'
+          probabilistic_reliability_assessment:
+            capacity_credit:
+              source: []
+              value: '?'
+            loss_of_load:
+              source: []
+              value: '?'
+            unserved_energy:
+              source: []
+              value: '?'
+        transformation:
+          aggregation:
             source: []
             value: '?'
-          contract_settlement:
+          disaggregation:
             source: []
             value: '?'
-          levelised_cost:
+          scenario_comparison:
             source: []
             value: '?'
-          marginal_price:
-            source: []
-            value: '?'
-          net_present_value:
-            source: []
-            value: '?'
-          price_formation:
-            source: []
-            value: '?'
-          water_value:
-            source: []
-            value: '?'
-        impact_assessment:
-          emissions:
-            source: []
-            value: '?'
-          resource_use:
-            source: []
-            value: '?'
-          socioeconomic:
-            source: []
-            value: '?'
-        network_transfer_metrics:
-          flow_sensitivity:
-            source: []
-            value: '?'
-          transfer_capacity:
-            source: []
-            value: '?'
-        operational:
-          capacity_factor:
-            source: []
-            value: '?'
-          curtailment:
-            source: []
-            value: '?'
-          full_load_hours:
-            source: []
-            value: '?'
-        probabilistic_reliability_assessment:
-          capacity_credit:
-            source: []
-            value: '?'
-          loss_of_load:
-            source: []
-            value: '?'
-          unserved_energy:
-            source: []
-            value: '?'
-        scenario_comparison:
-          source: []
-          value: '?'
       preprocessing:
         download:
           source: []
@@ -1975,9 +2063,6 @@ properties:
           source: []
           value: '?'
         model_catalogue:
-          source: []
-          value: '?'
-        numeric_scaling:
           source: []
           value: '?'
         resource_conversion:
@@ -2038,68 +2123,17 @@ properties:
         temporal_transfer:
           source: []
           value: '?'
-      tractability:
-        dimension_reduction:
-          assets:
-            black_boxing:
-              source: []
-              value: '?'
-            clustering:
-              source: []
-              value: '?'
-            component_removal:
-              source: []
-              value: '?'
-          spatial:
-            clustering:
-              source: []
-              value: '?'
-            network_reduction:
-              source: []
-              value: '?'
-          temporal:
-            dimension_non_contiguity:
-              source: []
-              value: '?'
-            load_duration_curves:
-              source: []
-              value: '?'
-            resampling:
-              source: []
-              value: '?'
-            typical_periods:
-              source: []
-              value: '?'
-        reformulation:
-          approximation:
-            source: []
-            value: '?'
-          constraint_screening:
-            source: []
-            value: '?'
-          convex_relaxation:
-            source: []
-            value: '?'
-          decomposition:
-            source: []
-            value: '?'
-          function_conversion:
-            source: []
-            value: '?'
-          linearised_unit_commitment:
-            source: []
-            value: '?'
-          variable_fidelity:
-            source: []
-            value: '?'
-      transparency:
+      traceability:
         infeasibility_diagnosis:
           source: []
           value: '?'
         intermediate_access:
           source: []
           value: '?'
-        metadata_propagation:
+        metadata:
+          propagation:
+            source: []
+            value: '?'
           provenance:
             source: []
             value: '?'
@@ -2109,6 +2143,85 @@ properties:
         run_logs:
           source: []
           value: '?'
+      tractability:
+        dimension_reduction:
+          adjacency_aggregation:
+            spatial:
+              source: []
+              value: '?'
+            temporal:
+              source: []
+              value: '?'
+          equivalencing:
+            assets:
+              source: []
+              value: '?'
+            spatial:
+              source: []
+              value: '?'
+          filtering:
+            assets:
+              source: []
+              value: '?'
+            scenarios:
+              source: []
+              value: '?'
+            spatial:
+              source: []
+              value: '?'
+            temporal:
+              source: []
+              value: '?'
+          non_contiguity_handling:
+            spatial:
+              source: []
+              value: '?'
+            temporal:
+              source: []
+              value: '?'
+          similarity_aggregation:
+            assets:
+              source: []
+              value: '?'
+            scenarios:
+              source: []
+              value: '?'
+            spatial:
+              source: []
+              value: '?'
+            temporal:
+              source: []
+              value: '?'
+        reformulation:
+          approximation:
+            source: []
+            value: '?'
+          constraint_screening:
+            source: []
+            value: '?'
+          decomposition:
+            source: []
+            value: '?'
+          linearised_unit_commitment:
+            source: []
+            value: '?'
+          nonlinear_handling:
+            convex_relaxation:
+              source: []
+              value: '?'
+            function_conversion:
+              source: []
+              value: '?'
+          numeric_scaling:
+            source: []
+            value: '?'
+        variable_fidelity:
+          formulation:
+            source: []
+            value: '?'
+          resolution:
+            source: []
+            value: '?'
       uncertainty:
         multi_stage_stochastic:
           source: []
