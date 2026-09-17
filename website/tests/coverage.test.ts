@@ -84,6 +84,24 @@ describe('coverage calculations', () => {
     })).toMatchObject({ met: 2, total: 4, percentage: 50 })
   })
 
+  it('keeps whole-tool coverage independent from use-case-scoped rows', () => {
+    const useCaseScopedTaxonomy = taxonomy.map((category) => ({
+      ...category,
+      members: category.members.filter(
+        (feature) => useCase.features[category.id]?.[feature.id]?.value === 'y',
+      ),
+    }))
+
+    expect(calculateToolCoverage(useCaseScopedTaxonomy, tool, {
+      countUnsourced: true,
+      countDev: false,
+    })).toMatchObject({ met: 2, total: 3 })
+    expect(calculateToolCoverage(taxonomy, tool, {
+      countUnsourced: true,
+      countDev: false,
+    })).toMatchObject({ met: 2, total: 4, percentage: 50 })
+  })
+
   it('calculates use-case coverage from required rows only', () => {
     expect(calculateUseCaseCoverage(taxonomy, tool, useCase, {
       countUnsourced: true,
