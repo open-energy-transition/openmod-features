@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BuilderRouteImport } from './routes/builder'
+import { Route as OverviewRouteImport } from './routes/overview'
 import { Route as ToolsRouteImport } from './routes/tools'
 import { Route as UseCasesRouteImport } from './routes/use-cases'
 
@@ -22,6 +23,11 @@ const IndexRoute = IndexRouteImport.update({
 const BuilderRoute = BuilderRouteImport.update({
   id: '/builder',
   path: '/builder',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OverviewRoute = OverviewRouteImport.update({
+  id: '/overview',
+  path: '/overview',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ToolsRoute = ToolsRouteImport.update({
@@ -38,12 +44,14 @@ const UseCasesRoute = UseCasesRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/builder': typeof BuilderRoute
+  '/overview': typeof OverviewRoute
   '/tools': typeof ToolsRoute
   '/use-cases': typeof UseCasesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/builder': typeof BuilderRoute
+  '/overview': typeof OverviewRoute
   '/tools': typeof ToolsRoute
   '/use-cases': typeof UseCasesRoute
 }
@@ -51,20 +59,22 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/builder': typeof BuilderRoute
+  '/overview': typeof OverviewRoute
   '/tools': typeof ToolsRoute
   '/use-cases': typeof UseCasesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/builder' | '/tools' | '/use-cases'
+  fullPaths: '/' | '/builder' | '/overview' | '/tools' | '/use-cases'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/builder' | '/tools' | '/use-cases'
-  id: '__root__' | '/' | '/builder' | '/tools' | '/use-cases'
+  to: '/' | '/builder' | '/overview' | '/tools' | '/use-cases'
+  id: '__root__' | '/' | '/builder' | '/overview' | '/tools' | '/use-cases'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BuilderRoute: typeof BuilderRoute
+  OverviewRoute: typeof OverviewRoute
   ToolsRoute: typeof ToolsRoute
   UseCasesRoute: typeof UseCasesRoute
 }
@@ -83,6 +93,13 @@ declare module '@tanstack/react-router' {
       path: '/builder'
       fullPath: '/builder'
       preLoaderRoute: typeof BuilderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/overview': {
+      id: '/overview'
+      path: '/overview'
+      fullPath: '/overview'
+      preLoaderRoute: typeof OverviewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tools': {
@@ -105,6 +122,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BuilderRoute: BuilderRoute,
+  OverviewRoute: OverviewRoute,
   ToolsRoute: ToolsRoute,
   UseCasesRoute: UseCasesRoute,
 }

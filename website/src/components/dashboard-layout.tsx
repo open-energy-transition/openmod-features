@@ -142,7 +142,7 @@ export function DashboardLayout() {
             <DashboardNav customUseCase={customUseCase} />
             <CoverageControls options={coverageOptions} onChange={setCoverageOptions} />
           </div>
-          {location.pathname === '/' ? <HomeIntro data={dashboardData} /> : null}
+          {location.pathname === '/overview' ? <HomeIntro data={dashboardData} /> : null}
           <DashboardContext.Provider
             value={{
               data: dashboardData,
@@ -328,6 +328,9 @@ function DashboardNav({ customUseCase }: { customUseCase: UseCaseRecord | null }
       className="atlas-nav flex gap-1 p-1"
     >
       <NavLink to="/" customUseCase={customUseCase}>
+        Home
+      </NavLink>
+      <NavLink to="/overview" customUseCase={customUseCase}>
         Overview
       </NavLink>
       <NavLink to="/tools" customUseCase={customUseCase}>

@@ -14,6 +14,7 @@ const deployBase = normalizeDeployBase(process.env.DEPLOY_BASE)
 
 const prerenderRoutes = [
   { path: '/', output: 'index.html' },
+  { path: '/overview', output: path.join('overview', 'index.html') },
   { path: '/tools', output: path.join('tools', 'index.html') },
   { path: '/use-cases', output: path.join('use-cases', 'index.html') },
   { path: '/builder', output: path.join('builder', 'index.html') },
