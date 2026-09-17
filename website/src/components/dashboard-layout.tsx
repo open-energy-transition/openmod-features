@@ -330,9 +330,6 @@ function DashboardNav({ customUseCase }: { customUseCase: UseCaseRecord | null }
       <NavLink to="/" customUseCase={customUseCase}>
         Home
       </NavLink>
-      <NavLink to="/overview" customUseCase={customUseCase}>
-        Overview
-      </NavLink>
       <NavLink to="/tools" customUseCase={customUseCase}>
         Tool Matrix
       </NavLink>
@@ -341,6 +338,9 @@ function DashboardNav({ customUseCase }: { customUseCase: UseCaseRecord | null }
       </NavLink>
       <NavLink to="/builder" customUseCase={customUseCase}>
         Use Case Builder
+      </NavLink>
+      <NavLink to="/about" customUseCase={customUseCase}>
+        About
       </NavLink>
     </nav>
   )
