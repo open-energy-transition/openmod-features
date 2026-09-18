@@ -19,6 +19,7 @@ import {
   calculateToolCoverage,
   getToolFeature,
 } from '../data/coverage'
+import { CUSTOM_USE_CASE_ID } from '../data/custom-use-case'
 import {
   filterTaxonomy,
   filterTaxonomyByUseCases,
@@ -43,7 +44,7 @@ function ToolMatrixPage() {
   const [selectedUseCaseIds, setSelectedUseCaseIds] = useState(
     () =>
       selectedUseCasesFromUrl(data.useCases) ??
-      new Set(data.useCases.map((useCase) => useCase.id)),
+      new Set<string>(),
   )
   const [hideInactiveRows, setHideInactiveRows] = useState(false)
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
@@ -55,7 +56,7 @@ function ToolMatrixPage() {
   useEffect(() => {
     const urlSelection = selectedUseCasesFromUrl(data.useCases)
     setSelectedUseCaseIds((current) =>
-      urlSelection ?? syncSelectedIds(current, data.useCases),
+      urlSelection ?? pruneSelectedIds(current, data.useCases),
     )
   }, [data.useCases, location.search])
 
@@ -65,15 +66,17 @@ function ToolMatrixPage() {
     data.useCases,
     selectedUseCaseIds,
   )
+  const scoringTaxonomy =
+    selectedUseCaseIds.size === 0 ? data.taxonomy : useCaseScopedTaxonomy
   const activeFeatureIds = new Set(
-    useCaseScopedTaxonomy.flatMap((category) =>
+    scoringTaxonomy.flatMap((category) =>
       category.members.map((feature) => featureKey(category.id, feature.id)),
     ),
   )
   const activeCategoryById = new Map(
-    useCaseScopedTaxonomy.map((category) => [category.id, category]),
+    scoringTaxonomy.map((category) => [category.id, category]),
   )
-  const displayTaxonomy = hideInactiveRows ? useCaseScopedTaxonomy : data.taxonomy
+  const displayTaxonomy = hideInactiveRows ? scoringTaxonomy : data.taxonomy
   const filteredTaxonomy = sortTaxonomyAlphabetically(
     filterTaxonomy(displayTaxonomy, query),
   )
@@ -114,11 +117,7 @@ function ToolMatrixPage() {
       {filteredTaxonomy.length === 0 ? (
         <EmptyState
           title="No matching features"
-          detail={
-            selectedUseCaseIds.size === 0
-              ? 'Select at least one use case to scope the evidence rows.'
-              : 'Clear the search or adjust filters to inspect more feature evidence.'
-          }
+          detail="Clear the search or adjust filters to inspect more feature evidence."
         />
       ) : selectedTools.length === 0 ? (
         <EmptyState
@@ -138,8 +137,16 @@ function ToolMatrixPage() {
             </tr>
             <tr>
               <StickyHead>
-                <Hint label="Coverage across rows required by the selected use cases. Change the use-case filter to change this scope.">
-                  Selected scope
+                <Hint
+                  label={
+                    selectedUseCaseIds.size === 0
+                      ? 'Coverage across the entire feature taxonomy because no use-case filter is selected.'
+                      : 'Coverage across rows required by the selected use cases. Change the use-case filter to change this scope.'
+                  }
+                >
+                  {selectedUseCaseIds.size === 0
+                    ? 'Entire taxonomy'
+                    : 'Selected scope'}
                 </Hint>
               </StickyHead>
               {selectedTools.map((tool) => (
@@ -149,7 +156,7 @@ function ToolMatrixPage() {
                 >
                   <CoverageBadge
                     coverage={calculateToolCoverage(
-                      useCaseScopedTaxonomy,
+                      scoringTaxonomy,
                       tool,
                       coverageOptions,
                     )}
@@ -213,14 +220,38 @@ function featureKey(categoryId: string, featureId: string) {
   return `${categoryId}:${featureId}`
 }
 
+function pruneSelectedIds<T extends { id: string }>(
+  current: Set<string>,
+  records: T[],
+) {
+  const validIds = new Set(records.map((record) => record.id))
+  const next = new Set([...current].filter((id) => validIds.has(id)))
+
+  return next.size === current.size && [...next].every((id) => current.has(id))
+    ? current
+    : next
+}
+
 function selectedUseCasesFromUrl(useCases: { id: string }[]) {
   if (typeof window === 'undefined') {
     return null
   }
 
   const value = new URLSearchParams(window.location.search).get(USE_CASES_PARAM)
-  if (!value) {
+  if (value === null) {
     return null
+  }
+
+  if (value.trim() === '') {
+    return new Set<string>()
+  }
+
+  if (value.trim() === 'default') {
+    return new Set(
+      useCases
+        .filter((useCase) => useCase.id !== CUSTOM_USE_CASE_ID)
+        .map((useCase) => useCase.id),
+    )
   }
 
   const validIds = new Set(useCases.map((useCase) => useCase.id))
@@ -238,7 +269,7 @@ function updateSelectedUseCasesUrl(useCaseIds: string[], totalUseCases: number) 
   }
 
   const url = new URL(window.location.href)
-  if (useCaseIds.length === 0 || useCaseIds.length === totalUseCases) {
+  if (useCaseIds.length === totalUseCases) {
     url.searchParams.delete(USE_CASES_PARAM)
   } else {
     url.searchParams.set(USE_CASES_PARAM, useCaseIds.join(','))

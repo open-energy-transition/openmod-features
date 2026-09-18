@@ -13,7 +13,7 @@ import {
   FaWandMagicSparkles,
 } from 'react-icons/fa6'
 import { useDashboardContext } from '../components/dashboard-layout'
-import { calculateUseCaseCoverage } from '../data/coverage'
+import { calculateToolCoverage, calculateUseCaseCoverage } from '../data/coverage'
 import { CUSTOM_USE_CASE_ID } from '../data/custom-use-case'
 import type {
   CoverageResult,
@@ -36,6 +36,16 @@ function HomePage() {
   const unifiedUseCase = useMemo(
     () => createUnifiedUseCase(builtInUseCases),
     [builtInUseCases],
+  )
+  const toolBenchmarks = useMemo(
+    () =>
+      data.tools
+        .map((tool) => ({
+          tool,
+          coverage: calculateToolCoverage(data.taxonomy, tool, coverageOptions),
+        }))
+        .sort((left, right) => compareCoverage(right.coverage, left.coverage)),
+    [coverageOptions, data.taxonomy, data.tools],
   )
   const unifiedBenchmarks = useMemo(
     () =>
@@ -72,7 +82,7 @@ function HomePage() {
       })),
     [builtInUseCases, coverageOptions, data.taxonomy, data.tools],
   )
-  const topTool = unifiedBenchmarks[0]
+  const topTool = toolBenchmarks[0]
   const strongestFit = useCaseBenchmarks
     .flatMap(({ useCase, tools }) =>
       tools.map(({ tool, coverage }) => ({ useCase, tool, coverage })),
@@ -107,7 +117,7 @@ function HomePage() {
 
         <dl className="atlas-home-summary grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
           <SummaryStat
-            label="Highest unified score"
+            label="Highest taxonomy score"
             value={topTool?.tool.shortname ?? 'N/A'}
             detail={formatScore(topTool?.coverage)}
           />
@@ -129,14 +139,14 @@ function HomePage() {
       </section>
 
       <BenchmarkPanel
-        title="Unified default use cases"
-        description={`A broad benchmark across the combined required features from ${builtInUseCases.length} built-in use cases. Open the matrix to inspect the scoped rows.`}
+        title="Feature inventory"
+        description="Scored against the entire taxonomy. Use this as the broad capability inventory before narrowing to workflow-specific requirements."
         cta="Inspect tool matrix"
         to="/tools"
-        icon={<FaClipboardCheck aria-hidden="true" />}
+        icon={<FaChartColumn aria-hidden="true" />}
       >
         <BenchmarkBars
-          items={unifiedBenchmarks}
+          items={toolBenchmarks}
           variant="wide"
           to="/tools"
         />
@@ -161,6 +171,21 @@ function HomePage() {
             />
           </BenchmarkPanel>
         ))}
+        <BenchmarkPanel
+          title="Unified default use cases"
+          description={`A broad benchmark across the combined required features from ${builtInUseCases.length} built-in use cases. Open the matrix to inspect the scoped rows.`}
+          cta="Inspect tool matrix"
+          to="/tools"
+          search={{ use_cases: 'default' }}
+          icon={<FaClipboardCheck aria-hidden="true" />}
+        >
+          <BenchmarkBars
+            items={unifiedBenchmarks}
+            compact
+            to="/tools"
+            search={{ use_cases: 'default' }}
+          />
+        </BenchmarkPanel>
       </section>
     </div>
   )
