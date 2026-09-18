@@ -515,8 +515,24 @@ class TestAxisConsistency:
         frozenset({"investment", "operation"}),
         frozenset({"input", "output"}),
         frozenset({"build", "run", "analyse"}),
-        frozenset({"temporal", "spatial", "assets"}),
+        frozenset({"temporal", "spatial", "assets", "scenarios"}),
     ]
+
+    #: Branches allowed to use only part of an axis.
+    #:
+    #: `tractability.dimension_reduction` is sliced method-over-dimension, and a method
+    #: is only listed against the dimensions it can act on: assets and scenarios have no
+    #: natural adjacency, so neither takes `adjacency_aggregation`. Partial use is the
+    #: point here, so these branches opt out while the rule still holds everywhere else.
+    PARTIAL_AXIS_BRANCHES = frozenset(
+        {
+            "tractability.dimension_reduction.adjacency_aggregation",
+            "tractability.dimension_reduction.similarity_aggregation",
+            "tractability.dimension_reduction.equivalencing",
+            "tractability.dimension_reduction.filtering",
+            "tractability.dimension_reduction.non_contiguity_handling",
+        }
+    )
 
     @pytest.fixture(scope="class")
     def taxonomy(self, repo_root: Path) -> dict:
@@ -528,6 +544,8 @@ class TestAxisConsistency:
         violations = []
         for name, node in taxonomy.items():
             for path, members in _walk_branches(node, (name,)):
+                if ".".join(path) in self.PARTIAL_AXIS_BRANCHES:
+                    continue
                 names = frozenset(members)
                 for axis in self.KNOWN_AXES:
                     if names & axis and names != axis:
@@ -536,6 +554,19 @@ class TestAxisConsistency:
                             f"axis is {sorted(axis)}"
                         )
         assert not violations, "\n".join(violations)
+
+    def test_partial_axis_exemptions_are_live(self, taxonomy: dict):
+        """Every exempted path must still name a real branch.
+
+        An exemption left behind after a rename would silently stop the axis rule
+        applying to whatever later takes that path.
+        """
+        branches = {
+            ".".join(path)
+            for name, node in taxonomy.items()
+            for path, _ in _walk_branches(node, (name,))
+        }
+        assert not self.PARTIAL_AXIS_BRANCHES - branches
 
 
 class TestCrossReferences:
