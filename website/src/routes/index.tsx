@@ -366,13 +366,13 @@ function BenchmarkBar({
       style={{ '--score': `${Math.max(0, Math.min(100, percentage))}%` } as CSSProperties}
     >
       <span className="atlas-benchmark-rank">{rank}</span>
-      <span className="min-w-0 truncate font-medium text-[var(--atlas-ink)]">
+      <span className="atlas-benchmark-name min-w-0 truncate font-medium text-[var(--atlas-ink)]">
         {tool.shortname}
       </span>
       <span className="atlas-benchmark-track" aria-hidden="true">
         <span className="atlas-benchmark-fill" />
       </span>
-      <span className="justify-self-end font-semibold tabular-nums text-[var(--atlas-ink)]">
+      <span className="atlas-benchmark-score justify-self-end font-semibold tabular-nums text-[var(--atlas-ink)]">
         {Math.round(percentage)}%
       </span>
     </Link>

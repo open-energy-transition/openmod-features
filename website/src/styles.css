@@ -1100,12 +1100,28 @@ a:active {
     }
 
     .atlas-benchmark-bar {
-      grid-template-columns: 1.45rem minmax(4.5rem, 1fr) 2.85rem;
-      gap: 0.55rem;
+      grid-template-areas:
+        'name score'
+        'track track';
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 0.42rem 0.75rem;
+      min-height: 2.65rem;
+    }
+
+    .atlas-benchmark-rank {
+      display: none;
+    }
+
+    .atlas-benchmark-name {
+      grid-area: name;
+    }
+
+    .atlas-benchmark-score {
+      grid-area: score;
     }
 
     .atlas-benchmark-track {
-      grid-column: 2 / -1;
+      grid-area: track;
     }
   }
 

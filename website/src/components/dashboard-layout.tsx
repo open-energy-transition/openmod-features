@@ -137,8 +137,8 @@ export function DashboardLayout() {
           onThemeChange={setTheme}
         />
         <div className="mx-auto grid max-w-[1800px] gap-5 px-4 py-6 sm:px-6 lg:px-8">
-          <div className="atlas-sticky-toolbar sticky top-0 z-40 -mx-4 px-4 py-2 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-            <div className="flex min-w-0 flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div className="atlas-sticky-toolbar sticky top-0 z-40 -mx-4 min-w-0 px-4 py-2 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+            <div className="flex w-full min-w-0 flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
               <DashboardNav customUseCase={customUseCase} />
               <CoverageControls options={coverageOptions} onChange={setCoverageOptions} />
             </div>
@@ -319,7 +319,7 @@ function DashboardNav({ customUseCase }: { customUseCase: UseCaseRecord | null }
   return (
     <nav
       aria-label="Dashboard sections"
-      className="atlas-nav flex gap-1 p-1"
+      className="atlas-nav flex min-w-0 gap-1 p-1"
     >
       <NavLink to="/" customUseCase={customUseCase}>
         Home

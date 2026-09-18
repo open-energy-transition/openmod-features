@@ -266,7 +266,7 @@ export function CoverageControls({
   return (
     <section
       aria-labelledby="coverage-options"
-      className="atlas-rule-switcher flex max-w-full flex-wrap items-center gap-2 p-1.5"
+      className="atlas-rule-switcher flex min-w-0 max-w-full flex-wrap items-center gap-2 p-1.5"
     >
       <h2
         id="coverage-options"
