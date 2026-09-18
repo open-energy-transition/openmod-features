@@ -350,6 +350,13 @@ a:active {
       inset 0 1px 0 rgb(255 255 255 / 0.42);
   }
 
+  .atlas-sticky-toolbar {
+    background:
+      linear-gradient(180deg, var(--atlas-canvas) 0%, rgb(244 247 246 / 0.92) 100%);
+    border-bottom: 1px solid var(--atlas-line-soft);
+    backdrop-filter: blur(14px);
+  }
+
   .atlas-label {
     color: var(--atlas-ink-soft);
   }
@@ -1237,6 +1244,7 @@ a:active {
 
   :root[data-theme='dark'] .atlas-panel-header,
   :root[data-theme='dark'] .atlas-toolbar,
+  :root[data-theme='dark'] .atlas-sticky-toolbar,
   :root[data-theme='dark'] .atlas-github-button,
   :root[data-theme='dark'] .atlas-theme-switch,
   :root[data-theme='dark'] .atlas-fold-button,
@@ -1253,6 +1261,7 @@ a:active {
 
   :root[data-theme='dark'] .atlas-panel,
   :root[data-theme='dark'] .atlas-toolbar,
+  :root[data-theme='dark'] .atlas-sticky-toolbar,
   :root[data-theme='dark'] .atlas-primary-button,
   :root[data-theme='dark'] .atlas-secondary-button,
   :root[data-theme='dark'] .atlas-github-button,
@@ -1313,6 +1322,7 @@ a:active {
   }
 
   :root[data-theme='dark'] .atlas-toolbar,
+  :root[data-theme='dark'] .atlas-sticky-toolbar,
   :root[data-theme='dark'] .atlas-nav,
   :root[data-theme='dark'] .atlas-rule-switcher {
     background-color: #0b1715;
