@@ -1489,8 +1489,8 @@ $defs:
       dimension_reduction:
         $ref: '#/$defs/TractabilityDimensionReductionModel'
         description: The number of members along a dimension of the problem can be
-          reduced automatically, grouped by the method used rather than by the dimension
-          it acts on. Each method names the dimensions it can be applied to.
+          reduced automatically, The reduction applies uniformly across all other
+          dimensions; a reduction that differs across other dimensions is `tractability.variable_fidelity.resolution`.
       reformulation:
         $ref: '#/$defs/TractabilityReformulationModel'
         description: Discrete or non-linear formulations can be approximated in ways
@@ -1557,12 +1557,34 @@ $defs:
           periods and aggregated capacity in others; unit commitment over the near-term
           horizon, continuous economic dispatch beyond).
       resolution:
-        $ref: '#/$defs/UseCaseFeatureModel'
-        description: The resolution of a dimension can differ with respect to other
-          dimensions (e.g. hourly timesteps within a focus region and daily elsewhere;
-          nodal spatial detail in near-term investment periods and zonal detail beyond;
-          individually resolved assets in some regions and aggregated groups in others).
+        $ref: '#/$defs/TractabilityVariableFidelityResolutionModel'
+        description: The resolution of one dimension can differ across the members
+          of another dimension.
     title: TractabilityVariableFidelityModel
+    type: object
+  TractabilityVariableFidelityResolutionModel:
+    additionalProperties: false
+    properties:
+      assets:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Asset resolution can vary across the members of another dimension
+          (e.g. individually resolved assets within a focus region and aggregated
+          groups elsewhere).
+      scenarios:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Scenario / uncertainty resolution can vary across the members
+          of another dimension (e.g. an `uncertainty.multi_stage_stochastic` scenario
+          tree that samples more finely in near-term stages than in later ones).
+      spatial:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Spatial resolution can vary across the members of another dimension
+          (e.g. nodal detail in near-term investment periods and zonal detail beyond).
+      temporal:
+        $ref: '#/$defs/UseCaseFeatureModel'
+        description: Temporal resolution can vary across the members of another dimension
+          (e.g. hourly timesteps within a focus region and daily elsewhere; hourly
+          for variable renewables and daily for nuclear).
+    title: TractabilityVariableFidelityResolutionModel
     type: object
   UncertaintyModel:
     additionalProperties: false
@@ -2064,7 +2086,14 @@ properties:
           formulation:
             value: '?'
           resolution:
-            value: '?'
+            assets:
+              value: '?'
+            scenarios:
+              value: '?'
+            spatial:
+              value: '?'
+            temporal:
+              value: '?'
       uncertainty:
         multi_stage_stochastic:
           value: '?'

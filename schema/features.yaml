@@ -612,8 +612,8 @@ tractability:
     dimension_reduction:
       description: >-
         The number of members along a dimension of the problem can be reduced automatically,
-        grouped by the method used rather than by the dimension it acts on.
-        Each method names the dimensions it can be applied to.
+        The reduction applies uniformly across all other dimensions;
+        a reduction that differs across other dimensions is `tractability.variable_fidelity.resolution`.
       members:
         adjacency_aggregation:
           description: >-
@@ -687,11 +687,23 @@ tractability:
           The mathematical fidelity of the same physical attribute can differ across the model's scope
           (e.g. discrete units in some investment periods and aggregated capacity in others;
           unit commitment over the near-term horizon, continuous economic dispatch beyond).
-        resolution: >-
-          The resolution of a dimension can differ with respect to other dimensions
-          (e.g. hourly timesteps within a focus region and daily elsewhere;
-          nodal spatial detail in near-term investment periods and zonal detail beyond;
-          individually resolved assets in some regions and aggregated groups in others).
+        resolution:
+          description: >-
+            The resolution of one dimension can differ across the members of another dimension.
+          members:
+            temporal: >-
+              Temporal resolution can vary across the members of another dimension
+              (e.g. hourly timesteps within a focus region and daily elsewhere;
+              hourly for variable renewables and daily for nuclear).
+            spatial: >-
+              Spatial resolution can vary across the members of another dimension
+              (e.g. nodal detail in near-term investment periods and zonal detail beyond).
+            assets: >-
+              Asset resolution can vary across the members of another dimension
+              (e.g. individually resolved assets within a focus region and aggregated groups elsewhere).
+            scenarios: >-
+              Scenario / uncertainty resolution can vary across the members of another dimension
+              (e.g. an `uncertainty.multi_stage_stochastic` scenario tree that samples more finely in near-term stages than in later ones).
 
     reformulation:
       description: >-
