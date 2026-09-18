@@ -2,10 +2,9 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import { useMemo } from 'react'
 import {
-  FaArrowUpRightFromSquare,
   FaBookOpen,
   FaChartSimple,
   FaCheck,
@@ -14,7 +13,6 @@ import {
   FaCodeFork,
   FaFileCircleCheck,
   FaGavel,
-  FaGithub,
   FaLink,
   FaRegCircleQuestion,
   FaRotate,
@@ -34,44 +32,6 @@ function AboutPage() {
 
   return (
     <div className="grid gap-5">
-      <Panel
-        title="Project Purpose"
-        description="Why this inventory exists."
-      >
-        <div className="grid gap-4 p-4 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.55fr)]">
-          <div>
-            <p className="atlas-copy text-sm leading-6">
-              openmod-features is a community-maintained feature inventory for
-              open-source energy system modelling tools and common planning use
-              cases. Matching tool feature lists to use-case requirements helps
-              identify which tools fit a workflow and where feature gaps remain.
-            </p>
-            <div className="mt-4 flex flex-wrap gap-2">
-              <AboutAction to="/tools" icon={<FaChartSimple aria-hidden="true" />}>
-                Open tool matrix
-              </AboutAction>
-              <AboutAction to="/use-cases" icon={<FaFileCircleCheck aria-hidden="true" />}>
-                Compare use cases
-              </AboutAction>
-              <AboutExternal
-                href="https://github.com/open-energy-transition/openmod-features"
-                icon={<FaGithub aria-hidden="true" />}
-              >
-                GitHub repository
-              </AboutExternal>
-            </div>
-          </div>
-          <dl className="grid gap-3 text-sm sm:grid-cols-3 lg:grid-cols-1">
-            <AboutStat label="Tools" value={data.tools.length.toString()} />
-            <AboutStat label="Use cases" value={data.useCases.length.toString()} />
-            <AboutStat
-              label="Generated data"
-              value={new Date(data.generatedAt).toLocaleDateString()}
-            />
-          </dl>
-        </div>
-      </Panel>
-
       <section className="grid gap-4 xl:grid-cols-2">
         <Panel
           title="What The Scores Mean"
@@ -203,62 +163,6 @@ function AboutPage() {
           />
         </dl>
       </Panel>
-    </div>
-  )
-}
-
-function AboutAction({
-  to,
-  icon,
-  children,
-}: {
-  to: string
-  icon: React.ReactNode
-  children: React.ReactNode
-}) {
-  return (
-    <Link
-      to={to}
-      className="atlas-secondary-button atlas-focus inline-flex h-9 items-center justify-center gap-2 px-3 text-sm font-medium outline-none"
-    >
-      <span className="atlas-muted">{icon}</span>
-      {children}
-    </Link>
-  )
-}
-
-function AboutExternal({
-  href,
-  icon,
-  children,
-}: {
-  href: string
-  icon: React.ReactNode
-  children: React.ReactNode
-}) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noreferrer"
-      className="atlas-secondary-button atlas-focus inline-flex h-9 items-center justify-center gap-2 px-3 text-sm font-medium outline-none"
-    >
-      <span className="atlas-muted">{icon}</span>
-      {children}
-      <FaArrowUpRightFromSquare className="text-[10px]" aria-hidden="true" />
-    </a>
-  )
-}
-
-function AboutStat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="border-l border-[var(--atlas-line-strong)] px-3 py-2">
-      <dt className="atlas-caption text-xs font-semibold uppercase tracking-[0.12em]">
-        {label}
-      </dt>
-      <dd className="mt-1 text-lg font-semibold tabular-nums text-[var(--atlas-ink)]">
-        {value}
-      </dd>
     </div>
   )
 }

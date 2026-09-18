@@ -7,7 +7,6 @@ import { Switch } from '@base-ui/react/switch'
 import { Link, Outlet, useLocation } from '@tanstack/react-router'
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import {
-  FaClipboardCheck,
   FaFileCircleCheck,
   FaGithub,
   FaMoon,
@@ -166,9 +165,10 @@ function HomeIntro({ data }: { data: DashboardData }) {
       <div className="max-w-4xl">
         <p className="atlas-eyebrow">Inventory Snapshot</p>
         <p className="atlas-copy mt-1 max-w-3xl text-sm leading-6">
-          Scores are generated from repository feature lists and respond to the
-          active coverage rules. Project background, governance, and licensing now
-          live on the About page.
+          openmod-features is a community-maintained feature inventory for
+          open-source energy system modelling tools and common planning use
+          cases. Matching tool feature lists to use-case requirements helps
+          identify which tools fit a workflow and where feature gaps remain.
         </p>
         <div className="mt-3 flex flex-wrap gap-2">
           <PreambleLink
@@ -183,7 +183,7 @@ function HomeIntro({ data }: { data: DashboardData }) {
           />
           <PreambleLink
             href="https://github.com/open-energy-transition/openmod-features/blob/main/GOVERNANCE.md"
-            icon={<FaClipboardCheck aria-hidden="true" />}
+            icon={<FaGithub aria-hidden="true" />}
             text="Governance"
           />
         </div>
@@ -193,10 +193,6 @@ function HomeIntro({ data }: { data: DashboardData }) {
         <ProvenanceItem
           label="Generated"
           value={new Date(data.generatedAt).toLocaleString()}
-        />
-        <ProvenanceItem
-          label="Inventory"
-          value={`${data.tools.length} tools / ${data.useCases.length} use cases`}
         />
         <ProvenanceItem
           label="Validation"
