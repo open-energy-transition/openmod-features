@@ -681,16 +681,15 @@ tractability:
 
     variable_fidelity:
       description: >-
-        The fidelity with which the same attribute is represented can differ across the model's scope,
-        within one model definition.
+        The fidelity with which the same attribute/dimension is represented can differ across the model's scope.
       members:
         formulation: >-
           The mathematical fidelity of the same physical attribute can differ across the model's scope
           (e.g. discrete units in some investment periods and aggregated capacity in others;
           unit commitment over the near-term horizon, continuous economic dispatch beyond).
         resolution: >-
-          The resolution of a dimension can differ across the model's scope
-          (e.g. hourly timesteps within the study region and daily elsewhere;
+          The resolution of a dimension can differ with respect to other dimensions
+          (e.g. hourly timesteps within a focus region and daily elsewhere;
           nodal spatial detail in near-term investment periods and zonal detail beyond;
           individually resolved assets in some regions and aggregated groups in others).
 
@@ -743,6 +742,10 @@ orchestration:
               Dispatch decisions can be optimised sequentially per set of timesteps (e.g. days),
               each made without knowledge / with limited knowledge of later timesteps.
               Also known as rolling horizon optimisation.
+        fidelity_sequence: >-
+          Model instances representing the same system at different fidelity can be run in sequence, with data passed between instances.
+          E.g., a long-term capacity expansion run with linearised dispatch,
+          passing data to a short-term, unit-commitment dispatch run to stress test the capacities chosen by the lower fidelity long-term run.
         market_sequence: >-
           Model instances representing successive market stages can be executed together with bidirectional data exchange
           (e.g. interleaved day-ahead/real-time runs passing offers and dispatch baselines forward and initial conditions back).

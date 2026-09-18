@@ -987,6 +987,13 @@ $defs:
           with respect to (often nonlinear) relationships that cannot be represented
           directly in a single problem (e.g. competitive market simulation, iterating
           on line reactances, simulation-optimisation loops).
+      fidelity_sequence:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Model instances representing the same system at different fidelity
+          can be run in sequence, with data passed between instances. E.g., a long-term
+          capacity expansion run with linearised dispatch, passing data to a short-term,
+          unit-commitment dispatch run to stress test the capacities chosen by the
+          lower fidelity long-term run.
       limited_foresight:
         $ref: '#/$defs/OrchestrationCoupledModelsLimitedForesightModel'
         description: Sequential optimisation windows can emulate absent information
@@ -1515,8 +1522,8 @@ $defs:
           that preserve (mixed-integer) linear tractability.
       variable_fidelity:
         $ref: '#/$defs/TractabilityVariableFidelityModel'
-        description: The fidelity with which the same attribute is represented can
-          differ across the model's scope, within one model definition.
+        description: The fidelity with which the same attribute/dimension is represented
+          can differ across the model's scope.
     title: TractabilityModel
     type: object
   TractabilityReformulationModel:
@@ -1576,9 +1583,9 @@ $defs:
           horizon, continuous economic dispatch beyond).
       resolution:
         $ref: '#/$defs/ToolFeatureModel'
-        description: The resolution of a dimension can differ across the model's scope
-          (e.g. hourly timesteps within the study region and daily elsewhere; nodal
-          spatial detail in near-term investment periods and zonal detail beyond;
+        description: The resolution of a dimension can differ with respect to other
+          dimensions (e.g. hourly timesteps within a focus region and daily elsewhere;
+          nodal spatial detail in near-term investment periods and zonal detail beyond;
           individually resolved assets in some regions and aggregated groups in others).
     title: TractabilityVariableFidelityModel
     type: object
@@ -1985,6 +1992,9 @@ properties:
       orchestration:
         coupled_models:
           convergence_iteration:
+            source: []
+            value: '?'
+          fidelity_sequence:
             source: []
             value: '?'
           limited_foresight:
