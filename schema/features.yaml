@@ -11,115 +11,115 @@ processes:
     Only physical processes are in scope; decision-making agents are `actors`.
   members:
     boundary_exchange: >-
-      Carriers enter or leave the system across its boundary at a defined cost and availability
+      Carriers can enter or leave the system across its boundary at a defined cost and availability
       (e.g. fuel supply, primary resource extraction, imports/exports to unmodelled regions).
     conversion:
       description: >-
-        Carriers are transformed into other carriers within the system boundary
+        Carriers can be transformed into other carriers within the system boundary
         (e.g. power plants, electrolysers, heat pumps, CO2 capture).
         This enables coupled multi-carrier optimisation.
       members:
         one_to_one: >-
-          A single in-flowing carrier is converted to a single out-flowing carrier
+          A single in-flowing carrier can be converted to a single out-flowing carrier
           (e.g. power plants, electrolysers without heat recovery).
         multi_carrier_io: >-
-          A single conversion process has several in-flowing and/or out-flowing carriers,
+          A single conversion process can have several in-flowing and/or out-flowing carriers,
           each balanced individually, with fixed ratios between them
           (e.g. back-pressure CHP, fixed heat-recovery fractions).
         flexible_ratio: >-
-          The ratio between a conversion process's flows is a decision variable,
+          The ratio between a conversion process's flows can be a decision variable,
           freely allocated or constrained within a feasible operating region
           (e.g. heat pumps serving heat and cooling, extraction-condensing CHP).
     temporal_transfer: >-
-      Carriers are moved in time (e.g. storage, demand shifting), linking system states across timesteps.
+      Carriers can be moved in time (e.g. storage, demand shifting), linking system states across timesteps.
     spatial_transfer: >-
-      Carriers are moved between regions as continuous flow subject to transfer-capacity limits, without network physics.
+      Carriers can be moved between regions as continuous flow subject to transfer-capacity limits, without network physics.
       See `network.power_flow` / `network.hydraulic_flow` for network physics features.
     delayed_transfer: >-
-      Continuous flow in space with a time delay between injection and withdrawal
+      Carriers can flow continuously in space with a time delay between injection and withdrawal
       (e.g., river flows, district-heating transit).
     buffered_transfer: >
-      Flow in space with an endogenous in-transit inventory, to enable the flow to accumulate in time
+      Carriers can flow in space with an endogenous in-transit inventory, enabling the flow to accumulate in time
       (e.g. pipeline linepack).
     discrete_transport: >-
-      Carriers are moved in space or exchanged across the system boundary in discrete packets with loading/unloading decisions
+      Carriers can be moved in space or exchanged across the system boundary in discrete packets with loading/unloading decisions
       (e.g. shipping, trucking, rail).
     state_changing_transfer: >-
-      Carrier movement requiring the carrier's physical state to be tracked or converted en route
+      A carrier's physical state can be tracked or converted en route during carrier movement
       (e.g. gas pressure levels with compressors, heat-network temperature levels).
     explicit_demand:
       description: >-
-        Carriers are consumed within the system boundary by explicit processes with their own balances and constraints,
+        Carriers can be consumed within the system boundary by explicit processes with their own balances and constraints,
         rather than by a fixed exogenous profile parameter.
       members:
         inelastic: >-
-          A fixed quantity of a carrier is consumed by a process whose in-flow is balanced like any other process flow.
+          A fixed quantity of a carrier can be consumed by a process whose in-flow is balanced like any other process flow.
           The process can therefore be parameterised and constrained (e.g., to shift consumption in space and time to reflect demand-side management).
         price_responsive: >-
-          The consumed quantity is decided in the optimisation against price / willingness-to-pay, via demand bids or stepwise/linear demand curves.
+          The consumed quantity can be decided in the optimisation against price / willingness-to-pay, via demand bids or stepwise/linear demand curves.
         mobile_storage: >-
-          A consuming process with embedded storage whose network attachment and availability vary in space and time, according to user-defined patterns.
+          A consuming process can have embedded storage whose network attachment and availability vary in space and time, according to user-defined patterns.
 
 network:
   description: >-
-    Network physics representation beyond the `processes.spatial_transfer` baseline,
+    Network physics can be represented beyond the `processes.spatial_transfer` baseline,
     where flows are coupled by the physics of the transporting medium rather than by capacity limits alone.
   members:
     power_flow:
       description: >-
-        Electrical network representation beyond the `processes.spatial_transfer` baseline.
+        Electrical networks can be represented beyond the `processes.spatial_transfer` baseline.
       members:
         optimal_power_flow:
           description: >-
             Linearised optimal power flow can be modelled.
           members:
             dc_opf: >-
-              DC optimal power flow
+              DC optimal power flow can be modelled.
             ac_opf: >-
-              Linearised AC optimal power flow
+              Linearised AC optimal power flow can be modelled.
         sensitivity_limits:
           description: >-
             Flows can be limited using supplied linear sensitivities, as an alternative to physical network limits.
           members:
             ptdf: >-
-              Power Transfer Distribution Factor <PTDF> limits, describing the sensitivity of a branch flow to a nodal injection.
+              Power Transfer Distribution Factor <PTDF> limits can be applied, describing the sensitivity of a branch flow to a nodal injection.
             outage_factors: >-
-              Line/Branch Outage Distribution Factor <LODF/BODF> limits, describing the sensitivity of a branch flow to the outage of another branch.
+              Line/Branch Outage Distribution Factor <LODF/BODF> limits can be applied, describing the sensitivity of a branch flow to the outage of another branch.
             generic_constraints: >-
-              Generic transmission Constraints defined by user-supplied sensitivity coefficients not tied to a named physical factor.
+              Generic transmission constraints can be defined by user-supplied sensitivity coefficients not tied to a named physical factor.
         network_limits:
           description: >-
-            Network operating limits representable in the power-flow formulation.
+            Network operating limits can be represented in the power-flow formulation.
           members:
             thermal: >-
-              Thermal (branch flow magnitude) limits.
+              Thermal (branch flow magnitude) limits can be applied.
             phase_angle: >-
-              Phase-angle difference limits between connected buses.
+              Phase-angle difference limits between connected buses can be applied.
         network_devices:
           description: >-
-            Network components beyond simple lines and buses, carrying their own mathematical formulations.
+            Network components beyond simple lines and buses can be represented, carrying their own mathematical formulations.
           members:
             transformers: >-
-              Shunt and phase-shifting transformers.
+              Shunt and phase-shifting transformers can be represented.
             facts_devices: >-
-              Flexible AC Transmission System <FACTS> devices.
+              Flexible AC Transmission System <FACTS> devices can be represented.
             hvdc_converters: >-
-              Rectifiers, inverters, and HVDC converter stations.
+              Rectifiers, inverters, and HVDC converter stations can be represented.
         unbalanced_flows: >-
           Unbalanced flows (asymmetric phases) can be handled in optimal power flow, usually using linearised DistFlow branch equations.
 
     hydraulic_flow:
       description: >-
-        Pressure-driven network representation for carriers transported through pipes,
+        Pressure-driven networks can be represented for carriers transported through pipes,
         beyond the `processes.spatial_transfer` baseline
         (e.g. methane, hydrogen, CO2, district heat/cooling, water).
       members:
         linearised_flow: >-
-          Nodal pressure/head is a decision variable which couples flows using a linearised pressure-drop relationship.
-          Operating limits on that state are representable in the same formulation
+          Nodal pressure/head can be a decision variable which couples flows using a linearised pressure-drop relationship.
+          Operating limits on that state can be represented in the same formulation
           (e.g. minimum/maximum nodal pressure, maximum allowable operating pressure <MAOP>, contracted delivery pressure).
         composition_tracking: >-
-          A single transfer asset carries a mixture whose constituents are balanced individually,
+          A single transfer asset can carry a mixture whose constituents are balanced individually,
           allowing limits on the resulting blend
           (e.g. hydrogen blend-fraction limits, minimum gross calorific value <GCV>, Wobbe index bounds).
           Composition-dependent hydraulics (e.g. a density-dependent pressure-drop coefficient) are out of scope.
@@ -127,36 +127,40 @@ network:
 asset:
   description: >-
     Representation of the individual assets that make up the system:
-    how their capacities are represented, how their operation is resolved, and the costs they incur.
+    how their capacities can be represented, how their operation can be resolved, and the costs they can incur.
     Limits on asset investment and operation, and the mathematical form those limits take, are `constraints`.
   members:
     capacity_representation:
       description: How asset capacities can be represented in the model and optimisation problem.
       members:
         exogenous_capacity: >-
-          Asset capacity is fixed and fully defined in the input data (e.g. for modelling dispatch only).
+          Asset capacity can be fixed and fully defined in the input data (e.g. for modelling dispatch only).
         continuous_capacity: >-
-          Asset capacity is fully endogenous and modeled as a continuous (linear) decision variable.
+          Asset capacity can be fully endogenous and modelled as a continuous (linear) decision variable.
           An optional maximum capacity can be specified in the input data
           (e.g. PV capacity that can be installed at any capacity from zero to a maximum defined by land-use constraints).
         integer_investment_exogenous_capacity: >-
-          Asset capacity magnitude is fixed in the input data.
-          Investment is modeled as a discrete (i.e., integer) decision variable
+          Asset capacity magnitude can be fixed in the input data,
+          with investment modelled as a discrete (i.e., integer) decision variable
           (e.g. nuclear power plants whose capacity is fixed & indivisible due to external constraints but the decision to invest in this capacity is as-yet undecided).
         integer_investment_continuous_capacity: >-
-          Asset capacity magnitude is endogenous and modeled as a continuous (linear) decision variable.
-          Investment is also endogenous and represented by a binary decision variable.
+          Asset capacity magnitude can be endogenous and modelled as a continuous (linear) decision variable,
+          with investment also endogenous and represented by a binary decision variable.
           An optional maximum capacity can be specified in the input data
           (e.g. gas turbines that you want to track as individual units and whose capacity is not fixed by the manufacturer).
         retrofit: >-
-          Endogenous investment in modifications to an existing asset, with their own build economics,
-          that change the asset's technical parameters or costs rather than adding standalone capacity
+          Investment in modifications to an existing asset can be made endogenously, with their own build economics,
+          changing the asset's technical parameters or costs rather than adding standalone capacity
           (e.g. emissions-abatement retrofits such as flue-gas desulphurisation or CO2 capture,
           efficiency upgrades, fuel-switching conversions).
+        multi_period: >-
+          Asset capacities can be defined across multiple investment periods.
+          These may be endogenous and decided per investment period with perfect foresight or using a limited foresight method (see `orchestration.coupled_models.limited_foresight`).
+
 
     operating_representation:
       description: >-
-        The resolution of asset operation representation in the model.
+        The resolution at which asset operation can be represented in the model.
         A linearised approximation of unit commitment is
         `tractability.reformulation.linearised_unit_commitment`.
       members:
@@ -164,125 +168,125 @@ asset:
           Assets can be committed as units and _then_ economically dispatched.
           This generally requires assets to be modelled as discrete units which reflect assets 1-to-1.
         maintenance_scheduling: >-
-          Asset maintenance / outage schedules are derived endogenously, co-optimised with operation.
+          Asset maintenance / outage schedules can be derived endogenously, co-optimised with operation.
           Exogenously fixed maintenance windows are instead `constraints.scope.commitment`.
           Resource-constrained maintenance limits are instead `constraints.scope.total`.
 
     cost:
       description: >-
-        Asset investment and operating cost representation.
+        How asset investment and operating costs can be represented.
         Cost which varies linearly with a decision variable
         (e.g. EUR/MW capital cost on nameplate capacity, EUR/MWh operating cost on flow)
         is the baseline; we do not track it explicitly here.
       members:
         unit:
           description: >-
-            Cost which is incurred as a fixed lump sum, irrespective of magnitude.
+            Cost can be incurred as a fixed lump sum, irrespective of magnitude.
           members:
             investment: >-
-              Initial capital cost incurred on asset purchase, irrespective of capacity (e.g. land purchase, design phase).
+              Initial capital cost can be incurred on asset purchase, irrespective of capacity (e.g. land purchase, design phase).
             operation: >-
-              Operating cost incurred on unit commitment (e.g. start-up costs).
+              Operating cost can be incurred on unit commitment (e.g. start-up costs).
         nonlinear:
           description: >-
-            Cost which varies non-linearly, usually described in the objective using piecewise linear curves.
+            Cost can vary non-linearly, usually described in the objective using piecewise linear curves.
             Non-linear relationships in constraints rather than the objective are `constraints.functional_form.nonlinear`.
           members:
             investment: >-
-              Capital cost economies of scale, where cost per capacity decreases with increasing capacity.
+              Capital cost economies of scale can be represented, where cost per capacity decreases with increasing capacity.
               In some cases, it is possible to describe this without an explicit piecewise constraint.
               Instead, it may be approximated by multiple assets of the same class (e.g. "wind turbine") that each have different costs and maximum capacities.
             operation: >-
-              Operating cost generation bid increment / decrement levels.
+              Operating cost can be represented as generation bid increment / decrement levels.
         threshold_deviation:
           description: >-
-            Costs on deviations above/below a contracted or reference level.
+            Costs can be applied to deviations above/below a contracted or reference level.
             This is applied as a soft constraint requiring a reference level plus deviation variables.
           members:
             investment: >-
-              Deviation from a contracted or reference investment level
+              Costs can be applied to deviation from a contracted or reference investment level
               (e.g. rebate for providing firm capacity, penalty for exceeding land-use limits).
             operation: >-
-              Deviation from a contracted or reference operating level
+              Costs can be applied to deviation from a contracted or reference operating level
               (e.g. feed-in tariffs, redispatch cost relative to contracted dispatch).
         annuitisation: >-
           An asset's capital investment can be annuitised to account for factors linked to its expected economic life and financing arrangements.
           (e.g., weighted cost of capital, inflation and tax rates).
         inter_temporal:
           description: >-
-            Costs applied to the magnitude of change in a decision variable between time periods.
+            Costs can be applied to the magnitude of change in a decision variable between time periods.
           members:
             investment: >-
-              Costs applied between investment periods (e.g. learning rate penalty).
+              Costs can be applied between investment periods (e.g. learning rate penalty).
             operation: >-
-              Costs applied between timesteps (e.g. ramping wear cost).
+              Costs can be applied between timesteps (e.g. ramping wear cost).
 
 constraints:
   description: >-
     Limits on asset investment and operating decisions,
     and reliability requirements imposed on the system as a whole,
     whether enforced as hard constraints or as penalty costs.
-    `scope` describes what a limit spans;
+    `scope` describes what a limit can span;
     `functional_form` describes the mathematical form of the relationships between decision variables that the tool can express.
   members:
     scope:
       description: >-
-        What a limit spans: the regions, assets, or time periods that a constraint links or applies within.
+        What a limit can span: the regions, assets, or time periods that a constraint links or applies within.
       members:
         inter_spatial:
           description: >-
-            Limits that link geographic regions (e.g. to ensure regional equity).
+            Limits can link geographic regions (e.g. to ensure regional equity).
           members:
             investment: >-
-              Investment limits that link geographic regions
+              Investment limits can link geographic regions
               (e.g. a minimum share of new capacity built in each region).
             operation: >-
-              Operating limits that link geographic regions
+              Operating limits can link geographic regions
               (e.g. a regional self-sufficiency requirement on generation relative to demand).
         inter_asset:
           description: >-
-            Limits that link assets, within or across regions and time.
+            Limits can link assets, within or across regions and time.
           members:
             investment: >-
-              Investment limits that link assets (e.g., land-use competition, system-wide embodied emissions limits).
+              Investment limits can link assets (e.g., land-use competition, system-wide embodied emissions limits).
             operation: >-
-              Operating limits that link assets (e.g., regional emissions limits applied across all emitting assets).
+              Operating limits can link assets (e.g., regional emissions limits applied across all emitting assets).
         total:
           description: >-
-            Limit on an aggregate quantity over a subset or the entire time horizon / spatial scope.
+            A limit can be placed on an aggregate quantity over a subset or the entire time horizon / spatial scope.
             This can represent real contract arrangements / regulation.
           members:
             investment: >-
-              Limit on aggregate investment (e.g. policy targets).
+              Aggregate investment can be limited (e.g. policy targets).
             operation: >-
-              Limit on total asset carrier in-/out-flow
+              Total asset carrier in-/out-flow can be limited
               (e.g. limits on storage cycling, annual throughput limits, uptime, maintenance events limited by available spare-parts/crew resources).
         inter_temporal:
           description: >-
-            Limits that link across time periods.
+            Limits can link across time periods.
           members:
             investment: >-
-              Investment limits linking investment periods (e.g. build-rate limits, phased retirement, availability windows).
+              Investment limits can link investment periods (e.g. build-rate limits, phased retirement, availability windows).
             operation: >-
-              Operating limits that link time periods (e.g., ramping, run up, load shifting).
+              Operating limits can link time periods (e.g., ramping, run up, load shifting).
         intra_temporal:
           description: >-
-            Limits on how much assets can output in a given time period
+            Limits can be placed on how much assets output in a given time period.
           members:
             investment: >-
-              Limits on investment within investment periods (e.g. minimum/maximum size).
+              Investment can be limited within investment periods (e.g. minimum/maximum size).
             operation: >-
-              Limits on operation within timesteps
+              Operation can be limited within timesteps
               (e.g. capacity de-rating profiles, minimum/maximum load levels, renewables capacity factors).
         commitment:
           description: >-
-            Limits on commitment to investing in or operating an asset in a given time period.
+            Limits can be placed on commitment to investing in or operating an asset in a given time period.
           members:
             investment: >-
-              Limits on investment unit purchase within investment periods.
+              Investment unit purchase can be limited within investment periods.
               Usually requires `asset.capacity_representation.integer_investment_...`.
             operation: >-
-              Limits on operational unit commit within timesteps (e.g., forced/planned outage windows).
+              Operational unit commitment can be limited within timesteps (e.g., forced/planned outage windows).
               Usually requires `asset.operating_representation.unit_commitment`.
         boundary_conditions:
           description: >-
@@ -305,74 +309,74 @@ constraints:
       members:
         linear_multi_variable:
           description: >-
-            Linear relationships linking several decision variables,
+            Linear relationships can link several decision variables,
             defining a polyhedral feasible region beyond simple upper/lower bounds on individual variables.
           members:
             investment: >-
-              A linear relationship linking several investment decision variables
+              A linear relationship can link several investment decision variables
               (e.g. energy-to-power ratio envelopes on storage capacity).
             operation: >-
-              A linear relationship linking several operating decision variables, defining a feasible operating envelope
+              A linear relationship can link several operating decision variables, defining a feasible operating envelope
               (e.g. CHP heat-power operating regions, combined active/reactive power limits).
         quadratic:
           description: >-
-            Constraints requiring the product of decision variables, creating a quadratic constraint which is passed natively to a QP/QCP-capable solver.
+            Constraints can require the product of decision variables, creating a quadratic constraint which is passed natively to a QP/QCP-capable solver.
           members:
             investment: >-
-              A quadratic relationship involving an investment decision variable.
+              A quadratic relationship can involve an investment decision variable.
             operation: >-
-              A quadratic relationship involving an operating decision variable
+              A quadratic relationship can involve an operating decision variable
               (e.g. quadratic fuel curves, loss approximations).
         nonlinear:
           description: >-
-            Constraints linking together several decision variables in a general non-linear relationship,
+            Constraints can link together several decision variables in a general non-linear relationship,
             which can be described by e.g. a piecewise linear curve (`math.piecewise_formulation`) or through iterative solving.
           members:
             investment: >-
-              A non-linear relationship involving an investment decision variable (e.g. storage head effects, pressurisation energy curves linked to capacity).
+              A non-linear relationship can involve an investment decision variable (e.g. storage head effects, pressurisation energy curves linked to capacity).
             operation: >-
-              A non-linear relationship involving an operating decision variable (e.g., part-load efficiency, line losses).
+              A non-linear relationship can involve an operating decision variable (e.g., part-load efficiency, line losses).
     path_dependent:
       description: >-
-        Constraints in which a quantity evolves endogenously based on cumulative historical decisions,
+        Constraints can be defined in which a quantity evolves endogenously based on cumulative historical decisions,
         rather than from input parameters alone.
         Approximating this by pre-generating vintaged components is instead `model_definition.component_templating`.
       members:
         investment: >-
-          Evolves based on investments made in previous periods
+          A quantity can evolve based on investments made in previous periods
           (e.g. learning curves).
         operation: >-
-          Evolves based on operation in previous timesteps
+          A quantity can evolve based on operation in previous timesteps
           (e.g. battery cycling/calendar degradation, filter fouling).
     dedicated_flow_routing: >-
       Carrier out-flow from one asset can be reserved as in-flow to a specific subset of other assets
       (e.g. fuel stockpiling ahead of conversion, hydropower cascades, CHP internal steam flows).
     reliability:
       description: >-
-        Reliability requirements imposed as constraints or penalty costs within the optimisation, under deterministic inputs.
-        Post-hoc adequacy assessment is `postprocessing.probabilistic_reliability_assessment`; probabilistic decision methods are `uncertainty`.
+        Reliability requirements can be imposed as constraints or penalty costs within the optimisation, under deterministic inputs.
+        Post-hoc adequacy assessment is `postprocessing.metrics.probabilistic_reliability_assessment`; probabilistic decision methods are `uncertainty`.
       members:
         margin_requirement:
           description: >-
-            Minimum requirement on firm capacity/margin held in reserve.
+            A minimum requirement can be placed on firm capacity/margin held in reserve.
             This could be applied at the system level or on single / subsets of assets, if `model_definition.dimension_groups` is available.
           members:
             capacity: >-
-              Firm capacity requirement, held against peak demand or a resource-adequacy target.
+              A firm capacity requirement can be held against peak demand or a resource-adequacy target.
             operating_reserve: >-
-              Operating reserve requirement, held against short-term contingencies (e.g. spinning reserve, ramping reserve).
+              An operating reserve requirement can be held against short-term contingencies (e.g. spinning reserve, ramping reserve).
         probabilistic_reliability_limit:
           description: >-
-            Probabilistic reliability constraints within the optimisation.
+            Probabilistic reliability constraints can be applied within the optimisation.
           members:
             loss_of_load: >-
-              Loss-of-load-probability <LOLP> limit.
+              A loss-of-load-probability <LOLP> limit can be applied.
             unserved_energy: >-
-              Expected-energy-not-served <EENS> limit.
+              An expected-energy-not-served <EENS> limit can be applied.
         unserved_demand: >-
           Demand can go unserved at a penalty cost (value of lost load <VOLL>), placing a soft constraint on load shedding within the optimisation.
         contingency_constrained: >-
-          The optimisation is constrained to remain feasible following the loss of individual components, over an enumerated set of discrete failure states
+          The optimisation can be constrained to remain feasible following the loss of individual components, over an enumerated set of discrete failure states
           (e.g. N-1 security-constrained optimal power flow, loss of a compressor station or pipeline segment).
           Post-contingency corrective action can be co-optimised where the tool supports it.
 
@@ -384,7 +388,7 @@ model_definition:
     dimension_groups: >-
       Dimension members can be tagged into named, potentially overlapping groups independent of the model's built-in structural dimensions
       (e.g. a "coastal assets" or "2030-vintage" tag spanning multiple asset types/nodes).
-      These can be used for dimension aggregation to achieve tractability (e.g. spatial nodes to zones), for filtering on dimensions when applying constraints (e.g. total capacity across group X; seasonal limits), and for analysis/visualisation (`postprocessing.aggregation`/`postprocessing.disaggregation`).
+      These can be used for dimension aggregation to achieve tractability (e.g. spatial nodes to zones), for filtering on dimensions when applying constraints (e.g. total capacity across group X; seasonal limits), and for analysis/visualisation (`postprocessing.transformation.aggregation`/`postprocessing.transformation.disaggregation`).
     component_templating: >-
       Components can inherit parameterisation from a shared template (e.g. an abstract technology definition),
       with edits to the template cascading to every inheriting component, rather than requiring per-component data entry.
@@ -402,14 +406,14 @@ math:
     Access to, and user extension of, the underlying mathematical formulation.
   members:
     formulation_transparency: >-
-      The tool's mathematical formulation is accessible and inspectable.
+      The tool's mathematical formulation can be accessed and inspected
       (e.g. as rendered equations or a math specification traceable to the built problem).
     problem_file_export: >-
       The built optimisation problem can be exported in standard formats (e.g. LP/MPS).
     dual_extraction: >-
       The built optimisation problem's constraint duals can be extracted
-      (e.g. to approximate wholesale market prices via `postprocessing.financial.marginal_price`,
-      or to construct a future cost function via `postprocessing.financial.water_value`).
+      (e.g. to approximate wholesale market prices via `postprocessing.metrics.financial.marginal_price`,
+      or to construct a future cost function via `postprocessing.metrics.financial.water_value`).
     piecewise_formulation: >-
       Piecewise formulations of nonlinear relationships (`constraints.functional_form.nonlinear`) can be defined in the math (e.g. using LP chord-line or MIP SOS2 constraints).
     user_defined_math: >-
@@ -428,36 +432,36 @@ interface:
   members:
     gui:
       description: >-
-        Graphical user interface.
+        The tool can be driven via a graphical user interface.
       members:
         build: >-
-          A GUI is available for defining, configuring, and structuring a model.
+          A model can be defined, configured, and structured via a GUI.
         run: >-
-          A GUI is available for executing a model run.
+          A model run can be executed via a GUI.
         analyse: >-
-          A GUI is available for interacting with model outputs.
+          Model outputs can be interacted with via a GUI.
     api:
       description: >-
-        Programmatic interface (e.g. language API, web API).
+        The tool can be driven via a programmatic interface (e.g. language API, web API).
       members:
         build: >-
-          Can be configured using scripting specific to the tool programming language or another programming language for which an API is provided
+          A model can be built using scripting specific to the tool programming language or another programming language for which an API is provided
           (e.g. a Python API for a package written in C).
         run: >-
-          Programmatic interface to launch and manage runs.
+          Runs can be launched and managed programmatically.
         analyse: >-
-          Programmatic interface to analyse results.
+          Results can be analysed programmatically.
     cli:
       description: >-
-        Command line interface.
+        The tool can be driven via a command line interface.
       members:
         build: >-
-          CLI commands that enable model building.
+          A model can be built via CLI commands.
           This is usually used to convert between data formats for a given model definition, but may also be used to redefine a model (e.g. reduce dimensions).
         run: >-
-          CLI commands that launch and manage a model run.
+          A model run can be launched and managed via CLI commands.
         analyse: >-
-          CLI commands to create reports to enable result analysis.
+          Reports can be created via CLI commands to enable result analysis.
     remote_execution: >-
       Runs can be dispatched to and managed on remote compute (cloud, HPC, hosted service) from the tool.
     solver_configuration: >-
@@ -466,13 +470,13 @@ interface:
       Templates can be used to generate consistent reports or dashboards to consolidate model outputs for dissemination.
     visualisation:
       description: >-
-        Built-in rendering of model inputs or outputs as visual artefacts,
+        Model inputs or outputs can be rendered as visual artefacts by the tool,
         independent of whether a `gui` is available to interact with them.
       members:
         charts: >-
-          Plots of input or result data (e.g. dispatch stacks, time series, duration curves).
+          Input or result data can be plotted (e.g. dispatch stacks, time series, duration curves).
         network_maps: >-
-          Rendering of network topology, schematically (auto-layout diagrams) or geographically
+          Network topology can be rendered, schematically (auto-layout diagrams) or geographically
           (coordinate-based maps, exports to geographic formats such as KML/GML).
 
 io:
@@ -482,23 +486,23 @@ io:
   members:
     plain_text:
       description: >-
-        Data in human-readable, diff- and version-control-friendly text formats (e.g. CSV, JSON, YAML).
+        Data can be handled in human-readable, diff- and version-control-friendly text formats (e.g. CSV, JSON, YAML).
       members:
         input: >-
           Input data can be provided in this format.
         output: >-
-          Output data is written in this format.
+          Output data can be written in this format.
     binary:
       description: >-
-        Data in compact / compressible, non-human-readable binary formats (e.g. Excel, NetCDF, HDF5, Parquet).
+        Data can be handled in compact / compressible, non-human-readable binary formats (e.g. Excel, NetCDF, HDF5, Parquet).
       members:
         input: >-
           Input data can be provided in this format.
         output: >-
-          Output data is written in this format.
+          Output data can be written in this format.
     database:
       description: >-
-        Data in databases (relational or otherwise).
+        Data can be handled in databases (relational or otherwise).
       members:
         input: >-
           Input data can be read from a database.
@@ -522,14 +526,14 @@ io:
           Output data can be written lazily / streamed rather than held fully in memory.
     standardised:
       description: >-
-        Accepts or emits data following a community-recognised convention or ontology
+        Data can be accepted or emitted following a community-recognised convention or ontology
         (e.g. Open Energy Ontology <OEO>, IAMC template, the Energy System Description Language <ESDL>, Common Energy System Model <CESM>, SiennaSchemas),
         including standardised network-data formats (e.g. PSSE RAW, matpower case files, Common Information Model <CIM>).
       members:
         input: >-
-          Accepts input data following a community-recognised convention or ontology.
+          Input data following a community-recognised convention or ontology can be accepted.
         output: >-
-          Outputs follow a community-recognised convention or ontology.
+          Outputs can follow a community-recognised convention or ontology.
           This is useful for regulatory reporting or frictionless data transfer with a downstream process.
 
 edge_effects:
@@ -538,183 +542,247 @@ edge_effects:
     Flows across the spatial boundary are `processes.boundary_exchange`.
   members:
     time_operational: >-
-      Start- / End-of-horizon operational effects (e.g. storage level wrapping).
+      Start- / End-of-horizon operational effects can be mitigated (e.g. storage level wrapping).
     time_financial: >-
-      Start- / End-of-horizon financial effects (e.g. asset investment annuitisation).
+      Start- / End-of-horizon financial effects can be mitigated (e.g. asset investment annuitisation).
     energy_balance: >-
-      Energy 'destruction' caused by simultaneous in- & out-flow from a lossy transmission/storage asset.
+      Energy 'destruction' caused by simultaneous in- & out-flow from a lossy transmission/storage asset can be mitigated.
 
 actors:
   description: >-
-    Representation of heterogeneous decision-making actors, deviating from the single, central-planner baseline.
+    Heterogeneous decision-making actors can be represented, deviating from the single, central-planner baseline.
   members:
     portfolio: >-
-      Agent asset portfolios and associated constraints and cost considerations
+      Agent asset portfolios and associated constraints and cost considerations can be represented
       (e.g. limited cross-portfolio capital investment, risk appetite).
     distributed_objectives: >-
       Per-agent profit maximising / risk minimising objectives can be represented within the larger system-level optimisation
       (e.g. bidding in day-ahead / intra-day markets, behind-the-meter prosumer decisions)
     equilibrium: >-
-      Market equilibrium computed across actors with competing objectives
+      Market equilibrium can be computed across actors with competing objectives
       (e.g. Cournot-Nash oligopoly or Bertrand competition),
       via complementarity/MCP/bi-level formulations or a quadratic-markup reformulation of the cost-minimisation objective.
     heuristic_markup: >-
-      Strategic-behaviour price/offer markups applied by heuristic or index-based rules rather than computed equilibrium
+      Strategic-behaviour price/offer markups can be applied by heuristic or index-based rules rather than computed equilibrium
       (e.g. Residual Supply Index <RSI>-driven markups, fixed bid adders).
-
-pathway:
-  description: >-
-    Foresight extent and planning direction across operational (intra-annual) or investment (inter-annual) time periods.
-    A single-snapshot run — "overnight" capacity expansion, or dispatch without a time dimension - is the baseline; we do not track it explicitly here.
-  members:
-    perfect_foresight:
-      description: >-
-        Perfect foresight capacity expansion / dispatch.
-      members:
-        investment: >-
-          All investment periods are optimised simultaneously with perfect foresight of future periods.
-        operation: >-
-          All dispatch periods are optimised simultaneously with perfect foresight of future timesteps in the investment period(s).
-    myopic_foresight:
-      description: >-
-        Time periods are optimised sequentially, with each decision made without knowledge / with limited knowledge of later periods.
-      members:
-        investment: >-
-          Investment decisions are optimised sequentially per period / set of periods.
-        operation: >-
-          Dispatch decisions are optimised sequentially per set of timesteps (e.g. days).
 
 objective:
   description: >-
-    Objective-function options beyond minimisation of a single linear cost term.
+    The objective function can extend beyond minimisation of a single linear cost term.
   members:
     multi_objective_weighted: >-
-      Multiple objective terms combined via user-set weights into a single objectives.
-      Trade-offs explored by manual weight variation.
+      Multiple objective terms can be combined via user-set weights into a single objective.
+      Trade-offs can be explored by manual weight variation.
     multi_objective_pareto: >-
-      Built-in generation of Pareto-optimal solution sets across objectives
+      Pareto-optimal solution sets can be generated across objectives
       (e.g. epsilon-constraint, evolutionary methods).
     quadratic: >-
-      Quadratic objective terms passed natively to the solver
+      Quadratic objective terms can be passed natively to the solver
       (e.g. quadratic generation cost curves, welfare maximisation with linear demand curves).
       Quadratic terms in constraints rather than the objective are `constraints.functional_form.quadratic`.
+    tie_breaking: >-
+      Degenerate solutions (many distinct solutions sharing the same objective value, within tolerance)
+      can be resolved by a documented rule rather than left to solver arbitrariness
+      (e.g. small penalty coefficients applied to otherwise zero-cost decision variables so that they enter the objective explicitly,
+      or a lexicographic secondary objective).
 
 uncertainty:
   description: >-
-    Methods that restructure the decision problem to account for parametric or structural uncertainty.
+    The decision problem can be restructured to account for parametric or structural uncertainty.
   members:
     two_stage_stochastic: >-
-      Two-stage stochastic optimisation; used in investment decision making under uncertainty.
+      Two-stage stochastic optimisation can be performed; used in investment decision making under uncertainty.
     multi_stage_stochastic: >-
-      Multi-stage stochastic optimisation, in which decisions are revised as uncertainty resolves stage by stage.
+      Multi-stage stochastic optimisation can be performed, in which decisions are revised as uncertainty resolves stage by stage.
       Primarily used for scheduling seasonal storage (e.g. hydropower water values) under uncertain inflows.
     risk_aversion: >-
-      Risk measures (e.g. Conditional Value at Risk <CVaR>) applied to a stochastic optimisation as chance constraints.
-      It weights tail-end outcomes according to a configurable risk tolerance.
+      Risk measures (e.g. Conditional Value at Risk <CVaR>) can be applied to a stochastic optimisation as chance constraints.
+      This weights tail-end outcomes according to a configurable risk tolerance.
     near_optimal: >-
-      Generate a near-optimal solution set by relaxing constraints / objectives in the optimisation problem.
+      A near-optimal solution set can be generated by relaxing constraints / objectives in the optimisation problem
       (e.g., Modelling to Generate Alternatives <MGA>).
     robust_optimisation: >-
-      Worst-case cost minimisation over an uncertainty set.
+      Worst-case cost can be minimised over an uncertainty set.
 
 tractability:
   description: >-
-    Approaches to reduce the computational cost of building and solving the problem,
+    The computational cost of building and solving the problem can be reduced,
     trading exactness for speed.
   members:
     dimension_reduction:
-      description: Options to reduce the size of a given dimension of the problem.
+      description: >-
+        The number of members along a dimension of the problem can be reduced automatically,
+        The reduction applies uniformly across all other dimensions;
+        a reduction that differs across other dimensions is `tractability.variable_fidelity.resolution`.
       members:
-        temporal:
+        adjacency_aggregation:
           description: >-
-             Temporal resolution adjustment options (may apply to within-year timesteps or between-year investment periods).
+            Neighbouring dimension members can be merged, preserving the dimension's ordering / adjacency.
+            Only applicable to dimensions whose members have a natural adjacency.
           members:
-            resampling: >-
-              Temporal resolution of the input timeseries is coarsened while remaining contiguous (e.g. hourly to daily) before the model is built.
-            typical_periods: >-
-              Full timeseries is represented by non-contiguous typical periods (days, weeks, months).
-            load_duration_curves: >-
-              Full timeseries is represented by load duration curves.
-            dimension_non_contiguity: >-
-              Mathematical constraints to manage inter-temporal model features when using non-contiguous temporal aggregation
-              (e.g., linking storage levels across typical periods).
-        spatial:
-          description: >-
-            Spatial resolution adjustment options.
-          members:
-            clustering: >-
-              Automatic spatial zone aggregation/disaggregation.
-              Usually from nodal (bus) level to regional/bidding zone level.
+            temporal: >-
+              Temporal resolution can be coarsened while remaining contiguous (e.g. hourly to daily) before the model is built.
+              May apply to within-year timesteps or between-year investment periods.
+            spatial: >-
+              Bordering spatial units can be merged into contiguous zones (e.g. nodal/bus level to regional/bidding zone level).
               This usually requires `model_definition.dimension_groups` to define aggregation membership.
-            network_reduction: >-
-              Network element equivalencing (e.g., reducing to a single voltage level).
-        assets:
+        similarity_aggregation:
           description: >-
-            Asset resolution adjustment options.
+            Dimension members can be grouped by likeness and each group represented by a proxy member.
+            The resulting groups need not be contiguous, which is what creates the need for `non_contiguity_handling`.
           members:
-            clustering: >-
-              Individually defined assets are automatically aggregated into asset groups for optimisation.
+            temporal: >-
+              A full timeseries can be represented by non-contiguous typical periods (days, weeks, months) or by load duration curves.
+            spatial: >-
+              Spatial units can be clustered by likeness rather than adjacency (e.g. by resource quality or demand profile),
+              so a zone may be geographically discontiguous.
               This usually requires `model_definition.dimension_groups` to define aggregation membership.
-            black_boxing: >-
-              A chain of interconnected assets is collapsed into a single component with an in/out interface.
+            assets: >-
+              Individually defined assets can be automatically aggregated into asset groups for optimisation.
+              This usually requires `model_definition.dimension_groups` to define aggregation membership.
+            scenarios: >-
+              An ensemble of scenarios / uncertainty samples can be reduced to a smaller representative set with associated weights
+              (e.g. scenario reduction ahead of `uncertainty.multi_stage_stochastic`).
+        equivalencing:
+          description: >-
+            A sub-system's internal detail can be discarded and replaced by a reduced representation
+            that preserves the behaviour observed at its boundary.
+          members:
+            spatial: >-
+              Network elements can be equivalenced, also called network reduction
+              (e.g. reducing to a single voltage level; Ward, Radial Equivalent Independent <REI>, or Kron-reduced equivalents of an external network).
+            assets: >-
+              A chain of interconnected assets can be collapsed into a single component with an in/out interface,
+              also called black boxing or lumping.
               This usually requires `constraints.dedicated_flow_routing` between interconnected components.
-            component_removal: >-
+        filtering:
+          description: >-
+            Dimension members can be systematically removed from the built problem rather than represented by a proxy.
+          members:
+            temporal: >-
+              Timesteps or investment periods (e.g. a user-selected subset of representative weeks) can be systematically filtered out of the built problem.
+            spatial: >-
+              Spatial units (e.g. below a voltage level, or outside a study region) can be systematically filtered out of the built problem.
+            assets: >-
               Individual or groups of assets (e.g. sharing a node or a carrier) can be systematically filtered out of the built problem.
+            scenarios: >-
+              Scenarios / uncertainty samples can be systematically filtered out of the built problem.
+        non_contiguity_handling:
+          description: >-
+            Mathematical constraints can be applied to manage model features that span dimension members,
+            when `similarity_aggregation` has left the retained members non-contiguous.
+          members:
+            temporal: >-
+              Inter-temporal features can be linked across non-contiguous aggregated periods
+              (e.g. linking storage levels across typical periods).
+            spatial: >-
+              Inter-spatial features can be linked across geographically discontiguous aggregated zones
+              (e.g. representing transfer capacity between the disjoint parts of a zone).
+
+    variable_fidelity:
+      description: >-
+        The fidelity with which the same attribute/dimension is represented can differ across the model's scope.
+      members:
+        formulation: >-
+          The mathematical fidelity of the same physical attribute can differ across the model's scope
+          (e.g. discrete units in some investment periods and aggregated capacity in others;
+          unit commitment over the near-term horizon, continuous economic dispatch beyond).
+        resolution:
+          description: >-
+            The resolution of one dimension can differ across the members of another dimension.
+          members:
+            temporal: >-
+              Temporal resolution can vary across the members of another dimension
+              (e.g. hourly timesteps within a focus region and daily elsewhere;
+              hourly for variable renewables and daily for nuclear).
+            spatial: >-
+              Spatial resolution can vary across the members of another dimension
+              (e.g. nodal detail in near-term investment periods and zonal detail beyond).
+            assets: >-
+              Asset resolution can vary across the members of another dimension
+              (e.g. individually resolved assets within a focus region and aggregated groups elsewhere).
+            scenarios: >-
+              Scenario / uncertainty resolution can vary across the members of another dimension
+              (e.g. an `uncertainty.multi_stage_stochastic` scenario tree that samples more finely in near-term stages than in later ones).
 
     reformulation:
       description: >-
-        Approximations of discrete or non-linear formulations that preserve (mixed-integer) linear tractability.
+        Discrete or non-linear formulations can be approximated in ways that preserve (mixed-integer) linear tractability.
       members:
         constraint_screening: >-
-          Constraints unlikely to bind are omitted or lazily added.
+          Constraints unlikely to bind can be omitted or lazily added.
         linearised_unit_commitment: >-
-          Unit commitment approximated with continuous (linearised) commitment variables, avoiding integer decision variables.
-        convex_relaxation: >-
-          A non-convex relationship (`constraints.functional_form.nonlinear`) is approximated by a convex relaxation, retaining solver tractability
-          (e.g. second-order-cone relaxation of AC power flow).
-        function_conversion: >-
-          User-defined arbitrary non-linear functions (`constraints.functional_form.nonlinear`) are automatically converted into valid model inputs (e.g. piecewise segments) without manual discretisation.
-        variable_fidelity: >-
-          The mathematical fidelity of the same physical attribute can differ across the model's scope within one model definition
-          (e.g. discrete units in some investment periods and aggregated capacity in others;
-          unit commitment over the near-term horizon, continuous economic dispatch beyond).
+          Unit commitment can be approximated with continuous (linearised) commitment variables, avoiding integer decision variables.
+        nonlinear_handling:
+          description: >-
+            Non-linear relationships (`constraints.functional_form.nonlinear`) can be treated automatically
+            so that the built problem remains solvable.
+          members:
+            convex_relaxation: >-
+              A non-convex relationship in the model's own formulation can be approximated by a convex relaxation, retaining solver tractability
+              (e.g. second-order-cone relaxation of AC power flow).
+            function_conversion: >-
+              User-defined arbitrary non-linear functions can be automatically converted into valid model inputs (e.g. piecewise segments) without manual discretisation.
         decomposition: >-
-          The problem is split into coordinated sub-problems solved iteratively or in parallel until convergence
+          The problem can be split into coordinated sub-problems solved iteratively or in parallel until convergence
           (e.g. Benders decomposition; Stochastic Dual Dynamic Programming <SDDP> for multi-stage stochastic hydropower scheduling).
         approximation: >-
-          The solution algorithm is reformulated to reach a near-optimal answer within tolerance at reduced cost
+          The solution algorithm can be reformulated to reach a near-optimal answer within tolerance at reduced cost
           (e.g. progressive hedging, Stochastic Dual Dynamic Programming <SDDP>-style cut selection).
+        numeric_scaling: >-
+          Data can be scaled (e.g. by converting base units) to reduce numeric instability and constraint violations in the downstream solver.
 
 orchestration:
   description: >-
-    Tool-managed workflows coordinating multiple complete runs in series/parallel,
+    Multiple complete runs can be coordinated in series/parallel by tool-managed workflows,
     where the result emerges from the ensemble or its convergence.
   members:
-    rolling_horizon: >-
-      Myopic foresight pathway optimisation windows are optimised sequentially, with automatic handling of data pass-through between runs.
-    coupled_models: >-
-      Two or more model instances of different temporal or market fidelity executed together, with bidirectional data exchange between them
-      (e.g. interleaved day-ahead/real-time runs passing offers and dispatch baselines forward and initial conditions back).
-    simulation_optimisation: >-
-      Iterate between a simulation and optimisation phase until convergence with respect to (often nonlinear) constraints
-      (e.g. competitive market simulation, optimal power flow).
+    coupled_models:
+      description: >-
+        Two or more model runs can be executed together with tool-managed data exchange between them.
+      members:
+        limited_foresight:
+          description: >-
+            Sequential optimisation windows can emulate absent information about later periods,
+            with automatic pass-through of end-state data between runs.
+          members:
+            investment: >-
+              Investment decisions can be optimised sequentially per period / set of periods,
+              each made without knowledge / with limited knowledge of later periods.
+              Also known as myopic foresight optimisation.
+            operation: >-
+              Dispatch decisions can be optimised sequentially per set of timesteps (e.g. days),
+              each made without knowledge / with limited knowledge of later timesteps.
+              Also known as rolling horizon optimisation.
+        fidelity_sequence: >-
+          Model instances representing the same system at different fidelity can be run in sequence, with data passed between instances.
+          E.g., a long-term capacity expansion run with linearised dispatch,
+          passing data to a short-term, unit-commitment dispatch run to stress test the capacities chosen by the lower fidelity long-term run.
+        market_sequence: >-
+          Model instances representing successive market stages can be executed together with bidirectional data exchange
+          (e.g. interleaved day-ahead/real-time runs passing offers and dispatch baselines forward and initial conditions back).
+        convergence_iteration: >-
+          Runs can be repeated, exchanging data each time, until convergence with respect to (often nonlinear) relationships
+          that cannot be represented directly in a single problem
+          (e.g. competitive market simulation, iterating on line reactances, simulation-optimisation loops).
+
     scenario_runs: >-
-      Batch execution of discrete, named scenario ensembles in series/parallel with collated outputs.
+      Discrete, named scenario ensembles can be executed in batch in series/parallel with collated outputs.
     sampled_runs: >-
-      Execution of run ensembles over a sampled uncertainty space (e.g. Monte Carlo), with collated outputs.
-      Used e.g. for post-hoc resource adequacy assessment (`postprocessing.probabilistic_reliability_assessment`) or portfolio price-risk quantification.
+      Run ensembles can be executed over a sampled uncertainty space (e.g. Monte Carlo), with collated outputs.
+      Used e.g. for post-hoc resource adequacy assessment (`postprocessing.metrics.probabilistic_reliability_assessment`) or portfolio price-risk quantification.
       Distinct from `scenario_runs` (discrete, named scenarios).
 
 preprocessing:
   description: >-
-    Options to generate parameters derived from user-defined input data before running the model.
+    Parameters can be derived from user-defined input data before running the model.
     Moving/storing data is `io`.
   members:
     forecasting: >-
       A user-defined generation / load profile can be automatically scaled or reshaped to meet user-defined forecast targets
       (e.g. change in annual total or peak).
     resource_conversion: >-
-      Model profiles are derived within the tool from primary resource or weather data via physical response models.
+      Model profiles can be derived within the tool from primary resource or weather data via physical response models.
       This may be technology models converting resource to availability or efficiency (e.g. wind speed to turbine capacity factor, temperature to heat pump COP).
       It may also be weather-response demand functions (e.g. temperature-driven gas or heating demand).
     spatial_distribution:
@@ -722,11 +790,11 @@ preprocessing:
         A user-defined parameter can be automatically distributed spatially using other spatial parameters.
       members:
         demand: >-
-          Nodal demand distribution from an aggregate total.
+          Nodal demand can be distributed from an aggregate total.
         network_geometry: >-
-          Transmission/pipeline line distances or routing derived from node coordinates.
+          Transmission/pipeline line distances or routing can be derived from node coordinates.
         slack: >-
-          Distributed slack allocation across nodes.
+          Slack can be allocated in a distributed manner across nodes.
     download: >-
       Data can be downloaded directly within the tool from an open or proprietary source rather than being specified by the user.
     model_catalogue: >-
@@ -734,105 +802,114 @@ preprocessing:
     scenario_generation: >-
       Scenario ensembles can be generated from user-defined parameters or sampling rules, for execution as `orchestration.scenario_runs` or `orchestration.sampled_runs`.
     input_validation: >-
-      Input data is validated against the tool's expected structure and value ranges before a run, with informative failures.
-    numeric_scaling: >-
-      Data can be scaled (e.g. by converting base units) to reduce numeric instability and constraint violations in the downstream solver.
+      Input data can be validated against the tool's expected structure and value ranges before a run, with informative failures.
 
 postprocessing:
   description: >-
     Postprocessing analyses that can be triggered by the tool based on model outputs, on a per-asset or system-wide basis.
   members:
-    impact_assessment:
+    metrics:
       description: >-
-        Auxiliary impacts calculated from model outputs.
+        Quantities can be computed from model outputs and reported per-asset or system-wide.
       members:
-        emissions: >-
-          GHG or other pollutant emissions.
-        resource_use: >-
-          Non-carrier resource consumption (e.g. water, land, materials).
-        socioeconomic: >-
-          Socioeconomic impacts (e.g. job creation).
-    operational:
-      description: >-
-        Operational analyses derived from model outputs.
-      members:
-        curtailment: >-
-          Asset generation curtailment.
-        capacity_factor: >-
-          Asset generation relative to full-load generation, averaged over the model horizon.
-        full_load_hours: >-
-          Number or fraction of timesteps in the model horizon that assets are operating at or close to their full load.
-          Distinct from `capacity_factor` as the same average output can arise from very different duty cycles, affecting e.g. asset lifetime.
-    financial:
-      description: >-
-        Financial analyses for business cases, derived from model outputs.
-      members:
-        levelised_cost: >-
-          Levelised cost of electricity or other carriers.
-        net_present_value: >-
-          Net present value of the modelled system or a subset of assets.
-        asset_accounts: >-
-          Asset-level revenue / cost accounting.
-        marginal_price: >-
-          Shadow prices extracted via `math.dual_extraction`, used to approximate wholesale market prices or as an input to
-          `price_formation`, `contract_settlement` and soft-constraint interpretation.
-        price_formation: >-
-          Prices constructed by a documented market rule rather than taken directly from optimisation duals
-          (e.g. uniform pricing via a relaxed re-solve, uplift / fixed-cost-recovery adders,
-          iterative markup calibration to recover long-run marginal cost, marginal-loss-factor settlement).
-        water_value: >-
-          A future cost function (water value) constructed as a reusable, exportable artefact from shadow prices extracted via
-          `math.dual_extraction` (e.g. from Benders / SDDP cuts), forecasting the marginal cost of hydro and other seasonal
-          storage devices for use in shorter-term scheduling under uncertain input parameters.
-        contract_settlement: >-
-          Post-hoc settlement of contracts against realised dispatch and prices, without altering the underlying optimisation.
-          (e.g. Contracts-for-Difference <CfD>, Power/energy Purchase Agreements <PPA>, swaps, caps/floors, Financial Transmission Rights <FTR>, Settlement Residue Auctions <SRA>).
+        impact_assessment:
+          description: >-
+            Auxiliary impacts can be calculated from model outputs.
+          members:
+            emissions: >-
+              GHG or other pollutant emissions can be calculated.
+            resource_use: >-
+              Non-carrier resource consumption (e.g. water, land, materials) can be calculated.
+            socioeconomic: >-
+              Socioeconomic impacts (e.g. job creation) can be calculated.
+        operational:
+          description: >-
+            Operational analyses can be derived from model outputs.
+          members:
+            curtailment: >-
+              Asset generation curtailment can be calculated.
+            capacity_factor: >-
+              Asset generation relative to full-load generation, averaged over the model horizon, can be calculated.
+            full_load_hours: >-
+              The number or fraction of timesteps in the model horizon that assets are operating at or close to their full load can be calculated.
+              Distinct from `capacity_factor` as the same average output can arise from very different duty cycles, affecting e.g. asset lifetime.
+        financial:
+          description: >-
+            Financial analyses for business cases can be derived from model outputs.
+          members:
+            levelised_cost: >-
+              Levelised cost of electricity or other carriers can be calculated.
+            net_present_value: >-
+              Net present value of the modelled system or a subset of assets can be calculated.
+            asset_accounts: >-
+              Asset-level revenue / cost accounting can be performed.
+            marginal_price: >-
+              Shadow prices can be extracted via `math.dual_extraction`, used to approximate wholesale market prices or as an input to
+              `price_formation`, `contract_settlement` and soft-constraint interpretation.
+            price_formation: >-
+              Prices can be constructed by a documented market rule rather than taken directly from optimisation duals
+              (e.g. uniform pricing via a relaxed re-solve, uplift / fixed-cost-recovery adders,
+              iterative markup calibration to recover long-run marginal cost, marginal-loss-factor settlement).
+            water_value: >-
+              A future cost function (water value) can be constructed as a reusable, exportable artefact from shadow prices extracted via
+              `math.dual_extraction` (e.g. from Benders / SDDP cuts), forecasting the marginal cost of hydro and other seasonal
+              storage devices for use in shorter-term scheduling under uncertain input parameters.
+            contract_settlement: >-
+              Contracts can be settled post-hoc against realised dispatch and prices, without altering the underlying optimisation
+              (e.g. Contracts-for-Difference <CfD>, Power/energy Purchase Agreements <PPA>, swaps, caps/floors, Financial Transmission Rights <FTR>, Settlement Residue Auctions <SRA>).
 
-    network_transfer_metrics:
-      description: >-
-        Network transfer capability and flow-sensitivity metrics derived from model outputs.
-      members:
-        transfer_capacity: >-
-          Grid transfer capacities between regions or zones.
-        flow_sensitivity: >-
-          Flow-sensitivity metrics (e.g. power transfer distribution factors, line outage distribution factors).
-    aggregation:
-      Method to aggregate across dimensions into broader groups for analysis and dissemination.
-      This usually requires `model_definition.dimension_groups` to define aggregation membership.
-    disaggregation:
-      Method to redistribute outputs back to an initial, pre-`tractability.dimension_reduction` resolution.
-      (e.g. so that capacity-expansion results can be handed off to a full-resolution power-flow model).
-    scenario_comparison: >-
-      Outputs of multiple scenario/ensemble runs are collated and compared.
-    probabilistic_reliability_assessment:
-      description: >-
-        Probabilistic resource-adequacy metrics calculated post-hoc.
-        Sampling-based run orchestration to produce them is `orchestration.sampled_runs`.
-      members:
-        loss_of_load: >-
-          Loss of load probability/expectation <LOLP>.
-        unserved_energy: >-
-          Expected energy not served <EENS>.
-        capacity_credit: >-
-          Effective load carrying capacity <ELCC>.
+        network_transfer_metrics:
+          description: >-
+            Network transfer capability and flow-sensitivity metrics can be derived from model outputs.
+          members:
+            transfer_capacity: >-
+              Grid transfer capacities between regions or zones can be calculated.
+            flow_sensitivity: >-
+              Flow-sensitivity metrics (e.g. power transfer distribution factors, line outage distribution factors) can be calculated.
+        probabilistic_reliability_assessment:
+          description: >-
+            Probabilistic resource-adequacy metrics can be calculated post-hoc.
+            Sampling-based run orchestration to produce them is `orchestration.sampled_runs`.
+          members:
+            loss_of_load: >-
+              Loss of load probability/expectation <LOLP> can be calculated.
+            unserved_energy: >-
+              Expected energy not served <EENS> can be calculated.
+            capacity_credit: >-
+              Effective load carrying capacity <ELCC> can be calculated.
 
-transparency:
+    transformation:
+      description: >-
+        Model outputs can be reshaped and collated, without deriving new quantities from them.
+      members:
+        aggregation: >-
+          Outputs can be aggregated across dimensions into broader groups for analysis and dissemination.
+          This usually requires `model_definition.dimension_groups` to define aggregation membership.
+        disaggregation: >-
+          Outputs can be redistributed back to an initial, pre-`tractability.dimension_reduction` resolution
+          (e.g. so that capacity-expansion results can be handed off to a full-resolution power-flow model).
+        scenario_comparison: >-
+          Outputs of multiple scenario/ensemble runs can be collated and compared.
+
+traceability:
   description: >-
-    Transparency of the modelling pipeline: logs, diagnostics, and traceability of data as it moves through the workflow.
+    Information can be traced throughout the modelling pipeline, including for debugging, diagnostics, and transparency.
   members:
     run_logs: >-
-      Run logs available (e.g. in text files), for use in debugging failing model runs.
+      Run logs can be made available (e.g. in text files), for use in debugging failing model runs.
     infeasibility_diagnosis: >-
       Infeasible problems can be diagnosed
       (e.g. irreducible infeasible subset (IIS) generation, named constraint violations).
-    metadata_propagation:
+    metadata:
       description: >-
-        Metadata is propagated from inputs through to outputs.
+        Metadata can be defined for modelling inputs and outputs.
       members:
         provenance: >-
-          Data sources, versions, and licences are propagated from inputs through to outputs.
+          Data sources, versions, and licences can be defined for inputs.
         units: >-
-          Physical units attached to data are tracked and validated through the pipeline
+          Physical units attached to data can be tracked and validated through the pipeline
           (to enable e.g., unit-consistency checking, automatic conversion, auto-scaling).
+        propagation: >-
+          Outputs can be linked back to the inputs and settings used to create them.
     intermediate_access: >-
       Intermediate pipeline artefacts (e.g. built problem data, solver state) can be exposed to the user.
