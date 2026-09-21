@@ -95,8 +95,8 @@ features:
       composition_tracking:
         value: '?'
         source: []
-  asset:
-    capacity_representation:
+  decisions:
+    investment:
       exogenous_capacity:
         value: '?'
         source: []
@@ -115,90 +115,116 @@ features:
       multi_period:
         value: '?'
         source: []
-    operating_representation:
+    operation:
       unit_commitment:
         value: '?'
         source: []
       maintenance_scheduling:
         value: '?'
         source: []
-    cost:
-      unit:
-        investment:
-          value: '?'
-          source: []
-        operation:
-          value: '?'
-          source: []
-      nonlinear:
-        investment:
-          value: '?'
-          source: []
-        operation:
-          value: '?'
-          source: []
-      threshold_deviation:
-        investment:
-          value: '?'
-          source: []
-        operation:
-          value: '?'
-          source: []
-      annuitisation:
-        value: '?'
-        source: []
-      inter_temporal:
-        investment:
-          value: '?'
-          source: []
-        operation:
-          value: '?'
-          source: []
   constraints:
-    scope:
-      inter_spatial:
+    temporal_scope:
+      pointwise:
         investment:
-          value: '?'
-          source: []
+          size_bounds:
+            value: '?'
+            source: []
+          discrete_increments:
+            value: '?'
+            source: []
+          unit_purchase:
+            value: '?'
+            source: []
         operation:
-          value: '?'
-          source: []
-      inter_asset:
+          availability_derating:
+            value: '?'
+            source: []
+          minimum_stable_level:
+            value: '?'
+            source: []
+          forced_offline:
+            value: '?'
+            source: []
+          forced_online:
+            value: '?'
+            source: []
+      sequential:
         investment:
-          value: '?'
-          source: []
+          build_rate:
+            value: '?'
+            source: []
+          retirement:
+            value: '?'
+            source: []
+          availability_window:
+            value: '?'
+            source: []
         operation:
-          value: '?'
-          source: []
-      total:
+          ramping:
+            value: '?'
+            source: []
+          start_shut_trajectory:
+            value: '?'
+            source: []
+          commitment_duration:
+            value: '?'
+            source: []
+          start_consumption:
+            value: '?'
+            source: []
+      cumulative:
         investment:
-          value: '?'
-          source: []
+          capacity_target:
+            value: '?'
+            source: []
+          expansion_budget:
+            value: '?'
+            source: []
+          event_count:
+            value: '?'
+            source: []
+          path_dependent:
+            value: '?'
+            source: []
         operation:
-          value: '?'
-          source: []
-      inter_temporal:
-        investment:
-          value: '?'
-          source: []
-        operation:
-          value: '?'
-          source: []
-      intra_temporal:
-        investment:
-          value: '?'
-          source: []
-        operation:
-          value: '?'
-          source: []
-      commitment:
-        investment:
-          value: '?'
-          source: []
-        operation:
-          value: '?'
-          source: []
+          flow_volume:
+            value: '?'
+            source: []
+          impact_budget:
+            value: '?'
+            source: []
+          event_count:
+            value: '?'
+            source: []
+          state_duration:
+            value: '?'
+            source: []
+          path_dependent:
+            value: '?'
+            source: []
       boundary_conditions:
+        investment:
+          value: '?'
+          source: []
+        operation:
+          value: '?'
+          source: []
+    breadth:
+      assets:
+        investment:
+          value: '?'
+          source: []
+        operation:
+          value: '?'
+          source: []
+      spatial:
+        investment:
+          value: '?'
+          source: []
+        operation:
+          value: '?'
+          source: []
+      combined:
         investment:
           value: '?'
           source: []
@@ -227,22 +253,21 @@ features:
         operation:
           value: '?'
           source: []
-    path_dependent:
-      investment:
-        value: '?'
-        source: []
-      operation:
-        value: '?'
-        source: []
+    soft_constraints:
+      value: '?'
+      source: []
     dedicated_flow_routing:
       value: '?'
       source: []
     reliability:
-      margin_requirement:
-        capacity:
+      operating_reserve:
+        online_headroom:
           value: '?'
           source: []
-        operating_reserve:
+        standby_capability:
+          value: '?'
+          source: []
+        inertia:
           value: '?'
           source: []
       probabilistic_reliability_limit:
@@ -256,6 +281,87 @@ features:
         value: '?'
         source: []
       contingency_constrained:
+        value: '?'
+        source: []
+  cost:
+    temporal_scope:
+      sequential:
+        investment:
+          value: '?'
+          source: []
+        operation:
+          start_up:
+            value: '?'
+            source: []
+          shut_down:
+            value: '?'
+            source: []
+          ramping:
+            value: '?'
+            source: []
+          start_state_dependent:
+            value: '?'
+            source: []
+      cumulative:
+        investment:
+          value: '?'
+          source: []
+        operation:
+          value: '?'
+          source: []
+    breadth:
+      assets:
+        investment:
+          value: '?'
+          source: []
+        operation:
+          value: '?'
+          source: []
+      spatial:
+        investment:
+          value: '?'
+          source: []
+        operation:
+          value: '?'
+          source: []
+      combined:
+        investment:
+          value: '?'
+          source: []
+        operation:
+          value: '?'
+          source: []
+    functional_form:
+      fixed_charge:
+        investment:
+          value: '?'
+          source: []
+        operation:
+          value: '?'
+          source: []
+      nonlinear:
+        investment:
+          value: '?'
+          source: []
+        operation:
+          flow_dependent:
+            value: '?'
+            source: []
+          bid_bands:
+            value: '?'
+            source: []
+      threshold_deviation:
+        investment:
+          value: '?'
+          source: []
+        operation:
+          value: '?'
+          source: []
+    annuitisation:
+      discounting:
+        value: '?'
+        source: []
+      fiscal_treatment:
         value: '?'
         source: []
   model_definition:
@@ -285,9 +391,6 @@ features:
       value: '?'
       source: []
     user_defined_math:
-      value: '?'
-      source: []
-    soft_constraints:
       value: '?'
       source: []
   interface:
