@@ -168,178 +168,187 @@ decisions:
           This generally requires assets to be modelled as discrete units which reflect assets 1-to-1.
         maintenance_scheduling: >-
           Asset maintenance / outage schedules can be derived endogenously, co-optimised with operation.
-          Exogenously fixed maintenance windows are instead `constraints.temporal_scope.pointwise`.
-          Resource-constrained maintenance limits are instead `constraints.temporal_scope.cumulative`.
+          Exogenously fixed maintenance windows are instead `constraints.scope.temporal.pointwise`.
+          Resource-constrained maintenance limits are instead `constraints.scope.temporal.cumulative`.
 
 
 constraints:
   description: >-
-    Limits on asset investment and operating decisions, split by scope, functional form, and some specific use-cases.
+    Limits on asset investment and operating decisions,
+    split by the model dimension a limit engages, its functional form, and some specific use-cases.
   members:
-    temporal_scope:
+    scope:
       description: >-
-        What a limit binds in time.
-        A limit that also spans several assets, spatial units or scenarios is recorded here *and* in `constraints.breadth`.
-        To go beyond the constraints defined here usually requires `math.user_defined_math`.
+        Which of the model's dimensions a limit engages, grouped by the most pertinent dimension to a given constraint.
+        Some tool constraints may be a combination of scopes, and will be recorded in multiple places accordingly.
+        E.g., a limit that accumulates over time and is summed across a fleet is recorded under `constraints.scope.temporal` *and* `constraints.scope.assets`.
+        Spanning a dimension usually requires `model_definition.dimension_groups` to define the group the limit applies over.
       members:
-        pointwise:
+        temporal:
           description: >-
-            A limit can bind each time period independently, without linking that period to any other.
+            What a limit binds in time, split by how the dimension members are considered relative to each other.
+            Combinations of constrained quantity and temporal form beyond the features named here
+            (e.g. a bound on cumulative ramping) are generally only reachable via `math.user_defined_math`.
           members:
-            investment:
+            pointwise:
               description: >-
-                Investment can be limited within an investment period.
+                A limit can bind each time period independently, without linking that period to any other.
               members:
-                size_bounds: >-
-                  The capacity that can be installed in a period can be bounded above and/or below
-                  (e.g. minimum viable project size, maximum deployable capacity at a site).
-                discrete_increments: >-
-                  Capacity added in a period can be restricted to discrete increments rather than any continuous amount
-                  (e.g. expansion in integer sets of a fixed block size).
-                unit_purchase: >-
-                  Investment unit purchase can be limited within investment periods.
-                  Usually requires `decisions.investment.integer_investment_...`.
-            operation:
+                investment:
+                  description: >-
+                    Investment can be limited within an investment period.
+                  members:
+                    size_bounds: >-
+                      The capacity that can be installed in a period can be bounded above and/or below
+                      (e.g. minimum viable project size, maximum deployable capacity at a site).
+                    discrete_increments: >-
+                      Capacity added in a period can be restricted to discrete increments rather than any continuous amount
+                      (e.g. expansion in integer sets of a fixed block size).
+                    unit_purchase: >-
+                      Investment unit purchase can be limited within investment periods.
+                      Usually requires `decisions.investment.integer_investment_...`.
+                operation:
+                  description: >-
+                    Operation can be limited within a timestep.
+                  members:
+                    availability_derating: >-
+                      An asset's flow can be bounded within a timestep by a time-varying fraction of its capacity
+                      (e.g. renewables capacity factor profiles, seasonal or ambient de-rating, partial unavailability).
+                    minimum_stable_level: >-
+                      A committed asset's flow can be bounded below by a minimum stable operating level,
+                      so that it either operates at or above that level or is off.
+                      Usually requires `decisions.operation.unit_commitment`.
+                    forced_offline: >-
+                      An asset can be required to be off in given timesteps
+                      (e.g. forced or planned outage windows).
+                      Usually requires `decisions.operation.unit_commitment`.
+                    forced_online: >-
+                      An asset can be required to be on in given timesteps
+                      (e.g. must-run units, an exogenously fixed commitment schedule).
+                      Usually requires `decisions.operation.unit_commitment`.
+            sequential:
               description: >-
-                Operation can be limited within a timestep.
+                A limit can bind a quantity defined by the difference between time periods,
+                or bind distinct time periods to one another, so that the ordering of periods matters.
               members:
-                availability_derating: >-
-                  An asset's flow can be bounded within a timestep by a time-varying fraction of its capacity
-                  (e.g. renewables capacity factor profiles, seasonal or ambient de-rating, partial unavailability).
-                minimum_stable_level: >-
-                  A committed asset's flow can be bounded below by a minimum stable operating level,
-                  so that it either operates at or above that level or is off.
-                  Usually requires `decisions.operation.unit_commitment`.
-                forced_offline: >-
-                  An asset can be required to be off in given timesteps
-                  (e.g. forced or planned outage windows).
-                  Usually requires `decisions.operation.unit_commitment`.
-                forced_online: >-
-                  An asset can be required to be on in given timesteps
-                  (e.g. must-run units, an exogenously fixed commitment schedule).
-                  Usually requires `decisions.operation.unit_commitment`.
-        sequential:
-          description: >-
-            A limit can bind a quantity defined by the difference between time periods,
-            or bind distinct time periods to one another, so that the ordering of periods matters.
-          members:
-            investment:
+                investment:
+                  description: >-
+                    Investment limits can link investment periods.
+                  members:
+                    build_rate: >-
+                      The capacity or number of units added can be limited per investment period,
+                      either in absolute terms or relative to what has already been built
+                      (e.g. supply-chain build-rate limits, technology growth limits).
+                    retirement: >-
+                      Capacity can be removed from the system across investment periods,
+                      whether on a fixed schedule or as an endogenous decision
+                      (e.g. phased retirement, forced decommissioning at end of technical life).
+                    availability_window: >-
+                      The investment periods in which an asset may be built or retired can be restricted
+                      (e.g. lead times, earliest commissioning dates, periods in which no build is permitted).
+                operation:
+                  description: >-
+                    Operating limits can link time periods.
+                  members:
+                    ramping: >-
+                      The change in an asset's flow between consecutive timesteps can be limited in either direction,
+                      within its normal operating range.
+                    start_shut_trajectory: >-
+                      The flow trajectory while an asset is starting up or shutting down can be limited separately from its normal operating range
+                      (e.g. run-up / run-down rates, start profiles).
+                      Usually requires `decisions.operation.unit_commitment`.
+                    commitment_duration: >-
+                      The number of consecutive timesteps an asset must or may remain in a commitment state once it enters it can be limited
+                      (e.g. minimum up time, minimum down time, maximum up time).
+                      Usually requires `decisions.operation.unit_commitment`.
+                    start_consumption: >-
+                      A carrier in-flow can be required on a change of commitment state, independent of the asset's out-flow in those timesteps
+                      (e.g. start-up fuel offtake).
+                      Usually requires `decisions.operation.unit_commitment`.
+            cumulative:
               description: >-
-                Investment limits can link investment periods.
+                A limit can bind a quantity accumulated over a subset or the entirety of the time horizon,
+                bounding only the accumulated total and not how it is distributed within that window.
+                This can represent real contract arrangements / regulation.
+                A limit's *bound* can equally be determined by an accumulated quantity rather than by an input parameter (`path_dependent`).
               members:
-                build_rate: >-
-                  The capacity or number of units added can be limited per investment period,
-                  either in absolute terms or relative to what has already been built
-                  (e.g. supply-chain build-rate limits, technology growth limits).
-                retirement: >-
-                  Capacity can be removed from the system across investment periods,
-                  whether on a fixed schedule or as an endogenous decision
-                  (e.g. phased retirement, forced decommissioning at end of technical life).
-                availability_window: >-
-                  The investment periods in which an asset may be built or retired can be restricted
-                  (e.g. lead times, earliest commissioning dates, periods in which no build is permitted).
-            operation:
+                investment:
+                  description: >-
+                    Accumulated investment can be limited.
+                  members:
+                    capacity_target: >-
+                      Accumulated installed capacity can be bounded above or below,
+                      counted at nameplate or at a per-asset de-rating / capacity-credit factor
+                      (e.g. policy deployment targets, technical/land-use potential, transmission expansion volume limits, planning margins).
+                    expansion_budget: >-
+                      Accumulated investment spend can be bounded
+                      (e.g. a capital budget across a portfolio, a transmission expansion cost limit).
+                    event_count: >-
+                      The number of distinct periods in which investment occurs can be limited,
+                      so that build-out is lumpy rather than spread evenly across the horizon.
+                    path_dependent: >-
+                      An investment limit's bound can evolve endogenously from investments made in previous periods,
+                      rather than being fixed by an input parameter
+                      (e.g. a learning curve raising the capacity deployable in later periods).
+                      Approximating this by pre-generating vintaged components is instead `model_definition.component_templating`.
+                      The same effect expressed as a cost rather than a limit is `cost.scope.temporal.cumulative.investment`.
+                operation:
+                  description: >-
+                    Accumulated operation can be limited over a subset or the entirety of the time horizon.
+                  members:
+                    flow_volume: >-
+                      Total carrier in-/out-flow can be bounded over a period
+                      (e.g. annual throughput limits, hydro/fuel offtake budgets, take-or-pay quantities).
+                      Equivalently expressed as a mean capacity factor over that period.
+                    impact_budget: >-
+                      Cumulative production or consumption of a non-carrier quantity can be bounded over a period
+                      (e.g. an annual CO2 cap, a carbon budget spanning the horizon, a pollutant emissions limit,
+                      a water abstraction or land-use budget).
+                      The quantity is usually user-definable rather than fixed to a named impact.
+                    event_count: >-
+                      The number of times a discrete event can occur can be limited over a period
+                      (e.g. maximum starts per year, maintenance events limited by available spare-parts/crew resources, limits on storage cycling).
+                      Usually requires `decisions.operation.unit_commitment`.
+                    state_duration: >-
+                      The cumulative number of timesteps an asset spends in a given state can be limited over a period
+                      (e.g. total operating hours, total hours unavailable for maintenance).
+                      Usually requires `decisions.operation.unit_commitment`.
+                    path_dependent: >-
+                      An operating limit's bound can evolve endogenously from operation in previous timesteps,
+                      rather than being fixed by an input parameter
+                      (e.g. battery cycling / calendar degradation lowering available capacity, filter fouling lowering efficiency).
+                      The same effect expressed as a cost rather than a limit is `cost.scope.temporal.sequential.operation`.
+            boundary_conditions:
               description: >-
-                Operating limits can link time periods.
+                Conditions can be set at the edges of a modelled period, including how one period hands over to the next.
+                Conditions at the edge of other dimensions of the system are not covered here.
+                See `processes.boundary_exchange` and `edge_effects` for other boundary-related features.
               members:
-                ramping: >-
-                  The change in an asset's flow between consecutive timesteps can be limited in either direction,
-                  within its normal operating range.
-                start_shut_trajectory: >-
-                  The flow trajectory while an asset is starting up or shutting down can be limited separately from its normal operating range
-                  (e.g. run-up / run-down rates, start profiles).
-                  Usually requires `decisions.operation.unit_commitment`.
-                commitment_duration: >-
-                  The number of consecutive timesteps an asset must or may remain in a commitment state once it enters it can be limited
-                  (e.g. minimum up time, minimum down time, maximum up time).
-                  Usually requires `decisions.operation.unit_commitment`.
-                start_consumption: >-
-                  A carrier in-flow can be required on a change of commitment state, independent of the asset's out-flow in those timesteps
-                  (e.g. start-up fuel offtake).
-                  Usually requires `decisions.operation.unit_commitment`.
-        cumulative:
-          description: >-
-            A limit can bind a quantity accumulated over a subset or the entirety of the time horizon,
-            bounding only the accumulated total and not how it is distributed within that window.
-            This can represent real contract arrangements / regulation.
-            A limit's *bound* can equally be determined by an accumulated quantity rather than by an input parameter
-            (`path_dependent`).
-          members:
-            investment:
-              description: >-
-                Accumulated investment can be limited.
-              members:
-                capacity_target: >-
-                  Accumulated installed capacity can be bounded above or below,
-                  counted at nameplate or at a per-asset de-rating / capacity-credit factor
-                  (e.g. policy deployment targets, technical/land-use potential, transmission expansion volume limits, planning margins).
-                expansion_budget: >-
-                  Accumulated investment spend can be bounded
-                  (e.g. a capital budget across a portfolio, a transmission expansion cost limit).
-                event_count: >-
-                  The number of distinct periods in which investment occurs can be limited,
-                  so that build-out is lumpy rather than spread evenly across the horizon.
-                path_dependent: >-
-                  An investment limit's bound can evolve endogenously from investments made in previous periods,
-                  rather than being fixed by an input parameter
-                  (e.g. a learning curve raising the capacity deployable in later periods).
-                  Approximating this by pre-generating vintaged components is instead `model_definition.component_templating`;
-                  the same effect expressed as a cost rather than a limit is `cost.temporal_scope.cumulative.investment`.
-            operation:
-              description: >-
-                Accumulated operation can be limited over a subset or the entirety of the time horizon.
-              members:
-                flow_volume: >-
-                  Total carrier in-/out-flow can be bounded over a period
-                  (e.g. annual throughput limits, hydro/fuel offtake budgets, take-or-pay quantities).
-                  Equivalently expressed as a mean capacity factor over that period.
-                impact_budget: >-
-                  Cumulative production or consumption of a non-carrier quantity can be bounded over a period
-                  (e.g. an annual CO2 cap, a carbon budget spanning the horizon, a pollutant emissions limit,
-                  a water abstraction or land-use budget).
-                  The quantity is usually user-definable rather than fixed to a named impact.
-                event_count: >-
-                  The number of times a discrete event can occur can be limited over a period
-                  (e.g. maximum starts per year, maintenance events limited by available spare-parts/crew resources, limits on storage cycling).
-                  Usually requires `decisions.operation.unit_commitment`.
-                state_duration: >-
-                  The cumulative number of timesteps an asset spends in a given state can be limited over a period
-                  (e.g. total operating hours, total hours unavailable for maintenance).
-                  Usually requires `decisions.operation.unit_commitment`.
-                path_dependent: >-
-                  An operating limit's bound can evolve endogenously from operation in previous timesteps,
-                  rather than being fixed by an input parameter
-                  (e.g. battery cycling / calendar degradation lowering available capacity, filter fouling lowering efficiency).
-                  The same effect expressed as a cost rather than a limit is `cost.temporal_scope.sequential.operation`.
-        boundary_conditions:
-          description: >-
-            Conditions can be set at the edges of a modelled period, including how one period hands over to the next.
-            Conditions at the edge of other dimensions of the system are not covered here.
-            See `processes.boundary_exchange` and `edge_effects` for other boundary-related features.
-          members:
-            investment: >-
-              Investment optimisation can start from an existing asset stock rather than from an empty (greenfield) system or can define a desired end-state.
-              This allows pre-existing capacities to be represented (initial) and for backcasting system design (end-state).
-            operation: >-
-              Initial or end-state operational conditions can be set, and the change in those states between periods can be limited
-              (e.g. start or end storage level requirements;
-              a bound on how far a reservoir's end volume may move from one investment period to the next).
-    breadth:
-      description: >-
-        Whether a limit can extend across dimensions other than time,
-        irrespective of the temporal form that limit takes.
-        This usually requires `model_definition.dimension_groups` to enable defining groups in other dimensions to apply the constraint over.
-      members:
+                investment: >-
+                  Investment optimisation can start from an existing asset stock rather than from an empty (greenfield) system or can define a desired end-state.
+                  This allows pre-existing capacities to be represented (initial) and for backcasting system design (end-state).
+                operation: >-
+                  Initial or end-state operational conditions can be set, and the change in those states between periods can be limited
+                  (e.g. start or end storage level requirements;
+                  a bound on how far a reservoir's end volume may move from one investment period to the next).
         assets:
           description: >-
-            A single limit can span several assets, rather than being applied to each asset individually.
+            Limits that engage the identity of individual assets, rather than applying to each asset alike.
           members:
-            investment: >-
-              A single investment limit can span several assets
-              (e.g. a combined capacity target for a technology fleet, land-use competition between candidate assets).
-            operation: >-
-              A single operating limit can span several assets
-              (e.g. a carbon budget held across all emitting assets, a combined generation limit for a technology).
+            spanning:
+              description: >-
+                A single limit can span several assets, rather than being applied to each asset individually.
+              members:
+                investment: >-
+                  A single investment limit can span several assets
+                  (e.g. a combined capacity target for a technology fleet, land-use competition between candidate assets).
+                operation: >-
+                  A single operating limit can span several assets
+                  (e.g. a carbon budget held across all emitting assets, a combined generation limit for a technology).
+            dedicated_flow_routing: >-
+              Carrier out-flow from one asset can be reserved as in-flow to a specific subset of other assets,
+              rather than every flow of a carrier being pooled at the node it is balanced on
+              (e.g. fuel stockpiling ahead of conversion, hydropower cascades, CHP internal steam flows).
         spatial:
           description: >-
             A single limit can span several spatial units, rather than being applied within each spatial unit individually.
@@ -351,17 +360,6 @@ constraints:
               A single operating limit can span several spatial units
               (e.g. a system-wide emissions cap across a nodal network,
               a regional self-sufficiency requirement relating generation to demand).
-        combined:
-          description: >-
-            A single limit can span several members of more than one of the above dimensions at once,
-            rather than only one dimension at a time.
-          members:
-            investment: >-
-              A single investment limit can span several assets and several spatial units at once
-              (e.g. a fleet-wide capacity target met by any technology at any node).
-            operation: >-
-              A single operating limit can span several assets and several spatial units at once
-              (e.g. a system-wide carbon cap summed over every emitting asset in every region).
     functional_form:
       description: >-
         The mathematical form of the relationships the tool can impose between decision variables,
@@ -407,26 +405,23 @@ constraints:
       This is the generic mechanism; built-in economic threshold costs are instead
       `cost.functional_form.threshold_deviation.investment` / `cost.functional_form.threshold_deviation.operation`,
       and the reliability-specific case of relaxing the demand balance is `constraints.reliability.unserved_demand`.
-    dedicated_flow_routing: >-
-      Carrier out-flow from one asset can be reserved as in-flow to a specific subset of other assets
-      (e.g. fuel stockpiling ahead of conversion, hydropower cascades, CHP internal steam flows).
     reliability:
       description: >-
         Requirements can be imposed within the optimisation against component failure or short-term imbalance, under deterministic inputs.
-        For deterministic capacity reserve margin, see `constraints.temporal_scope.cumulative.investment.capacity_target`.
+        For deterministic capacity reserve margin, see `constraints.scope.temporal.cumulative.investment.capacity_target`.
         Post-hoc adequacy assessment is `postprocessing.metrics.probabilistic_reliability_assessment`; probabilistic decision methods are `uncertainty`.
       members:
         operating_reserve:
           description: >-
             A short-term reserve requirement can be held and co-optimised with dispatch.
-            The requirement is near-always held over several assets at once (`constraints.breadth.combined.operation`).
+            The requirement is near-always held over several assets at once (`constraints.scope.assets.spanning.operation`).
           members:
             online_headroom: >-
               A requirement can be met from spare capability on assets that are already running,
               bounded by the gap between an asset's flow and its capacity and by how fast that gap can be closed
               (e.g. spinning reserve, frequency regulation, flexible ramping products, interruptible load).
               Limiting an asset's rate of change rather than holding capability to deliver it is
-              `constraints.temporal_scope.sequential.operation.ramping`.
+              `constraints.scope.temporal.sequential.operation.ramping`.
             standby_capability: >-
               A requirement can be met from assets that are offline but can be started within a defined response time
               (e.g. non-spinning reserve, standing or replacement reserve, quick-start plant).
@@ -453,64 +448,65 @@ constraints:
 cost:
   description: >-
     Costs that can be attached to investment and operating decisions, entering the objective as terms.
-    Members mirror `constraints`: `cost.temporal_scope` groups costs by when they accrue,
-    `cost.breadth` records how far a single cost can reach across the model's other dimensions,
-    and `cost.functional_form` records how a cost can vary with the decision it attaches to.
     Cost which varies linearly with a decision variable
     (e.g. EUR/MW capital cost on nameplate capacity, EUR/MWh operating cost on flow)
     is the baseline; we do not track it explicitly here.
     The shape the objective itself can take is `objective`.
   members:
-    temporal_scope:
+    scope:
       description: >-
-        When a cost accrues in time.
-        a cost accruing within a single period in proportion to the decision it attaches to is the baseline and therefore not given here explicitly.
+        Which of the model's dimensions a cost term engages.
+        Some tool costs may be a combination of scopes, and will be recorded in multiple places accordingly.
+        E.g., a carbon price levied on every emitting asset is recorded under `cost.scope.temporal` *and* `cost.scope.assets`.
+        Spanning a dimension usually requires `model_definition.dimension_groups` to define the group the cost applies over.
       members:
-        sequential:
+        temporal:
           description: >-
-            Cost can be applied to a change in a decision variable between time periods,
-            whether as a lump sum on the change occurring or in proportion to its magnitude.
+            When a cost accrues in time.
+            A cost accruing within a single period in proportion to the decision it attaches to is the baseline.
+            It is therefore not given here explicitly, so there is no `pointwise` member to match `constraints.scope.temporal.pointwise`.
           members:
-            investment: >-
-              A cost can be incurred on a change in installed capacity between investment periods
-              (e.g. a retirement / decommissioning charge incurred when capacity is removed).
-              Limiting that change rather than costing it is `constraints.temporal_scope.sequential.investment`.
-            operation:
+            sequential:
               description: >-
-                Costs can be applied between timesteps.
+                Cost can be applied to a change in a decision variable between time periods,
+                whether as a lump sum on the change occurring or in proportion to its magnitude.
               members:
-                start_up: >-
-                  A cost can be incurred each time an asset changes from off to on (start-up cost).
-                  Usually requires `decisions.operation.unit_commitment`.
-                shut_down: >-
-                  A cost can be incurred each time an asset changes from on to off (shut-down cost).
-                  Usually requires `decisions.operation.unit_commitment`.
-                ramping: >-
-                  A cost can be incurred in proportion to the magnitude of change in an asset's flow between timesteps
-                  (e.g. ramping wear cost).
-                start_state_dependent: >-
-                  The cost of a change in commitment state can vary with how long the asset has been in the state it is leaving,
-                  so that starting from a hot, warm, or cold state incurs a different cost.
-                  Usually requires `decisions.operation.unit_commitment`.
-        cumulative:
-          description: >-
-            A cost coefficient can be determined by a quantity accumulated over the horizon,
-            rather than by an input parameter alone.
-          members:
-            investment: >-
-              A capital cost coefficient can fall or rise with cumulative deployment
-              (e.g. an endogenous learning / experience curve).
-              The same effect expressed as a limit rather than a cost is
-              `constraints.temporal_scope.cumulative.investment.path_dependent`.
-            operation: >-
-              An operating cost coefficient can change with cumulative prior operation
-              (e.g. maintenance or replacement cost rising with accumulated running hours or storage cycles).
-              The same effect expressed as a limit rather than a cost is
-              `constraints.temporal_scope.cumulative.operation.path_dependent`.
-    breadth:
-      description: >-
-        How far a single cost term can reach across the model's dimensions other than time.
-      members:
+                investment: >-
+                  A cost can be incurred on a change in installed capacity between investment periods
+                  (e.g. a retirement / decommissioning charge incurred when capacity is removed).
+                  Limiting that change rather than costing it is `constraints.scope.temporal.sequential.investment`.
+                operation:
+                  description: >-
+                    Costs can be applied between timesteps.
+                  members:
+                    start_up: >-
+                      A cost can be incurred each time an asset changes from off to on (start-up cost).
+                      Usually requires `decisions.operation.unit_commitment`.
+                    shut_down: >-
+                      A cost can be incurred each time an asset changes from on to off (shut-down cost).
+                      Usually requires `decisions.operation.unit_commitment`.
+                    ramping: >-
+                      A cost can be incurred in proportion to the magnitude of change in an asset's flow between timesteps
+                      (e.g. ramping wear cost).
+                    start_state_dependent: >-
+                      The cost of a change in commitment state can vary with how long the asset has been in the state it is leaving,
+                      so that starting from a hot, warm, or cold state incurs a different cost.
+                      Usually requires `decisions.operation.unit_commitment`.
+            cumulative:
+              description: >-
+                A cost coefficient can be determined by a quantity accumulated over the horizon,
+                rather than by an input parameter alone.
+              members:
+                investment: >-
+                  A capital cost coefficient can fall or rise with cumulative deployment
+                  (e.g. an endogenous learning / experience curve).
+                  The same effect expressed as a limit rather than a cost is
+                  `constraints.scope.temporal.cumulative.investment.path_dependent`.
+                operation: >-
+                  An operating cost coefficient can change with cumulative prior operation
+                  (e.g. maintenance or replacement cost rising with accumulated running hours or storage cycles).
+                  The same effect expressed as a limit rather than a cost is
+                  `constraints.scope.temporal.cumulative.operation.path_dependent`.
         assets:
           description: >-
             A single cost term can span several assets, rather than being attached to each asset individually.
@@ -531,17 +527,6 @@ cost:
             operation: >-
               A single operating cost can span several spatial units
               (e.g. a national levy or carbon price applied across every node at once).
-        combined:
-          description: >-
-            A single cost term can span several members of more than one of the above dimensions at once,
-            rather than only one dimension at a time.
-          members:
-            investment: >-
-              A single investment cost can span several assets and several spatial units at once
-              (e.g. a programme-level capital charge covering any build anywhere in the system).
-            operation: >-
-              A single operating cost can span several assets and several spatial units at once
-              (e.g. a system-wide carbon price levied on every emitting asset in every region).
     functional_form:
       description: >-
         How a cost can vary with the decision variable it attaches to,
@@ -561,7 +546,7 @@ cost:
             operation: >-
               Operating cost can be incurred for each timestep an asset is committed, irrespective of its flow in that timestep
               (e.g. no-load cost, stand-by cost).
-              Costs incurred on a change of commitment state are instead `cost.temporal_scope.sequential.operation`.
+              Costs incurred on a change of commitment state are instead `cost.scope.temporal.sequential.operation`.
               Usually requires `decisions.operation.unit_commitment`.
         nonlinear:
           description: >-
@@ -620,7 +605,7 @@ model_definition:
       Components can inherit parameterisation from a shared template (e.g. an abstract technology definition),
       with edits to the template cascading to every inheriting component, rather than requiring per-component data entry.
       Includes programmatic, model-side generation of components from a template
-      (e.g. auto-cloned vintaged expansion candidates approximating `constraints.temporal_scope.cumulative` relationships).
+      (e.g. auto-cloned vintaged expansion candidates approximating `constraints.scope.temporal.cumulative` relationships).
     configurable_dimensions: >-
       The dimensionality of an asset parameter (e.g. efficiency, availability) or cost can be configured by the user, limited to a set of tool-defined dimensions.
     extensible_dimensions: >-
@@ -884,7 +869,7 @@ tractability:
             assets: >-
               A chain of interconnected assets can be collapsed into a single component with an in/out interface,
               also called black boxing or lumping.
-              This usually requires `constraints.dedicated_flow_routing` between interconnected components.
+              This usually requires `constraints.scope.assets.dedicated_flow_routing` between interconnected components.
         filtering:
           description: >-
             Dimension members can be systematically removed from the built problem rather than represented by a proxy.

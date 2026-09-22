@@ -25,68 +25,6 @@ $defs:
           appetite).
     title: ActorsModel
     type: object
-  ConstraintsBreadthAssetsModel:
-    additionalProperties: false
-    properties:
-      investment:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: A single investment limit can span several assets (e.g. a combined
-          capacity target for a technology fleet, land-use competition between candidate
-          assets).
-      operation:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: A single operating limit can span several assets (e.g. a carbon
-          budget held across all emitting assets, a combined generation limit for
-          a technology).
-    title: ConstraintsBreadthAssetsModel
-    type: object
-  ConstraintsBreadthCombinedModel:
-    additionalProperties: false
-    properties:
-      investment:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: A single investment limit can span several assets and several
-          spatial units at once (e.g. a fleet-wide capacity target met by any technology
-          at any node).
-      operation:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: A single operating limit can span several assets and several
-          spatial units at once (e.g. a system-wide carbon cap summed over every emitting
-          asset in every region).
-    title: ConstraintsBreadthCombinedModel
-    type: object
-  ConstraintsBreadthModel:
-    additionalProperties: false
-    properties:
-      assets:
-        $ref: '#/$defs/ConstraintsBreadthAssetsModel'
-        description: A single limit can span several assets, rather than being applied
-          to each asset individually.
-      combined:
-        $ref: '#/$defs/ConstraintsBreadthCombinedModel'
-        description: A single limit can span several members of more than one of the
-          above dimensions at once, rather than only one dimension at a time.
-      spatial:
-        $ref: '#/$defs/ConstraintsBreadthSpatialModel'
-        description: A single limit can span several spatial units, rather than being
-          applied within each spatial unit individually.
-    title: ConstraintsBreadthModel
-    type: object
-  ConstraintsBreadthSpatialModel:
-    additionalProperties: false
-    properties:
-      investment:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: A single investment limit can span several spatial units (e.g.
-          a national deployment target met by assets at many nodes, a minimum share
-          of new capacity built in each zone).
-      operation:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: A single operating limit can span several spatial units (e.g.
-          a system-wide emissions cap across a nodal network, a regional self-sufficiency
-          requirement relating generation to demand).
-    title: ConstraintsBreadthSpatialModel
-    type: object
   ConstraintsFunctionalFormLinearMultiVariableModel:
     additionalProperties: false
     properties:
@@ -150,17 +88,6 @@ $defs:
   ConstraintsModel:
     additionalProperties: false
     properties:
-      breadth:
-        $ref: '#/$defs/ConstraintsBreadthModel'
-        description: Whether a limit can extend across dimensions other than time,
-          irrespective of the temporal form that limit takes. This usually requires
-          `model_definition.dimension_groups` to enable defining groups in other dimensions
-          to apply the constraint over.
-      dedicated_flow_routing:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: Carrier out-flow from one asset can be reserved as in-flow to
-          a specific subset of other assets (e.g. fuel stockpiling ahead of conversion,
-          hydropower cascades, CHP internal steam flows).
       functional_form:
         $ref: '#/$defs/ConstraintsFunctionalFormModel'
         description: The mathematical form of the relationships the tool can impose
@@ -174,9 +101,18 @@ $defs:
         $ref: '#/$defs/ConstraintsReliabilityModel'
         description: Requirements can be imposed within the optimisation against component
           failure or short-term imbalance, under deterministic inputs. For deterministic
-          capacity reserve margin, see `constraints.temporal_scope.cumulative.investment.capacity_target`.
+          capacity reserve margin, see `constraints.scope.temporal.cumulative.investment.capacity_target`.
           Post-hoc adequacy assessment is `postprocessing.metrics.probabilistic_reliability_assessment`;
           probabilistic decision methods are `uncertainty`.
+      scope:
+        $ref: '#/$defs/ConstraintsScopeModel'
+        description: Which of the model's dimensions a limit engages, grouped by the
+          most pertinent dimension to a given constraint. Some tool constraints may
+          be a combination of scopes, and will be recorded in multiple places accordingly.
+          E.g., a limit that accumulates over time and is summed across a fleet is
+          recorded under `constraints.scope.temporal` *and* `constraints.scope.assets`.
+          Spanning a dimension usually requires `model_definition.dimension_groups`
+          to define the group the limit applies over.
       soft_constraints:
         $ref: '#/$defs/ToolFeatureModel'
         description: User-defined or built-in constraints can be reformulated as soft
@@ -185,11 +121,6 @@ $defs:
           mechanism; built-in economic threshold costs are instead `cost.functional_form.threshold_deviation.investment`
           / `cost.functional_form.threshold_deviation.operation`, and the reliability-specific
           case of relaxing the demand balance is `constraints.reliability.unserved_demand`.
-      temporal_scope:
-        $ref: '#/$defs/ConstraintsTemporalScopeModel'
-        description: What a limit binds in time. A limit that also spans several assets,
-          spatial units or scenarios is recorded here *and* in `constraints.breadth`.
-          To go beyond the constraints defined here usually requires `math.user_defined_math`.
     title: ConstraintsModel
     type: object
   ConstraintsReliabilityModel:
@@ -206,7 +137,7 @@ $defs:
         $ref: '#/$defs/ConstraintsReliabilityOperatingReserveModel'
         description: A short-term reserve requirement can be held and co-optimised
           with dispatch. The requirement is near-always held over several assets at
-          once (`constraints.breadth.combined.operation`).
+          once (`constraints.scope.assets.spanning.operation`).
       probabilistic_reliability_limit:
         $ref: '#/$defs/ConstraintsReliabilityProbabilisticReliabilityLimitModel'
         description: Probabilistic reliability constraints can be applied within the
@@ -233,7 +164,7 @@ $defs:
           capacity and by how fast that gap can be closed (e.g. spinning reserve,
           frequency regulation, flexible ramping products, interruptible load). Limiting
           an asset's rate of change rather than holding capability to deliver it is
-          `constraints.temporal_scope.sequential.operation.ramping`.
+          `constraints.scope.temporal.sequential.operation.ramping`.
       standby_capability:
         $ref: '#/$defs/ToolFeatureModel'
         description: A requirement can be met from assets that are offline but can
@@ -252,7 +183,71 @@ $defs:
         description: An expected-energy-not-served <EENS> limit can be applied.
     title: ConstraintsReliabilityProbabilisticReliabilityLimitModel
     type: object
-  ConstraintsTemporalScopeBoundaryConditionsModel:
+  ConstraintsScopeAssetsModel:
+    additionalProperties: false
+    properties:
+      dedicated_flow_routing:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: Carrier out-flow from one asset can be reserved as in-flow to
+          a specific subset of other assets, rather than every flow of a carrier being
+          pooled at the node it is balanced on (e.g. fuel stockpiling ahead of conversion,
+          hydropower cascades, CHP internal steam flows).
+      spanning:
+        $ref: '#/$defs/ConstraintsScopeAssetsSpanningModel'
+        description: A single limit can span several assets, rather than being applied
+          to each asset individually.
+    title: ConstraintsScopeAssetsModel
+    type: object
+  ConstraintsScopeAssetsSpanningModel:
+    additionalProperties: false
+    properties:
+      investment:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: A single investment limit can span several assets (e.g. a combined
+          capacity target for a technology fleet, land-use competition between candidate
+          assets).
+      operation:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: A single operating limit can span several assets (e.g. a carbon
+          budget held across all emitting assets, a combined generation limit for
+          a technology).
+    title: ConstraintsScopeAssetsSpanningModel
+    type: object
+  ConstraintsScopeModel:
+    additionalProperties: false
+    properties:
+      assets:
+        $ref: '#/$defs/ConstraintsScopeAssetsModel'
+        description: Limits that engage the identity of individual assets, rather
+          than applying to each asset alike.
+      spatial:
+        $ref: '#/$defs/ConstraintsScopeSpatialModel'
+        description: A single limit can span several spatial units, rather than being
+          applied within each spatial unit individually.
+      temporal:
+        $ref: '#/$defs/ConstraintsScopeTemporalModel'
+        description: What a limit binds in time, split by how the dimension members
+          are considered relative to each other. Combinations of constrained quantity
+          and temporal form beyond the features named here (e.g. a bound on cumulative
+          ramping) are generally only reachable via `math.user_defined_math`.
+    title: ConstraintsScopeModel
+    type: object
+  ConstraintsScopeSpatialModel:
+    additionalProperties: false
+    properties:
+      investment:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: A single investment limit can span several spatial units (e.g.
+          a national deployment target met by assets at many nodes, a minimum share
+          of new capacity built in each zone).
+      operation:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: A single operating limit can span several spatial units (e.g.
+          a system-wide emissions cap across a nodal network, a regional self-sufficiency
+          requirement relating generation to demand).
+    title: ConstraintsScopeSpatialModel
+    type: object
+  ConstraintsScopeTemporalBoundaryConditionsModel:
     additionalProperties: false
     properties:
       investment:
@@ -267,9 +262,9 @@ $defs:
           change in those states between periods can be limited (e.g. start or end
           storage level requirements; a bound on how far a reservoir's end volume
           may move from one investment period to the next).
-    title: ConstraintsTemporalScopeBoundaryConditionsModel
+    title: ConstraintsScopeTemporalBoundaryConditionsModel
     type: object
-  ConstraintsTemporalScopeCumulativeInvestmentModel:
+  ConstraintsScopeTemporalCumulativeInvestmentModel:
     additionalProperties: false
     properties:
       capacity_target:
@@ -292,23 +287,23 @@ $defs:
         description: An investment limit's bound can evolve endogenously from investments
           made in previous periods, rather than being fixed by an input parameter
           (e.g. a learning curve raising the capacity deployable in later periods).
-          Approximating this by pre-generating vintaged components is instead `model_definition.component_templating`;
-          the same effect expressed as a cost rather than a limit is `cost.temporal_scope.cumulative.investment`.
-    title: ConstraintsTemporalScopeCumulativeInvestmentModel
+          Approximating this by pre-generating vintaged components is instead `model_definition.component_templating`.
+          The same effect expressed as a cost rather than a limit is `cost.scope.temporal.cumulative.investment`.
+    title: ConstraintsScopeTemporalCumulativeInvestmentModel
     type: object
-  ConstraintsTemporalScopeCumulativeModel:
+  ConstraintsScopeTemporalCumulativeModel:
     additionalProperties: false
     properties:
       investment:
-        $ref: '#/$defs/ConstraintsTemporalScopeCumulativeInvestmentModel'
+        $ref: '#/$defs/ConstraintsScopeTemporalCumulativeInvestmentModel'
         description: Accumulated investment can be limited.
       operation:
-        $ref: '#/$defs/ConstraintsTemporalScopeCumulativeOperationModel'
+        $ref: '#/$defs/ConstraintsScopeTemporalCumulativeOperationModel'
         description: Accumulated operation can be limited over a subset or the entirety
           of the time horizon.
-    title: ConstraintsTemporalScopeCumulativeModel
+    title: ConstraintsScopeTemporalCumulativeModel
     type: object
-  ConstraintsTemporalScopeCumulativeOperationModel:
+  ConstraintsScopeTemporalCumulativeOperationModel:
     additionalProperties: false
     properties:
       event_count:
@@ -335,42 +330,42 @@ $defs:
           in previous timesteps, rather than being fixed by an input parameter (e.g.
           battery cycling / calendar degradation lowering available capacity, filter
           fouling lowering efficiency). The same effect expressed as a cost rather
-          than a limit is `cost.temporal_scope.sequential.operation`.
+          than a limit is `cost.scope.temporal.sequential.operation`.
       state_duration:
         $ref: '#/$defs/ToolFeatureModel'
         description: The cumulative number of timesteps an asset spends in a given
           state can be limited over a period (e.g. total operating hours, total hours
           unavailable for maintenance). Usually requires `decisions.operation.unit_commitment`.
-    title: ConstraintsTemporalScopeCumulativeOperationModel
+    title: ConstraintsScopeTemporalCumulativeOperationModel
     type: object
-  ConstraintsTemporalScopeModel:
+  ConstraintsScopeTemporalModel:
     additionalProperties: false
     properties:
       boundary_conditions:
-        $ref: '#/$defs/ConstraintsTemporalScopeBoundaryConditionsModel'
+        $ref: '#/$defs/ConstraintsScopeTemporalBoundaryConditionsModel'
         description: Conditions can be set at the edges of a modelled period, including
           how one period hands over to the next. Conditions at the edge of other dimensions
           of the system are not covered here. See `processes.boundary_exchange` and
           `edge_effects` for other boundary-related features.
       cumulative:
-        $ref: '#/$defs/ConstraintsTemporalScopeCumulativeModel'
+        $ref: '#/$defs/ConstraintsScopeTemporalCumulativeModel'
         description: A limit can bind a quantity accumulated over a subset or the
           entirety of the time horizon, bounding only the accumulated total and not
           how it is distributed within that window. This can represent real contract
           arrangements / regulation. A limit's *bound* can equally be determined by
           an accumulated quantity rather than by an input parameter (`path_dependent`).
       pointwise:
-        $ref: '#/$defs/ConstraintsTemporalScopePointwiseModel'
+        $ref: '#/$defs/ConstraintsScopeTemporalPointwiseModel'
         description: A limit can bind each time period independently, without linking
           that period to any other.
       sequential:
-        $ref: '#/$defs/ConstraintsTemporalScopeSequentialModel'
+        $ref: '#/$defs/ConstraintsScopeTemporalSequentialModel'
         description: A limit can bind a quantity defined by the difference between
           time periods, or bind distinct time periods to one another, so that the
           ordering of periods matters.
-    title: ConstraintsTemporalScopeModel
+    title: ConstraintsScopeTemporalModel
     type: object
-  ConstraintsTemporalScopePointwiseInvestmentModel:
+  ConstraintsScopeTemporalPointwiseInvestmentModel:
     additionalProperties: false
     properties:
       discrete_increments:
@@ -387,20 +382,20 @@ $defs:
         $ref: '#/$defs/ToolFeatureModel'
         description: Investment unit purchase can be limited within investment periods.
           Usually requires `decisions.investment.integer_investment_...`.
-    title: ConstraintsTemporalScopePointwiseInvestmentModel
+    title: ConstraintsScopeTemporalPointwiseInvestmentModel
     type: object
-  ConstraintsTemporalScopePointwiseModel:
+  ConstraintsScopeTemporalPointwiseModel:
     additionalProperties: false
     properties:
       investment:
-        $ref: '#/$defs/ConstraintsTemporalScopePointwiseInvestmentModel'
+        $ref: '#/$defs/ConstraintsScopeTemporalPointwiseInvestmentModel'
         description: Investment can be limited within an investment period.
       operation:
-        $ref: '#/$defs/ConstraintsTemporalScopePointwiseOperationModel'
+        $ref: '#/$defs/ConstraintsScopeTemporalPointwiseOperationModel'
         description: Operation can be limited within a timestep.
-    title: ConstraintsTemporalScopePointwiseModel
+    title: ConstraintsScopeTemporalPointwiseModel
     type: object
-  ConstraintsTemporalScopePointwiseOperationModel:
+  ConstraintsScopeTemporalPointwiseOperationModel:
     additionalProperties: false
     properties:
       availability_derating:
@@ -421,9 +416,9 @@ $defs:
         description: A committed asset's flow can be bounded below by a minimum stable
           operating level, so that it either operates at or above that level or is
           off. Usually requires `decisions.operation.unit_commitment`.
-    title: ConstraintsTemporalScopePointwiseOperationModel
+    title: ConstraintsScopeTemporalPointwiseOperationModel
     type: object
-  ConstraintsTemporalScopeSequentialInvestmentModel:
+  ConstraintsScopeTemporalSequentialInvestmentModel:
     additionalProperties: false
     properties:
       availability_window:
@@ -441,20 +436,20 @@ $defs:
         description: Capacity can be removed from the system across investment periods,
           whether on a fixed schedule or as an endogenous decision (e.g. phased retirement,
           forced decommissioning at end of technical life).
-    title: ConstraintsTemporalScopeSequentialInvestmentModel
+    title: ConstraintsScopeTemporalSequentialInvestmentModel
     type: object
-  ConstraintsTemporalScopeSequentialModel:
+  ConstraintsScopeTemporalSequentialModel:
     additionalProperties: false
     properties:
       investment:
-        $ref: '#/$defs/ConstraintsTemporalScopeSequentialInvestmentModel'
+        $ref: '#/$defs/ConstraintsScopeTemporalSequentialInvestmentModel'
         description: Investment limits can link investment periods.
       operation:
-        $ref: '#/$defs/ConstraintsTemporalScopeSequentialOperationModel'
+        $ref: '#/$defs/ConstraintsScopeTemporalSequentialOperationModel'
         description: Operating limits can link time periods.
-    title: ConstraintsTemporalScopeSequentialModel
+    title: ConstraintsScopeTemporalSequentialModel
     type: object
-  ConstraintsTemporalScopeSequentialOperationModel:
+  ConstraintsScopeTemporalSequentialOperationModel:
     additionalProperties: false
     properties:
       commitment_duration:
@@ -476,7 +471,7 @@ $defs:
         description: The flow trajectory while an asset is starting up or shutting
           down can be limited separately from its normal operating range (e.g. run-up
           / run-down rates, start profiles). Usually requires `decisions.operation.unit_commitment`.
-    title: ConstraintsTemporalScopeSequentialOperationModel
+    title: ConstraintsScopeTemporalSequentialOperationModel
     type: object
   CostAnnuitisationModel:
     additionalProperties: false
@@ -493,65 +488,6 @@ $defs:
           production credits).
     title: CostAnnuitisationModel
     type: object
-  CostBreadthAssetsModel:
-    additionalProperties: false
-    properties:
-      investment:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: A single investment cost can span several assets (e.g. a shared
-          site development or grid connection charge incurred once for a group of
-          candidates).
-      operation:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: A single operating cost can span several assets (e.g. a fleet-level
-          fixed O&M charge, a contract priced on combined output).
-    title: CostBreadthAssetsModel
-    type: object
-  CostBreadthCombinedModel:
-    additionalProperties: false
-    properties:
-      investment:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: A single investment cost can span several assets and several
-          spatial units at once (e.g. a programme-level capital charge covering any
-          build anywhere in the system).
-      operation:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: A single operating cost can span several assets and several spatial
-          units at once (e.g. a system-wide carbon price levied on every emitting
-          asset in every region).
-    title: CostBreadthCombinedModel
-    type: object
-  CostBreadthModel:
-    additionalProperties: false
-    properties:
-      assets:
-        $ref: '#/$defs/CostBreadthAssetsModel'
-        description: A single cost term can span several assets, rather than being
-          attached to each asset individually.
-      combined:
-        $ref: '#/$defs/CostBreadthCombinedModel'
-        description: A single cost term can span several members of more than one
-          of the above dimensions at once, rather than only one dimension at a time.
-      spatial:
-        $ref: '#/$defs/CostBreadthSpatialModel'
-        description: A single cost term can span several spatial units, rather than
-          being attached within each individually.
-    title: CostBreadthModel
-    type: object
-  CostBreadthSpatialModel:
-    additionalProperties: false
-    properties:
-      investment:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: A single investment cost can span several spatial units (e.g.
-          a corridor reinforcement charge triggered by build-out at any of its nodes).
-      operation:
-        $ref: '#/$defs/ToolFeatureModel'
-        description: A single operating cost can span several spatial units (e.g.
-          a national levy or carbon price applied across every node at once).
-    title: CostBreadthSpatialModel
-    type: object
   CostFunctionalFormFixedChargeModel:
     additionalProperties: false
     properties:
@@ -564,7 +500,7 @@ $defs:
         description: Operating cost can be incurred for each timestep an asset is
           committed, irrespective of its flow in that timestep (e.g. no-load cost,
           stand-by cost). Costs incurred on a change of commitment state are instead
-          `cost.temporal_scope.sequential.operation`. Usually requires `decisions.operation.unit_commitment`.
+          `cost.scope.temporal.sequential.operation`. Usually requires `decisions.operation.unit_commitment`.
     title: CostFunctionalFormFixedChargeModel
     type: object
   CostFunctionalFormModel:
@@ -642,52 +578,97 @@ $defs:
         $ref: '#/$defs/CostAnnuitisationModel'
         description: An asset's capital investment can be annuitised to account for
           factors linked to its expected economic life and financing arrangements.
-      breadth:
-        $ref: '#/$defs/CostBreadthModel'
-        description: How far a single cost term can reach across the model's dimensions
-          other than time.
       functional_form:
         $ref: '#/$defs/CostFunctionalFormModel'
         description: How a cost can vary with the decision variable it attaches to,
           beyond the linear baseline.
-      temporal_scope:
-        $ref: '#/$defs/CostTemporalScopeModel'
-        description: When a cost accrues in time. a cost accruing within a single
-          period in proportion to the decision it attaches to is the baseline and
-          therefore not given here explicitly.
+      scope:
+        $ref: '#/$defs/CostScopeModel'
+        description: Which of the model's dimensions a cost term engages. Some tool
+          costs may be a combination of scopes, and will be recorded in multiple places
+          accordingly. E.g., a carbon price levied on every emitting asset is recorded
+          under `cost.scope.temporal` *and* `cost.scope.assets`. Spanning a dimension
+          usually requires `model_definition.dimension_groups` to define the group
+          the cost applies over.
     title: CostModel
     type: object
-  CostTemporalScopeCumulativeModel:
+  CostScopeAssetsModel:
+    additionalProperties: false
+    properties:
+      investment:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: A single investment cost can span several assets (e.g. a shared
+          site development or grid connection charge incurred once for a group of
+          candidates).
+      operation:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: A single operating cost can span several assets (e.g. a fleet-level
+          fixed O&M charge, a contract priced on combined output).
+    title: CostScopeAssetsModel
+    type: object
+  CostScopeModel:
+    additionalProperties: false
+    properties:
+      assets:
+        $ref: '#/$defs/CostScopeAssetsModel'
+        description: A single cost term can span several assets, rather than being
+          attached to each asset individually.
+      spatial:
+        $ref: '#/$defs/CostScopeSpatialModel'
+        description: A single cost term can span several spatial units, rather than
+          being attached within each individually.
+      temporal:
+        $ref: '#/$defs/CostScopeTemporalModel'
+        description: When a cost accrues in time. A cost accruing within a single
+          period in proportion to the decision it attaches to is the baseline. It
+          is therefore not given here explicitly, so there is no `pointwise` member
+          to match `constraints.scope.temporal.pointwise`.
+    title: CostScopeModel
+    type: object
+  CostScopeSpatialModel:
+    additionalProperties: false
+    properties:
+      investment:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: A single investment cost can span several spatial units (e.g.
+          a corridor reinforcement charge triggered by build-out at any of its nodes).
+      operation:
+        $ref: '#/$defs/ToolFeatureModel'
+        description: A single operating cost can span several spatial units (e.g.
+          a national levy or carbon price applied across every node at once).
+    title: CostScopeSpatialModel
+    type: object
+  CostScopeTemporalCumulativeModel:
     additionalProperties: false
     properties:
       investment:
         $ref: '#/$defs/ToolFeatureModel'
         description: A capital cost coefficient can fall or rise with cumulative deployment
           (e.g. an endogenous learning / experience curve). The same effect expressed
-          as a limit rather than a cost is `constraints.temporal_scope.cumulative.investment.path_dependent`.
+          as a limit rather than a cost is `constraints.scope.temporal.cumulative.investment.path_dependent`.
       operation:
         $ref: '#/$defs/ToolFeatureModel'
         description: An operating cost coefficient can change with cumulative prior
           operation (e.g. maintenance or replacement cost rising with accumulated
           running hours or storage cycles). The same effect expressed as a limit rather
-          than a cost is `constraints.temporal_scope.cumulative.operation.path_dependent`.
-    title: CostTemporalScopeCumulativeModel
+          than a cost is `constraints.scope.temporal.cumulative.operation.path_dependent`.
+    title: CostScopeTemporalCumulativeModel
     type: object
-  CostTemporalScopeModel:
+  CostScopeTemporalModel:
     additionalProperties: false
     properties:
       cumulative:
-        $ref: '#/$defs/CostTemporalScopeCumulativeModel'
+        $ref: '#/$defs/CostScopeTemporalCumulativeModel'
         description: A cost coefficient can be determined by a quantity accumulated
           over the horizon, rather than by an input parameter alone.
       sequential:
-        $ref: '#/$defs/CostTemporalScopeSequentialModel'
+        $ref: '#/$defs/CostScopeTemporalSequentialModel'
         description: Cost can be applied to a change in a decision variable between
           time periods, whether as a lump sum on the change occurring or in proportion
           to its magnitude.
-    title: CostTemporalScopeModel
+    title: CostScopeTemporalModel
     type: object
-  CostTemporalScopeSequentialModel:
+  CostScopeTemporalSequentialModel:
     additionalProperties: false
     properties:
       investment:
@@ -695,13 +676,13 @@ $defs:
         description: A cost can be incurred on a change in installed capacity between
           investment periods (e.g. a retirement / decommissioning charge incurred
           when capacity is removed). Limiting that change rather than costing it is
-          `constraints.temporal_scope.sequential.investment`.
+          `constraints.scope.temporal.sequential.investment`.
       operation:
-        $ref: '#/$defs/CostTemporalScopeSequentialOperationModel'
+        $ref: '#/$defs/CostScopeTemporalSequentialOperationModel'
         description: Costs can be applied between timesteps.
-    title: CostTemporalScopeSequentialModel
+    title: CostScopeTemporalSequentialModel
     type: object
-  CostTemporalScopeSequentialOperationModel:
+  CostScopeTemporalSequentialOperationModel:
     additionalProperties: false
     properties:
       ramping:
@@ -721,7 +702,7 @@ $defs:
         $ref: '#/$defs/ToolFeatureModel'
         description: A cost can be incurred each time an asset changes from off to
           on (start-up cost). Usually requires `decisions.operation.unit_commitment`.
-    title: CostTemporalScopeSequentialOperationModel
+    title: CostScopeTemporalSequentialOperationModel
     type: object
   DecisionsInvestmentModel:
     additionalProperties: false
@@ -784,8 +765,8 @@ $defs:
         $ref: '#/$defs/ToolFeatureModel'
         description: Asset maintenance / outage schedules can be derived endogenously,
           co-optimised with operation. Exogenously fixed maintenance windows are instead
-          `constraints.temporal_scope.pointwise`. Resource-constrained maintenance
-          limits are instead `constraints.temporal_scope.cumulative`.
+          `constraints.scope.temporal.pointwise`. Resource-constrained maintenance
+          limits are instead `constraints.scope.temporal.cumulative`.
       unit_commitment:
         $ref: '#/$defs/ToolFeatureModel'
         description: Assets can be committed as units and _then_ economically dispatched.
@@ -820,17 +801,15 @@ $defs:
       constraints:
         $ref: '#/$defs/ConstraintsModel'
         description: Limits on asset investment and operating decisions, split by
-          scope, functional form, and some specific use-cases.
+          the model dimension a limit engages, its functional form, and some specific
+          use-cases.
       cost:
         $ref: '#/$defs/CostModel'
-        description: 'Costs that can be attached to investment and operating decisions,
-          entering the objective as terms. Members mirror `constraints`: `cost.temporal_scope`
-          groups costs by when they accrue, `cost.breadth` records how far a single
-          cost can reach across the model''s other dimensions, and `cost.functional_form`
-          records how a cost can vary with the decision it attaches to. Cost which
-          varies linearly with a decision variable (e.g. EUR/MW capital cost on nameplate
-          capacity, EUR/MWh operating cost on flow) is the baseline; we do not track
-          it explicitly here. The shape the objective itself can take is `objective`.'
+        description: Costs that can be attached to investment and operating decisions,
+          entering the objective as terms. Cost which varies linearly with a decision
+          variable (e.g. EUR/MW capital cost on nameplate capacity, EUR/MWh operating
+          cost on flow) is the baseline; we do not track it explicitly here. The shape
+          the objective itself can take is `objective`.
       decisions:
         $ref: '#/$defs/DecisionsModel'
         description: Fidelity of decisions made in the optimisation problem. Approximating
@@ -1137,7 +1116,7 @@ $defs:
           (e.g. an abstract technology definition), with edits to the template cascading
           to every inheriting component, rather than requiring per-component data
           entry. Includes programmatic, model-side generation of components from a
-          template (e.g. auto-cloned vintaged expansion candidates approximating `constraints.temporal_scope.cumulative`
+          template (e.g. auto-cloned vintaged expansion candidates approximating `constraints.scope.temporal.cumulative`
           relationships).
       configurable_dimensions:
         $ref: '#/$defs/ToolFeatureModel'
@@ -1745,8 +1724,8 @@ $defs:
         $ref: '#/$defs/ToolFeatureModel'
         description: A chain of interconnected assets can be collapsed into a single
           component with an in/out interface, also called black boxing or lumping.
-          This usually requires `constraints.dedicated_flow_routing` between interconnected
-          components.
+          This usually requires `constraints.scope.assets.dedicated_flow_routing`
+          between interconnected components.
       spatial:
         $ref: '#/$defs/ToolFeatureModel'
         description: Network elements can be equivalenced, also called network reduction
@@ -1994,31 +1973,6 @@ properties:
           source: []
           value: '?'
       constraints:
-        breadth:
-          assets:
-            investment:
-              source: []
-              value: '?'
-            operation:
-              source: []
-              value: '?'
-          combined:
-            investment:
-              source: []
-              value: '?'
-            operation:
-              source: []
-              value: '?'
-          spatial:
-            investment:
-              source: []
-              value: '?'
-            operation:
-              source: []
-              value: '?'
-        dedicated_flow_routing:
-          source: []
-          value: '?'
         functional_form:
           linear_multi_variable:
             investment:
@@ -2065,95 +2019,114 @@ properties:
           unserved_demand:
             source: []
             value: '?'
+        scope:
+          assets:
+            dedicated_flow_routing:
+              source: []
+              value: '?'
+            spanning:
+              investment:
+                source: []
+                value: '?'
+              operation:
+                source: []
+                value: '?'
+          spatial:
+            investment:
+              source: []
+              value: '?'
+            operation:
+              source: []
+              value: '?'
+          temporal:
+            boundary_conditions:
+              investment:
+                source: []
+                value: '?'
+              operation:
+                source: []
+                value: '?'
+            cumulative:
+              investment:
+                capacity_target:
+                  source: []
+                  value: '?'
+                event_count:
+                  source: []
+                  value: '?'
+                expansion_budget:
+                  source: []
+                  value: '?'
+                path_dependent:
+                  source: []
+                  value: '?'
+              operation:
+                event_count:
+                  source: []
+                  value: '?'
+                flow_volume:
+                  source: []
+                  value: '?'
+                impact_budget:
+                  source: []
+                  value: '?'
+                path_dependent:
+                  source: []
+                  value: '?'
+                state_duration:
+                  source: []
+                  value: '?'
+            pointwise:
+              investment:
+                discrete_increments:
+                  source: []
+                  value: '?'
+                size_bounds:
+                  source: []
+                  value: '?'
+                unit_purchase:
+                  source: []
+                  value: '?'
+              operation:
+                availability_derating:
+                  source: []
+                  value: '?'
+                forced_offline:
+                  source: []
+                  value: '?'
+                forced_online:
+                  source: []
+                  value: '?'
+                minimum_stable_level:
+                  source: []
+                  value: '?'
+            sequential:
+              investment:
+                availability_window:
+                  source: []
+                  value: '?'
+                build_rate:
+                  source: []
+                  value: '?'
+                retirement:
+                  source: []
+                  value: '?'
+              operation:
+                commitment_duration:
+                  source: []
+                  value: '?'
+                ramping:
+                  source: []
+                  value: '?'
+                start_consumption:
+                  source: []
+                  value: '?'
+                start_shut_trajectory:
+                  source: []
+                  value: '?'
         soft_constraints:
           source: []
           value: '?'
-        temporal_scope:
-          boundary_conditions:
-            investment:
-              source: []
-              value: '?'
-            operation:
-              source: []
-              value: '?'
-          cumulative:
-            investment:
-              capacity_target:
-                source: []
-                value: '?'
-              event_count:
-                source: []
-                value: '?'
-              expansion_budget:
-                source: []
-                value: '?'
-              path_dependent:
-                source: []
-                value: '?'
-            operation:
-              event_count:
-                source: []
-                value: '?'
-              flow_volume:
-                source: []
-                value: '?'
-              impact_budget:
-                source: []
-                value: '?'
-              path_dependent:
-                source: []
-                value: '?'
-              state_duration:
-                source: []
-                value: '?'
-          pointwise:
-            investment:
-              discrete_increments:
-                source: []
-                value: '?'
-              size_bounds:
-                source: []
-                value: '?'
-              unit_purchase:
-                source: []
-                value: '?'
-            operation:
-              availability_derating:
-                source: []
-                value: '?'
-              forced_offline:
-                source: []
-                value: '?'
-              forced_online:
-                source: []
-                value: '?'
-              minimum_stable_level:
-                source: []
-                value: '?'
-          sequential:
-            investment:
-              availability_window:
-                source: []
-                value: '?'
-              build_rate:
-                source: []
-                value: '?'
-              retirement:
-                source: []
-                value: '?'
-            operation:
-              commitment_duration:
-                source: []
-                value: '?'
-              ramping:
-                source: []
-                value: '?'
-              start_consumption:
-                source: []
-                value: '?'
-              start_shut_trajectory:
-                source: []
-                value: '?'
       cost:
         annuitisation:
           discounting:
@@ -2162,28 +2135,6 @@ properties:
           fiscal_treatment:
             source: []
             value: '?'
-        breadth:
-          assets:
-            investment:
-              source: []
-              value: '?'
-            operation:
-              source: []
-              value: '?'
-          combined:
-            investment:
-              source: []
-              value: '?'
-            operation:
-              source: []
-              value: '?'
-          spatial:
-            investment:
-              source: []
-              value: '?'
-            operation:
-              source: []
-              value: '?'
         functional_form:
           fixed_charge:
             investment:
@@ -2210,31 +2161,46 @@ properties:
             operation:
               source: []
               value: '?'
-        temporal_scope:
-          cumulative:
+        scope:
+          assets:
             investment:
               source: []
               value: '?'
             operation:
               source: []
               value: '?'
-          sequential:
+          spatial:
             investment:
               source: []
               value: '?'
             operation:
-              ramping:
+              source: []
+              value: '?'
+          temporal:
+            cumulative:
+              investment:
                 source: []
                 value: '?'
-              shut_down:
+              operation:
                 source: []
                 value: '?'
-              start_state_dependent:
+            sequential:
+              investment:
                 source: []
                 value: '?'
-              start_up:
-                source: []
-                value: '?'
+              operation:
+                ramping:
+                  source: []
+                  value: '?'
+                shut_down:
+                  source: []
+                  value: '?'
+                start_state_dependent:
+                  source: []
+                  value: '?'
+                start_up:
+                  source: []
+                  value: '?'
       decisions:
         investment:
           continuous_capacity:

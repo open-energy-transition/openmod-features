@@ -90,79 +90,77 @@ features:
       maintenance_scheduling:
         value: '?'
   constraints:
-    temporal_scope:
-      pointwise:
-        investment:
-          size_bounds:
+    scope:
+      temporal:
+        pointwise:
+          investment:
+            size_bounds:
+              value: '?'
+            discrete_increments:
+              value: '?'
+            unit_purchase:
+              value: '?'
+          operation:
+            availability_derating:
+              value: '?'
+            minimum_stable_level:
+              value: '?'
+            forced_offline:
+              value: '?'
+            forced_online:
+              value: '?'
+        sequential:
+          investment:
+            build_rate:
+              value: '?'
+            retirement:
+              value: '?'
+            availability_window:
+              value: '?'
+          operation:
+            ramping:
+              value: '?'
+            start_shut_trajectory:
+              value: '?'
+            commitment_duration:
+              value: '?'
+            start_consumption:
+              value: '?'
+        cumulative:
+          investment:
+            capacity_target:
+              value: '?'
+            expansion_budget:
+              value: '?'
+            event_count:
+              value: '?'
+            path_dependent:
+              value: '?'
+          operation:
+            flow_volume:
+              value: '?'
+            impact_budget:
+              value: '?'
+            event_count:
+              value: '?'
+            state_duration:
+              value: '?'
+            path_dependent:
+              value: '?'
+        boundary_conditions:
+          investment:
             value: '?'
-          discrete_increments:
+          operation:
             value: '?'
-          unit_purchase:
-            value: '?'
-        operation:
-          availability_derating:
-            value: '?'
-          minimum_stable_level:
-            value: '?'
-          forced_offline:
-            value: '?'
-          forced_online:
-            value: '?'
-      sequential:
-        investment:
-          build_rate:
-            value: '?'
-          retirement:
-            value: '?'
-          availability_window:
-            value: '?'
-        operation:
-          ramping:
-            value: '?'
-          start_shut_trajectory:
-            value: '?'
-          commitment_duration:
-            value: '?'
-          start_consumption:
-            value: '?'
-      cumulative:
-        investment:
-          capacity_target:
-            value: '?'
-          expansion_budget:
-            value: '?'
-          event_count:
-            value: '?'
-          path_dependent:
-            value: '?'
-        operation:
-          flow_volume:
-            value: '?'
-          impact_budget:
-            value: '?'
-          event_count:
-            value: '?'
-          state_duration:
-            value: '?'
-          path_dependent:
-            value: '?'
-      boundary_conditions:
-        investment:
-          value: '?'
-        operation:
-          value: '?'
-    breadth:
       assets:
-        investment:
-          value: '?'
-        operation:
+        spanning:
+          investment:
+            value: '?'
+          operation:
+            value: '?'
+        dedicated_flow_routing:
           value: '?'
       spatial:
-        investment:
-          value: '?'
-        operation:
-          value: '?'
-      combined:
         investment:
           value: '?'
         operation:
@@ -185,8 +183,6 @@ features:
           value: '?'
     soft_constraints:
       value: '?'
-    dedicated_flow_routing:
-      value: '?'
     reliability:
       operating_reserve:
         online_headroom:
@@ -205,36 +201,31 @@ features:
       contingency_constrained:
         value: '?'
   cost:
-    temporal_scope:
-      sequential:
-        investment:
-          value: '?'
-        operation:
-          start_up:
+    scope:
+      temporal:
+        sequential:
+          investment:
             value: '?'
-          shut_down:
+          operation:
+            start_up:
+              value: '?'
+            shut_down:
+              value: '?'
+            ramping:
+              value: '?'
+            start_state_dependent:
+              value: '?'
+        cumulative:
+          investment:
             value: '?'
-          ramping:
+          operation:
             value: '?'
-          start_state_dependent:
-            value: '?'
-      cumulative:
-        investment:
-          value: '?'
-        operation:
-          value: '?'
-    breadth:
       assets:
         investment:
           value: '?'
         operation:
           value: '?'
       spatial:
-        investment:
-          value: '?'
-        operation:
-          value: '?'
-      combined:
         investment:
           value: '?'
         operation:
