@@ -21,7 +21,8 @@ repos:
           "--exclude-file=pixi.lock",
           "--skip=user_analysis/config/*.yaml",
           "--skip=inventory/*.yaml",
-          "--skip=*.csv"
+          "--skip=*.csv",
+          "--ignore-words-list=FOM"
         ]
 
   - repo: https://github.com/fsfe/reuse-tool
