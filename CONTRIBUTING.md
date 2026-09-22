@@ -32,16 +32,22 @@ Ultimately, this can be used to identify tool **feature gaps**.
    Features in development could be linked to e.g., Pull Requests or academic publications.
 
    >[!NOTE]
-   >Features are **nested** to whatever depth the taxonomy needs (e.g. `cost.functional_form.fixed_charge.investment.per_unit`, `interface.gui.build`).
+   >Features are **nested** to whatever depth the taxonomy needs (e.g. `constraints.scope.temporal.pointwise.investment.size_bounds`, `interface.gui.build`).
    >`value` and `source` appear together on the **leaves** of that tree and nowhere else.
    >A leaf always has a plain scalar `value` and a plain list of URLs as its `source`.
-   >Leaves and further nesting can sit side by side: under `cost.functional_form.fixed_charge`,
-   >`investment` splits further into `per_unit` / `per_project`,
-   >while its sibling `operation` is a leaf in its own right.
+   >Leaves and further nesting can sit side by side: under `cost.functional_form.nonlinear`,
+   >`operation` splits further into `flow_dependent` / `bid_bands`,
+   >while its sibling `investment` is a leaf in its own right.
    >Every leaf comes pre-filled with `?`, so you only need to change the values you know.
    >Where a single source evidences several sibling leaves, repeat the URL on each of them.
    >When a feature splits into several sub-leaves, cite each sub-leaf individually —
    >a YAML comment next to each sub-leaf's `source` entry explaining what the source evidences is the recommended style.
+   >
+   >Leaves are not alternatives: one capability in a tool can answer several of them.
+   >A system-wide annual CO2 cap, for instance, is both
+   >`constraints.scope.temporal.cumulative.operation.impact_budget` (what it binds in time)
+   >and `constraints.scope.spatial.operation` (how far it reaches),
+   >so both get a `y` citing the same page.
 1. **Submit**: Open a PR with your new entry
 1. **Review**:
    - All listed maintainers must explicitly approve in PR comments

@@ -19,6 +19,8 @@ downloads/
 eggs/
 .eggs/
 lib/
+!website/src/lib/
+!website/src/lib/**
 lib64/
 parts/
 sdist/
@@ -157,6 +159,11 @@ venv.bak/
 
 # mkdocs documentation
 /site
+
+# Node website dashboard
+.pnpm-store/
+website/node_modules/
+website/dist/
 
 # mypy
 .mypy_cache/

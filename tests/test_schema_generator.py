@@ -295,8 +295,8 @@ class TestTemplateValidation:
         """Test that a leaf sitting alongside branch siblings stays a plain leaf."""
         features_file = tool_project_from_generated_template / "features.yaml"
         features = yaml.safe_load(features_file.read_text())
-        routing = features["features"]["constraints"]["dedicated_flow_routing"]
-        assert routing == {"value": "?", "source": []}
+        exchange = features["features"]["processes"]["boundary_exchange"]
+        assert exchange == {"value": "?", "source": []}
 
     def test_use_case_project_features_file_exists(
         self, use_case_project_from_generated_template: Path
@@ -528,11 +528,9 @@ class TestAxisConsistency:
     #: natural adjacency, so neither takes `adjacency_aggregation`. Partial use is the
     #: point here, so these branches opt out while the rule still holds everywhere else.
     #:
-    #: `constraints.breadth` omits `temporal` because time is not merely a dimension a
-    #: limit reaches across: a limit's mathematical form differs by *what* it binds in
-    #: time, so the time axis carries its own structure in `constraints.temporal_scope`
-    #: rather than a reach leaf here. It also adds `combined`, which is not a dimension
-    #: but a statement that one limit spans several of them at once.
+    #: `constraints.scope` and `cost.scope` omit `scenarios`, because a limit or cost
+    #: spanning scenarios requires a scenario-indexed decision problem, which is already
+    #: recorded by `uncertainty`.
     PARTIAL_AXIS_BRANCHES = frozenset(
         {
             "tractability.dimension_reduction.adjacency_aggregation",
@@ -540,8 +538,8 @@ class TestAxisConsistency:
             "tractability.dimension_reduction.equivalencing",
             "tractability.dimension_reduction.filtering",
             "tractability.dimension_reduction.non_contiguity_handling",
-            "constraints.breadth",
-            "cost.breadth",
+            "constraints.scope",
+            "cost.scope",
         }
     )
 
