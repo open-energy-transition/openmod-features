@@ -4,7 +4,7 @@
 #
 # SPDX-License-Identifier: CC-BY-4.0
 
-# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/6f1c3dd/schema/tool-schema.yaml
+# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/0cd1a85/schema/tool-schema.yaml
 
 # Assessed against PyPSA v1.3.0 (released 19th August 2026).
 # `dev` entries link to the open pull request or to an unreleased `master` change.
@@ -234,176 +234,184 @@ features:
           - https://docs.pypsa.org/v1.3.0/user-guide/optimization/maintenance-scheduling/
           - https://docs.pypsa.org/v1.3.0/examples/maintenance-scheduling/
   constraints:
-    temporal_scope:
-      pointwise:
-        investment:
-          size_bounds:
+    scope:
+      temporal:
+        pointwise:
+          investment:
+            size_bounds:
+              value: y
+              source:
+                - https://docs.pypsa.org/v1.3.0/user-guide/optimization/capacity-limits/#upper-and-lower-bounds
+            discrete_increments:
+              value: y
+              source:
+                - https://docs.pypsa.org/v1.3.0/user-guide/optimization/capacity-limits/#modularity-constraints
+                - https://docs.pypsa.org/v1.3.0/examples/modular-expansion/
+            unit_purchase:
+              value: dev
+              source:
+                - https://github.com/PyPSA/PyPSA/pull/1900
+          operation:
+            availability_derating:
+              value: y
+              source:
+                # Time-varying `p_max_pu` / `s_max_pu`.
+                - https://docs.pypsa.org/v1.3.0/user-guide/optimization/dispatch-limits/#non-extendable-components
+                - https://docs.pypsa.org/v1.3.0/user-guide/components/generators/
+            minimum_stable_level:
+              value: y
+              source:
+                # `p_min_pu` applied to the commitment status.
+                - https://docs.pypsa.org/v1.3.0/user-guide/optimization/unit-commitment/#start-up-and-shut-down
+                - https://docs.pypsa.org/v1.3.0/examples/unit-commitment/
+            forced_offline:
+              value: y
+              source:
+                # `p_max_pu=0` for outage snapshots, or an endogenously placed
+                # maintenance window with `maintenance_pu=1`.
+                - https://docs.pypsa.org/v1.3.0/user-guide/optimization/dispatch-limits/#non-extendable-components
+                - https://docs.pypsa.org/v1.3.0/user-guide/optimization/maintenance-scheduling/#effect-on-dispatch-limits
+            forced_online:
+              value: y
+              source:
+                # `p_min_pu>0` on a non-committable asset is a must-run condition;
+                # `p_set` fixes the dispatch schedule outright.
+                - https://docs.pypsa.org/v1.3.0/user-guide/components/generators/
+                - https://docs.pypsa.org/v1.3.0/user-guide/optimization/dispatch-limits/#fixed-dispatch
+        sequential:
+          investment:
+            build_rate:
+              value: y
+              source:
+                # `n.carriers.max_growth` / `max_relative_growth` per investment period.
+                - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#growth-limit-per-carrier
+            retirement:
+              # Retirement is scheduled exogenously through `build_year` + `lifetime`;
+              # endogenous decommissioning is not available (issues #926, #1278).
+              value: y
+              source:
+                - https://docs.pypsa.org/v1.3.0/user-guide/optimization/pathway-planning/#dispatch-of-active-components
+                - https://docs.pypsa.org/v1.3.0/examples/myopic-pathway/
+            availability_window:
+              value: y
+              source:
+                # Per-period components with `build_year`/`lifetime` restrict which
+                # periods an asset may be built in.
+                - https://docs.pypsa.org/v1.3.0/user-guide/optimization/pathway-planning/#implementation
+          operation:
+            ramping:
+              value: y
+              source:
+                - https://docs.pypsa.org/v1.3.0/user-guide/optimization/unit-commitment/#ramping
+                - https://docs.pypsa.org/v1.3.0/examples/unit-commitment/
+            start_shut_trajectory:
+              value: y
+              source:
+                # `ramp_limit_start_up` / `ramp_limit_shut_down` bound the flow change on
+                # the start-up and shut-down transitions separately.
+                - https://docs.pypsa.org/v1.3.0/user-guide/optimization/unit-commitment/#ramping
+            commitment_duration:
+              value: y
+              source:
+                # `min_up_time` / `min_down_time`, with `up_time_before` /
+                # `down_time_before` carrying state across optimisation windows.
+                - https://docs.pypsa.org/v1.3.0/user-guide/optimization/unit-commitment/#start-up-and-shut-down
+            start_consumption:
+              value: n
+              source:
+                - https://github.com/PyPSA/PyPSA/issues/1738
+        cumulative:
+          investment:
+            capacity_target:
+              value: y
+              source:
+                # `tech_capacity_expansion_limit` global constraint, optionally per bus
+                # and per investment period; transmission expansion volume limit.
+                - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#expansion-limit
+                - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#volume-limit-on-transmission-expansion
+            expansion_budget:
+              value: y
+              source:
+                - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#cost-limit-on-transmission-expansion
+            event_count:
+              value: n
+              source: []
+            path_dependent:
+              value: n
+              source:
+                # Endogenous learning is explicitly not implemented.
+                - https://docs.pypsa.org/v1.3.0/user-guide/optimization/pathway-planning/#storage-cyclicity-and-initial-energy-levels
+                - https://docs.pypsa.org/v1.3.0/user-guide/faq/#can-technological-learning-be-modelled
+                - https://github.com/PyPSA/PyPSA/issues/1599
+          operation:
+            flow_volume:
+              value: y
+              source:
+                # `e_sum_min`/`e_sum_max` over the horizon; `operational_limit` global
+                # constraint; arbitrary sub-periods via custom constraints.
+                - https://docs.pypsa.org/v1.3.0/user-guide/optimization/dispatch-limits/#volume-limits
+                - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#operational-limit
+                - https://docs.pypsa.org/v1.3.0/examples/periodic-operational-limits/
+            impact_budget:
+              value: y
+              source:
+                # `primary_energy` global constraint over a user-chosen
+                # `carrier_attribute`; also usable as a budget across all periods.
+                - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#primary-energy
+                - https://docs.pypsa.org/v1.3.0/user-guide/optimization/pathway-planning/#emission-budgets
+            event_count:
+              # Storage cycle budgets are an open PR; no limit on start counts exists.
+              value: dev
+              source:
+                - https://github.com/PyPSA/PyPSA/pull/1915
+                - https://github.com/PyPSA/PyPSA/issues/1731
+            state_duration:
+              value: n
+              source: []
+            path_dependent:
+              # Capacity fade with cumulative cycling is an open PR.
+              value: dev
+              source:
+                - https://github.com/PyPSA/PyPSA/pull/1915
+                - https://github.com/PyPSA/PyPSA/issues/1731
+        boundary_conditions:
+          investment:
             value: y
             source:
+              # Brownfield stock via non-extendable components / `p_nom_min` and
+              # `build_year` before the first investment period; an end-state can be set
+              # with a capacity target in the final period.
+              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/pathway-planning/#objective
               - https://docs.pypsa.org/v1.3.0/user-guide/optimization/capacity-limits/#upper-and-lower-bounds
-          discrete_increments:
-            value: y
-            source:
-              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/capacity-limits/#modularity-constraints
-              - https://docs.pypsa.org/v1.3.0/examples/modular-expansion/
-          unit_purchase:
-            value: dev
-            source:
-              - https://github.com/PyPSA/PyPSA/pull/1900
-        operation:
-          availability_derating:
-            value: y
-            source:
-              # Time-varying `p_max_pu` / `s_max_pu`.
-              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/dispatch-limits/#non-extendable-components
-              - https://docs.pypsa.org/v1.3.0/user-guide/components/generators/
-          minimum_stable_level:
-            value: y
-            source:
-              # `p_min_pu` applied to the commitment status.
-              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/unit-commitment/#start-up-and-shut-down
-              - https://docs.pypsa.org/v1.3.0/examples/unit-commitment/
-          forced_offline:
-            value: y
-            source:
-              # `p_max_pu=0` for outage snapshots, or an endogenously placed
-              # maintenance window with `maintenance_pu=1`.
-              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/dispatch-limits/#non-extendable-components
-              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/maintenance-scheduling/#effect-on-dispatch-limits
-          forced_online:
-            value: y
-            source:
-              # `p_min_pu>0` on a non-committable asset is a must-run condition;
-              # `p_set` fixes the dispatch schedule outright.
-              - https://docs.pypsa.org/v1.3.0/user-guide/components/generators/
-              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/dispatch-limits/#fixed-dispatch
-      sequential:
-        investment:
-          build_rate:
-            value: y
-            source:
-              # `n.carriers.max_growth` / `max_relative_growth` per investment period.
-              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#growth-limit-per-carrier
-          retirement:
-            # Retirement is scheduled exogenously through `build_year` + `lifetime`;
-            # endogenous decommissioning is not available (issues #926, #1278).
-            value: y
-            source:
-              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/pathway-planning/#dispatch-of-active-components
               - https://docs.pypsa.org/v1.3.0/examples/myopic-pathway/
-          availability_window:
+          operation:
             value: y
             source:
-              # Per-period components with `build_year`/`lifetime` restrict which
-              # periods an asset may be built in.
-              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/pathway-planning/#implementation
-        operation:
-          ramping:
-            value: y
-            source:
-              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/unit-commitment/#ramping
-              - https://docs.pypsa.org/v1.3.0/examples/unit-commitment/
-          start_shut_trajectory:
-            value: y
-            source:
-              # `ramp_limit_start_up` / `ramp_limit_shut_down` bound the flow change on
-              # the start-up and shut-down transitions separately.
-              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/unit-commitment/#ramping
-          commitment_duration:
-            value: y
-            source:
-              # `min_up_time` / `min_down_time`, with `up_time_before` /
-              # `down_time_before` carrying state across optimisation windows.
-              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/unit-commitment/#start-up-and-shut-down
-          start_consumption:
-            value: n
-            source:
-              - https://github.com/PyPSA/PyPSA/issues/1738
-      cumulative:
-        investment:
-          capacity_target:
-            value: y
-            source:
-              # `tech_capacity_expansion_limit` global constraint, optionally per bus
-              # and per investment period; transmission expansion volume limit.
-              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#expansion-limit
-              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#volume-limit-on-transmission-expansion
-          expansion_budget:
-            value: y
-            source:
-              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#cost-limit-on-transmission-expansion
-          event_count:
-            value: n
-            source: []
-          path_dependent:
-            value: n
-            source:
-              # Endogenous learning is explicitly not implemented.
+              # `e_initial`/`state_of_charge_initial`, `e_cyclic`, and the
+              # `*_per_period` variants controlling hand-over between periods.
+              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/storage/
               - https://docs.pypsa.org/v1.3.0/user-guide/optimization/pathway-planning/#storage-cyclicity-and-initial-energy-levels
-              - https://docs.pypsa.org/v1.3.0/user-guide/faq/#can-technological-learning-be-modelled
-              - https://github.com/PyPSA/PyPSA/issues/1599
-        operation:
-          flow_volume:
-            value: y
-            source:
-              # `e_sum_min`/`e_sum_max` over the horizon; `operational_limit` global
-              # constraint; arbitrary sub-periods via custom constraints.
-              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/dispatch-limits/#volume-limits
-              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#operational-limit
-              - https://docs.pypsa.org/v1.3.0/examples/periodic-operational-limits/
-          impact_budget:
-            value: y
-            source:
-              # `primary_energy` global constraint over a user-chosen
-              # `carrier_attribute`; also usable as a budget across all periods.
-              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#primary-energy
-              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/pathway-planning/#emission-budgets
-          event_count:
-            # Storage cycle budgets are an open PR; no limit on start counts exists.
-            value: dev
-            source:
-              - https://github.com/PyPSA/PyPSA/pull/1915
-              - https://github.com/PyPSA/PyPSA/issues/1731
-          state_duration:
-            value: n
-            source: []
-          path_dependent:
-            # Capacity fade with cumulative cycling is an open PR.
-            value: dev
-            source:
-              - https://github.com/PyPSA/PyPSA/pull/1915
-              - https://github.com/PyPSA/PyPSA/issues/1731
-      boundary_conditions:
-        investment:
-          value: y
-          source:
-            # Brownfield stock via non-extendable components / `p_nom_min` and
-            # `build_year` before the first investment period; an end-state can be set
-            # with a capacity target in the final period.
-            - https://docs.pypsa.org/v1.3.0/user-guide/optimization/pathway-planning/#objective
-            - https://docs.pypsa.org/v1.3.0/user-guide/optimization/capacity-limits/#upper-and-lower-bounds
-            - https://docs.pypsa.org/v1.3.0/examples/myopic-pathway/
-        operation:
-          value: y
-          source:
-            # `e_initial`/`state_of_charge_initial`, `e_cyclic`, and the
-            # `*_per_period` variants controlling hand-over between periods.
-            - https://docs.pypsa.org/v1.3.0/user-guide/optimization/storage/
-            - https://docs.pypsa.org/v1.3.0/user-guide/optimization/pathway-planning/#storage-cyclicity-and-initial-energy-levels
-    breadth:
       assets:
-        investment:
+        spanning:
+          investment:
+            value: y
+            source:
+              # Global constraints sum investment variables across all components of a
+              # carrier.
+              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#expansion-limit
+              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#growth-limit-per-carrier
+          operation:
+            value: y
+            source:
+              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#primary-energy
+              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#operational-limit
+        dedicated_flow_routing:
           value: y
           source:
-            # Global constraints sum investment variables across all components of a
-            # carrier.
-            - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#expansion-limit
-            - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#growth-limit-per-carrier
-        operation:
-          value: y
-          source:
-            - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#primary-energy
-            - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#operational-limit
+            # Dedicated buses/carriers route a flow to a named subset of downstream
+            # assets, e.g. water cascading between reservoirs.
+            - https://docs.pypsa.org/v1.3.0/examples/chained-hydro-reservoirs/
+            - https://docs.pypsa.org/v1.3.0/user-guide/design/#buses
       spatial:
         investment:
           value: y
@@ -414,16 +422,9 @@ features:
         operation:
           value: y
           source:
-            - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#primary-energy
-      combined:
-        investment:
-          value: y
-          source:
-            - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#expansion-limit
-        operation:
-          value: y
-          source:
-            # A single CO2 cap sums over every emitting asset at every bus.
+            # A single `primary_energy` CO2 cap sums over every emitting asset at every
+            # bus, so one constraint answers this leaf and
+            # `constraints.scope.assets.spanning.operation` alike.
             - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#primary-energy
     functional_form:
       linear_multi_variable:
@@ -469,13 +470,6 @@ features:
       value: n
       source:
         - https://github.com/PyPSA/PyPSA/issues/1732
-    dedicated_flow_routing:
-      value: y
-      source:
-        # Dedicated buses/carriers route a flow to a named subset of downstream
-        # assets, e.g. water cascading between reservoirs.
-        - https://docs.pypsa.org/v1.3.0/examples/chained-hydro-reservoirs/
-        - https://docs.pypsa.org/v1.3.0/user-guide/design/#buses
     reliability:
       operating_reserve:
         online_headroom:
@@ -519,42 +513,42 @@ features:
           - https://docs.pypsa.org/v1.3.0/user-guide/optimization/contingencies/
           - https://docs.pypsa.org/v1.3.0/examples/scigrid-sclopf/
   cost:
-    temporal_scope:
-      sequential:
-        investment:
-          value: n
-          source: []
-        operation:
-          start_up:
-            value: y
-            source:
-              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/objective/#start-up-shut-down-stand-by-costs
-          shut_down:
-            value: y
-            source:
-              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/objective/#start-up-shut-down-stand-by-costs
-          ramping:
+    scope:
+      temporal:
+        sequential:
+          investment:
+            value: n
+            source: []
+          operation:
+            start_up:
+              value: y
+              source:
+                - https://docs.pypsa.org/v1.3.0/user-guide/optimization/objective/#start-up-shut-down-stand-by-costs
+            shut_down:
+              value: y
+              source:
+                - https://docs.pypsa.org/v1.3.0/user-guide/optimization/objective/#start-up-shut-down-stand-by-costs
+            ramping:
+              value: n
+              source:
+                - https://github.com/PyPSA/PyPSA/issues/1733
+            start_state_dependent:
+              # Start-up cost can vary per snapshot on `master` (PR #1909) but never as a
+              # function of how long the unit has been off, so hot/warm/cold starts
+              # cannot be distinguished.
+              value: n
+              source:
+                - https://docs.pypsa.org/v1.3.0/user-guide/optimization/objective/#start-up-shut-down-stand-by-costs
+        cumulative:
+          investment:
             value: n
             source:
-              - https://github.com/PyPSA/PyPSA/issues/1733
-          start_state_dependent:
-            # Start-up cost can vary per snapshot on `master` (PR #1909) but never as a
-            # function of how long the unit has been off, so hot/warm/cold starts
-            # cannot be distinguished.
+              - https://docs.pypsa.org/v1.3.0/user-guide/faq/#can-technological-learning-be-modelled
+              - https://github.com/PyPSA/PyPSA/issues/1599
+          operation:
             value: n
             source:
-              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/objective/#start-up-shut-down-stand-by-costs
-      cumulative:
-        investment:
-          value: n
-          source:
-            - https://docs.pypsa.org/v1.3.0/user-guide/faq/#can-technological-learning-be-modelled
-            - https://github.com/PyPSA/PyPSA/issues/1599
-        operation:
-          value: n
-          source:
-            - https://github.com/PyPSA/PyPSA/issues/1731
-    breadth:
+              - https://github.com/PyPSA/PyPSA/issues/1731
       assets:
         investment:
           # All built-in cost attributes (`capital_cost`, `fom_cost`, `unit_cost`) are
@@ -568,15 +562,6 @@ features:
           source:
             - https://docs.pypsa.org/v1.3.0/user-guide/optimization/objective/#marginal-costs
       spatial:
-        investment:
-          value: n
-          source:
-            - https://docs.pypsa.org/v1.3.0/user-guide/optimization/objective/#investment-costs
-        operation:
-          value: n
-          source:
-            - https://docs.pypsa.org/v1.3.0/user-guide/optimization/objective/#marginal-costs
-      combined:
         investment:
           value: n
           source:
