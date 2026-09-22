@@ -1,0 +1,10 @@
+// SPDX-FileCopyrightText: 2026 openmod-features contributors
+//
+// SPDX-License-Identifier: MIT
+
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "openmod-features-dashboard",
+  "pages_build_output_dir": "dist/client",
+  "compatibility_date": "2026-07-27"
+}

@@ -56,3 +56,13 @@ pyyaml = ">=6.0.2,<7"
 pytest-xdist = ">=3.8.0,<4"
 jsonschema = ">=4.23.0,<5"
 requests = ">=2.32.0,<3"
+
+[feature.website.dependencies]
+pnpm = "*"
+nodejs = "*"
+
+[feature.website.tasks]
+deploy-cloudflare = { "cmd" = "pnpm deploy:cloudflare", "cwd" = "website" }
+
+[environments]
+website = { features = ["website"], no-default-feature = true }
