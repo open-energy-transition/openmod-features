@@ -10,7 +10,7 @@ platforms = ["win-64", "linux-64", "osx-64", "osx-arm64"]
 version = "0.2.0.dev"
 
 [tasks.update-schema]
-cmd = "python schema/schema_generator.py"
+cmd = "python scripts/schema_generator.py"
 
 [tasks.add-tool]
 args = ["tool_name", {"arg" = "version", "default" = "stable"}]

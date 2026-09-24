@@ -94,7 +94,7 @@ The `source` key is not _required_ but your feature will show as unvalidated if 
 
 #### Understanding each feature
 
-All feature descriptions are in `schema/features.yaml`.
+All feature descriptions are in the top-level `features.yaml`.
 However, you may find it more useful to have descriptions for each of the features directly when working in your tool's features file.
 You can access them as tooltips [in your favourite IDE](https://github.com/redhat-developer/yaml-language-server?tab=readme-ov-file#clients).
 Activating tooltips will also provide schema validation highlighting.
@@ -176,5 +176,5 @@ For a list of all `openmod-features contributors`, see [AUTHORS.md](AUTHORS.md).
 For a list of all additional tool-level feature list (`tools/**/features.yaml`) contributors, see the GitHub tags linked to each file in `.github/CODEOWNERS`.
 
 The software in this repository is licensed under the [MIT license](LICENSES/MIT.txt).
-The generated output data (`tools/*`, `use-cases/*`, `schema/schema.yaml`) are licensed under the [Creative Commons Attribution 4.0 license](LICENSES/CC-BY-4.0.txt) for easier reuse.
+The generated output data (`tools/*`, `use-cases/*`, `schema/*-schema.yaml`) are licensed under the [Creative Commons Attribution 4.0 license](LICENSES/CC-BY-4.0.txt) for easier reuse.
 Individual configuration or generic files may be licensed [CC0 1.0 Universal](LICENSES/CC0-1.0.txt); these files are marked explicitly either in the file header or in the [REUSE.toml](REUSE.toml) file.

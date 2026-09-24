@@ -26,6 +26,29 @@ def repo_root() -> Path:
     return Path(__file__).parent.parent
 
 
+def run_schema_generator(
+    repo_root: Path, tmp_dir: Path, taxonomy: dict | None = None
+) -> subprocess.CompletedProcess:
+    """Run the schema generator in a copy of the repository layout under `tmp_dir`.
+
+    If `taxonomy` is given, it replaces the real `features.yaml`.
+    """
+    (tmp_dir / "scripts").mkdir()
+    (tmp_dir / "schema").mkdir()
+    (tmp_dir / "template").mkdir()
+    shutil.copy(repo_root / "scripts" / "schema_generator.py", tmp_dir / "scripts")
+    if taxonomy is None:
+        shutil.copy(repo_root / "features.yaml", tmp_dir / "features.yaml")
+    else:
+        (tmp_dir / "features.yaml").write_text(yaml.safe_dump(taxonomy))
+    return subprocess.run(
+        ["python", str(tmp_dir / "scripts" / "schema_generator.py")],
+        cwd=tmp_dir,
+        capture_output=True,
+        text=True,
+    )
+
+
 def walk_leaves(node: dict):
     """Yield every leaf of a nested feature tree.
 
@@ -44,22 +67,8 @@ def generated_schemas(
     tmp_path_factory: pytest.TempPathFactory, repo_root: Path
 ) -> Path:
     """Run the schema generator and return the temporary directory with generated files."""
-    # Create temporary directory structure
     tmp_dir = tmp_path_factory.mktemp("schema_gen")
-    schema_dir = tmp_dir / "schema"
-    template_dir = tmp_dir / "template"
-
-    # Copy necessary files
-    shutil.copytree(repo_root / "schema", schema_dir)
-    template_dir.mkdir()
-
-    # Run the schema generator in the temporary directory
-    result = subprocess.run(
-        ["python", str(schema_dir / "schema_generator.py")],
-        cwd=schema_dir,
-        capture_output=True,
-        text=True,
-    )
+    result = run_schema_generator(repo_root, tmp_dir)
 
     assert result.returncode == 0, f"Schema generator failed: {result.stderr}"
 
@@ -280,12 +289,14 @@ class TestTemplateValidation:
         """Test that a known nested feature scaffolds every one of its child leaves."""
         features_file = tool_project_from_generated_template / "features.yaml"
         features = yaml.safe_load(features_file.read_text())
-        nonlinear = features["features"]["cost"]["functional_form"]["nonlinear"]
-        assert nonlinear == {
+        sequential = features["features"]["cost"]["scope"]["temporal"]["sequential"]
+        assert sequential == {
             "investment": {"value": "?", "source": []},
             "operation": {
-                "flow_dependent": {"value": "?", "source": []},
-                "bid_bands": {"value": "?", "source": []},
+                "start_up": {"value": "?", "source": []},
+                "shut_down": {"value": "?", "source": []},
+                "ramping": {"value": "?", "source": []},
+                "start_state_dependent": {"value": "?", "source": []},
             },
         }
 
@@ -350,20 +361,14 @@ class TestTaxonomyValidation:
         """Run the generator against a taxonomy and return the completed process."""
 
         def _run_generator(taxonomy: dict) -> subprocess.CompletedProcess:
-            schema_dir = tmp_path_factory.mktemp("bad_schema") / "schema"
-            shutil.copytree(repo_root / "schema", schema_dir)
             # A filler sibling keeps the root itself valid, so the assertion under test is
             # what fails rather than the root's own two-member rule.
             taxonomy = {
                 **taxonomy,
                 "filler": {"description": "Filler.", "members": {"a": "A", "b": "B"}},
             }
-            (schema_dir / "features.yaml").write_text(yaml.safe_dump(taxonomy))
-            return subprocess.run(
-                ["python", str(schema_dir / "schema_generator.py")],
-                cwd=schema_dir,
-                capture_output=True,
-                text=True,
+            return run_schema_generator(
+                repo_root, tmp_path_factory.mktemp("bad_schema"), taxonomy
             )
 
         return _run_generator
@@ -514,11 +519,12 @@ class TestAxisConsistency:
     so a future edit could silently add e.g. an `io` format with only an `input` member.
     """
 
+    #: Each axis in its canonical order, which every branch using it must follow.
     KNOWN_AXES = [
-        frozenset({"investment", "operation"}),
-        frozenset({"input", "output"}),
-        frozenset({"build", "run", "analyse"}),
-        frozenset({"temporal", "spatial", "assets", "scenarios"}),
+        ("investment", "operation"),
+        ("input", "output"),
+        ("build", "run", "analyse"),
+        ("temporal", "spatial", "assets", "scenarios"),
     ]
 
     #: Branches allowed to use only part of an axis.
@@ -546,7 +552,7 @@ class TestAxisConsistency:
     @pytest.fixture(scope="class")
     def taxonomy(self, repo_root: Path) -> dict:
         """Load the real taxonomy (not a generator-mutated copy)."""
-        return yaml.safe_load((repo_root / "schema" / "features.yaml").read_text())
+        return yaml.safe_load((repo_root / "features.yaml").read_text())
 
     def test_axis_members_are_complete(self, taxonomy: dict):
         """A branch that uses part of a known axis must use all of it."""
@@ -556,11 +562,29 @@ class TestAxisConsistency:
                 if ".".join(path) in self.PARTIAL_AXIS_BRANCHES:
                     continue
                 names = frozenset(members)
-                for axis in self.KNOWN_AXES:
+                for axis in map(frozenset, self.KNOWN_AXES):
                     if names & axis and names != axis:
                         violations.append(
                             f"`{'.'.join(path)}` has {sorted(names)}; "
                             f"axis is {sorted(axis)}"
+                        )
+        assert not violations, "\n".join(violations)
+
+    def test_axis_members_follow_canonical_order(self, taxonomy: dict):
+        """Axis members must appear in the axis's canonical order wherever they are used.
+
+        This holds for partial-axis branches too, and axis members may be interleaved
+        with other members (e.g. `constraints.scope.assets` alongside `spanning`).
+        """
+        violations = []
+        for name, node in taxonomy.items():
+            for path, members in _walk_branches(node, (name,)):
+                for axis in self.KNOWN_AXES:
+                    used = [member for member in members if member in axis]
+                    expected = [member for member in axis if member in used]
+                    if used != expected:
+                        violations.append(
+                            f"`{'.'.join(path)}` orders {used}; expected {expected}"
                         )
         assert not violations, "\n".join(violations)
 
@@ -589,7 +613,7 @@ class TestCrossReferences:
     @pytest.fixture(scope="class")
     def taxonomy_text(self, repo_root: Path) -> str:
         """Return the raw text of the real taxonomy file."""
-        return (repo_root / "schema" / "features.yaml").read_text()
+        return (repo_root / "features.yaml").read_text()
 
     @pytest.fixture(scope="class")
     def taxonomy(self, taxonomy_text: str) -> dict:
