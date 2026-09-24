@@ -19,7 +19,8 @@ HttpsUrl = Annotated[
 ]
 """A URL that must use the `https` scheme."""
 
-FEATURES = yaml.safe_load((Path(__file__).parent / "features.yaml").read_text())
+REPO_ROOT = Path(__file__).parent.parent
+FEATURES = yaml.safe_load((REPO_ROOT / "features.yaml").read_text())
 
 
 class AssumptionsModel(pydantic.RootModel):
@@ -243,9 +244,8 @@ def dump_feature_template(
 @click.command()
 def cli():
     """Create a schema YAML file from the current state of the schema model."""
-    cwd = Path(__file__).parent
-    schema_dir = cwd
-    template_dir = cwd / ".." / "template"
+    schema_dir = REPO_ROOT / "schema"
+    template_dir = REPO_ROOT / "template"
 
     tool_model = dump_tool_schema(schema_dir)
     dump_feature_template(template_dir, tool_model(), "tool")

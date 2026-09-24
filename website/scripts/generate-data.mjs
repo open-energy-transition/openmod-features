@@ -181,7 +181,7 @@ function buildTaxonomy(schema, tools, useCases) {
 
 async function main() {
   const [schema, tools, useCases] = await Promise.all([
-    readYaml(path.join(repoRoot, 'schema', 'features.yaml')),
+    readYaml(path.join(repoRoot, 'features.yaml')),
     loadTools(),
     loadUseCases(),
   ])
