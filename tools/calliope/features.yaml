@@ -4,455 +4,1191 @@
 #
 # SPDX-License-Identifier: CC-BY-4.0
 
-# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/c87f4ce/schema/tool-schema.yaml
+# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/v0.3.0/schema/tool-schema.yaml
 
+# Assessed against Calliope v0.7.0 (released 1st September 2026).
+# Capabilities of the Calliope ecosystem tools Calliope Studio (v0.2.1), Calligraph
+# (pre-release v0.1.1.dev7) and calliope-pathways (unreleased, commit 1d20d1f) are counted.
+# `dev` entries link to open pull requests, unreleased changes on the default branch,
+# or capabilities available only in an unreleased / pre-release ecosystem tool.
+
+version: 'v0.7.0'
 features:
-  asset__candidates:
-    converters:
+  processes:
+    boundary_exchange:
+      value: y
       source:
-        - https://calliope.readthedocs.io/en/latest/basic/techs/#base-techs
-        - https://calliope.readthedocs.io/en/latest/examples/urban_scale/#conversion-technologies
+        # `supply` techs draw on a costed, bounded `source_use`; `carrier_export` removes a
+        # carrier from the system at a cost/revenue.
+        - https://calliope.readthedocs.io/en/v0.7.0/basic/techs/#base-techs
+        - https://calliope.readthedocs.io/en/v0.7.0/math/base/#source_use
+        - https://calliope.readthedocs.io/en/v0.7.0/math/base/#source_availability_supply
+        - https://calliope.readthedocs.io/en/v0.7.0/advanced/constraints/#revenues-and-carrier-export
+        - https://calliope.readthedocs.io/en/v0.7.0/math/base/#flow_export
+    conversion:
+      one_to_one:
+        value: y
+        source:
+          - https://calliope.readthedocs.io/en/v0.7.0/basic/techs/#base-techs
+          - https://calliope.readthedocs.io/en/v0.7.0/math/base/#balance_conversion
+      multi_carrier_io:
+        # Tenuous: several carriers in/out of one `conversion` tech are built-in, but the
+        # base math only balances their sums; fixing the ratio between co-products (e.g.
+        # back-pressure CHP, nuclear waste) needs a short user-defined constraint, which
+        # the urban-scale example model ships with.
+        value: y
+        source:
+          - https://calliope.readthedocs.io/en/v0.7.0/advanced/constraints/#multiple-inputoutput-carriers
+          - https://calliope.readthedocs.io/en/v0.7.0/examples/urban_scale/#interlude-user-defined-math
+          - https://github.com/calliope-project/calliope/blob/v0.7.0/src/calliope/example_models/urban_scale/additional_math.yaml
+      flexible_ratio:
+        value: y
+        source:
+          # Built-in: several `carrier_out` with carrier-indexed `flow_out_eff` let the
+          # optimiser choose the output split (e.g. a heat pump serving heat and cooling).
+          - https://calliope.readthedocs.io/en/v0.7.0/advanced/constraints/#multiple-inputoutput-carriers
+          - https://calliope.readthedocs.io/en/v0.7.0/migrating/#carrier_tiers-and-carrier_ratios
+          # Extraction-condensing CHP operating regions as a gallery math example.
+          - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/examples/chp_htp/
+    temporal_transfer:
       value: y
-    electricity_transmission:
       source:
-        - https://calliope.readthedocs.io/en/latest/basic/techs/#base-techs
-        - https://calliope.readthedocs.io/en/latest/examples/national_scale/#other-technologies
-        - https://calliope.readthedocs.io/en/latest/examples/urban_scale/#transmission-technologies
+        - https://calliope.readthedocs.io/en/v0.7.0/basic/techs/#base-techs
+        - https://calliope.readthedocs.io/en/v0.7.0/math/base/#balance_storage
+        - https://calliope.readthedocs.io/en/v0.7.0/advanced/constraints/#activating-storage-buffers-in-non-storage-technologies
+    spatial_transfer:
       value: y
-    endogenous:
       source:
-        - https://calliope.readthedocs.io/en/latest/math/base/#flow_cap
-      value: y
-    exogenous:
-      source:
-        - https://calliope.readthedocs.io/en/latest/basic/modes/#operate-mode
-        - https://calliope.readthedocs.io/en/latest/examples/modes/#running-in-operate-mode
-      value: y
-    fluid_or_gas_distribution:
-      source:
-        - https://calliope.readthedocs.io/en/latest/examples/urban_scale/#transmission-technologies
-        - https://calliope.readthedocs.io/en/latest/user_defined_math/examples/fuel_dist
-      value: y
-    generators:
-      source:
-        - https://calliope.readthedocs.io/en/latest/basic/techs/#base-techs
-        - https://calliope.readthedocs.io/en/latest/examples/national_scale/#supply-technologies
-        - https://calliope.readthedocs.io/en/latest/examples/urban_scale/#supply-technologies
-      value: y
-    loads:
-      source:
-        - https://calliope.readthedocs.io/en/latest/basic/techs/#base-techs
-        - https://calliope.readthedocs.io/en/latest/examples/urban_scale/#demand-technologies
-      value: y
-    storage:
-      source:
-        - https://calliope.readthedocs.io/en/latest/basic/techs/#base-techs
-      value: y
-  asset__capacity_representation:
-    grouped:
-      source: []
-      value: y
-    partial_grouped:
-      source: []
+        # `transmission` techs between two nodes, bounded by `flow_cap`, with fixed or
+        # per-distance efficiency; optionally `one_way`.
+        - https://calliope.readthedocs.io/en/v0.7.0/basic/techs/#transmission-technologies
+        - https://calliope.readthedocs.io/en/v0.7.0/math/base/#balance_transmission
+        - https://calliope.readthedocs.io/en/v0.7.0/advanced/constraints/#per-distance-transmission-constraints
+        - https://calliope.readthedocs.io/en/v0.7.0/advanced/constraints/#one-way-transmission-links
+    delayed_transfer:
       value: n
-    units:
-      source:
-        - https://calliope.readthedocs.io/en/latest/examples/milp/#purchased-units
-      value: y
-  asset__chaining:
-    asset_linking:
       source: []
-      value: y
-    stockpiling:
-      source:
-        - https://calliope.readthedocs.io/en/latest/advanced/constraints/#activating-storage-buffers-in-non-storage-technologies
-      value: y
-  asset__cost__investment:
-    annuitisation:
-      source:
-        - https://calliope.readthedocs.io/en/latest/math/base/#cost_investment_annualised
-        - https://calliope.readthedocs.io/en/latest/math/base/#cost_depreciation_rate
-        - https://calliope.readthedocs.io/en/latest/math/base/#cost_interest_rate
-      value: y
-    linear:
-      source:
-        - https://calliope.readthedocs.io/en/latest/math/base/#cost_area_use
-        - https://calliope.readthedocs.io/en/latest/math/base/#cost_flow_cap
-        - https://calliope.readthedocs.io/en/latest/math/base/#cost_flow_cap_per_distance
-        - https://calliope.readthedocs.io/en/latest/math/base/#cost_source_cap
-        - https://calliope.readthedocs.io/en/latest/math/base/#cost_storage_cap
-      value: y
-    piecewise:
-      source:
-        - https://calliope.readthedocs.io/en/latest/user_defined_math/components/#piecewise-constraints
-        - https://calliope.readthedocs.io/en/latest/user_defined_math/examples/piecewise_linear_costs/
-        - https://calliope.readthedocs.io/en/latest/user_defined_math/examples/sos2_piecewise_linear_costs/
-        - https://calliope.readthedocs.io/en/latest/examples/piecewise_constraints/
-      value: y
-    subsidy/penalty:
-      source: []
+    buffered_transfer:
       value: n
-    unit:
-      source:
-        - https://calliope.readthedocs.io/en/latest/math/built_in/milp/#cost_purchase
-        - https://calliope.readthedocs.io/en/latest/math/built_in/milp/#cost_purchase_per_distance
-        - https://calliope.readthedocs.io/en/latest/examples/milp/#purchase-cost
-      value: y
-  asset__cost__operation:
-    linear:
-      source:
-        - https://calliope.readthedocs.io/en/latest/math/base/#cost_flow_in
-        - https://calliope.readthedocs.io/en/latest/math/base/#cost_flow_out
-        - https://calliope.readthedocs.io/en/latest/math/base/#cost_export
-      value: y
-    piecewise:
       source: []
-      value: y
-    subsidy/penalty:
-      source: []
-      value: y
-    unit:
-      source: []
+    discrete_transport:
       value: n
-  asset__operating_characteristics:
-    iterative:
       source: []
+    state_changing_transfer:
       value: n
-    linear:
-      source:
-        - https://calliope.readthedocs.io/en/latest/math/base/#flow_out_eff
-        - https://calliope.readthedocs.io/en/latest/math/base/#flow_in_eff
-      value: y
-    piecewise:
-      source:
-        - https://calliope.readthedocs.io/en/latest/user_defined_math/examples/piecewise_linear_efficiency/#piecewise-linear-efficiency
-      value: y
-    static non_dimensional:
-      source:
-        - https://calliope.readthedocs.io/en/latest/basic/data_definitions/
-      value: y
-    static_dimensional:
-      source:
-        - https://calliope.readthedocs.io/en/latest/basic/data_definitions/
-      value: y
-  asset__operating_constraints:
-    inter_spatial:
-      source:
-        - https://calliope.readthedocs.io/en/latest/user_defined_math/examples/net_import_share/
-      value: y
-    inter_temporal:
-      source:
-        - https://calliope.readthedocs.io/en/latest/user_defined_math/helper_functions/#group_datetime
-        - https://calliope.readthedocs.io/en/latest/math/base/#ramping_down
-        - https://calliope.readthedocs.io/en/latest/math/base/#ramping_up
-      value: y
-    operating:
-      source:
-        - https://calliope.readthedocs.io/en/latest/user_defined_math/examples/demand_share_per_timestep_decision/#demand-share-per-timestep-as-decision-variable
-        - https://calliope.readthedocs.io/en/latest/user_defined_math/examples/max_time_varying/
-        - https://calliope.readthedocs.io/en/latest/user_defined_math/examples/uptime_downtime_limits/
-      value: y
-    total:
-      source:
-        - https://calliope.readthedocs.io/en/latest/user_defined_math/examples/share_all_timesteps/
-        - https://calliope.readthedocs.io/en/latest/user_defined_math/examples/annual_energy_balance/
-      value: y
-  asset__operating_representation:
-    ed:
       source: []
-      value: y
-    uced:
-      source:
-        - https://calliope.readthedocs.io/en/latest/examples/milp/
-        - https://calliope.readthedocs.io/en/latest/math/built_in/milp/
-        - https://calliope.readthedocs.io/en/latest/math/built_in/milp/#operating_units
-      value: y
-  competition:
-    distributed_objectives:
-      source: []
+    explicit_demand:
+      inelastic:
+        value: y
+        source:
+          # `demand` techs consume a carrier via `flow_in`, fixed by `sink_use_equals` or
+          # bounded by `sink_use_min`/`sink_use_max`, and take the same flow constraints as
+          # any other tech.
+          - https://calliope.readthedocs.io/en/v0.7.0/basic/techs/#base-techs
+          - https://calliope.readthedocs.io/en/v0.7.0/math/base/#balance_demand
+          - https://calliope.readthedocs.io/en/v0.7.0/math/base/#balance_demand_min_use
+      price_responsive:
+        value: n
+        source: []
+      mobile_storage:
+        value: n
+        source: []
+  network:
+    power_flow:
+      optimal_power_flow:
+        dc_opf:
+          value: n
+          source:
+            # Transmission is a transport model: only a flow balance and capacity limit per link.
+            - https://calliope.readthedocs.io/en/v0.7.0/math/base/#balance_transmission
+        ac_opf:
+          value: n
+          source: []
+        unbalanced_flows:
+          value: n
+          source: []
+      sensitivity_limits:
+        ptdf:
+          value: n
+          source: []
+        outage_factors:
+          value: n
+          source: []
+        generic_constraints:
+          value: n
+          source: []
+      network_limits:
+        thermal:
+          value: n
+          source: []
+        phase_angle:
+          value: n
+          source: []
+      losses:
+        value: n
+        source:
+          # Transmission losses are a fixed (optionally per-distance) efficiency only.
+          - https://calliope.readthedocs.io/en/v0.7.0/advanced/constraints/#per-distance-transmission-constraints
+      network_devices:
+        transformers:
+          value: n
+          source: []
+        facts_devices:
+          value: n
+          source: []
+        hvdc_converters:
+          value: n
+          source: []
+    hydraulic_flow:
+      linearised_flow:
+        value: n
+        source: []
+      composition_tracking:
+        value: n
+        source: []
+  decisions:
+    investment:
+      exogenous_capacity:
+        value: y
+        source:
+          # Capacities given as inputs in `operate` mode, or fixed via equal `_min`/`_max` bounds.
+          - https://calliope.readthedocs.io/en/v0.7.0/basic/modes/#operate-mode
+          - https://calliope.readthedocs.io/en/v0.7.0/math/built_in/operate/
+          - https://calliope.readthedocs.io/en/v0.7.0/migrating/#_equals-constraints
+      continuous_capacity:
+        value: y
+        source:
+          - https://calliope.readthedocs.io/en/v0.7.0/math/base/#flow_cap
+          - https://calliope.readthedocs.io/en/v0.7.0/math/base/#flow_cap_max
+          - https://calliope.readthedocs.io/en/v0.7.0/math/base/#storage_cap
+      integer_investment_exogenous_capacity:
+        value: y
+        source:
+          # `cap_method: integer` with `flow_cap_per_unit`: integer `purchased_units` of fixed size.
+          - https://calliope.readthedocs.io/en/v0.7.0/examples/milp/#purchased-units
+          - https://calliope.readthedocs.io/en/v0.7.0/math/built_in/milp/#purchased_units
+          - https://calliope.readthedocs.io/en/v0.7.0/math/built_in/milp/#flow_capacity_units_milp
+      integer_investment_continuous_capacity:
+        value: y
+        source:
+          # `purchased_units_max: 1` gives a binary purchase decision alongside a continuous `flow_cap`.
+          - https://calliope.readthedocs.io/en/v0.7.0/examples/milp/#purchase-cost
+          - https://calliope.readthedocs.io/en/v0.7.0/math/built_in/milp/#flow_capacity_max_purchase_milp
+      multi_period:
+        # Tenuous: only in calliope-pathways, an unreleased (no tagged release), stale
+        # ecosystem package last updated 2024-10 (commit 1d20d1f) and written against
+        # Calliope 0.7.0.dev3. It indexes capacity over `investsteps` with new capacity per
+        # `vintagesteps`. Core Calliope v0.7.0 has a single investment period.
+        value: dev
+        source:
+          - https://github.com/calliope-project/calliope-pathways/blob/1d20d1f3d1f1937ad296fd910517f061e286e1a6/README.md#build-your-own-model
+          - https://github.com/calliope-project/calliope-pathways/blob/1d20d1f3d1f1937ad296fd910517f061e286e1a6/src/calliope_pathways/math/pathways.yaml#L143
+          - https://github.com/calliope-project/calliope-pathways/blob/1d20d1f3d1f1937ad296fd910517f061e286e1a6/src/calliope_pathways/math/pathways.yaml#L264
+      retrofit:
+        value: n
+        source: []
+      endogenous_retirement:
+        value: n
+        source: []
+    operation:
+      unit_commitment:
+        value: y
+        source:
+          # `integer_dispatch: true` adds integer `operating_units` per timestep, bounding
+          # flows by the committed units.
+          - https://calliope.readthedocs.io/en/v0.7.0/math/built_in/milp/#operating_units
+          - https://calliope.readthedocs.io/en/v0.7.0/math/built_in/milp/#unit_commitment_milp
+          - https://calliope.readthedocs.io/en/v0.7.0/math/built_in/milp/#flow_out_max_milp
+          - https://calliope.readthedocs.io/en/v0.7.0/troubleshooting/#complex-technologies
+      maintenance_scheduling:
+        # Tenuous: only as a gallery math example, which lets a unit-committed tech choose a
+        # number of offline timesteps; the downtime cannot be forced to be consecutive.
+        value: y
+        source:
+          - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/examples/uptime_downtime_limits/
+  constraints:
+    scope:
+      temporal:
+        pointwise:
+          investment:
+            value: y
+            source:
+              # Single investment period: `flow_cap_min`/`_max`, `storage_cap_min`/`_max` and
+              # `purchased_units_min`/`_max` bound the capacity or number of units built.
+              - https://calliope.readthedocs.io/en/v0.7.0/math/base/#flow_cap_min
+              - https://calliope.readthedocs.io/en/v0.7.0/math/base/#flow_cap_max
+              - https://calliope.readthedocs.io/en/v0.7.0/math/built_in/milp/#purchased_units_min
+              - https://calliope.readthedocs.io/en/v0.7.0/math/built_in/milp/#purchased_units_max
+              # Per-vintage `flow_cap_new_max` in unreleased calliope-pathways (commit 1d20d1f).
+              - https://github.com/calliope-project/calliope-pathways/blob/1d20d1f3d1f1937ad296fd910517f061e286e1a6/src/calliope_pathways/config/new_param_schema.yaml#L2
+          operation:
+            availability_derating:
+              value: y
+              source:
+                # Time-varying `source_use_max`/`source_use_equals` (e.g. renewable capacity factors),
+                # `flow_out_parasitic_eff`, and `storage_discharge_depth` on stored level; a gallery
+                # example adds a time-varying fraction of `flow_cap`.
+                - https://calliope.readthedocs.io/en/v0.7.0/math/base/#source_availability_supply
+                - https://calliope.readthedocs.io/en/v0.7.0/math/base/#flow_out_max
+                - https://calliope.readthedocs.io/en/v0.7.0/math/base/#storage_discharge_depth_limit
+                - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/examples/max_time_varying/
+            minimum_stable_level:
+              value: y
+              source:
+                # `flow_out_min_relative` applied only to committed `operating_units`.
+                - https://calliope.readthedocs.io/en/v0.7.0/examples/milp/#purchased-units
+                - https://calliope.readthedocs.io/en/v0.7.0/math/built_in/milp/#flow_out_min_milp
+            forced_offline:
+              # Tenuous: via the gallery `downtime_period` constraint (outflow forced to zero in
+              # user-flagged timesteps), not built-in math.
+              value: y
+              source:
+                - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/examples/uptime_downtime_limits/
+            forced_online:
+              # Tenuous: no must-run flag; a time-varying `flow_out_min_relative` forces a tech to
+              # operate at or above that fraction of its capacity in the chosen timesteps.
+              value: y
+              source:
+                - https://calliope.readthedocs.io/en/v0.7.0/math/base/#flow_out_min
+                - https://calliope.readthedocs.io/en/v0.7.0/math/base/#flow_out_min_relative
+                - https://calliope.readthedocs.io/en/v0.7.0/migrating/#indexing-parameters-over-arbitrary-dimensions
+        sequential:
+          investment:
+            availability_window:
+              # Tenuous: only in unreleased, stale calliope-pathways (commit 1d20d1f, 2024-10),
+              # where a zero per-vintage `flow_cap_new_max` stops build-out in chosen investment
+              # steps; there is no dedicated lead-time / commissioning-date parameter.
+              value: dev
+              source:
+                - https://github.com/calliope-project/calliope-pathways/blob/1d20d1f3d1f1937ad296fd910517f061e286e1a6/src/calliope_pathways/config/new_param_schema.yaml#L2
+                - https://github.com/calliope-project/calliope-pathways/blob/1d20d1f3d1f1937ad296fd910517f061e286e1a6/src/calliope_pathways/math/pathways.yaml#L264
+            relative_build_rate:
+              # Tenuous: only in unreleased, stale calliope-pathways (commit 1d20d1f, 2024-10):
+              # `flow_cap_new_max_rate` limits new capacity relative to the previous step's
+              # installed capacity.
+              value: dev
+              source:
+                - https://github.com/calliope-project/calliope-pathways/blob/1d20d1f3d1f1937ad296fd910517f061e286e1a6/src/calliope_pathways/math/pathways.yaml#L201
+                - https://github.com/calliope-project/calliope-pathways/blob/1d20d1f3d1f1937ad296fd910517f061e286e1a6/src/calliope_pathways/config/new_param_schema.yaml#L94
+            technical_lifetime:
+              # Tenuous: only in unreleased, stale calliope-pathways (commit 1d20d1f, 2024-10):
+              # user-supplied `available_vintages` fractions remove each vintage's capacity after
+              # its lifetime. In core Calliope, `lifetime` only annualises investment costs.
+              value: dev
+              source:
+                - https://github.com/calliope-project/calliope-pathways/blob/1d20d1f3d1f1937ad296fd910517f061e286e1a6/README.md#build-your-own-model
+                - https://github.com/calliope-project/calliope-pathways/blob/1d20d1f3d1f1937ad296fd910517f061e286e1a6/src/calliope_pathways/math/pathways.yaml#L143
+                - https://calliope.readthedocs.io/en/v0.7.0/math/base/#lifetime
+          operation:
+            ramping:
+              value: y
+              source:
+                - https://calliope.readthedocs.io/en/v0.7.0/math/base/#flow_ramping
+                - https://calliope.readthedocs.io/en/v0.7.0/math/base/#ramping_up
+                - https://calliope.readthedocs.io/en/v0.7.0/math/base/#ramping_down
+            start_shut_trajectory:
+              value: n
+              source: []
+            commitment_duration:
+              value: n
+              source:
+                # Not in built-in or gallery math; a user-defined minimum up/down time formulation
+                # is blocked by `sum_next_n`/`roll` not accepting parameter offsets.
+                - https://github.com/calliope-project/calliope/issues/827
+            start_consumption:
+              value: n
+              source: []
+        cumulative:
+          investment:
+            capacity_target:
+              value: y
+              source:
+                # System-wide capacity and unit bounds at nameplate; no built-in de-rating /
+                # capacity-credit (reserve margin) constraint in v0.7.
+                - https://calliope.readthedocs.io/en/v0.7.0/math/base/#flow_capacity_systemwide_max
+                - https://calliope.readthedocs.io/en/v0.7.0/math/base/#flow_capacity_systemwide_min
+                - https://calliope.readthedocs.io/en/v0.7.0/math/built_in/milp/#unit_capacity_max_systemwide_milp
+                - https://calliope.readthedocs.io/en/v0.7.0/math/base/#area_use_capacity_per_loc
+            expansion_budget:
+              value: n
+              source: []
+            event_count:
+              value: n
+              source: []
+            path_dependent:
+              value: n
+              source: []
+          operation:
+            flow_volume:
+              # Tenuous: via gallery math examples (annual out-/in-flow and source-use limits,
+              # minimum/maximum annual capacity factor), not built-in math.
+              value: y
+              source:
+                - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/examples/annual_energy_balance/
+                - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/examples/uptime_downtime_limits/
+                - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/examples/share_all_timesteps/
+            impact_budget:
+              # Tenuous: the migration guide shows defining an `emissions_limit` parameter over the
+              # `costs` dimension "that you might use to limit the total emissions", but the
+              # constraint itself is left for the user to write; it is not in the math gallery.
+              value: n
+              source:
+                # Non-carrier quantities (e.g. CO2) are tracked as extra `costs` classes, which can
+                # be weighted in the objective but have no built-in or gallery cap.
+                - https://calliope.readthedocs.io/en/v0.7.0/math/base/#min_cost_optimisation-active
+                - https://calliope.readthedocs.io/en/v0.7.0/migrating/#group-constraints
+                - https://calliope.readthedocs.io/en/v0.7.0/migrating/#defining-parameters-outside-the-scope-of-nodes-and-techs
+            event_count:
+              value: n
+              source: []
+            state_duration:
+              # Tenuous: gallery example `downtime_period_decision` caps the weighted sum of
+              # `operating_units` over the horizon (an operating-hours limit) for unit-committed techs.
+              value: y
+              source:
+                - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/examples/uptime_downtime_limits/
+            path_dependent:
+              value: n
+              source: []
+        boundary_conditions:
+          investment:
+            # Tenuous: only in unreleased, stale calliope-pathways (commit 1d20d1f, 2024-10),
+            # via `flow_cap_initial` (etc.) phased out by `available_initial_cap`. Core
+            # Calliope has no existing stock distinct from new build: a `flow_cap_min` lower
+            # bound is still charged investment cost.
+            value: dev
+            source:
+              - https://github.com/calliope-project/calliope-pathways/blob/1d20d1f3d1f1937ad296fd910517f061e286e1a6/README.md#build-your-own-model
+              - https://github.com/calliope-project/calliope-pathways/blob/1d20d1f3d1f1937ad296fd910517f061e286e1a6/src/calliope_pathways/config/new_param_schema.yaml#L58
+          operation:
+            value: y
+            source:
+              # `storage_initial` sets the start (and, with cyclic storage, end) stored level.
+              - https://calliope.readthedocs.io/en/v0.7.0/math/base/#storage_initial
+              - https://calliope.readthedocs.io/en/v0.7.0/math/base/#set_storage_initial
+              - https://calliope.readthedocs.io/en/v0.7.0/advanced/constraints/#cyclic-storage
+      spatial:
+        investment:
+          value: y
+          source:
+            # `flow_cap_max_systemwide` / `purchased_units_max_systemwide` sum over all nodes.
+            - https://calliope.readthedocs.io/en/v0.7.0/math/base/#flow_capacity_systemwide_max
+            - https://calliope.readthedocs.io/en/v0.7.0/math/built_in/milp/#unit_capacity_max_systemwide_milp
+        operation:
+          # Tenuous: via gallery math examples (system-wide annual flow limits, net import
+          # share over a node group), not built-in math.
+          value: y
+          source:
+            - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/examples/annual_energy_balance/
+            - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/examples/net_import_share/
+      assets:
+        spanning:
+          investment:
+            value: y
+            source:
+              # `available_area` shared by all techs at a node (land-use competition); combined
+              # capacity limits over tech groups via user-defined math.
+              - https://calliope.readthedocs.io/en/v0.7.0/advanced/constraints/#area-use-constraints
+              - https://calliope.readthedocs.io/en/v0.7.0/math/base/#area_use_capacity_per_loc
+          operation:
+            # Tenuous: via gallery math examples (combined multi-tech annual flow limits,
+            # supply/demand share constraints), not built-in math.
+            value: y
+            source:
+              - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/examples/annual_energy_balance/
+              - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/examples/share_per_timestep/
+              - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/examples/demand_share_per_timestep_decision/
+        dedicated_flow_routing:
+          # Tenuous: no routing constraint as such, but carriers are user-named, so a carrier
+          # produced by one tech and consumed only by named others is reserved for them;
+          # `include_storage` adds an in-asset stockpile before conversion.
+          value: y
+          source:
+            - https://calliope.readthedocs.io/en/v0.7.0/getting_started/concepts/#calliope-terminology-how-the-world-is-represented-in-calliope
+            - https://calliope.readthedocs.io/en/v0.7.0/advanced/constraints/#activating-storage-buffers-in-non-storage-technologies
+    functional_form:
+      linear_multi_variable:
+        investment:
+          value: y
+          source:
+            # Storage energy-to-power ratio envelope (`flow_cap_per_storage_cap_min`/`_max`);
+            # area use tied to capacity.
+            - https://calliope.readthedocs.io/en/v0.7.0/math/base/#flow_capacity_per_storage_capacity_min
+            - https://calliope.readthedocs.io/en/v0.7.0/math/base/#flow_capacity_per_storage_capacity_max
+            - https://calliope.readthedocs.io/en/v0.7.0/math/base/#area_use_per_flow_capacity
+        operation:
+          value: y
+          source:
+            # Arbitrary linear constraints via user-defined math, e.g. CHP operating regions.
+            - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/examples/chp_htp/
+            - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/components/#constraints
+      quadratic:
+        investment:
+          value: n
+          source:
+            # "Calliope is a _linear_ modelling framework."
+            - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/
+        operation:
+          value: n
+          source:
+            - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/
+      nonlinear:
+        investment:
+          value: n
+          source:
+            - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/
+        operation:
+          value: n
+          source:
+            - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/
+    reliability:
+      unserved_demand:
+        value: y
+        source:
+          # `ensure_feasibility` adds `unmet_demand` / `unused_supply` penalised at `bigM`,
+          # which the docs frame as a debugging aid rather than a VOLL.
+          - https://calliope.readthedocs.io/en/v0.7.0/basic/config/#configbuildensure_feasibility
+          - https://calliope.readthedocs.io/en/v0.7.0/math/base/#unmet_demand
+          - https://calliope.readthedocs.io/en/v0.7.0/math/base/#bigm
+      operating_reserve:
+        online_headroom:
+          value: n
+          source:
+            # Only a stale draft PR against the v0.6 branch.
+            - https://github.com/calliope-project/calliope/pull/517
+        standby_capability:
+          value: n
+          source: []
+        inertia:
+          value: n
+          source: []
+      contingency_constrained:
+        value: n
+        source: []
+      probabilistic_reliability_limit:
+        loss_of_load:
+          value: n
+          source: []
+        unserved_energy:
+          value: n
+          source: []
+    soft_constraints:
       value: n
-    portfolio:
       source: []
+  cost:
+    scope:
+      temporal:
+        sequential:
+          investment:
+            value: n
+            source: []
+          operation:
+            ramping:
+              value: n
+              source: []
+            start_up:
+              value: n
+              source:
+                # No start-up/shut-down variables in the built-in MILP math, only `operating_units`.
+                - https://calliope.readthedocs.io/en/v0.7.0/math/built_in/milp/
+            shut_down:
+              value: n
+              source:
+                - https://calliope.readthedocs.io/en/v0.7.0/math/built_in/milp/
+            start_state_dependent:
+              value: n
+              source: []
+        cumulative:
+          investment:
+            value: n
+            source: []
+          operation:
+            value: n
+            source: []
+      spatial:
+        investment:
+          value: n
+          source: []
+        operation:
+          value: n
+          source: []
+      assets:
+        investment:
+          value: n
+          source: []
+        operation:
+          value: n
+          source: []
+    functional_form:
+      fixed_charge:
+        investment:
+          value: y
+          source:
+            # `cost_purchase` per purchased unit / binary purchase, irrespective of capacity.
+            - https://calliope.readthedocs.io/en/v0.7.0/examples/milp/#purchase-cost
+            - https://calliope.readthedocs.io/en/v0.7.0/math/built_in/milp/#cost_purchase
+            - https://calliope.readthedocs.io/en/v0.7.0/math/built_in/milp/#cost_investment_purchase
+        operation:
+          value: n
+          source:
+            # No cost term on committed `operating_units`.
+            - https://calliope.readthedocs.io/en/v0.7.0/math/built_in/milp/
+      nonlinear:
+        investment:
+          # Tenuous: via gallery math examples (convex piecewise capital cost with a binary
+          # purchase; SOS2 piecewise cost for economies of scale), not built-in math.
+          value: y
+          source:
+            - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/examples/piecewise_linear_costs/
+            - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/examples/sos2_piecewise_linear_costs/
+            - https://calliope.readthedocs.io/en/v0.7.0/examples/piecewise_constraints/
+        operation:
+          # Tenuous: via the gallery piecewise-linear efficiency example, which makes fuel
+          # in-flow (and so fuel cost) per unit out-flow vary with output (a heat-rate curve);
+          # not built-in math.
+          value: y
+          source:
+            - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/examples/piecewise_linear_efficiency/
+      threshold_deviation:
+        investment:
+          value: n
+          source: []
+        operation:
+          value: n
+          source: []
+    time_value:
+      annuitisation:
+        value: y
+        source:
+          - https://calliope.readthedocs.io/en/v0.7.0/basic/modes/#base-mode
+          - https://calliope.readthedocs.io/en/v0.7.0/math/base/#cost_investment_annualised
+          - https://calliope.readthedocs.io/en/v0.7.0/math/base/#cost_interest_rate
+          - https://calliope.readthedocs.io/en/v0.7.0/math/base/#lifetime
+      fiscal_treatment:
+        value: n
+        source:
+          # `cost_depreciation_rate` only replaces the computed annuity factor; no tax or
+          # depreciation-schedule treatment.
+          - https://calliope.readthedocs.io/en/v0.7.0/math/base/#cost_depreciation_rate
+      period_discounting:
+        value: n
+        source:
+          # calliope-pathways (unreleased, commit 1d20d1f) weights investment steps by
+          # `investstep_resolution` (years per step) only, without discounting.
+          - https://github.com/calliope-project/calliope-pathways/blob/1d20d1f3d1f1937ad296fd910517f061e286e1a6/src/calliope_pathways/math/pathways.yaml#L362
+          - https://github.com/calliope-project/calliope-pathways/blob/1d20d1f3d1f1937ad296fd910517f061e286e1a6/README.md#build-your-own-model
+  objective:
+    quadratic:
       value: n
+      source:
+        - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/
+    multi_objective_weighted:
+      value: y
+      source:
+        # Cost classes (e.g. monetary, CO2) weighted by `objective_cost_weights`.
+        - https://calliope.readthedocs.io/en/v0.7.0/math/base/#objective_cost_weights
+        - https://calliope.readthedocs.io/en/v0.7.0/math/base/#min_cost_optimisation-active
+    multi_objective_pareto:
+      value: n
+      source: []
+    tie_breaking:
+      value: n
+      source: []
   edge_effects:
-    energy_balance:
-      source:
-        - https://calliope.readthedocs.io/en/latest/examples/milp/#asynchronous-flow-inout
-        - https://calliope.readthedocs.io/en/latest/math/built_in/milp/#async_flow_in_milp
-      value: y
-    spatial:
-      source:
-        - https://calliope.readthedocs.io/en/latest/advanced/constraints/#revenues-and-carrier-export
-        - https://calliope.readthedocs.io/en/latest/examples/urban_scale/#revenue-by-export
-      value: y
-    time_financial:
-      source:
-        - https://github.com/calliope-project/calliope-pathways
-      value: dev
     time_operational:
-      source:
-        - https://calliope.readthedocs.io/en/latest/advanced/constraints/#cyclic-storage
-        - https://calliope.readthedocs.io/en/latest/math/built_in/storage_inter_cluster/#inter-cluster-storage-math
       value: y
-  interface__input:
-    cli:
       source:
-        - https://calliope.readthedocs.io/en/latest/basic/running-cli/#running-a-model-in-the-command-line
-      value: y
-    gui:
-      source:
-        - https://engage.nlr.gov/
-      value: dev
-    no_code:
-      source:
-        - https://calliope.readthedocs.io/en/latest/getting_started/creating/#creating-a-model
-        - https://calliope.readthedocs.io/en/latest/basic/data_tables/#loading-tabular-data-data_tables
-      value: y
-    scripting:
-      source:
-        - https://calliope.readthedocs.io/en/latest/basic/running-python/#running-a-model-in-python
-      value: y
-    standardised:
-      source: []
+        # Cyclic storage (default on), also across clusters with inter-cluster storage math.
+        - https://calliope.readthedocs.io/en/v0.7.0/advanced/constraints/#cyclic-storage
+        - https://calliope.readthedocs.io/en/v0.7.0/math/built_in/storage_inter_cluster/
+    time_financial:
       value: n
-  interface__output:
-    gui:
       source:
-        - https://calligraph.readthedocs.io/en/latest/
+        # Investment costs are annualised and scaled to the modelled period, also per
+        # investment step in calliope-pathways (commit 1d20d1f); no residual value.
+        - https://calliope.readthedocs.io/en/v0.7.0/math/base/#cost_investment_annualised
+        - https://github.com/calliope-project/calliope-pathways/blob/1d20d1f3d1f1937ad296fd910517f061e286e1a6/src/calliope_pathways/math/pathways.yaml#L343
+    energy_balance:
       value: y
-    logs:
       source:
-        - https://calliope.readthedocs.io/en/latest/troubleshooting/#retaining-logs-and-temporary-files
-      value: y
-    reports:
-      source: []
+        # `force_async_flow` binary switch prevents simultaneous in/out-flow.
+        - https://calliope.readthedocs.io/en/v0.7.0/examples/milp/#asynchronous-flow-inout
+        - https://calliope.readthedocs.io/en/v0.7.0/math/built_in/milp/#async_flow_switch
+  actors:
+    portfolio:
       value: n
-    standardised:
-      source:
-        - https://github.com/brynpickering/friendly-calliope
-      value: dev
-    tables:
-      source:
-        - https://calliope.readthedocs.io/en/latest/reference/api/model/#calliope.Model.to_csv
-      value: y
-  optimisation_problem:
-    configuration:
-      source:
-        - https://calliope.readthedocs.io/en/latest/advanced/solver/#specifying-custom-solver-options
-      value: y
-    decomposition:
       source: []
+    heuristic_markup:
       value: n
+      source: []
+    distributed_objectives:
+      value: n
+      source: []
+    equilibrium:
+      value: n
+      source: []
+  uncertainty:
+    two_stage_stochastic:
+      value: n
+      source:
+        # Requested (scenario dimension for stochastic / robust optimisation).
+        - https://github.com/calliope-project/calliope/issues/87
+    multi_stage_stochastic:
+      value: n
+      source: []
+    risk_aversion:
+      value: n
+      source: []
+    robust_optimisation:
+      value: n
+      source:
+        - https://github.com/calliope-project/calliope/issues/87
     near_optimal:
-      source:
-        - https://calliope.readthedocs.io/en/latest/math/built_in/spores/#spores-mode-math
-        - https://calliope.readthedocs.io/en/latest/basic/modes/#spores-mode
-        - https://doi.org/10.1016/j.joule.2020.08.002
       value: y
-    sim + opt:
-      source: []
-      value: n
-    user_defined_constraints:
       source:
-        - https://calliope.readthedocs.io/en/latest/user_defined_math/
-        - https://calliope.readthedocs.io/en/latest/user_defined_math/examples/
+        # SPORES mode (MGA with spatially explicit, selectable scoring algorithms).
+        - https://calliope.readthedocs.io/en/v0.7.0/basic/modes/#spores-mode
+        - https://calliope.readthedocs.io/en/v0.7.0/math/built_in/spores/
+        - https://calliope.readthedocs.io/en/v0.7.0/examples/modes/#running-in-spores-mode
+  model_definition:
+    configurable_dimensions:
       value: y
-    user_defined_variables:
       source:
-        - https://calliope.readthedocs.io/en/latest/user_defined_math/
-        - https://calliope.readthedocs.io/en/latest/user_defined_math/examples/
+        # Any parameter can be indexed over any of the model dimensions (nodes, techs,
+        # carriers, costs, timesteps, ...).
+        - https://calliope.readthedocs.io/en/v0.7.0/basic/data_definitions/
+        - https://calliope.readthedocs.io/en/v0.7.0/basic/techs/#using-the-data_definitions-format-to-define-parameter-data
+        - https://calliope.readthedocs.io/en/v0.7.0/migrating/#indexing-parameters-over-arbitrary-dimensions
+    extensible_dimensions:
       value: y
-  postprocessing:
-    aggregation:
       source:
-        - https://github.com/calliope-project/calliope/pull/839
-      value: dev
-    curtailment:
-      source:
-        - https://github.com/calliope-project/calliope/pull/839
-      value: dev
-    financial:
-      source: []
-      value: n
-    future_cost_function:
-      source: []
-      value: n
-    gtc:
-      source: []
-      value: n
-    impact_assessment:
-      source: []
+        # New dimensions declared in math and populated from data (e.g. `months`,
+        # `breakpoints` in the math gallery).
+        - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/components/#dimensions
+        - https://calliope.readthedocs.io/en/v0.7.0/migrating/#indexing-parameters-over-arbitrary-dimensions
+        - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/examples/monthly_peak_flow_charge/
+    dimension_groups:
       value: y
-    lcoe:
       source:
-        - https://calliope.readthedocs.io/en/latest/math/base/#systemwide_levelised_cost
+        # Boolean lookup arrays tag dimension members for use in `where` strings and slices;
+        # `group_sum` aggregates over user-defined groups.
+        - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/components/#lookups
+        - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/helper_functions/#group_sum
+        - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/examples/annual_energy_balance/
+    component_templating:
       value: y
-    lodf:
-      source: []
-      value: n
-    ptdf:
-      source: []
-      value: n
-    shadow_prices:
       source:
-        - https://calliope.readthedocs.io/en/latest/advanced/shadow_prices/#shadow-prices
+        # `templates` can be inherited by techs, nodes and data tables; no programmatic
+        # generation of components.
+        - https://calliope.readthedocs.io/en/v0.7.0/reference/yaml/#reusing-definitions-through-templates
+        - https://calliope.readthedocs.io/en/v0.7.0/basic/techs/#sharing-configuration-with-templates
+        - https://calliope.readthedocs.io/en/v0.7.0/basic/data_tables/#using-a-template
+  math:
+    formulation_transparency:
       value: y
+      source:
+        # All math is YAML; rendered docs of built-in math, and `MathDocumentation` writes the
+        # math valid for a given built model to LaTeX/RST/Markdown.
+        - https://calliope.readthedocs.io/en/v0.7.0/math/base/
+        - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/customise/#writing-your-own-math-documentation
+        - https://github.com/calliope-project/calliope/blob/v0.7.0/src/calliope/math/base.yaml
+    problem_file_export:
+      value: y
+      source:
+        # LP export (MPS writer is in a draft PR).
+        - https://calliope.readthedocs.io/en/v0.7.0/troubleshooting/#save-an-lp-file
+        - https://calliope.readthedocs.io/en/v0.7.0/reference/api/backend_model/#calliope.backend.backend_model.BackendModel.to_lp
+    dual_extraction:
+      value: y
+      source:
+        - https://calliope.readthedocs.io/en/v0.7.0/advanced/shadow_prices/
+        - https://calliope.readthedocs.io/en/v0.7.0/reference/api/backend_model/#calliope.backend.backend_model.BackendModel.shadow_prices
+    piecewise_formulation:
+      value: y
+      source:
+        # SOS2 `piecewise_constraints` (not yet in the HiGHS backend).
+        - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/components/#piecewise-constraints
+        - https://calliope.readthedocs.io/en/v0.7.0/examples/piecewise_constraints/
+    user_defined_math:
+      value: y
+      source:
+        - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/
+        - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/customise/
+        - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/examples/
+  tractability:
+    dimension_reduction:
+      adjacency_aggregation:
+        temporal:
+          value: y
+          source:
+            # `config.init.resample` with per-parameter `resample_method`.
+            - https://calliope.readthedocs.io/en/v0.7.0/advanced/time/#time-resolution-adjustment-resampling
+            - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/components/#parameters
+        spatial:
+          value: n
+          source: []
+      similarity_aggregation:
+        temporal:
+          value: y
+          source:
+            # Representative days from a user-supplied date-to-representative-date mapping
+            # (`config.init.time_cluster`); the clustering itself is done externally (e.g. tsam).
+            - https://calliope.readthedocs.io/en/v0.7.0/advanced/time/#time-clustering
+            - https://calliope.readthedocs.io/en/v0.7.0/migrating/#clustering
+        spatial:
+          value: n
+          source: []
+        assets:
+          value: n
+          source: []
+        scenarios:
+          value: n
+          source: []
+      non_contiguity_handling:
+        temporal:
+          value: y
+          source:
+            - https://calliope.readthedocs.io/en/v0.7.0/math/built_in/storage_inter_cluster/
+            - https://calliope.readthedocs.io/en/v0.7.0/advanced/time/#time-clustering
+        spatial:
+          value: n
+          source: []
+      equivalencing:
+        spatial:
+          value: n
+          source: []
+        assets:
+          value: n
+          source: []
+      filtering:
+        temporal:
+          value: y
+          source:
+            - https://calliope.readthedocs.io/en/v0.7.0/troubleshooting/#building-a-smaller-model
+            - https://calliope.readthedocs.io/en/v0.7.0/basic/config/
+        spatial:
+          value: y
+          source:
+            # `config.init.subset` works on any dimension; nodes can also be deactivated.
+            - https://calliope.readthedocs.io/en/v0.7.0/migrating/#subsetting-and-resampling-other-dimensions-than-timesteps
+            - https://calliope.readthedocs.io/en/v0.7.0/basic/nodes/#deactivating-nodes
+        assets:
+          value: y
+          source:
+            - https://calliope.readthedocs.io/en/v0.7.0/migrating/#subsetting-and-resampling-other-dimensions-than-timesteps
+            - https://calliope.readthedocs.io/en/v0.7.0/basic/techs/#deactivating-techs
+        scenarios:
+          value: n
+          source: []
+    variable_fidelity:
+      formulation:
+        value: y
+        source:
+          # MILP options (`cap_method: integer`, `integer_dispatch`, `force_async_flow`) are set
+          # per tech (and node), so continuous and unit-committed techs mix in one model.
+          - https://calliope.readthedocs.io/en/v0.7.0/examples/milp/
+          - https://calliope.readthedocs.io/en/v0.7.0/math/built_in/milp/#cap_method
+          - https://calliope.readthedocs.io/en/v0.7.0/math/built_in/milp/#integer_dispatch
+      resolution:
+        temporal:
+          value: n
+          source:
+            # Requested (coarsening resolution further into the operate-mode horizon).
+            - https://github.com/calliope-project/calliope/issues/127
+        spatial:
+          value: n
+          source: []
+        assets:
+          value: n
+          source: []
+        scenarios:
+          value: n
+          source: []
+    reformulation:
+      linearised_unit_commitment:
+        value: n
+        source: []
+      nonlinear_handling:
+        convex_relaxation:
+          value: n
+          source: []
+        function_conversion:
+          value: n
+          source:
+            # Piecewise constraints need user-supplied breakpoints.
+            - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/components/#piecewise-constraints
+      constraint_screening:
+        value: n
+        source: []
+      decomposition:
+        value: n
+        source: []
+      numeric_scaling:
+        value: n
+        source:
+          # Users are advised to re-scale their data in advance.
+          - https://calliope.readthedocs.io/en/v0.7.0/basic/config/#configbuildensure_feasibility
+  orchestration:
+    scenario_runs:
+      # Tenuous: `calliope generate_runs` writes a batch (or HPC array) script running
+      # named scenarios, with systematically named result files, but results are not
+      # collated into one dataset.
+      value: y
+      source:
+        - https://calliope.readthedocs.io/en/v0.7.0/advanced/scripts/#generate-runs
+        - https://calliope.readthedocs.io/en/v0.7.0/reference/cli/#calliope-generate_runs
+        - https://calliope.readthedocs.io/en/v0.7.0/basic/scenarios/
+    sampled_runs:
+      value: n
+      source: []
+    coupled_models:
+      limited_foresight:
+        investment:
+          value: n
+          source: []
+        operation:
+          value: y
+          source:
+            # `operate` mode: receding horizon with `window` / `horizon`.
+            - https://calliope.readthedocs.io/en/v0.7.0/basic/modes/#operate-mode
+            - https://calliope.readthedocs.io/en/v0.7.0/examples/modes/#running-in-operate-mode
+      fidelity_sequence:
+        value: n
+        source:
+          # Base-mode capacities must be passed to operate mode by the user; the documented
+          # `use_cap_results` option does not exist.
+          - https://calliope.readthedocs.io/en/v0.7.0/troubleshooting/#model-mode
+          - https://github.com/calliope-project/calliope/issues/903
+      market_sequence:
+        value: n
+        source: []
+      convergence_iteration:
+        value: n
+        source: []
+  io:
+    plain_text:
+      input:
+        value: y
+        source:
+          # YAML model definition plus CSV data tables.
+          - https://calliope.readthedocs.io/en/v0.7.0/basic/data_tables/
+          - https://calliope.readthedocs.io/en/v0.7.0/reference/yaml/
+      output:
+        value: y
+        source:
+          - https://calliope.readthedocs.io/en/v0.7.0/reference/api/model/#calliope.Model.to_csv
+    binary:
+      input:
+        value: y
+        source:
+          # NetCDF (a saved model's inputs can be re-loaded and re-initialised); Excel and
+          # Parquet data tables are requested. In-memory pandas DataFrames can also be passed.
+          - https://calliope.readthedocs.io/en/v0.7.0/basic/running-python/
+          - https://calliope.readthedocs.io/en/v0.7.0/basic/data_tables/#loading-csv-files-vs-pandas-dataframes
+          - https://github.com/calliope-project/calliope/issues/693
+          - https://github.com/calliope-project/calliope/issues/694
+      output:
+        value: y
+        source:
+          - https://calliope.readthedocs.io/en/v0.7.0/reference/api/model/#calliope.Model.to_netcdf
+    database:
+      input:
+        value: n
+        source: []
+      output:
+        value: n
+        source: []
+    remote_storage:
+      input:
+        value: n
+        source: []
+      output:
+        value: n
+        source: []
+    lazy_loading:
+      input:
+        value: n
+        source: []
+      output:
+        value: n
+        source: []
+    standardised:
+      input:
+        value: n
+        source: []
+      output:
+        value: n
+        source: []
   preprocessing:
     download:
+      value: n
       source:
-        - https://clio.readthedocs.io/en/latest/
+        # Data pipelines are separate companion projects (e.g. clio data modules).
         - https://github.com/calliope-project/module_integration
-      value: dev
+    model_catalogue:
+      value: y
+      source:
+        # Built-in example models (`calliope.examples`) and `calliope new --template`.
+        - https://calliope.readthedocs.io/en/v0.7.0/reference/api/example_models/
+        - https://calliope.readthedocs.io/en/v0.7.0/getting_started/creating/#creating-a-new-model-from-a-built-in-template
+        - https://calliope.readthedocs.io/en/v0.7.0/reference/cli/#calliope-new
+    resource_conversion:
+      value: n
+      source: []
     forecasting:
-      source: []
       value: n
+      source: []
     spatial_distribution:
-      source: []
-      value: n
-  resource_adequacy:
-    eens:
-      source:
-        - https://calliope.readthedocs.io/en/latest/math/base/#unmet_demand
+      demand:
+        value: n
+        source: []
+      network_geometry:
+        value: y
+        source:
+          # Link `distance` computed from node latitude/longitude (great-circle).
+          - https://calliope.readthedocs.io/en/v0.7.0/advanced/constraints/#per-distance-transmission-constraints
+          - https://calliope.readthedocs.io/en/v0.7.0/migrating/#defining-node-coordinates
+    scenario_generation:
+      # Tenuous: `calliope generate_scenarios` builds scenarios from all combinations of
+      # user-defined override sets; no sampling.
       value: y
-    lolp:
-      source: []
-      value: n
-    maintenance_scheduling:
-      source: []
-      value: n
-    monte_carlo:
       source:
-        - https://doi.org/10.1016/j.joule.2020.08.002
-      value: dev
-    sampling:
-      source:
-        - https://github.com/brynpickering/bangalore-calliope/blob/master/Building%20and%20running%20the%20model.ipynb
-        - https://github.com/brynpickering/cambridge-calliope/blob/master/notebooks/DMUU.ipynb
-      value: dev
-  robustness:
-    asset_outages:
-      source:
-        - https://calliope.readthedocs.io/en/latest/user_defined_math/examples/uptime_downtime_limits/
+        - https://calliope.readthedocs.io/en/v0.7.0/advanced/scripts/#generate-scenarios
+        - https://calliope.readthedocs.io/en/v0.7.0/reference/cli/#calliope-generate_scenarios
+    input_validation:
       value: y
-    eens_limit:
-      source: []
-      value: n
-    lolp_limit:
-      source: []
-      value: n
-    multi_stage_stochastic:
-      source: []
-      value: n
-    ram:
-      source: []
-      value: n
-    reserve_limit:
       source:
-        - https://github.com/calliope-project/calliope/pull/517
-      value: dev
-    two_stage_stochastic:
+        # pydantic schemas for config/definition/data tables, plus math `checks`.
+        - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/components/#checks
+        - https://calliope.readthedocs.io/en/v0.7.0/reference/model_schema/
+        - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/customise/#validating-the-math
+  postprocessing:
+    metrics:
+      operational:
+        capacity_factor:
+          value: y
+          source:
+            - https://calliope.readthedocs.io/en/v0.7.0/basic/postprocessing/#additional-result-variables
+            - https://calliope.readthedocs.io/en/v0.7.0/math/base/#capacity_factor
+            - https://calliope.readthedocs.io/en/v0.7.0/math/base/#systemwide_capacity_factor
+        operating_hours:
+          value: n
+          source: []
+        binding_hours:
+          value: n
+          source: []
+        curtailment:
+          value: y
+          source:
+            - https://calliope.readthedocs.io/en/v0.7.0/math/base/#curtailment
+            - https://calliope.readthedocs.io/en/v0.7.0/math/base/#total_curtailment
+      financial:
+        marginal_price:
+          value: y
+          source:
+            # Shadow prices of `system_balance` per node, carrier and timestep (LP only); no
+            # component split.
+            - https://calliope.readthedocs.io/en/v0.7.0/advanced/shadow_prices/
+        price_formation:
+          value: n
+          source: []
+        water_value:
+          value: n
+          source: []
+        asset_accounts:
+          # Tenuous: per-tech, per-node cost breakdowns (investment, annualised, fixed and
+          # variable operation) are reported per cost class; revenues only appear as negative
+          # costs (e.g. export).
+          value: y
+          source:
+            - https://calliope.readthedocs.io/en/v0.7.0/math/base/#cost
+            - https://calliope.readthedocs.io/en/v0.7.0/math/base/#cost_operation_variable
+            - https://calliope.readthedocs.io/en/v0.7.0/advanced/constraints/#revenues-and-carrier-export
+        contract_settlement:
+          value: n
+          source: []
+        levelised_cost:
+          value: y
+          source:
+            - https://calliope.readthedocs.io/en/v0.7.0/math/base/#systemwide_levelised_cost
+            - https://calliope.readthedocs.io/en/v0.7.0/math/base/#total_levelised_cost
+        net_present_value:
+          value: n
+          source: []
+      impact_assessment:
+        emissions:
+          value: y
+          source:
+            # Emissions tracked as an extra cost class and reported per tech/node.
+            - https://calliope.readthedocs.io/en/v0.7.0/math/base/#min_cost_optimisation-active
+            - https://github.com/calliope-project/calliope/blob/v0.7.0/src/calliope/example_models/national_scale/scenarios.yaml
+        resource_use:
+          value: y
+          source:
+            # `area_use` (land) is reported; other resources can be tracked as cost classes or carriers.
+            - https://calliope.readthedocs.io/en/v0.7.0/math/base/#area_use
+            - https://calliope.readthedocs.io/en/v0.7.0/advanced/constraints/#area-use-constraints
+        socioeconomic:
+          value: n
+          source: []
+      network_transfer_metrics:
+        transfer_capacity:
+          value: n
+          source: []
+        flow_sensitivity:
+          value: n
+          source: []
+      probabilistic_reliability_assessment:
+        loss_of_load:
+          value: n
+          source: []
+        unserved_energy:
+          value: n
+          source: []
+        capacity_credit:
+          value: n
+          source: []
+    transformation:
+      aggregation:
+        value: y
+        source:
+          # System-wide/total aggregates built in; user-defined `postprocessed` math expressions
+          # can aggregate over any dimension or group.
+          - https://calliope.readthedocs.io/en/v0.7.0/math/base/#total_generation
+          - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/components/#postprocessed-expressions
+          - https://calliope.readthedocs.io/en/v0.7.0/migrating/#postprocessed-arrays
+      disaggregation:
+        value: n
+        source: []
+      scenario_comparison:
+        # Tenuous: outputs are collated only for SPORES runs, along a `spores` dimension.
+        # Calliope Studio v0.2.1's comparison view diffs the *inputs* of two
+        # runs/scenarios, not their results.
+        value: y
+        source:
+          - https://calliope.readthedocs.io/en/v0.7.0/basic/modes/#spores-mode
+          - https://calliope.readthedocs.io/en/v0.7.0/examples/modes/#base-vs-spores
+          - https://github.com/sjpfenninger/calliope-studio/blob/v0.2.1/CHANGELOG.md
+  interface:
+    gui:
+      build:
+        value: y
+        source:
+          # Calliope Studio (ecosystem tool, v0.2.1): browser UI to define, edit and
+          # validate models (YAML sections, data tables, map editor).
+          - https://github.com/sjpfenninger/calliope-studio/blob/v0.2.1/README.md
+          - https://github.com/sjpfenninger/calliope-studio/blob/v0.2.1/CHANGELOG.md
+      run:
+        value: y
+        source:
+          # Calliope Studio v0.2.1 builds and solves runs, with progress and logs.
+          - https://github.com/sjpfenninger/calliope-studio/blob/v0.2.1/README.md
+          - https://github.com/sjpfenninger/calliope-studio/blob/v0.2.1/src/calliope_studio/runs/manager.py
+      analyse:
+        value: y
+        source:
+          # Calliope Studio v0.2.1 results view (time series, totals, map, tables); the
+          # older pre-release Calligraph (v0.1.1.dev7) is the results explorer the Calliope docs point to.
+          - https://github.com/sjpfenninger/calliope-studio/blob/v0.2.1/README.md
+          - https://calliope.readthedocs.io/en/v0.7.0/getting_started/analysing/#easiest-approach-using-calligraph
+          - https://github.com/calliope-project/calligraph/blob/v0.1.1.dev7/README.md
+    api:
+      build:
+        value: y
+        source:
+          - https://calliope.readthedocs.io/en/v0.7.0/basic/running-python/
+          - https://calliope.readthedocs.io/en/v0.7.0/reference/api/model/
+          - https://calliope.readthedocs.io/en/v0.7.0/advanced/backend_interface/
+      run:
+        value: y
+        source:
+          - https://calliope.readthedocs.io/en/v0.7.0/basic/running-python/
+          - https://calliope.readthedocs.io/en/v0.7.0/reference/api/model/#calliope.Model.solve
+      analyse:
+        value: y
+        source:
+          - https://calliope.readthedocs.io/en/v0.7.0/getting_started/analysing/#accessing-model-data-and-results-within-python
+          - https://calliope.readthedocs.io/en/v0.7.0/reference/api/model/#calliope.Model.results
+    cli:
+      build:
+        value: y
+        source:
+          # `calliope new` creates a model from a built-in template.
+          - https://calliope.readthedocs.io/en/v0.7.0/reference/cli/#calliope-new
+      run:
+        value: y
+        source:
+          - https://calliope.readthedocs.io/en/v0.7.0/basic/running-cli/
+          - https://calliope.readthedocs.io/en/v0.7.0/reference/cli/#calliope-run
+      analyse:
+        value: n
+        source: []
+    solver_configuration:
+      value: y
       source:
-        - https://github.com/calliope-project/calliope/tree/stochastic_optimisation
-      value: dev
-    voll:
+        - https://calliope.readthedocs.io/en/v0.7.0/advanced/solver/
+        - https://calliope.readthedocs.io/en/v0.7.0/basic/config/#configsolvesolver
+    remote_execution:
+      # Tenuous: `calliope generate_runs --kind=bsub|sbatch` writes LSF/SLURM array
+      # submission scripts; submitting and monitoring them is left to the user.
+      value: y
       source:
-        - https://calliope.readthedocs.io/en/latest/basic/config/#configbuildensure_feasibility
+        - https://calliope.readthedocs.io/en/v0.7.0/advanced/scripts/#generate-runs
+    visualisation:
+      charts:
+        value: y
+        source:
+          # Via ecosystem GUIs: Calliope Studio v0.2.1 time-series and totals charts;
+          # Calligraph (pre-release v0.1.1.dev7) time-series/duration plots. Core Calliope
+          # no longer plots.
+          - https://github.com/sjpfenninger/calliope-studio/blob/v0.2.1/CHANGELOG.md
+          - https://github.com/sjpfenninger/calliope-studio/blob/v0.2.1/web/src/components/results/TimeseriesFigure.vue
+          - https://github.com/calliope-project/calligraph/blob/v0.1.1.dev7/CHANGELOG.md
+          - https://calliope.readthedocs.io/en/v0.7.0/migrating/#plotting
+      network_maps:
+        value: y
+        source:
+          # Calliope Studio v0.2.1 renders nodes and links from their coordinates on a
+          # geographic map (editor and results); Calligraph (pre-release) also has a map page.
+          - https://github.com/sjpfenninger/calliope-studio/blob/v0.2.1/src/calliope_studio/results/geo.py
+          - https://github.com/sjpfenninger/calliope-studio/blob/v0.2.1/web/src/components/results/MapFigure.vue
+          - https://github.com/calliope-project/calligraph/blob/v0.1.1.dev7/src/calligraph/pages.py
+      report_templates:
+        value: n
+        source: []
+  traceability:
+    metadata:
+      provenance:
+        value: n
+        source: []
+      units:
+        value: n
+        source:
+          # Unit-agnostic; math `unit` fields are documentation metadata only.
+          - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/components/#parameters
+      propagation:
+        value: y
+        source:
+          # Saved models hold inputs, results and all attributes (definition, config, applied
+          # math, runtime/timestamps) together.
+          - https://calliope.readthedocs.io/en/v0.7.0/reference/api/model/#calliope.Model.dump_all_attrs
+          - https://calliope.readthedocs.io/en/v0.7.0/migrating/#structure-of-input-and-output-data-within-a-calliope-model
+    run_logs:
       value: y
-  spatial__resolution__simplification:
-    network:
-      source: []
-      value: n
-    resampling:
-      source: []
-      value: n
-  system__carriers:
-    coupled:
       source:
-        - https://calliope.readthedocs.io/en/latest/examples/urban_scale/
-        - https://github.com/calliope-project/sector-coupled-euro-calliope
+        - https://calliope.readthedocs.io/en/v0.7.0/troubleshooting/#retaining-logs-and-temporary-files
+        - https://calliope.readthedocs.io/en/v0.7.0/examples/calliope_logging/
+        - https://calliope.readthedocs.io/en/v0.7.0/basic/running-python/#tracking-progress
+    intermediate_access:
       value: y
-    decoupled:
       source:
-        - https://calliope.readthedocs.io/en/latest/examples/national_scale/
+        - https://calliope.readthedocs.io/en/v0.7.0/advanced/backend_interface/
+        - https://calliope.readthedocs.io/en/v0.7.0/troubleshooting/#analysing-the-optimisation-problem-without-solving-the-model
+        - https://calliope.readthedocs.io/en/v0.7.0/reference/api/backend_model/
+    infeasibility_diagnosis:
+      # Tenuous: no built-in IIS; the docs give a workflow (save LP, compute IIS with the
+      # solver's tools) and `ensure_feasibility` to locate unmet demand.
       value: y
-  system__limits:
-    capacity:
       source:
-        - https://calliope.readthedocs.io/en/latest/math/base/#flow_cap_max_systemwide
-      value: y
-    operation:
-      source:
-        - https://calliope.readthedocs.io/en/latest/migrating/#defining-parameters-outside-the-scope-of-nodes-and-techs
-        - https://calliope.readthedocs.io/en/latest/user_defined_math/examples/annual_energy_balance/
-      value: y
-  time__foresight:
-    myopic:
-      source:
-        - https://calliope.readthedocs.io/en/latest/basic/modes/#operate-mode
-      value: y
-    perfect:
-      source:
-        - https://calliope.readthedocs.io/en/latest/basic/modes/#modes
-        - https://github.com/calliope-project/calliope-pathways
-      value: y
-  time__horizon:
-    multi_year:
-      source:
-        - https://github.com/calliope-project/calliope-pathways
-      value: dev
-    single_year:
-      source: []
-      value: y
-    sub_day:
-      source: []
-      value: y
-    sub_year:
-      source: []
-      value: y
-  time__resolution__simplification:
-    distortion_mitigation:
-      source:
-        - https://calliope.readthedocs.io/en/latest/math/built_in/storage_inter_cluster/#inter-cluster-storage-math
-      value: y
-    load_duration_curves:
-      source: []
-      value: n
-    resampling:
-      source:
-        - https://calliope.readthedocs.io/en/latest/advanced/time/#time-resolution-adjustment-resampling
-      value: y
-    typical_periods:
-      source:
-        - https://calliope.readthedocs.io/en/latest/advanced/time/#time-clustering
-      value: y
-  transmission__limits:
-    gtc:
-      source:
-        - https://calliope.readthedocs.io/en/latest/examples/national_scale/#other-technologies
-        - https://github.com/calliope-project/euro-calliope/blob/develop/scripts/transmission/template_transmission_entsoe_tyndp.py
-        - https://calliope.readthedocs.io/en/latest/math/base/#symmetric_transmission
-      value: y
-    phase_angle:
-      source: []
-      value: n
-    ptdf:
-      source: []
-      value: n
-    thermal:
-      source: []
-      value: n
-  transmission__opf:
-    ac_opf:
-      source: []
-      value: n
-    dc_opf:
-      source: []
-      value: n
-    sec_opf:
-      source: []
-      value: n
-    transport:
-      source:
-        - https://calliope.readthedocs.io/en/latest/math/base/#balance_transmission
-        - https://calliope.readthedocs.io/en/latest/math/base/#symmetric_transmission
-      value: y
+        - https://calliope.readthedocs.io/en/v0.7.0/troubleshooting/#understanding-infeasibility-and-numerical-instability
+        - https://calliope.readthedocs.io/en/v0.7.0/basic/config/#configbuildensure_feasibility
