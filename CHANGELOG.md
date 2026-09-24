@@ -25,17 +25,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased (v0.3.0)
+## 0.3.0 (2026-09-24)
 
 A ground-up overhaul of the feature taxonomy and of the schema that expresses it.
-No group or feature path from 0.2.0 survives unchanged: the taxonomy is now a single recursive tree of 18 top-level categories, named for the question each answers rather than for the technology it describes.
+No group or feature path from 0.2.0 survives unchanged: the taxonomy is now a single recursive tree of 18 top-level categories.
 Resolves #19, #28, #29, #30, #32, #35, #39, #65-#103 (as applicable), #108-#114, and #122-#129.
-The question of whether 18 top-level categories is still too many remains open, and is tracked separately.
+
+This overhaul originates from a number of online and in-person workshops with energy modelling tool developers and users.
+In addition, several AI-assisted iterations were undertaken with the intention of ensuring market-leading proprietary tool features were as well represented as possible.
 
 ### Changed
 
 #### Schema and tooling
 
+- **Tool feature lists declare the tool version they describe.** A new top-level `version` key (a free-form, non-empty string, defaulting to `?`) lets list maintainers record which version of their tool the feature values refer to.
 - **Features nest to arbitrary depth.** A taxonomy node is either a **leaf** (`key: "description"`) or a **branch** (`description` plus a `members` mapping of further nodes), and branches and leaves can be siblings. This replaces the fixed group → member layering, in which every capability had to be flattened into a two-level name.
 - **`value` and `source` live on leaves only.** A leaf's `value` is a plain scalar and its `source` a plain list of URLs. Capabilities that differ between investment and operation are sibling leaves rather than a qualified single value: `cost.functional_form.nonlinear` is a branch with an `investment` leaf and an `operation` branch. Where one source evidences several sibling leaves, the URL is repeated on each.
 - **No `__` in taxonomy names.** Namespaces are expressed as real nesting (`asset__cost__investment.unit` → `cost.functional_form.fixed_charge.investment`, `transmission__opf` → `network.power_flow.optimal_power_flow`, `time__resolution__simplification` → `tractability.dimension_reduction.temporal`). Cross-references inside descriptions use a single dotted path throughout.

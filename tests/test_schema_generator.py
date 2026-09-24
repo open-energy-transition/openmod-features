@@ -154,6 +154,16 @@ class TestSchemaGeneration:
         template_content = tool_template.read_text()
         assert "features:" in template_content
 
+    def test_tool_template_has_version_key(self, generated_schemas: Path):
+        """Test that the tool template contains the top-level 'version' key."""
+        tool_template = (
+            generated_schemas
+            / "template"
+            / "{% if list_type == 'tool' %}features.yaml{% endif %}.jinja"
+        )
+        template_content = tool_template.read_text()
+        assert "\nversion: '?'\n" in template_content
+
     def test_use_case_template_has_features_and_assumptions(
         self, generated_schemas: Path
     ):
@@ -483,6 +493,32 @@ class TestNestedFeatureValidation:
         features["features"]["constraints"]["dedicated_flow_routing"] = {
             "investment": {"value": "y", "source": []}
         }
+        with pytest.raises(jsonschema.ValidationError):
+            jsonschema.validate(features, tool_schema)
+
+    def test_scaffolded_version_is_unknown(self, valid_features: dict):
+        """The tool version defaults to unknown (`?`)."""
+        assert valid_features["version"] == "?"
+
+    @pytest.mark.parametrize("version", ["v1.2.0", "1.2", "2026.09", "abc1234"])
+    def test_version_string_accepted(
+        self, valid_features: dict, tool_schema: dict, version: str
+    ):
+        """Any non-empty string is a valid tool version."""
+        features = {**valid_features, "version": version}
+        jsonschema.validate(features, tool_schema)
+
+    def test_omitted_version_is_valid(self, valid_features: dict, tool_schema: dict):
+        """The version may be left out entirely; it falls back to its default."""
+        features = {k: v for k, v in valid_features.items() if k != "version"}
+        jsonschema.validate(features, tool_schema)
+
+    @pytest.mark.parametrize("version", ["", 1.2, 2])
+    def test_invalid_version_rejected(
+        self, valid_features: dict, tool_schema: dict, version: str | float
+    ):
+        """An empty or unquoted numeric version is rejected."""
+        features = {**valid_features, "version": version}
         with pytest.raises(jsonschema.ValidationError):
             jsonschema.validate(features, tool_schema)
 
