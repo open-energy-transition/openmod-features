@@ -87,6 +87,9 @@ You can also optionally provide a documentation site URL and a longer descriptio
 Once your tool config file has been generated, you will find it under `tools/<tool-shortname>/`.
 You will then be able to update your tool's feature list at `tools/<tool-shortname>/features.yaml`.
 
+Set the top-level `version` key to the version of your tool that the feature list describes (e.g. `version: v1.2.0`).
+Quote any version that YAML would otherwise read as a number (e.g. `version: '1.2'`).
+
 All tool features default to values of `?`, i.e., unknown.
 You should update each to a value of `y` if that feature is available, `n` if it is not, or `dev` if it is actively in development.
 For each, add a `source` key pointing to URL (e.g. in your documentation, a Pull Request, a test) in which that feature is explicitly referenced.

@@ -2421,5 +2421,13 @@ properties:
           source: []
           value: '?'
     description: Tool feature set.
+  version:
+    default: '?'
+    description: Version of the tool that this feature list describes (e.g. `v1.2.0`).
+      Quote versions YAML would read as a number (e.g. `'1.2'`). Defaults to unknown
+      (`?`).
+    minLength: 1
+    title: Version
+    type: string
 title: ToolFeatureModel
 type: object

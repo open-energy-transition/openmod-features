@@ -172,6 +172,18 @@ def dump_tool_schema(schema_dir: Path) -> type[pydantic.BaseModel]:
     feature_model_schema = create_model(
         "ToolFeatureModel",
         __config__={"extra": "forbid"},
+        version=(
+            str,
+            Field(
+                default="?",
+                min_length=1,
+                description=(
+                    "Version of the tool that this feature list describes "
+                    "(e.g. `v1.2.0`). Quote versions YAML would read as a number "
+                    "(e.g. `'1.2'`). Defaults to unknown (`?`)."
+                ),
+            ),
+        ),
         features=(
             feature_list_schema,
             Field(default=feature_list_schema(), description="Tool feature set."),
