@@ -280,10 +280,13 @@ class TestTemplateValidation:
         """Test that a known nested feature scaffolds every one of its child leaves."""
         features_file = tool_project_from_generated_template / "features.yaml"
         features = yaml.safe_load(features_file.read_text())
-        unit = features["features"]["asset"]["cost"]["unit"]
-        assert unit == {
+        nonlinear = features["features"]["cost"]["functional_form"]["nonlinear"]
+        assert nonlinear == {
             "investment": {"value": "?", "source": []},
-            "operation": {"value": "?", "source": []},
+            "operation": {
+                "flow_dependent": {"value": "?", "source": []},
+                "bid_bands": {"value": "?", "source": []},
+            },
         }
 
     def test_tool_project_leaf_sibling_of_branch_stays_a_leaf(
@@ -292,8 +295,8 @@ class TestTemplateValidation:
         """Test that a leaf sitting alongside branch siblings stays a plain leaf."""
         features_file = tool_project_from_generated_template / "features.yaml"
         features = yaml.safe_load(features_file.read_text())
-        annuitisation = features["features"]["asset"]["cost"]["annuitisation"]
-        assert annuitisation == {"value": "?", "source": []}
+        exchange = features["features"]["processes"]["boundary_exchange"]
+        assert exchange == {"value": "?", "source": []}
 
     def test_use_case_project_features_file_exists(
         self, use_case_project_from_generated_template: Path
@@ -436,7 +439,7 @@ class TestNestedFeatureValidation:
     ):
         """A leaf nested three levels deep accepts a filled-in `value` and `source`."""
         features = copy.deepcopy(valid_features)
-        features["features"]["asset"]["cost"]["unit"]["investment"] = {
+        features["features"]["cost"]["functional_form"]["fixed_charge"]["operation"] = {
             "value": "y",
             "source": ["https://example.com/a"],
         }
@@ -445,13 +448,13 @@ class TestNestedFeatureValidation:
     def test_omitted_leaf_is_valid(self, valid_features: dict, tool_schema: dict):
         """A leaf left out of the data entirely is valid; it falls back to its default."""
         features = copy.deepcopy(valid_features)
-        del features["features"]["asset"]["cost"]["unit"]["investment"]
+        del features["features"]["cost"]["functional_form"]["fixed_charge"]["operation"]
         jsonschema.validate(features, tool_schema)
 
     def test_unknown_member_rejected(self, valid_features: dict, tool_schema: dict):
         """A member name not declared in the taxonomy is rejected at any depth."""
         features = copy.deepcopy(valid_features)
-        features["features"]["asset"]["cost"]["unit"]["bogus"] = {
+        features["features"]["cost"]["functional_form"]["fixed_charge"]["bogus"] = {
             "value": "y",
             "source": [],
         }
@@ -463,7 +466,7 @@ class TestNestedFeatureValidation:
     ):
         """`value`/`source` on a branch are rejected: they belong on leaves only."""
         features = copy.deepcopy(valid_features)
-        features["features"]["asset"]["cost"]["unit"]["value"] = "y"
+        features["features"]["cost"]["functional_form"]["fixed_charge"]["value"] = "y"
         with pytest.raises(jsonschema.ValidationError):
             jsonschema.validate(features, tool_schema)
 
@@ -472,7 +475,7 @@ class TestNestedFeatureValidation:
     ):
         """A leaf cannot be given child members."""
         features = copy.deepcopy(valid_features)
-        features["features"]["asset"]["cost"]["annuitisation"] = {
+        features["features"]["constraints"]["dedicated_flow_routing"] = {
             "investment": {"value": "y", "source": []}
         }
         with pytest.raises(jsonschema.ValidationError):
@@ -515,8 +518,30 @@ class TestAxisConsistency:
         frozenset({"investment", "operation"}),
         frozenset({"input", "output"}),
         frozenset({"build", "run", "analyse"}),
-        frozenset({"temporal", "spatial", "assets"}),
+        frozenset({"temporal", "spatial", "assets", "scenarios"}),
     ]
+
+    #: Branches allowed to use only part of an axis.
+    #:
+    #: `tractability.dimension_reduction` is sliced method-over-dimension, and a method
+    #: is only listed against the dimensions it can act on: assets and scenarios have no
+    #: natural adjacency, so neither takes `adjacency_aggregation`. Partial use is the
+    #: point here, so these branches opt out while the rule still holds everywhere else.
+    #:
+    #: `constraints.scope` and `cost.scope` omit `scenarios`, because a limit or cost
+    #: spanning scenarios requires a scenario-indexed decision problem, which is already
+    #: recorded by `uncertainty`.
+    PARTIAL_AXIS_BRANCHES = frozenset(
+        {
+            "tractability.dimension_reduction.adjacency_aggregation",
+            "tractability.dimension_reduction.similarity_aggregation",
+            "tractability.dimension_reduction.equivalencing",
+            "tractability.dimension_reduction.filtering",
+            "tractability.dimension_reduction.non_contiguity_handling",
+            "constraints.scope",
+            "cost.scope",
+        }
+    )
 
     @pytest.fixture(scope="class")
     def taxonomy(self, repo_root: Path) -> dict:
@@ -528,6 +553,8 @@ class TestAxisConsistency:
         violations = []
         for name, node in taxonomy.items():
             for path, members in _walk_branches(node, (name,)):
+                if ".".join(path) in self.PARTIAL_AXIS_BRANCHES:
+                    continue
                 names = frozenset(members)
                 for axis in self.KNOWN_AXES:
                     if names & axis and names != axis:
@@ -536,6 +563,19 @@ class TestAxisConsistency:
                             f"axis is {sorted(axis)}"
                         )
         assert not violations, "\n".join(violations)
+
+    def test_partial_axis_exemptions_are_live(self, taxonomy: dict):
+        """Every exempted path must still name a real branch.
+
+        An exemption left behind after a rename would silently stop the axis rule
+        applying to whatever later takes that path.
+        """
+        branches = {
+            ".".join(path)
+            for name, node in taxonomy.items()
+            for path, _ in _walk_branches(node, (name,))
+        }
+        assert not self.PARTIAL_AXIS_BRANCHES - branches
 
 
 class TestCrossReferences:

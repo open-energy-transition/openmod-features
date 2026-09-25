@@ -22,7 +22,8 @@ repos:
           "--exclude-file=website/pnpm-lock.yaml",
           "--skip=user_analysis/config/*.yaml",
           "--skip=inventory/*.yaml",
-          "--skip=*.csv"
+          "--skip=*.csv",
+          "--ignore-words-list=FOM"
         ]
 
   - repo: https://github.com/fsfe/reuse-tool

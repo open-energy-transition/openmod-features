@@ -1,10 +1,9 @@
-
 # SPDX-FileCopyrightText: use-cases/integrated_resource_planning/features.yaml CODEOWNERS
 # SPDX-FileCopyrightText: openmod-features contributors
 #
 # SPDX-License-Identifier: CC-BY-4.0
 
-# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/c87f4ce/schema/use-case-schema.yaml
+# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/0cd1a85/schema/use-case-schema.yaml
 
 assumptions:
 - >-
@@ -49,238 +48,533 @@ assumptions:
   Transmission between regions is represented using DC optimal power flow.
 
 features:
-  asset__candidates:
-    converters:
+  processes:
+    boundary_exchange:
       value: y
-    electricity_transmission:
+    conversion:
+      one_to_one:
+        value: y
+      multi_carrier_io:
+        value: y
+      flexible_ratio:
+        value: n
+    temporal_transfer:
       value: y
-    endogenous:
+    spatial_transfer:
       value: y
-    exogenous:
+    delayed_transfer:
       value: n
-    fluid_or_gas_distribution:
-      value: y
-    generators:
-      value: y
-    loads:
-      value: y
-    storage:
-      value: y
-  asset__capacity_representation:
-    grouped:
+    buffered_transfer:
       value: n
-    partial_grouped:
-      value: y
-    units:
+    discrete_transport:
       value: n
-  asset__chaining:
-    asset_linking:
+    state_changing_transfer:
       value: n
-    stockpiling:
-      value: y
-  asset__cost__investment:
+    explicit_demand:
+      inelastic:
+        value: y
+      price_responsive:
+        value: n
+      mobile_storage:
+        value: n
+  network:
+    power_flow:
+      optimal_power_flow:
+        dc_opf:
+          value: y
+        ac_opf:
+          value: n
+      sensitivity_limits:
+        ptdf:
+          value: n
+        outage_factors:
+          value: n
+        generic_constraints:
+          value: n
+      network_limits:
+        thermal:
+          value: n
+        phase_angle:
+          value: n
+      network_devices:
+        transformers:
+          value: n
+        facts_devices:
+          value: n
+        hvdc_converters:
+          value: n
+      unbalanced_flows:
+        value: n
+    hydraulic_flow:
+      linearised_flow:
+        value: n
+      composition_tracking:
+        value: n
+  decisions:
+    investment:
+      exogenous_capacity:
+        value: n
+      continuous_capacity:
+        value: y
+      integer_investment_exogenous_capacity:
+        value: y
+      integer_investment_continuous_capacity:
+        value: n
+      retrofit:
+        value: n
+      multi_period:
+        value: y
+    operation:
+      unit_commitment:
+        value: y
+      maintenance_scheduling:
+        value: n
+  constraints:
+    scope:
+      temporal:
+        pointwise:
+          investment:
+            size_bounds:
+              value: y
+            discrete_increments:
+              value: y
+            unit_purchase:
+              value: y
+          operation:
+            availability_derating:
+              value: y
+            minimum_stable_level:
+              value: y
+            forced_offline:
+              value: y
+            forced_online:
+              value: y
+        sequential:
+          investment:
+            build_rate:
+              value: y
+            retirement:
+              value: y
+            availability_window:
+              value: n
+          operation:
+            ramping:
+              value: y
+            start_shut_trajectory:
+              value: y
+            commitment_duration:
+              value: y
+            start_consumption:
+              value: n
+        cumulative:
+          investment:
+            capacity_target:
+              value: y
+            expansion_budget:
+              value: n
+            event_count:
+              value: n
+            path_dependent:
+              value: n
+          operation:
+            flow_volume:
+              value: y
+            impact_budget:
+              value: y
+            event_count:
+              value: n
+            state_duration:
+              value: n
+            path_dependent:
+              value: n
+        boundary_conditions:
+          investment:
+            value: y
+          operation:
+            value: y
+      assets:
+        spanning:
+          investment:
+            value: y
+          operation:
+            value: y
+        dedicated_flow_routing:
+          value: n
+      spatial:
+        investment:
+          value: y
+        operation:
+          value: y
+    functional_form:
+      linear_multi_variable:
+        investment:
+          value: n
+        operation:
+          value: y
+      quadratic:
+        investment:
+          value: n
+        operation:
+          value: n
+      nonlinear:
+        investment:
+          value: y
+        operation:
+          value: n
+    soft_constraints:
+      value: n
+    reliability:
+      operating_reserve:
+        online_headroom:
+          value: y
+        standby_capability:
+          value: n
+        inertia:
+          value: n
+      probabilistic_reliability_limit:
+        loss_of_load:
+          value: n
+        unserved_energy:
+          value: n
+      unserved_demand:
+        value: n
+      contingency_constrained:
+        value: n
+  cost:
+    scope:
+      temporal:
+        sequential:
+          investment:
+            value: n
+          operation:
+            start_up:
+              value: y
+            shut_down:
+              value: y
+            ramping:
+              value: n
+            start_state_dependent:
+              value: n
+        cumulative:
+          investment:
+            value: n
+          operation:
+            value: n
+      assets:
+        investment:
+          value: n
+        operation:
+          value: n
+      spatial:
+        investment:
+          value: n
+        operation:
+          value: n
+    functional_form:
+      fixed_charge:
+        investment:
+          value: y
+        operation:
+          value: n
+      nonlinear:
+        investment:
+          value: y
+        operation:
+          flow_dependent:
+            value: n
+          bid_bands:
+            value: y
+      threshold_deviation:
+        investment:
+          value: y
+        operation:
+          value: y
     annuitisation:
+      discounting:
+        value: y
+      fiscal_treatment:
+        value: n
+  model_definition:
+    dimension_groups:
       value: y
-    linear:
-      value: y
-    piecewise:
+    component_templating:
       value: n
-    subsidy/penalty:
+    configurable_dimensions:
       value: y
-    unit:
-      value: y
-  asset__cost__operation:
-    linear:
-      value: y
-    piecewise:
+    extensible_dimensions:
       value: n
-    subsidy/penalty:
+  math:
+    formulation_transparency:
+      value: n
+    problem_file_export:
+      value: n
+    dual_extraction:
       value: y
-    unit:
-      value: n
-  asset__operating_characteristics:
-    iterative:
-      value: n
-    linear:
+    piecewise_formulation:
       value: y
-    piecewise:
-      value: n
-    static non_dimensional:
+    user_defined_math:
       value: y
-    static_dimensional:
+  interface:
+    gui:
+      build:
+        value: y
+      run:
+        value: y
+      analyse:
+        value: y
+    api:
+      build:
+        value: n
+      run:
+        value: n
+      analyse:
+        value: n
+    cli:
+      build:
+        value: n
+      run:
+        value: n
+      analyse:
+        value: n
+    remote_execution:
+      value: n
+    solver_configuration:
       value: y
-  asset__operating_constraints:
-    inter_spatial:
-      value: n
-    inter_temporal:
+    analysis_templates:
       value: y
-    operating:
-      value: n
-    total:
-      value: y
-  asset__operating_representation:
-    ed:
-      value: y
-    uced:
-      value: n
-  competition:
-    distributed_objectives:
-      value: n
-    portfolio:
-      value: n
+    visualisation:
+      charts:
+        value: y
+      network_maps:
+        value: y
+  io:
+    plain_text:
+      input:
+        value: n
+      output:
+        value: n
+    binary:
+      input:
+        value: n
+      output:
+        value: n
+    database:
+      input:
+        value: n
+      output:
+        value: n
+    remote_storage:
+      input:
+        value: n
+      output:
+        value: n
+    lazy_loading:
+      input:
+        value: n
+      output:
+        value: n
+    standardised:
+      input:
+        value: n
+      output:
+        value: n
   edge_effects:
-    energy_balance:
-      value: n
-    spatial:
+    time_operational:
       value: y
     time_financial:
       value: y
-    time_operational:
-      value: y
-  interface__input:
-    cli:
+    energy_balance:
       value: n
-    gui:
-      value: y
-    no_code:
+  actors:
+    portfolio:
       value: n
-    scripting:
+    distributed_objectives:
       value: n
-    standardised:
+    equilibrium:
       value: n
-  interface__output:
-    gui:
-      value: y
-    logs:
+    heuristic_markup:
       value: n
-    reports:
-      value: y
-    standardised:
+  objective:
+    multi_objective_weighted:
       value: n
-    tables:
+    multi_objective_pareto:
       value: n
-  optimisation_problem:
-    configuration:
-      value: y
-    decomposition:
+    quadratic:
       value: n
-    near_optimal:
+    tie_breaking:
       value: n
-    sim + opt:
-      value: n
-    user_defined_constraints:
-      value: y
-    user_defined_variables:
-      value: n
-  postprocessing:
-    aggregation:
-      value: y
-    curtailment:
-      value: y
-    financial:
-      value: y
-    future_cost_function:
-      value: n
-    gtc:
-      value: n
-    impact_assessment:
-      value: y
-    lcoe:
-      value: y
-    lodf:
-      value: n
-    ptdf:
-      value: n
-    shadow_prices:
-      value: y
-  preprocessing:
-    download:
-      value: y
-    forecasting:
-      value: y
-    spatial_distribution:
-      value: n
-  resource_adequacy:
-    eens:
-      value: y
-    lolp:
-      value: y
-    maintenance_scheduling:
-      value: n
-    monte_carlo:
-      value: n
-    sampling:
-      value: n
-  robustness:
-    asset_outages:
-      value: y
-    eens_limit:
-      value: n
-    lolp_limit:
+  uncertainty:
+    two_stage_stochastic:
       value: n
     multi_stage_stochastic:
       value: n
-    ram:
+    risk_aversion:
       value: n
-    reserve_limit:
+    near_optimal:
+      value: n
+    robust_optimisation:
+      value: n
+  tractability:
+    dimension_reduction:
+      adjacency_aggregation:
+        temporal:
+          value: y
+        spatial:
+          value: y
+      similarity_aggregation:
+        temporal:
+          value: n
+        spatial:
+          value: n
+        assets:
+          value: y
+        scenarios:
+          value: n
+      equivalencing:
+        spatial:
+          value: n
+        assets:
+          value: n
+      filtering:
+        temporal:
+          value: n
+        spatial:
+          value: n
+        assets:
+          value: n
+        scenarios:
+          value: n
+      non_contiguity_handling:
+        temporal:
+          value: n
+        spatial:
+          value: n
+    variable_fidelity:
+      formulation:
+        value: y
+      resolution:
+        temporal:
+          value: n
+        spatial:
+          value: n
+        assets:
+          value: y
+        scenarios:
+          value: n
+    reformulation:
+      constraint_screening:
+        value: n
+      linearised_unit_commitment:
+        value: n
+      nonlinear_handling:
+        convex_relaxation:
+          value: n
+        function_conversion:
+          value: n
+      decomposition:
+        value: n
+      approximation:
+        value: n
+      numeric_scaling:
+        value: n
+  orchestration:
+    coupled_models:
+      limited_foresight:
+        investment:
+          value: n
+        operation:
+          value: n
+      fidelity_sequence:
+        value: n
+      market_sequence:
+        value: n
+      convergence_iteration:
+        value: n
+    scenario_runs:
       value: y
-    two_stage_stochastic:
+    sampled_runs:
       value: n
-    voll:
-      value: n
-  spatial__resolution__simplification:
-    network:
-      value: n
-    resampling:
+  preprocessing:
+    forecasting:
       value: y
-  system__carriers:
-    coupled:
+    resource_conversion:
+      value: n
+    spatial_distribution:
+      demand:
+        value: n
+      network_geometry:
+        value: n
+      slack:
+        value: n
+    download:
       value: y
-    decoupled:
+    model_catalogue:
       value: n
-  system__limits:
-    capacity:
-      value: y
-    operation:
-      value: y
-  time__foresight:
-    myopic:
+    scenario_generation:
       value: n
-    perfect:
-      value: y
-  time__horizon:
-    multi_year:
-      value: y
-    single_year:
+    input_validation:
       value: n
-    sub_day:
-      value: y
-    sub_year:
+  postprocessing:
+    metrics:
+      impact_assessment:
+        emissions:
+          value: y
+        resource_use:
+          value: n
+        socioeconomic:
+          value: n
+      operational:
+        curtailment:
+          value: y
+        capacity_factor:
+          value: n
+        full_load_hours:
+          value: n
+      financial:
+        levelised_cost:
+          value: y
+        net_present_value:
+          value: y
+        asset_accounts:
+          value: y
+        marginal_price:
+          value: y
+        price_formation:
+          value: n
+        water_value:
+          value: n
+        contract_settlement:
+          value: n
+      network_transfer_metrics:
+        transfer_capacity:
+          value: n
+        flow_sensitivity:
+          value: n
+      probabilistic_reliability_assessment:
+        loss_of_load:
+          value: n
+        unserved_energy:
+          value: n
+        capacity_credit:
+          value: n
+    transformation:
+      aggregation:
+        value: y
+      disaggregation:
+        value: n
+      scenario_comparison:
+        value: y
+  traceability:
+    run_logs:
       value: n
-  time__resolution__simplification:
-    distortion_mitigation:
+    infeasibility_diagnosis:
       value: n
-    load_duration_curves:
+    metadata:
+      provenance:
+        value: n
+      units:
+        value: n
+      propagation:
+        value: n
+    intermediate_access:
       value: n
-    resampling:
-      value: y
-    typical_periods:
-      value: n
-  transmission__limits:
-    gtc:
-      value: y
-    phase_angle:
-      value: n
-    ptdf:
-      value: n
-    thermal:
-      value: n
-  transmission__opf:
-    ac_opf:
-      value: n
-    dc_opf:
-      value: n
-    sec_opf:
-      value: n
-    transport:
-      value: y
