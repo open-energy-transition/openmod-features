@@ -98,10 +98,10 @@ features:
           - https://docs.pypsa.org/v1.3.0/examples/demand-supply-bids/
           - https://docs.pypsa.org/v1.3.0/user-guide/faq/#how-is-demand-modelled
       mobile_storage:
-        # Tenuous: PyPSA has no dedicated mobile-storage component. The documented
-        # pattern is a `Store` on a dedicated bus with a charging `Link` whose
-        # time-varying `p_max_pu` encodes when the vehicle is connected; the attachment
-        # point itself is fixed rather than varying in space.
+        # No dedicated mobile-storage component. The documented pattern is a `Store` on
+        # a dedicated vehicle bus with charging `Link`s whose time-varying `p_max_pu`
+        # encodes when the vehicle is connected; linking that bus to several location
+        # buses, each with its own availability profile, varies the attachment in space.
         value: y
         source:
           - https://docs.pypsa.org/v1.3.0/examples/battery-electric-vehicle-charging/
@@ -709,9 +709,10 @@ features:
         - https://docs.pypsa.org/v1.3.0/user-guide/optimization/pathway-planning/#literature
         - https://docs.pypsa.org/v1.3.0/user-guide/optimization/objective/#specifying-capital-costs
     energy_balance:
-      # Tenuous: PyPSA relies on round-trip losses making simultaneous charge and
-      # discharge uneconomic rather than forbidding it; there is no complementarity
-      # constraint or binary to rule it out.
+      # PyPSA relies on round-trip losses making simultaneous charge and discharge
+      # uneconomic rather than forbidding it. There is no built-in complementarity
+      # constraint or binary, nor a documented custom-constraint recipe for one
+      # (contrast `flexible_ratio`, whose custom constraints have a documented example).
       value: n
       source:
         - https://docs.pypsa.org/v1.3.0/user-guide/optimization/storage/#storage-units
@@ -1142,8 +1143,9 @@ features:
           source:
             - https://docs.pypsa.org/v1.3.0/api/networks/statistics/#pypsa.Network.statistics.capacity_factor
         operating_hours:
+          # Postprocessing features cover analyses the tool itself can trigger.
           # No statistic counts running or committed snapshots; the commitment status
-          # (`n.generators_t.status`) has to be summed by the user.
+          # (`n.generators_t.status`) or non-zero dispatch has to be summed by the user.
           value: n
           source:
             - https://docs.pypsa.org/v1.3.0/user-guide/statistics/#metrics
