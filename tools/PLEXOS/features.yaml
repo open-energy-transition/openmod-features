@@ -6,11 +6,10 @@
 
 # yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/v0.3.0/schema/tool-schema.yaml
 
-# NOTE: This feature list was collated by openmod-features contributors with the assistance of
-# Claude Opus 5.5 (Anthropic), based on publicly available PLEXOS® documentation
-# (see `docs` in .metadata.yml). It reflects our understanding to the best of our knowledge
-# at the time of writing and is provided for informational purposes only, without warranty
-# of accuracy or completeness. It has not been reviewed or endorsed by Energy Exemplar.
+# NOTE: This feature list was collated by openmod-features contributors with the assistance of Claude Opus 5.5 (Anthropic).
+# It is based on publicly available PLEXOS® documentation (see `docs` in .metadata.yml).
+# It reflects our understanding to the best of our knowledge at the time of writing and is provided for informational purposes only, without warranty of accuracy or completeness.
+# It has not been reviewed or endorsed by Energy Exemplar.
 # PLEXOS® is a registered trademark of Energy Exemplar; no affiliation is implied.
 # Corrections are welcome via an issue or pull request.
 
