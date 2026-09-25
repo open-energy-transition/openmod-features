@@ -82,16 +82,9 @@ function HomePage() {
       })),
     [builtInUseCases, coverageOptions, data.taxonomy, data.tools],
   )
-  const topTool = toolBenchmarks[0]
-  const strongestFit = useCaseBenchmarks
-    .flatMap(({ useCase, tools }) =>
-      tools.map(({ tool, coverage }) => ({ useCase, tool, coverage })),
-    )
-    .sort((left, right) => compareCoverage(right.coverage, left.coverage))[0]
-
   return (
     <div className="grid gap-5">
-      <section className="atlas-home-hero grid gap-5 p-4 lg:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.9fr)] lg:items-end">
+      <section className="atlas-home-hero grid gap-5 p-4 lg:grid-cols-[minmax(0,1.1fr)_minmax(260px,0.45fr)] lg:items-end">
         <div className="max-w-4xl">
           <p className="atlas-eyebrow">Energy Model Benchmarks</p>
           <h2 className="atlas-home-title mt-2 text-3xl font-semibold sm:text-4xl lg:text-5xl">
@@ -102,40 +95,32 @@ function HomePage() {
             energy models by fit, then links to the matrix rows and evidence
             behind the score.
           </p>
-          <div className="mt-5 flex flex-wrap gap-2">
-            <HomeAction to="/use-cases" icon={<FaClipboardCheck aria-hidden="true" />}>
-              Compare use cases
-            </HomeAction>
-            <HomeAction to="/builder" icon={<FaWandMagicSparkles aria-hidden="true" />}>
-              Assemble benchmark
-            </HomeAction>
-            <HomeAction to="/tools" icon={<FaChartColumn aria-hidden="true" />}>
-              Open tool matrix
-            </HomeAction>
-          </div>
         </div>
 
-        <dl className="atlas-home-summary grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
-          <SummaryStat
-            label="Highest taxonomy score"
-            value={topTool?.tool.shortname ?? 'N/A'}
-            detail={formatScore(topTool?.coverage)}
-          />
-          <SummaryStat
-            label="Strongest use-case fit"
-            value={strongestFit?.tool.shortname ?? 'N/A'}
-            detail={
-              strongestFit
-                ? `${strongestFit.useCase.name} · ${formatScore(strongestFit.coverage)}`
-                : 'N/A'
-            }
-          />
-          <SummaryStat
-            label="Benchmark set"
-            value={`${data.tools.length} x ${builtInUseCases.length}`}
-            detail="Energy models and default use cases"
-          />
-        </dl>
+        <div className="atlas-home-action-stack grid gap-2">
+          <HomeAction
+            to="/use-cases"
+            icon={<FaClipboardCheck aria-hidden="true" />}
+            description="Review workflow fit scores."
+            variant="primary"
+          >
+            Compare
+          </HomeAction>
+          <HomeAction
+            to="/builder"
+            icon={<FaWandMagicSparkles aria-hidden="true" />}
+            description="Create a custom benchmark."
+          >
+            Assemble
+          </HomeAction>
+          <HomeAction
+            to="/tools"
+            icon={<FaChartColumn aria-hidden="true" />}
+            description="Inspect feature evidence."
+          >
+            Open
+          </HomeAction>
+        </div>
       </section>
 
       <BenchmarkPanel
@@ -194,19 +179,30 @@ function HomePage() {
 function HomeAction({
   to,
   icon,
+  description,
+  variant = 'secondary',
   children,
 }: {
   to: string
   icon: ReactNode
+  description: string
+  variant?: 'primary' | 'secondary'
   children: ReactNode
 }) {
   return (
     <Link
       to={to}
-      className="atlas-home-action atlas-focus inline-flex items-center gap-2 px-3 py-2 text-sm font-semibold outline-none"
+      data-variant={variant}
+      className="atlas-home-action atlas-focus grid w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-3 py-3 text-left outline-none"
     >
       <span className="atlas-home-action-icon">{icon}</span>
-      {children}
+      <span className="min-w-0">
+        <span className="block text-sm font-semibold">{children}</span>
+        <span className="atlas-caption mt-0.5 block truncate text-xs font-normal">
+          {description}
+        </span>
+      </span>
+      <FaArrowRight className="atlas-home-action-arrow" aria-hidden="true" />
     </Link>
   )
 }
@@ -239,28 +235,6 @@ function createUnifiedUseCase(useCases: UseCaseRecord[]): UseCaseRecord | null {
     assumptions: [],
     features,
   }
-}
-
-function SummaryStat({
-  label,
-  value,
-  detail,
-}: {
-  label: string
-  value: string
-  detail: string
-}) {
-  return (
-    <div className="atlas-home-stat p-3">
-      <dt className="atlas-caption text-xs font-semibold uppercase tracking-[0.12em]">
-        {label}
-      </dt>
-      <dd className="mt-2 truncate text-2xl font-semibold tabular-nums text-[var(--atlas-ink)]">
-        {value}
-      </dd>
-      <p className="atlas-caption mt-1 truncate text-xs">{detail}</p>
-    </div>
-  )
 }
 
 function BenchmarkPanel({
@@ -377,12 +351,4 @@ function BenchmarkBar({
       </span>
     </Link>
   )
-}
-
-function formatScore(coverage: CoverageResult | undefined) {
-  if (!coverage || coverage.percentage === null) {
-    return 'N/A'
-  }
-
-  return `${Math.round(coverage.percentage)}% score`
 }
