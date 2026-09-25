@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import { createFileRoute, useLocation } from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useDashboardContext } from '../components/dashboard-layout'
 import {
   CategoryRows,
@@ -22,6 +22,7 @@ import {
 } from '../data/coverage'
 import { CUSTOM_USE_CASE_ID } from '../data/custom-use-case'
 import {
+  compareCoverage,
   filterTaxonomy,
   filterTaxonomyByUseCases,
   syncSelectedIds,
@@ -60,7 +61,19 @@ function ToolMatrixPage() {
     )
   }, [data.useCases, location.search])
 
-  const selectedTools = data.tools.filter((tool) => selectedToolIds.has(tool.id))
+  // Rank columns by entire-taxonomy coverage so the order is stable under use-case filtering.
+  const rankedTools = useMemo(
+    () =>
+      data.tools
+        .map((tool) => ({
+          tool,
+          coverage: calculateToolCoverage(data.taxonomy, tool, coverageOptions),
+        }))
+        .sort((left, right) => compareCoverage(right.coverage, left.coverage))
+        .map(({ tool }) => tool),
+    [coverageOptions, data.taxonomy, data.tools],
+  )
+  const selectedTools = rankedTools.filter((tool) => selectedToolIds.has(tool.id))
   const useCaseScopedTaxonomy = filterTaxonomyByUseCases(
     data.taxonomy,
     data.useCases,

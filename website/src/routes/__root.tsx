@@ -18,7 +18,7 @@ export const Route = createRootRoute({
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       {
         name: 'description',
-        content: 'Dashboard for open energy modelling tool feature coverage.',
+        content: 'Dashboard for energy system modelling tool feature coverage.',
       },
       { title: 'Openmod Features Dashboard' },
     ],

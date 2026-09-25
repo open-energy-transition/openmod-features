@@ -53,7 +53,7 @@ function UseCaseFitPage() {
   const { data, coverageOptions, customUseCase } = useDashboardContext()
   const [query, setQuery] = useState('')
   const [selectedToolIds, setSelectedToolIds] = useState(
-    () => new Set(data.tools[0] ? [data.tools[0].id] : []),
+    () => new Set<string>(),
   )
   const [copied, setCopied] = useState(false)
   const [selectedUseCaseIds, setSelectedUseCaseIds] = useState(
@@ -309,10 +309,6 @@ function UseCaseFitPage() {
 function syncSelectedToolIds(current: Set<string>, tools: { id: string }[]) {
   const validIds = new Set(tools.map((tool) => tool.id))
   const next = new Set([...current].filter((id) => validIds.has(id)))
-
-  if (next.size === 0 && tools[0]) {
-    next.add(tools[0].id)
-  }
 
   return next.size === current.size && [...next].every((id) => current.has(id))
     ? current

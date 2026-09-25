@@ -8,10 +8,10 @@ SPDX-License-Identifier: MIT
 
 This is a repository containing:
 
-- feature lists for open-source energy system modelling tools.
+- feature lists for open-source energy system modelling tools, alongside a small number of proprietary tools included as reference points.
 - feature requirements for typical energy system modelling use-cases.
 
-By matching tool feature lists to use-cases, it is possible to see how well open energy system modelling tools are meeting decision-making needs and to highlight feature gaps.
+By matching tool feature lists to use-cases, it is possible to see how well open energy system modelling tools are meeting decision-making needs, how they compare to proprietary reference tools, and to highlight feature gaps.
 
 This repository is community-driven - we rely on tool users and developers to contribute feature lists.
 It is also continually evolving as we refine the feature taxonomy and use-cases through stakeholder engagement.
@@ -79,6 +79,10 @@ You can also optionally provide a documentation site URL and a longer descriptio
 
 >[!NOTE]
 >`maintainers` are _not_ the tool maintainers, but those who will be assigned responsibility to review future changes to the feature list in this repository.
+
+>[!NOTE]
+>Proprietary, closed-source tools can be added as reference points against which open-source tools are compared.
+>As there is no public source code, use the tool's product page as its source URL and reference publicly available documentation in each feature's `source` key.
 
 ## Updating your tool
 

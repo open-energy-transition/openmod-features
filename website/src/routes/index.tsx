@@ -88,12 +88,13 @@ function HomePage() {
         <div className="max-w-4xl">
           <p className="atlas-eyebrow">Energy Model Benchmarks</p>
           <h2 className="atlas-home-title mt-2 text-3xl font-semibold sm:text-4xl lg:text-5xl">
-            Compare use-case scores before opening the matrix.
+            How well does each tool fit your modelling workflow?
           </h2>
           <p className="atlas-copy mt-3 max-w-3xl text-sm leading-6 sm:text-base">
-            Start with workflow-relevant feature coverage. Each chart ranks
-            energy models by fit, then links to the matrix rows and evidence
-            behind the score.
+            Each chart scores tools by the share of a use case&apos;s required
+            features they support, starting with coverage of the entire feature
+            taxonomy. Select a chart to see the features and evidence behind
+            each score.
           </p>
         </div>
 

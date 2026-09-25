@@ -169,9 +169,11 @@ function HomeIntro({ data }: { data: DashboardData }) {
         <p className="atlas-eyebrow">Inventory Snapshot</p>
         <p className="atlas-copy mt-1 max-w-3xl text-sm leading-6">
           openmod-features is a community-maintained feature inventory for
-          open-source energy system modelling tools and common planning use
-          cases. Matching tool feature lists to use-case requirements helps
-          identify which tools fit a workflow and where feature gaps remain.
+          energy system modelling tools and common planning use cases. It
+          focuses on open-source tools, with one proprietary, closed-source
+          tool (PLEXOS®) included as a commercial reference point. Matching
+          tool feature lists to use-case requirements helps identify which
+          tools fit a workflow and where feature gaps remain.
         </p>
         <div className="mt-3 flex flex-wrap gap-2">
           <PreambleLink
@@ -263,7 +265,7 @@ function DashboardHeader({
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div className="atlas-header-copy">
             <p className="atlas-eyebrow">
-              Open Energy Modelling
+              Energy System Modelling
             </p>
             <h1 className="atlas-title mt-2 text-3xl font-semibold sm:text-4xl">
               Tool Feature Dashboard

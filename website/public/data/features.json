@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-25T19:20:32.310Z",
+  "generatedAt": "2026-09-25T19:35:43.185Z",
   "taxonomyVersion": "v0.3.0",
   "taxonomy": [
     {
@@ -5449,8 +5449,8 @@
   "tools": [
     {
       "id": "calliope",
-      "name": "calliope",
-      "shortname": "calliope",
+      "name": "Calliope",
+      "shortname": "Calliope",
       "docs": "https://calliope.readthedocs.io",
       "source": "https://github.com/calliope-project/calliope",
       "version": "v0.7.0",
@@ -9301,7 +9301,7 @@
     {
       "id": "PLEXOS",
       "name": "PLEXOS®",
-      "shortname": "PLEXOS",
+      "shortname": "PLEXOS®",
       "docs": "https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/index.htm",
       "source": "https://www.energyexemplar.com/plexos",
       "version": "11.0",
@@ -10858,7 +10858,7 @@
     {
       "id": "pypsa",
       "name": "Python for Power System Analysis",
-      "shortname": "pypsa",
+      "shortname": "PyPSA",
       "docs": "https://docs.pypsa.org/latest/",
       "source": "https://github.com/PyPSA/pypsa",
       "version": "v1.3.0",
@@ -12313,7 +12313,7 @@
     {
       "id": "times",
       "name": "The Integrated MARKAL-EFOM System",
-      "shortname": "times",
+      "shortname": "TIMES",
       "docs": "https://iea-etsap.org/index.php/documentation",
       "source": "https://github.com/etsap-TIMES/TIMES_model",
       "version": "v4.9.7",

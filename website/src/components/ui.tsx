@@ -240,12 +240,17 @@ export function ToolName({
 }) {
   return (
     <div className={compact ? 'grid justify-items-center gap-1' : 'grid gap-1'}>
-      <span className="font-medium text-[var(--atlas-ink)]">
+      <span
+        className="font-medium text-[var(--atlas-ink)]"
+        title={compact && tool.name !== tool.shortname ? tool.name : undefined}
+      >
         {compact ? tool.shortname : tool.name}
       </span>
-      <span className="atlas-caption max-w-44 truncate text-xs">
-        {compact ? tool.name : tool.shortname}
-      </span>
+      {compact ? null : (
+        <span className="atlas-caption max-w-44 truncate text-xs">
+          {tool.shortname}
+        </span>
+      )}
       {tool.version ? (
         <span className="atlas-caption max-w-44 truncate text-[11px]">
           {tool.version}

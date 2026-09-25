@@ -14,6 +14,7 @@ import {
   FaFileCircleCheck,
   FaGavel,
   FaLink,
+  FaLock,
   FaRegCircleQuestion,
   FaRotate,
   FaScaleBalanced,
@@ -36,7 +37,6 @@ function AboutPage() {
       <section className="grid gap-4 xl:grid-cols-2">
         <Panel
           title="What The Scores Mean"
-          description="How to interpret benchmark-style percentages."
         >
           <div className="grid gap-3 p-4 text-sm">
             <InfoItem
@@ -54,12 +54,16 @@ function AboutPage() {
               title="Scores compare coverage"
               detail="Percentages show how many required features are met under the active coverage rules. They do not measure runtime performance, scale, or solution quality."
             />
+            <InfoItem
+              icon={<FaLock aria-hidden="true" />}
+              title="One proprietary tool"
+              detail="The inventory focuses on open-source tools. PLEXOS® is the one proprietary, closed-source tool: its list is compiled by project contributors from public documentation only, so values cannot be checked against source code, and it has not been reviewed or endorsed by Energy Exemplar. PLEXOS® is a registered trademark of Energy Exemplar; no affiliation is implied."
+            />
           </div>
         </Panel>
 
         <Panel
           title="Contribution Model"
-          description="The repository is designed for distributed maintenance."
         >
           <div className="grid gap-3 p-4 text-sm">
             <InfoItem
@@ -85,7 +89,6 @@ function AboutPage() {
 
         <Panel
           title="Governance & Maintenance"
-          description="How project and entry responsibilities are split."
         >
           <div className="grid gap-3 p-4 text-sm">
             <InfoItem
@@ -109,7 +112,6 @@ function AboutPage() {
 
         <Panel
           title="Release, Taxonomy & Reuse"
-          description="How the shared dataset evolves."
         >
           <div className="grid gap-3 p-4 text-sm">
             <InfoItem
@@ -135,7 +137,6 @@ function AboutPage() {
 
       <Panel
         title="Data Quality"
-        description="Validation and maintenance signals for the feature inventory."
       >
         <dl className="grid gap-3 p-4 text-sm md:grid-cols-2 xl:grid-cols-4">
           <QualityItem
