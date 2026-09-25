@@ -116,6 +116,7 @@ describe('generated dashboard data', () => {
     expect(data.tools.map((item) => item.id).sort()).toEqual([
       'GenX',
       'OSeMOSYS',
+      'PLEXOS',
       'calliope',
       'pypsa',
       'times',

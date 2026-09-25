@@ -7,10 +7,10 @@ authors = ["Bryn Pickering <17178478+brynpickering@users.noreply.github.com>"]
 channels = ["conda-forge"]
 name = "openmod-features"
 platforms = ["win-64", "linux-64", "osx-64", "osx-arm64"]
-version = "0.2.0.dev"
+version = "0.3.0"
 
 [tasks.update-schema]
-cmd = "python schema/schema_generator.py"
+cmd = "python scripts/schema_generator.py"
 
 [tasks.add-tool]
 args = ["tool_name", {"arg" = "version", "default" = "stable"}]
@@ -44,22 +44,22 @@ cmd = "pixi run pre-commit run validate-yaml-links --file tools/{{ tool_name }}/
 cmd = "pytest tests -nauto"
 
 [dependencies]
-pre-commit = ">=4.2.0,<5"
-ruff = ">=0.12.4,<0.13"
-python = ">=3.13.5,<3.14"
-pydantic = ">=2.11.7,<3"
-click = ">=8.2.1,<9"
-copier = ">=9.10.2,<10"
-lychee = ">=0.20.1,<0.21"
-pytest = ">=8.3.4,<9"
-pyyaml = ">=6.0.2,<7"
+pre-commit = ">=4.6.2,<5"
+ruff = ">=0.16.8,<0.17"
+python = ">=3.14.7,<3.15"
+pydantic = ">=2.13.5,<3"
+click = ">=8.5.0,<9"
+copier = ">=9.18.2,<10"
+lychee = ">=0.24.2,<0.25"
+pytest = ">=9.1.1,<10"
+pyyaml = ">=6.0.3,<7"
 pytest-xdist = ">=3.8.0,<4"
-jsonschema = ">=4.23.0,<5"
-requests = ">=2.32.0,<3"
+jsonschema = ">=4.26.0,<5"
+requests = ">=2.34.2,<3"
 
 [feature.website.dependencies]
-pnpm = "*"
-nodejs = "*"
+pnpm = ">=12.4.1,<13"
+nodejs = ">=26.10.0,<26.11"
 
 [feature.website.tasks]
 deploy-cloudflare = { "cmd" = "pnpm deploy:cloudflare", "cwd" = "website" }
