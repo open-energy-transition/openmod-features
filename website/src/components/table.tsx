@@ -3,7 +3,13 @@
 // SPDX-License-Identifier: MIT
 
 import { Combobox } from '@base-ui/react/combobox'
-import { Fragment, type ReactNode } from 'react'
+import {
+  Fragment,
+  useRef,
+  type KeyboardEvent,
+  type PointerEvent,
+  type ReactNode,
+} from 'react'
 import {
   FaCheck,
   FaChevronDown,
@@ -19,6 +25,7 @@ import type {
   UseCaseRecord,
 } from '../data/types'
 import { Hint } from './ui'
+import { useFeatureTableContext } from './page-shell'
 
 export function TableToolbar({
   query,
@@ -435,16 +442,105 @@ function FeatureRow<T extends { id: string }>({
 }
 
 export function StickyHead({ children }: { children: ReactNode }) {
+  const context = useFeatureTableContext()
+  const cellRef = useRef<HTMLTableCellElement>(null)
+
+  function resizeTo(width: number) {
+    if (!context) {
+      return
+    }
+
+    const nextWidth = Math.min(
+      context.maxFeatureColumnWidth,
+      Math.max(context.minFeatureColumnWidth, Math.round(width)),
+    )
+    context.setFeatureColumnWidth(nextWidth)
+  }
+
+  function handlePointerDown(event: PointerEvent<HTMLButtonElement>) {
+    if (!context || !cellRef.current) {
+      return
+    }
+
+    event.preventDefault()
+    const handle = event.currentTarget
+    handle.setPointerCapture(event.pointerId)
+
+    const startX = event.clientX
+    const startWidth = cellRef.current.getBoundingClientRect().width
+
+    function handlePointerMove(moveEvent: globalThis.PointerEvent) {
+      resizeTo(startWidth + moveEvent.clientX - startX)
+    }
+
+    function handlePointerUp(upEvent: globalThis.PointerEvent) {
+      if (handle.hasPointerCapture(upEvent.pointerId)) {
+        handle.releasePointerCapture(upEvent.pointerId)
+      }
+      window.removeEventListener('pointermove', handlePointerMove)
+      window.removeEventListener('pointerup', handlePointerUp)
+      window.removeEventListener('pointercancel', handlePointerUp)
+    }
+
+    window.addEventListener('pointermove', handlePointerMove)
+    window.addEventListener('pointerup', handlePointerUp)
+    window.addEventListener('pointercancel', handlePointerUp)
+  }
+
+  function handleKeyDown(event: KeyboardEvent<HTMLButtonElement>) {
+    if (!context || !cellRef.current) {
+      return
+    }
+
+    const currentWidth =
+      context.featureColumnWidth ?? cellRef.current.getBoundingClientRect().width
+
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault()
+      resizeTo(currentWidth - (event.shiftKey ? 48 : 16))
+    } else if (event.key === 'ArrowRight') {
+      event.preventDefault()
+      resizeTo(currentWidth + (event.shiftKey ? 48 : 16))
+    } else if (event.key === 'Home') {
+      event.preventDefault()
+      resizeTo(context.minFeatureColumnWidth)
+    } else if (event.key === 'End') {
+      event.preventDefault()
+      resizeTo(context.maxFeatureColumnWidth)
+    }
+  }
+
   return (
-    <th className="atlas-sticky-head sticky left-0 top-0 z-20 w-72 min-w-72 px-3 py-3 text-left font-semibold sm:w-80 sm:min-w-80">
+    <th
+      ref={cellRef}
+      className="atlas-sticky-head sticky left-0 top-0 z-20 px-3 py-3 text-left font-semibold"
+    >
       {children}
+      {context ? (
+        <button
+          type="button"
+          aria-label="Resize feature column"
+          aria-orientation="vertical"
+          aria-valuemin={context.minFeatureColumnWidth}
+          aria-valuemax={context.maxFeatureColumnWidth}
+          aria-valuenow={Math.round(
+            context.featureColumnWidth ??
+              cellRef.current?.getBoundingClientRect().width ??
+              320,
+          )}
+          role="separator"
+          className="atlas-column-resizer atlas-focus"
+          onPointerDown={handlePointerDown}
+          onKeyDown={handleKeyDown}
+        />
+      ) : null}
     </th>
   )
 }
 
 export function StickyCell({ children }: { children: ReactNode }) {
   return (
-    <td className="atlas-sticky-cell sticky left-0 z-10 w-72 min-w-72 bg-inherit px-3 py-2 text-left sm:w-80 sm:min-w-80">
+    <td className="atlas-sticky-cell sticky left-0 z-10 bg-inherit px-3 py-2 text-left">
       {children}
     </td>
   )

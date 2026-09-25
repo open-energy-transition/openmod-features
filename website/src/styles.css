@@ -1211,6 +1211,7 @@ a:active {
   }
 
   .atlas-table {
+    --atlas-feature-column-width: clamp(13.5rem, 34vw, 20rem);
     color: var(--atlas-ink-soft);
   }
 
@@ -1223,6 +1224,9 @@ a:active {
   }
 
   .atlas-sticky-head {
+    width: var(--atlas-feature-column-width);
+    min-width: var(--atlas-feature-column-width);
+    max-width: var(--atlas-feature-column-width);
     background:
       linear-gradient(180deg, rgb(13 118 111 / 0.06), transparent),
       var(--atlas-surface-raised);
@@ -1233,9 +1237,46 @@ a:active {
   }
 
   .atlas-sticky-cell {
+    width: var(--atlas-feature-column-width);
+    min-width: var(--atlas-feature-column-width);
+    max-width: var(--atlas-feature-column-width);
     box-shadow:
       inset -1px 0 0 var(--atlas-line-soft),
       inset 0 -1px 0 var(--atlas-line-soft);
+  }
+
+  .atlas-column-resizer {
+    position: absolute;
+    top: 0;
+    right: -0.375rem;
+    bottom: 0;
+    z-index: 2;
+    width: 0.75rem;
+    cursor: col-resize;
+    touch-action: none;
+  }
+
+  .atlas-column-resizer::before {
+    position: absolute;
+    top: 0.65rem;
+    right: 0.3125rem;
+    bottom: 0.65rem;
+    width: 2px;
+    border-radius: 999px;
+    background: var(--atlas-line-strong);
+    content: "";
+    opacity: 0.6;
+    transition:
+      background-color 140ms ease,
+      opacity 140ms ease,
+      transform 140ms ease;
+  }
+
+  .atlas-column-resizer:hover::before,
+  .atlas-column-resizer:focus-visible::before {
+    background: var(--atlas-hydro);
+    opacity: 1;
+    transform: scaleX(1.35);
   }
 
   .atlas-category-row {

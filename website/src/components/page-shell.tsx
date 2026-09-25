@@ -2,7 +2,28 @@
 //
 // SPDX-License-Identifier: MIT
 
-import type { ReactNode } from 'react'
+import {
+  createContext,
+  useContext,
+  useMemo,
+  useState,
+  type CSSProperties,
+  type Dispatch,
+  type ReactNode,
+  type SetStateAction,
+} from 'react'
+
+const FEATURE_COLUMN_MIN = 176
+const FEATURE_COLUMN_MAX = 560
+
+type FeatureTableContextValue = {
+  featureColumnWidth: number | null
+  setFeatureColumnWidth: Dispatch<SetStateAction<number | null>>
+  minFeatureColumnWidth: number
+  maxFeatureColumnWidth: number
+}
+
+const FeatureTableContext = createContext<FeatureTableContextValue | null>(null)
 
 export function FeatureTable({
   children,
@@ -11,13 +32,36 @@ export function FeatureTable({
   children: ReactNode
   minWidth: string
 }) {
-  return (
-    <div className="atlas-table-frame">
-      <table className="atlas-table w-full border-collapse text-sm" style={{ minWidth }}>
-        {children}
-      </table>
-    </div>
+  const [featureColumnWidth, setFeatureColumnWidth] = useState<number | null>(null)
+  const contextValue = useMemo(
+    () => ({
+      featureColumnWidth,
+      setFeatureColumnWidth,
+      minFeatureColumnWidth: FEATURE_COLUMN_MIN,
+      maxFeatureColumnWidth: FEATURE_COLUMN_MAX,
+    }),
+    [featureColumnWidth],
   )
+  const tableStyle = {
+    minWidth,
+    ...(featureColumnWidth
+      ? { '--atlas-feature-column-width': `${featureColumnWidth}px` }
+      : null),
+  } as CSSProperties
+
+  return (
+    <FeatureTableContext.Provider value={contextValue}>
+      <div className="atlas-table-frame">
+        <table className="atlas-table w-full border-collapse text-sm" style={tableStyle}>
+          {children}
+        </table>
+      </div>
+    </FeatureTableContext.Provider>
+  )
+}
+
+export function useFeatureTableContext() {
+  return useContext(FeatureTableContext)
 }
 
 export function ColumnHead({ children }: { children: ReactNode }) {
