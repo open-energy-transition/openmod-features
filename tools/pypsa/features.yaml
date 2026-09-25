@@ -4,18 +4,19 @@
 #
 # SPDX-License-Identifier: CC-BY-4.0
 
-# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/0cd1a85/schema/tool-schema.yaml
+# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/v0.3.0/schema/tool-schema.yaml
 
 # Assessed against PyPSA v1.3.0 (released 19th August 2026).
-# `dev` entries link to the open pull request or to an unreleased `master` change.
+# `dev` entries link to open pull requests or unreleased changes on the default branch (`master`).
 
+version: 'v1.3.0'
 features:
   processes:
     boundary_exchange:
       value: y
       source:
-        # `Generator` as supply from outside the system boundary; `Load` with inverted
-        # sign as an export. Volume/availability bounded by `e_sum_max` / `p_max_pu`.
+        # `Generator` as supply from outside the system boundary; `Load` with inverted sign as an export.
+        # Volume/availability bounded by `e_sum_max` / `p_max_pu`.
         - https://docs.pypsa.org/v1.3.0/user-guide/components/generators/
         - https://docs.pypsa.org/v1.3.0/user-guide/components/loads/
         - https://docs.pypsa.org/v1.3.0/user-guide/optimization/dispatch-limits/#volume-limits
@@ -28,17 +29,16 @@ features:
       multi_carrier_io:
         value: y
         source:
-          # `bus2`/`efficiency2`... on `Link` and `rate0`/`rate1`... on `Process` give
-          # several in-/out-flows at fixed ratio to the reference flow.
+          # `bus2`/`efficiency2`... on `Link` and `rate0`/`rate1`... on `Process` give several in-/out-flows at fixed ratio to the reference flow.
           - https://docs.pypsa.org/v1.3.0/user-guide/components/links/
           - https://docs.pypsa.org/v1.3.0/user-guide/components/processes/
           - https://docs.pypsa.org/v1.3.0/examples/chp-fixed-heat-power-ratio/
           - https://docs.pypsa.org/v1.3.0/examples/biomass-synthetic-fuels-carbon-management/
       flexible_ratio:
+        # Tenuous: no built-in flexible-ratio attribute.
+        # The documented extraction-condensing CHP example frees the heat/power ratio with custom linear constraints describing the feasible operating region.
         value: y
         source:
-          # Extraction-condensing CHP: the heat/power ratio is freed by custom linear
-          # constraints describing the feasible operating region.
           - https://docs.pypsa.org/v1.3.0/examples/power-to-gas-boiler-chp/
           - https://docs.pypsa.org/v1.3.0/user-guide/optimization/custom-constraints/
     temporal_transfer:
@@ -61,39 +61,41 @@ features:
         - https://docs.pypsa.org/v1.3.0/examples/transport-delay/
         - https://docs.pypsa.org/v1.3.0/examples/chained-hydro-reservoirs/
     buffered_transfer:
+      # No linepack / in-transit inventory; pipelines are transport links with linear losses (a `Store` on an intermediate bus is only a lumped approximation).
       value: n
-      source: []
+      source:
+        - https://docs.pypsa.org/v1.3.0/user-guide/faq/#does-pypsa-model-more-than-just-the-power-system-can-methane-hydrogen-carbon-dioxide-networks-be-included
+        - https://github.com/PyPSA/PyPSA/issues/577
     discrete_transport:
       value: n
       source: []
     state_changing_transfer:
       value: n
       source:
-        # FAQ: district heating is only represented "at a high level of abstraction ...
-        # Detailed hydraulic or temperature-dependent physics are not represented".
+        # FAQ: district heating is only represented "at a high level of abstraction ... Detailed hydraulic or temperature-dependent physics are not represented".
         - https://docs.pypsa.org/v1.3.0/user-guide/faq/#can-pypsa-model-district-heating-networks
         - https://github.com/PyPSA/PyPSA/issues/577
     explicit_demand:
       inelastic:
         value: y
         source:
-          # `Load` is balanced at its bus like any other component; shiftable demand is
-          # built by pairing a `Load` with a `Store`/`StorageUnit`, or by a `Generator`
-          # with `sign=-1` which carries the full set of dispatch constraints.
+          # `Load` is balanced at its bus like any other component;
+          # shiftable demand is built by pairing a `Load` with a `Store`/`StorageUnit`, or by a `Generator` with `sign=-1` which carries the full set of dispatch constraints.
           - https://docs.pypsa.org/v1.3.0/user-guide/components/loads/
           - https://docs.pypsa.org/v1.3.0/user-guide/faq/#can-you-model-market-clearing-in-pypsa
           - https://docs.pypsa.org/v1.3.0/user-guide/optimization/energy-balance/
       price_responsive:
         value: y
         source:
+          # Negative-sign `Generator` with (piecewise or quadratic) marginal cost as a demand bid curve.
+          # Dispatchable/committable `Load` is an open PR (#1917).
           - https://docs.pypsa.org/v1.3.0/examples/demand-elasticity/
           - https://docs.pypsa.org/v1.3.0/examples/demand-supply-bids/
           - https://docs.pypsa.org/v1.3.0/user-guide/faq/#how-is-demand-modelled
       mobile_storage:
-        # Tenuous: PyPSA has no dedicated mobile-storage component. The documented
-        # pattern is a `Store` on a dedicated bus with a charging `Link` whose
-        # time-varying `p_max_pu` encodes when the vehicle is connected; the attachment
-        # point itself is fixed rather than varying in space.
+        # No dedicated mobile-storage component.
+        # The documented pattern is a `Store` on a dedicated vehicle bus with charging `Link`s whose time-varying `p_max_pu` encodes when the vehicle is connected;
+        # linking that bus to several location buses, each with its own availability profile, varies the attachment in space.
         value: y
         source:
           - https://docs.pypsa.org/v1.3.0/examples/battery-electric-vehicle-charging/
@@ -107,38 +109,46 @@ features:
             - https://docs.pypsa.org/v1.3.0/user-guide/optimization/power-flow/#kirchhoffs-voltage-law-kvl
             - https://docs.pypsa.org/v1.3.0/examples/ac-dc-lopf/
         ac_opf:
-          # Tenuous: PyPSA's LOPF is the linearised (DC) formulation applied to AC
-          # networks, optionally extended with a piecewise-linearised quadratic loss
-          # term. There is no linearised-AC formulation carrying voltage magnitudes or
-          # reactive power in the optimisation - the FAQ states only linear power flow
-          # constraints can enter `n.optimize()`.
-          value: y
+          # LOPF is the linearised (DC) formulation applied to AC networks;
+          # there is no linearised-AC formulation carrying voltage magnitudes or reactive power in the optimisation -
+          # the FAQ states only linear power flow constraints can enter `n.optimize()`, with AC flow only as a post-hoc `n.pf()`.
+          # LinDistFlow is a requested feature (#1706).
+          value: n
           source:
-            - https://docs.pypsa.org/v1.3.0/user-guide/optimization/power-flow/#linear-loss-approximation
-            - https://docs.pypsa.org/v1.3.0/home/features/
             - https://docs.pypsa.org/v1.3.0/user-guide/faq/#can-pypsa-model-ac-power-flow
+            - https://github.com/PyPSA/PyPSA/issues/1706
+        unbalanced_flows:
+          # All power flow is single-phase equivalent.
+          # The closest request (#1706) is for balanced DistFlow; distribution-network solvers are discussed in #1573.
+          value: n
+          source:
+            - https://github.com/PyPSA/PyPSA/issues/1573
       sensitivity_limits:
         ptdf:
-          # PTDF matrices can be computed (`sn.calculate_PTDF()`) but there is no
-          # built-in mechanism to constrain flows with them; flow-based market coupling
-          # is an open PR and a roadmap item.
-          value: dev
+          # Tenuous: no built-in PTDF-constraint mechanism in v1.3.0.
+          # The flow-based market coupling examples (merged after v1.3.0, so only on the `latest` docs) add a supplied `PTDF .
+          # NP <= RAM` domain as a custom constraint using only v1.3.0 functionality; zonal PTDFs from nodal `sn.calculate_PTDF()` and GSKs.
+          # A native flow-based component / global constraint is in open PRs.
+          value: y
           source:
-            - https://github.com/PyPSA/PyPSA/pull/1897
-            - https://github.com/PyPSA/PyPSA/pull/1932
+            - https://docs.pypsa.org/latest/examples/fbmc-simple-example/
+            - https://docs.pypsa.org/latest/examples/fbmc-building-domain/
             - https://docs.pypsa.org/v1.3.0/api/networks/subnetwork/#pypsa.SubNetwork.calculate_PTDF
+            - https://github.com/PyPSA/PyPSA/pull/1897
+            - https://github.com/PyPSA/PyPSA/pull/1933
         outage_factors:
           value: y
           source:
-            # SCLOPF constrains post-outage flows with the BODF/LODF matrix.
+            # SCLOPF constrains post-outage flows with the BODF/LODF matrix (computed by PyPSA from the network); the FBMC domain example also folds LODFs into user-supplied N-1 CNEC rows.
             - https://docs.pypsa.org/v1.3.0/user-guide/optimization/contingencies/#n-1-security-constraints-for-sclopf
             - https://docs.pypsa.org/v1.3.0/api/networks/subnetwork/#pypsa.SubNetwork.calculate_BODF
+            - https://docs.pypsa.org/latest/examples/fbmc-building-domain/
         generic_constraints:
-          # No built-in generic transmission constraint component; user-supplied
-          # sensitivity coefficients would have to be applied through custom math.
+          # No built-in transmission constraint object with user-supplied coefficients; a native `FlowBasedConstraint` component and a `flow_based` global constraint type are open PRs.
           value: dev
           source:
             - https://github.com/PyPSA/PyPSA/pull/1897
+            - https://github.com/PyPSA/PyPSA/pull/1933
       network_limits:
         thermal:
           value: y
@@ -147,40 +157,43 @@ features:
             - https://docs.pypsa.org/v1.3.0/user-guide/optimization/dispatch-limits/#non-extendable-components
             - https://docs.pypsa.org/v1.3.0/user-guide/components/lines/
         phase_angle:
-          # Tenuous: the cycle-based KVL formulation carries no bus voltage-angle
-          # variables, so no angle-difference limit can be imposed. Angle differences
-          # can only be checked after the fact with `n.lpf()`.
-          value: n
+          # The cycle-based KVL formulation in v1.3.0 carries no angle-difference limit.
+          # Enforcing `v_ang_max` on lines and transformers (as an equivalent bound on the flow) is merged to `master` but unreleased.
+          value: dev
           source:
+            - https://github.com/PyPSA/PyPSA/pull/1910
             - https://docs.pypsa.org/v1.3.0/user-guide/optimization/power-flow/#kirchhoffs-voltage-law-kvl
-            - https://docs.pypsa.org/v1.3.0/user-guide/troubleshooting/#power-flow-convergence
+      losses:
+        value: y
+        source:
+          # Piecewise-linear (tangent- or secant-based) approximation of the quadratic loss parabola, enabled with `n.optimize(transmission_losses=...)`.
+          - https://docs.pypsa.org/v1.3.0/user-guide/optimization/power-flow/#linear-loss-approximation
+          - https://docs.pypsa.org/v1.3.0/user-guide/optimization/power-flow/#secant-based-linearization-with-error-control
       network_devices:
         transformers:
           value: y
           source:
-            # Tap ratio and fixed or optimised phase shift (PSTs, new in v1.3.0).
+            # Tap ratio and fixed phase shift on `Transformer`; `ShuntImpedance` component.
             - https://docs.pypsa.org/v1.3.0/user-guide/components/transformers/
-            - https://docs.pypsa.org/v1.3.0/user-guide/optimization/power-flow/#phase-shifting-transformers-psts
+            - https://docs.pypsa.org/v1.3.0/user-guide/components/shunt-impedances/
             - https://docs.pypsa.org/v1.3.0/examples/transformer-example/
         facts_devices:
-          value: n
-          source: []
+          value: y
+          source:
+            # Phase-shifting transformers with `phase_shift_min < phase_shift_max` make the phase shift a per-snapshot decision variable (new in v1.3.0).
+            - https://docs.pypsa.org/v1.3.0/user-guide/optimization/power-flow/#phase-shifting-transformers-psts
+            - https://docs.pypsa.org/v1.3.0/user-guide/components/transformers/
         hvdc_converters:
           value: y
           source:
             # `Link` represents point-to-point HVDC links and AC/DC converter stations.
             - https://docs.pypsa.org/v1.3.0/user-guide/components/links/
             - https://docs.pypsa.org/v1.3.0/examples/ac-dc-lopf/
-      unbalanced_flows:
-        value: n
-        source:
-          - https://github.com/PyPSA/PyPSA/issues/1706
     hydraulic_flow:
       linearised_flow:
         value: n
         source:
-          # Pipeline carriers are modelled as transport links with linear losses; there
-          # is no nodal pressure state.
+          # Pipeline carriers are modelled as transport links with linear losses; there is no nodal pressure state.
           - https://docs.pypsa.org/v1.3.0/user-guide/faq/#does-pypsa-model-more-than-just-the-power-system-can-methane-hydrogen-carbon-dioxide-networks-be-included
           - https://github.com/PyPSA/PyPSA/issues/577
       composition_tracking:
@@ -205,21 +218,27 @@ features:
           - https://docs.pypsa.org/v1.3.0/user-guide/optimization/capacity-limits/#modularity-constraints
           - https://docs.pypsa.org/v1.3.0/examples/modular-expansion/
       integer_investment_continuous_capacity:
-        # `purchasable=True` adds a binary purchase decision alongside the continuous
-        # capacity variable. Merged into the docs but not yet in a release.
+        # `purchasable=True` adds a binary purchase decision alongside the continuous capacity variable; open PR.
         value: dev
         source:
           - https://github.com/PyPSA/PyPSA/pull/1900
-      retrofit:
-        value: n
-        source:
-          # The FAQ points at an external publication rather than built-in support.
-          - https://docs.pypsa.org/v1.3.0/user-guide/faq/#how-do-i-model-retrofitting-of-coal-plants-with-ccs
+          - https://github.com/PyPSA/PyPSA/issues/1482
       multi_period:
         value: y
         source:
           - https://docs.pypsa.org/v1.3.0/user-guide/optimization/pathway-planning/
           - https://docs.pypsa.org/v1.3.0/examples/multi-investment-optimisation/
+      retrofit:
+        value: n
+        source:
+          # The FAQ points at an external publication rather than built-in support.
+          - https://docs.pypsa.org/v1.3.0/user-guide/faq/#how-do-i-model-retrofitting-of-coal-plants-with-ccs
+      endogenous_retirement:
+        # Retirement only happens exogenously at `build_year + lifetime`; endogenous (early) decommissioning is requested but has no PR.
+        value: n
+        source:
+          - https://github.com/PyPSA/PyPSA/issues/926
+          - https://github.com/PyPSA/PyPSA/issues/1278
     operation:
       unit_commitment:
         value: y
@@ -229,8 +248,7 @@ features:
       maintenance_scheduling:
         value: y
         source:
-          # `maintainable`, `maintenance_duration`, `maintenance_events`,
-          # `maintenance_pu`; window timing co-optimised with dispatch (new in v1.3.0).
+          # `maintainable`, `maintenance_duration`, `maintenance_events`, `maintenance_pu`; window timing co-optimised with dispatch (new in v1.3.0).
           - https://docs.pypsa.org/v1.3.0/user-guide/optimization/maintenance-scheduling/
           - https://docs.pypsa.org/v1.3.0/examples/maintenance-scheduling/
   constraints:
@@ -238,26 +256,22 @@ features:
       temporal:
         pointwise:
           investment:
-            size_bounds:
-              value: y
-              source:
-                - https://docs.pypsa.org/v1.3.0/user-guide/optimization/capacity-limits/#upper-and-lower-bounds
-            discrete_increments:
-              value: y
-              source:
-                - https://docs.pypsa.org/v1.3.0/user-guide/optimization/capacity-limits/#modularity-constraints
-                - https://docs.pypsa.org/v1.3.0/examples/modular-expansion/
-            unit_purchase:
-              value: dev
-              source:
-                - https://github.com/PyPSA/PyPSA/pull/1900
+            value: y
+            source:
+              # With investment periods, `{p,e,s}_nom_{min,max}` of a per-period component bound the capacity added in its build year;
+              # `n.carriers.max_growth` caps the absolute capacity added per carrier and period; `*_nom_mod` adds capacity in whole modules.
+              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/pathway-planning/#expansion-limits
+              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/capacity-limits/#upper-and-lower-bounds
+              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#growth-limit-per-carrier
+              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/capacity-limits/#modularity-constraints
           operation:
             availability_derating:
               value: y
               source:
-                # Time-varying `p_max_pu` / `s_max_pu`.
+                # Time-varying `p_max_pu` / `s_max_pu`, and `e_min_pu` / `e_max_pu` on storage levels.
                 - https://docs.pypsa.org/v1.3.0/user-guide/optimization/dispatch-limits/#non-extendable-components
                 - https://docs.pypsa.org/v1.3.0/user-guide/components/generators/
+                - https://docs.pypsa.org/v1.3.0/user-guide/optimization/storage/#stores
             minimum_stable_level:
               value: y
               source:
@@ -267,37 +281,34 @@ features:
             forced_offline:
               value: y
               source:
-                # `p_max_pu=0` for outage snapshots, or an endogenously placed
-                # maintenance window with `maintenance_pu=1`.
+                # `p_max_pu=0` for outage snapshots, or an endogenously placed maintenance window with `maintenance_pu=1`.
                 - https://docs.pypsa.org/v1.3.0/user-guide/optimization/dispatch-limits/#non-extendable-components
                 - https://docs.pypsa.org/v1.3.0/user-guide/optimization/maintenance-scheduling/#effect-on-dispatch-limits
             forced_online:
               value: y
               source:
-                # `p_min_pu>0` on a non-committable asset is a must-run condition;
-                # `p_set` fixes the dispatch schedule outright.
+                # `p_min_pu>0` on a non-committable asset is a must-run condition; `p_set` fixes the dispatch schedule outright.
+                # Fixing the commitment status itself (`status_set`) is requested in #1271.
                 - https://docs.pypsa.org/v1.3.0/user-guide/components/generators/
                 - https://docs.pypsa.org/v1.3.0/user-guide/optimization/dispatch-limits/#fixed-dispatch
         sequential:
           investment:
-            build_rate:
-              value: y
-              source:
-                # `n.carriers.max_growth` / `max_relative_growth` per investment period.
-                - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#growth-limit-per-carrier
-            retirement:
-              # Retirement is scheduled exogenously through `build_year` + `lifetime`;
-              # endogenous decommissioning is not available (issues #926, #1278).
-              value: y
-              source:
-                - https://docs.pypsa.org/v1.3.0/user-guide/optimization/pathway-planning/#dispatch-of-active-components
-                - https://docs.pypsa.org/v1.3.0/examples/myopic-pathway/
             availability_window:
               value: y
               source:
-                # Per-period components with `build_year`/`lifetime` restrict which
-                # periods an asset may be built in.
+                # Per-period components with `build_year`/`lifetime` restrict which periods an asset may be built in.
                 - https://docs.pypsa.org/v1.3.0/user-guide/optimization/pathway-planning/#implementation
+            relative_build_rate:
+              value: y
+              source:
+                # `n.carriers.max_relative_growth` limits new capacity relative to the capacity added in the previous investment period.
+                - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#growth-limit-per-carrier
+            technical_lifetime:
+              value: y
+              source:
+                # Dispatch is forced to zero from `build_year + lifetime` onwards.
+                - https://docs.pypsa.org/v1.3.0/user-guide/optimization/pathway-planning/#dispatch-of-active-components
+                - https://docs.pypsa.org/v1.3.0/examples/myopic-pathway/
           operation:
             ramping:
               value: y
@@ -307,14 +318,14 @@ features:
             start_shut_trajectory:
               value: y
               source:
-                # `ramp_limit_start_up` / `ramp_limit_shut_down` bound the flow change on
-                # the start-up and shut-down transitions separately.
+                # `ramp_limit_start_up` / `ramp_limit_shut_down` bound the flow change on the start-up and shut-down transitions separately.
+                # Multi-snapshot run-up trajectories are requested in #1709.
                 - https://docs.pypsa.org/v1.3.0/user-guide/optimization/unit-commitment/#ramping
+                - https://github.com/PyPSA/PyPSA/issues/1709
             commitment_duration:
               value: y
               source:
-                # `min_up_time` / `min_down_time`, with `up_time_before` /
-                # `down_time_before` carrying state across optimisation windows.
+                # `min_up_time` / `min_down_time`, with `up_time_before` / `down_time_before` carrying state across optimisation windows.
                 - https://docs.pypsa.org/v1.3.0/user-guide/optimization/unit-commitment/#start-up-and-shut-down
             start_consumption:
               value: n
@@ -325,13 +336,13 @@ features:
             capacity_target:
               value: y
               source:
-                # `tech_capacity_expansion_limit` global constraint, optionally per bus
-                # and per investment period; transmission expansion volume limit.
+                # `tech_capacity_expansion_limit` global constraint, optionally per bus and per investment period; transmission expansion volume limit.
                 - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#expansion-limit
                 - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#volume-limit-on-transmission-expansion
             expansion_budget:
               value: y
               source:
+                # Built-in only for transmission expansion cost; other budgets via a custom constraint on the `capex` expression.
                 - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#cost-limit-on-transmission-expansion
             event_count:
               value: n
@@ -347,29 +358,26 @@ features:
             flow_volume:
               value: y
               source:
-                # `e_sum_min`/`e_sum_max` over the horizon; `operational_limit` global
-                # constraint; arbitrary sub-periods via custom constraints.
+                # `e_sum_min`/`e_sum_max` over the horizon; `operational_limit` global constraint; arbitrary sub-periods via custom constraints.
                 - https://docs.pypsa.org/v1.3.0/user-guide/optimization/dispatch-limits/#volume-limits
                 - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#operational-limit
                 - https://docs.pypsa.org/v1.3.0/examples/periodic-operational-limits/
             impact_budget:
               value: y
               source:
-                # `primary_energy` global constraint over a user-chosen
-                # `carrier_attribute`; also usable as a budget across all periods.
+                # `primary_energy` global constraint over a user-chosen `carrier_attribute`; also usable as a budget across all periods.
                 - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#primary-energy
                 - https://docs.pypsa.org/v1.3.0/user-guide/optimization/pathway-planning/#emission-budgets
             event_count:
-              # Storage cycle budgets are an open PR; no limit on start counts exists.
-              value: dev
-              source:
-                - https://github.com/PyPSA/PyPSA/pull/1915
-                - https://github.com/PyPSA/PyPSA/issues/1731
+              # No limit on the number of start-ups (or other discrete events) per period.
+              # The storage `cycles_max` budget in PR #1915 counts equivalent full cycles of throughput, which is a volume limit rather than an event count.
+              value: n
+              source: []
             state_duration:
               value: n
               source: []
             path_dependent:
-              # Capacity fade with cumulative cycling is an open PR.
+              # Capacity fade with cumulative storage throughput is an open PR.
               value: dev
               source:
                 - https://github.com/PyPSA/PyPSA/pull/1915
@@ -378,40 +386,16 @@ features:
           investment:
             value: y
             source:
-              # Brownfield stock via non-extendable components / `p_nom_min` and
-              # `build_year` before the first investment period; an end-state can be set
-              # with a capacity target in the final period.
+              # Brownfield stock via non-extendable components / `p_nom_min` and `build_year` before the first investment period; an end-state can be set with a capacity target in the final period.
               - https://docs.pypsa.org/v1.3.0/user-guide/optimization/pathway-planning/#objective
               - https://docs.pypsa.org/v1.3.0/user-guide/optimization/capacity-limits/#upper-and-lower-bounds
               - https://docs.pypsa.org/v1.3.0/examples/myopic-pathway/
           operation:
             value: y
             source:
-              # `e_initial`/`state_of_charge_initial`, `e_cyclic`, and the
-              # `*_per_period` variants controlling hand-over between periods.
+              # `e_initial`/`state_of_charge_initial`, `e_cyclic`, and the `*_per_period` variants controlling hand-over between periods.
               - https://docs.pypsa.org/v1.3.0/user-guide/optimization/storage/
               - https://docs.pypsa.org/v1.3.0/user-guide/optimization/pathway-planning/#storage-cyclicity-and-initial-energy-levels
-      assets:
-        spanning:
-          investment:
-            value: y
-            source:
-              # Global constraints sum investment variables across all components of a
-              # carrier.
-              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#expansion-limit
-              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#growth-limit-per-carrier
-          operation:
-            value: y
-            source:
-              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#primary-energy
-              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#operational-limit
-        dedicated_flow_routing:
-          value: y
-          source:
-            # Dedicated buses/carriers route a flow to a named subset of downstream
-            # assets, e.g. water cascading between reservoirs.
-            - https://docs.pypsa.org/v1.3.0/examples/chained-hydro-reservoirs/
-            - https://docs.pypsa.org/v1.3.0/user-guide/design/#buses
       spatial:
         investment:
           value: y
@@ -422,24 +406,39 @@ features:
         operation:
           value: y
           source:
-            # A single `primary_energy` CO2 cap sums over every emitting asset at every
-            # bus, so one constraint answers this leaf and
-            # `constraints.scope.assets.spanning.operation` alike.
+            # A single `primary_energy` CO2 cap sums over every emitting asset at every bus, so one constraint answers this leaf and `constraints.scope.assets.spanning.operation` alike.
             - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#primary-energy
+      assets:
+        spanning:
+          investment:
+            value: y
+            source:
+              # Global constraints sum investment variables across all components of a carrier.
+              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#expansion-limit
+              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#growth-limit-per-carrier
+          operation:
+            value: y
+            source:
+              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#primary-energy
+              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#operational-limit
+        dedicated_flow_routing:
+          value: y
+          source:
+            # Dedicated buses/carriers route a flow to a named subset of downstream assets, e.g. water cascading between reservoirs.
+            - https://docs.pypsa.org/v1.3.0/examples/chained-hydro-reservoirs/
+            - https://docs.pypsa.org/v1.3.0/user-guide/design/#buses
     functional_form:
       linear_multi_variable:
         investment:
           value: y
           source:
-            # `max_hours` ties storage energy to power capacity; custom constraints
-            # link several capacity variables (e.g. charger/discharger ratios).
+            # `max_hours` ties storage energy to power capacity; custom constraints link several capacity variables (e.g. charger/discharger ratios).
             - https://docs.pypsa.org/v1.3.0/user-guide/optimization/storage/
             - https://docs.pypsa.org/v1.3.0/user-guide/network-optimization/#fix-the-ratio-between-incoming-and-outgoing-capacity-of-the-store
         operation:
           value: y
           source:
-            # Extraction-condensing CHP feasible operating region built from linear
-            # constraints over several dispatch variables.
+            # Extraction-condensing CHP feasible operating region built from linear constraints over several dispatch variables.
             - https://docs.pypsa.org/v1.3.0/examples/power-to-gas-boiler-chp/
             - https://docs.pypsa.org/v1.3.0/user-guide/optimization/custom-constraints/
       quadratic:
@@ -449,33 +448,32 @@ features:
         operation:
           value: n
           source:
-            # Quadratic terms are only supported in the objective; linopy does not
-            # support quadratic constraints.
+            # Quadratic terms are only supported in the objective; linopy does not support quadratic constraints.
             - https://docs.pypsa.org/v1.3.0/user-guide/optimization/stochastic/#risk-preferences-with-conditional-value-at-risk-cvar
             - https://docs.pypsa.org/v1.3.0/user-guide/network-optimization/
       nonlinear:
         investment:
+          # Piecewise curves apply to costs and to flow-dependent efficiencies, not to constraints on capacity variables.
           value: n
           source:
-            - https://github.com/PyPSA/PyPSA/issues/1730
+            - https://docs.pypsa.org/v1.3.0/user-guide/optimization/piecewise/
         operation:
           value: y
           source:
-            # Piecewise-linear part-load efficiency/rate curves on `Link`/`Process`;
-            # piecewise-linearised quadratic transmission losses.
+            # Piecewise-linear part-load efficiency/rate curves on `Link`/`Process`; piecewise-linearised quadratic transmission losses.
             - https://docs.pypsa.org/v1.3.0/user-guide/optimization/piecewise/
             - https://docs.pypsa.org/v1.3.0/examples/piecewise-constraints/
             - https://docs.pypsa.org/v1.3.0/user-guide/optimization/power-flow/#linear-loss-approximation
-    soft_constraints:
-      value: n
-      source:
-        - https://github.com/PyPSA/PyPSA/issues/1732
     reliability:
+      unserved_demand:
+        value: y
+        source:
+          - https://docs.pypsa.org/v1.3.0/api/networks/optimize/#pypsa.Network.optimize.add_load_shedding
+          - https://docs.pypsa.org/v1.3.0/user-guide/troubleshooting/#optimisation-convergence-infeasibility
       operating_reserve:
         online_headroom:
-          # Tenuous: there is no reserve component or attribute. The documented
-          # approach is a user-added reserve variable plus custom constraints bounding
-          # it by the headroom between dispatch and capacity.
+          # Tenuous: there is no reserve component or attribute.
+          # The documented approach is a user-added reserve variable plus custom constraints bounding it by the headroom between dispatch and capacity.
           value: y
           source:
             - https://docs.pypsa.org/v1.3.0/examples/reserve-power/
@@ -483,14 +481,20 @@ features:
         standby_capability:
           value: n
           source:
-            # The reserve example is explicit that offline quick-start capability is
-            # not covered by its formulation.
+            # The reserve example is explicit that offline quick-start capability is not covered by its formulation.
             - https://docs.pypsa.org/v1.3.0/examples/reserve-power/
             - https://github.com/PyPSA/PyPSA/issues/1729
         inertia:
           value: n
           source:
             - https://github.com/PyPSA/PyPSA/issues/1729
+      contingency_constrained:
+        value: y
+        source:
+          # N-1 SCLOPF over an enumerated set of branch outages.
+          # Post-contingency corrective action is not co-optimised.
+          - https://docs.pypsa.org/v1.3.0/user-guide/optimization/contingencies/
+          - https://docs.pypsa.org/v1.3.0/examples/scigrid-sclopf/
       probabilistic_reliability_limit:
         loss_of_load:
           value: n
@@ -500,18 +504,10 @@ features:
           value: n
           source:
             - https://github.com/PyPSA/PyPSA/issues/1490
-      unserved_demand:
-        value: y
-        source:
-          - https://docs.pypsa.org/v1.3.0/api/networks/optimize/#pypsa.Network.optimize.add_load_shedding
-          - https://docs.pypsa.org/v1.3.0/user-guide/troubleshooting/#optimisation-convergence-infeasibility
-      contingency_constrained:
-        value: y
-        source:
-          # N-1 SCLOPF over an enumerated set of branch outages. Post-contingency
-          # corrective action is not co-optimised.
-          - https://docs.pypsa.org/v1.3.0/user-guide/optimization/contingencies/
-          - https://docs.pypsa.org/v1.3.0/examples/scigrid-sclopf/
+    soft_constraints:
+      value: n
+      source:
+        - https://github.com/PyPSA/PyPSA/issues/1732
   cost:
     scope:
       temporal:
@@ -520,6 +516,10 @@ features:
             value: n
             source: []
           operation:
+            ramping:
+              value: n
+              source:
+                - https://github.com/PyPSA/PyPSA/issues/1733
             start_up:
               value: y
               source:
@@ -528,14 +528,8 @@ features:
               value: y
               source:
                 - https://docs.pypsa.org/v1.3.0/user-guide/optimization/objective/#start-up-shut-down-stand-by-costs
-            ramping:
-              value: n
-              source:
-                - https://github.com/PyPSA/PyPSA/issues/1733
             start_state_dependent:
-              # Start-up cost can vary per snapshot on `master` (PR #1909) but never as a
-              # function of how long the unit has been off, so hot/warm/cold starts
-              # cannot be distinguished.
+              # Start-up cost can vary per snapshot on `master` (PR #1909) but never as a function of how long the unit has been off, so hot/warm/cold starts cannot be distinguished.
               value: n
               source:
                 - https://docs.pypsa.org/v1.3.0/user-guide/optimization/objective/#start-up-shut-down-stand-by-costs
@@ -547,13 +541,9 @@ features:
               - https://github.com/PyPSA/PyPSA/issues/1599
           operation:
             value: n
-            source:
-              - https://github.com/PyPSA/PyPSA/issues/1731
-      assets:
+            source: []
+      spatial:
         investment:
-          # All built-in cost attributes (`capital_cost`, `fom_cost`, `unit_cost`) are
-          # per-component; a single term spanning several assets would require
-          # rewriting the objective through `math.user_defined_math`.
           value: n
           source:
             - https://docs.pypsa.org/v1.3.0/user-guide/optimization/objective/#investment-costs
@@ -561,8 +551,9 @@ features:
           value: n
           source:
             - https://docs.pypsa.org/v1.3.0/user-guide/optimization/objective/#marginal-costs
-      spatial:
+      assets:
         investment:
+          # All built-in cost attributes (`capital_cost`, `fom_cost`) are per-component; a single term spanning several assets would require rewriting the objective through `math.user_defined_math`.
           value: n
           source:
             - https://docs.pypsa.org/v1.3.0/user-guide/optimization/objective/#investment-costs
@@ -573,10 +564,11 @@ features:
     functional_form:
       fixed_charge:
         investment:
-          # `unit_cost`/`unit_cost_overnight` charged on the binary purchase decision.
+          # `unit_cost`/`unit_cost_overnight` charged on the binary purchase decision; open PR.
           value: dev
           source:
             - https://github.com/PyPSA/PyPSA/pull/1900
+            - https://github.com/PyPSA/PyPSA/issues/1482
         operation:
           value: y
           source:
@@ -590,50 +582,140 @@ features:
             - https://docs.pypsa.org/v1.3.0/user-guide/optimization/piecewise/
             - https://docs.pypsa.org/v1.3.0/examples/piecewise-constraints/
         operation:
-          flow_dependent:
-            value: y
-            source:
-              # Piecewise-linear `marginal_cost` curves against the per-unit flow,
-              # plus `marginal_cost_quadratic`.
-              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/piecewise/
-              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/objective/#quadratic-marginal-costs
-          bid_bands:
-            value: y
-            source:
-              # Cumulative piecewise marginal-cost curves are price-quantity bands;
-              # incr/decr offers around a reference dispatch are built in the
-              # redispatch example.
-              - https://docs.pypsa.org/v1.3.0/user-guide/optimization/piecewise/#cumulative-curves
-              - https://docs.pypsa.org/v1.3.0/examples/demand-supply-bids/
-              - https://docs.pypsa.org/v1.3.0/examples/scigrid-redispatch/
+          value: y
+          source:
+            # Piecewise-linear `marginal_cost` curves against the per-unit flow (cumulative curves give stepwise price-quantity bands), plus `marginal_cost_quadratic`.
+            - https://docs.pypsa.org/v1.3.0/user-guide/optimization/piecewise/
+            - https://docs.pypsa.org/v1.3.0/user-guide/optimization/piecewise/#cumulative-curves
+            - https://docs.pypsa.org/v1.3.0/user-guide/optimization/objective/#quadratic-marginal-costs
+            - https://docs.pypsa.org/v1.3.0/examples/demand-supply-bids/
       threshold_deviation:
         investment:
           value: n
           source: []
         operation:
-          # Tenuous: no dedicated deviation-cost attribute. The redispatch example
-          # constructs the pattern by fixing a reference dispatch with
-          # `p_min_pu`/`p_max_pu` and adding priced ramp-up / ramp-down components.
+          # Tenuous: no dedicated deviation-cost attribute.
+          # The redispatch example constructs incr/decr pricing by fixing a reference dispatch with `p_min_pu`/`p_max_pu` and adding priced ramp-up / ramp-down generators.
           value: y
           source:
             - https://docs.pypsa.org/v1.3.0/examples/scigrid-redispatch/
-    annuitisation:
-      discounting:
+    time_value:
+      annuitisation:
         value: y
         source:
-          # `overnight_cost` + `discount_rate` + `lifetime` annuitisation, and a social
-          # discount rate through investment period objective weightings.
+          # `overnight_cost` + `discount_rate` + `lifetime` annuitised automatically.
           - https://docs.pypsa.org/v1.3.0/user-guide/optimization/objective/#specifying-capital-costs
-          - https://docs.pypsa.org/v1.3.0/user-guide/design/#investment-periods
       fiscal_treatment:
         value: n
         source: []
+      period_discounting:
+        value: y
+        source:
+          # `n.investment_period_weightings.objective` multiplies all costs of an investment period, e.g. with a social discount rate.
+          - https://docs.pypsa.org/v1.3.0/user-guide/design/#investment-periods
+          - https://docs.pypsa.org/v1.3.0/user-guide/optimization/pathway-planning/#objective
+  objective:
+    quadratic:
+      value: y
+      source:
+        - https://docs.pypsa.org/v1.3.0/user-guide/optimization/objective/#quadratic-marginal-costs
+    multi_objective_weighted:
+      # Tenuous: the deterministic objective is always minimum system cost.
+      # Weighted combinations of several user-named objectives are only available through the MGA machinery, under a cost-slack constraint, or by editing the objective.
+      value: y
+      source:
+        - https://docs.pypsa.org/v1.3.0/user-guide/optimization/modelling-to-generate-alternatives/
+        - https://docs.pypsa.org/v1.3.0/examples/near-opt-space/
+        - https://docs.pypsa.org/v1.3.0/user-guide/optimization/custom-constraints/
+    multi_objective_pareto:
+      value: n
+      source:
+        # Near-optimal space exploration sweeps directions within a cost slack rather than generating a Pareto frontier across objectives.
+        - https://docs.pypsa.org/v1.3.0/examples/near-opt-space/
+    tie_breaking:
+      value: n
+      source: []
+  edge_effects:
+    time_operational:
+      value: y
+      source:
+        # Cyclic storage levels across the horizon or per investment period.
+        - https://docs.pypsa.org/v1.3.0/user-guide/optimization/storage/
+        - https://docs.pypsa.org/v1.3.0/user-guide/optimization/pathway-planning/#storage-cyclicity-and-initial-energy-levels
+    time_financial:
+      value: y
+      source:
+        # Type II annuitisation is chosen specifically because "the end-of-horizon effects are smaller compared to Type I": only the years an asset is active within the horizon are charged.
+        - https://docs.pypsa.org/v1.3.0/user-guide/optimization/pathway-planning/#literature
+        - https://docs.pypsa.org/v1.3.0/user-guide/optimization/objective/#specifying-capital-costs
+    energy_balance:
+      # PyPSA relies on round-trip losses making simultaneous charge and discharge uneconomic rather than forbidding it.
+      # There is no built-in complementarity constraint or binary, nor a documented custom-constraint recipe for one (contrast `flexible_ratio`, whose custom constraints have a documented example).
+      value: n
+      source:
+        - https://docs.pypsa.org/v1.3.0/user-guide/optimization/storage/#storage-units
+  actors:
+    portfolio:
+      value: n
+      source: []
+    heuristic_markup:
+      value: n
+      source: []
+    distributed_objectives:
+      value: n
+      source: []
+    equilibrium:
+      value: y
+      source:
+        # Cournot-Nash equilibrium via a "fictitious objective", i.e. a quadratic markup reformulation of the cost-minimisation objective.
+        # Making it an official attribute is requested in #1735.
+        - https://docs.pypsa.org/v1.3.0/examples/imperfect-competition/
+        - https://docs.pypsa.org/v1.3.0/user-guide/optimization/objective/#quadratic-marginal-costs
+  uncertainty:
+    two_stage_stochastic:
+      value: y
+      source:
+        - https://docs.pypsa.org/v1.3.0/user-guide/optimization/stochastic/
+        - https://docs.pypsa.org/v1.3.0/examples/stochastic-optimization/
+    multi_stage_stochastic:
+      value: n
+      source:
+        # Investment is fixed as first stage and dispatch as recourse; further stages are explicitly "planned for future releases".
+        - https://docs.pypsa.org/v1.3.0/user-guide/optimization/stochastic/#risk-neutral-two-stage-stochastic-programming
+        - https://github.com/PyPSA/PyPSA/issues/1477
+    risk_aversion:
+      value: y
+      source:
+        # CVaR with configurable confidence level `alpha` and tail weight `omega`.
+        - https://docs.pypsa.org/v1.3.0/user-guide/optimization/stochastic/#risk-preferences-with-conditional-value-at-risk-cvar
+        - https://docs.pypsa.org/v1.3.0/user-guide/design/#scenarios
+    robust_optimisation:
+      # Tenuous: there is no dedicated robust formulation.
+      # Worst-case minimisation is approximated by setting CVaR `omega=1` and `alpha = 1 - p(worst scenario)` over a discrete scenario set.
+      value: y
+      source:
+        - https://docs.pypsa.org/v1.3.0/user-guide/optimization/stochastic/#risk-preferences-with-conditional-value-at-risk-cvar
+    near_optimal:
+      value: y
+      source:
+        - https://docs.pypsa.org/v1.3.0/user-guide/optimization/modelling-to-generate-alternatives/
+        - https://docs.pypsa.org/v1.3.0/examples/mga/
+        - https://docs.pypsa.org/v1.3.0/examples/near-opt-space/
   model_definition:
+    configurable_dimensions:
+      value: y
+      source:
+        # Most attributes can be given as static values or as snapshot-indexed series, and gain a scenario dimension once `n.set_scenarios()` is called.
+        - https://docs.pypsa.org/v1.3.0/user-guide/design/#data-storage
+        - https://docs.pypsa.org/v1.3.0/user-guide/design/#scenarios
+    extensible_dimensions:
+      value: n
+      source:
+        - https://github.com/PyPSA/PyPSA/issues/856
     dimension_groups:
-      # Tenuous: `carrier` is the built-in grouping used by global constraints, and
-      # arbitrary extra attributes passed to `n.add()` persist as component columns
-      # which custom groupers and custom constraints can then filter on. There is no
-      # first-class named-group object.
+      # Tenuous: `carrier` is the built-in grouping used by global constraints,
+      # and arbitrary extra attributes passed to `n.add()` persist as component columns which custom groupers and custom constraints can then filter on.
+      # There is no first-class named-group object.
       value: y
       source:
         - https://docs.pypsa.org/v1.3.0/user-guide/statistics/#registering-custom-groupers
@@ -645,29 +727,15 @@ features:
         # Vintaged expansion candidates must be written out per period by the user.
         - https://docs.pypsa.org/v1.3.0/user-guide/optimization/pathway-planning/#implementation
         - https://github.com/PyPSA/PyPSA/issues/1789
-    configurable_dimensions:
-      value: y
-      source:
-        # Most attributes can be given as static values or as snapshot-indexed series,
-        # and gain a scenario dimension once `n.set_scenarios()` is called.
-        - https://docs.pypsa.org/v1.3.0/user-guide/design/#data-storage
-        - https://docs.pypsa.org/v1.3.0/user-guide/design/#scenarios
-    extensible_dimensions:
-      value: n
-      source:
-        - https://github.com/PyPSA/PyPSA/issues/856
   math:
     formulation_transparency:
       value: y
       source:
-        # Every constraint is documented with its equations and its name in the built
-        # linopy model, which can be inspected directly.
+        # Every constraint is documented with its equations and its name in the built linopy model, which can be inspected directly.
         - https://docs.pypsa.org/v1.3.0/user-guide/optimization/overview/
         - https://docs.pypsa.org/v1.3.0/user-guide/optimization/custom-constraints/
     problem_file_export:
-      # Tenuous: PyPSA exposes linopy's `problem_fn` through `n.optimize()` and the
-      # model object can be written out, but LP/MPS export is not documented as a
-      # PyPSA feature in its own right.
+      # Tenuous: PyPSA exposes linopy's `problem_fn` through `n.optimize()` and the model object can be written out, but LP/MPS export is not documented as a PyPSA feature in its own right.
       value: y
       source:
         - https://docs.pypsa.org/v1.3.0/api/networks/optimize/#pypsa.Network.optimize.solve_model
@@ -680,83 +748,196 @@ features:
     piecewise_formulation:
       value: y
       source:
-        # LP chord-line, incremental (delta), SOS2 and disjunctive formulations, with
-        # per-attribute overrides via `piecewise_options`.
+        # LP chord-line, incremental (delta), SOS2 and disjunctive formulations, with per-attribute overrides via `piecewise_options`.
         - https://docs.pypsa.org/v1.3.0/user-guide/optimization/piecewise/#piecewise-formulations
     user_defined_math:
       value: y
       source:
         - https://docs.pypsa.org/v1.3.0/user-guide/optimization/custom-constraints/
         - https://docs.pypsa.org/v1.3.0/user-guide/network-optimization/#custom-constraints
-  interface:
-    gui:
-      build:
-        value: n
+  tractability:
+    dimension_reduction:
+      adjacency_aggregation:
+        temporal:
+          value: y
+          source:
+            # `n.cluster.temporal.resample()` for contiguous averaging and `.segment()` for contiguous variable-length tsam segments.
+            - https://docs.pypsa.org/v1.3.0/user-guide/clustering/#temporal-clustering
+            - https://docs.pypsa.org/v1.3.0/examples/time-series-aggregation/
+        spatial:
+          value: y
+          source:
+            # A user-supplied busmap or hierarchical / greedy-modularity clustering merges adjacent buses into contiguous zones.
+            - https://docs.pypsa.org/v1.3.0/user-guide/clustering/#custom-clustering
+            - https://docs.pypsa.org/v1.3.0/user-guide/clustering/#hierarchical-clustering
+      similarity_aggregation:
+        temporal:
+          # Tenuous: `resample`/`segment` both preserve adjacency.
+          # Non-contiguous typical periods have to be computed outside PyPSA (e.g. with tsam) and applied through `n.cluster.temporal.from_snapshot_map()`.
+          value: y
+          source:
+            - https://docs.pypsa.org/v1.3.0/user-guide/clustering/#temporal-clustering
+            - https://docs.pypsa.org/v1.3.0/api/networks/cluster/
+        spatial:
+          value: y
+          source:
+            # k-means on weighted coordinates and HAC on arbitrary feature matrices (e.g. solar profiles) group buses by likeness.
+            - https://docs.pypsa.org/v1.3.0/user-guide/clustering/#k-means-clustering
+            - https://docs.pypsa.org/v1.3.0/user-guide/clustering/#hierarchical-clustering
+        assets:
+          value: y
+          source:
+            # `aggregate_one_ports` / `aggregate_generators_carriers` collapse components to one representative per carrier and bus.
+            - https://docs.pypsa.org/v1.3.0/user-guide/clustering/#custom-clustering
+            - https://docs.pypsa.org/v1.3.0/api/networks/cluster/
+        scenarios:
+          value: n
+          source: []
+      non_contiguity_handling:
+        temporal:
+          value: n
+          source: []
+        spatial:
+          value: n
+          source: []
+      equivalencing:
+        spatial:
+          value: n
+          source:
+            # Clustering aggregates buses; there is no Ward/REI/Kron-style boundary equivalent of an external network.
+            - https://docs.pypsa.org/v1.3.0/api/networks/cluster/
+        assets:
+          value: n
+          source: []
+      filtering:
+        temporal:
+          value: y
+          source:
+            # `n.cluster.temporal.downsample()` keeps every Nth snapshot; `n.set_snapshots()` / `n.optimize(snapshots=...)` select a subset.
+            - https://docs.pypsa.org/v1.3.0/user-guide/clustering/#temporal-clustering
+            - https://docs.pypsa.org/v1.3.0/user-guide/design/#snapshots
+        spatial:
+          value: n
+          source:
+            - https://github.com/PyPSA/PyPSA/issues/1400
+        assets:
+          value: y
+          source:
+            # The `active` attribute excludes components from the built problem without removing them from the network.
+            - https://docs.pypsa.org/v1.3.0/user-guide/components/generators/
+            - https://docs.pypsa.org/v1.3.0/api/components/components/#pypsa.Components.active_assets
+        scenarios:
+          # Tenuous: `n.get_scenario()` extracts a single scenario from a stochastic network as a deterministic one; there is no selection of a scenario subset.
+          value: y
+          source:
+            - https://docs.pypsa.org/v1.3.0/api/networks/indexing/#pypsa.Network.get_scenario
+    variable_fidelity:
+      formulation:
+        # Tenuous: `committable` / `p_nom_mod` are per-component switches,
+        # so differing fidelity across the horizon is achieved by defining separate components per investment period rather than by a fidelity setting.
+        value: y
         source:
-          - https://docs.pypsa.org/v1.3.0/user-guide/faq/#does-pypsa-have-a-gui
-      run:
-        value: n
+          - https://docs.pypsa.org/v1.3.0/user-guide/optimization/pathway-planning/#implementation
+          - https://docs.pypsa.org/v1.3.0/user-guide/optimization/unit-commitment/
+      resolution:
+        temporal:
+          # Snapshots may differ between investment periods, but not between buses or carriers - non-uniform time resolution per bus is a roadmap item.
+          value: y
+          source:
+            - https://docs.pypsa.org/v1.3.0/user-guide/design/#investment-periods
+            - https://github.com/PyPSA/PyPSA/issues/1286
+        spatial:
+          value: n
+          source: []
+        assets:
+          value: n
+          source: []
+        scenarios:
+          value: n
+          source: []
+    reformulation:
+      linearised_unit_commitment:
+        value: y
         source:
-          - https://docs.pypsa.org/v1.3.0/user-guide/faq/#does-pypsa-have-a-gui
-      analyse:
-        # No GUI ships with PyPSA; an "Interactive dashboard / local PyPSA App" is a
-        # roadmap item, and third-party viewers exist outside the project.
-        value: n
+          # `n.optimize(linearized_unit_commitment=True)` with tightening constraints.
+          - https://docs.pypsa.org/v1.3.0/user-guide/optimization/unit-commitment/#linearization
+          - https://docs.pypsa.org/v1.3.0/examples/uc-prices/
+      nonlinear_handling:
+        convex_relaxation:
+          value: n
+          source:
+            - https://github.com/PyPSA/PyPSA/issues/1706
+        function_conversion:
+          value: n
+          source:
+            # The secant loss approximation auto-segments to an error tolerance, but only for PyPSA's own loss parabola; user-supplied curves must be handed over as breakpoints.
+            - https://docs.pypsa.org/v1.3.0/user-guide/optimization/piecewise/#defining-piecewise-data
+            - https://docs.pypsa.org/v1.3.0/user-guide/optimization/power-flow/#secant-based-linearization-with-error-control
+      constraint_screening:
+        # SCLOPF in v1.3.0 formulates every outage/branch pair.
+        # Screening pairs by a (capacity-weighted) BODF threshold is in open PRs.
+        value: dev
         source:
-          - https://docs.pypsa.org/v1.3.0/user-guide/faq/#does-pypsa-have-a-gui
+          - https://github.com/PyPSA/PyPSA/pull/1875
+          - https://github.com/PyPSA/PyPSA/pull/1929
+          - https://github.com/PyPSA/PyPSA/issues/1589
+      decomposition:
+        value: dev
+        source:
+          - https://github.com/PyPSA/PyPSA/pull/1774
+          - https://github.com/PyPSA/PyPSA/pull/1558
+          - https://github.com/PyPSA/PyPSA/issues/1712
+      numeric_scaling:
+        value: dev
+        source:
+          - https://github.com/PyPSA/PyPSA/pull/1912
           - https://pypsa.org/roadmap
-    api:
-      build:
-        value: y
-        source:
-          - https://docs.pypsa.org/v1.3.0/user-guide/import-export/#adding-removing-merging
-          - https://docs.pypsa.org/v1.3.0/api/networks/network/
-      run:
-        value: y
-        source:
-          - https://docs.pypsa.org/v1.3.0/api/networks/optimize/
-      analyse:
-        value: y
-        source:
-          - https://docs.pypsa.org/v1.3.0/user-guide/statistics/
-          - https://docs.pypsa.org/v1.3.0/api/networks/statistics/
-    cli:
-      build:
-        value: n
-        source:
-          - https://github.com/PyPSA/PyPSA/issues/1486
-      run:
-        value: n
-        source:
-          - https://github.com/PyPSA/PyPSA/issues/1486
-      analyse:
-        value: n
-        source:
-          - https://github.com/PyPSA/PyPSA/issues/1486
-    remote_execution:
+  orchestration:
+    scenario_runs:
+      # Tenuous: `NetworkCollection` collates and compares solved networks, but the runs themselves have to be launched by the user.
       value: n
-      source: []
-    solver_configuration:
-      value: y
       source:
-        # `solver_name` / `solver_options` per call or as global options.
-        - https://docs.pypsa.org/v1.3.0/user-guide/troubleshooting/#optimisation-convergence-infeasibility
-        - https://docs.pypsa.org/v1.3.0/user-guide/options/#parameters-options
-    analysis_templates:
+        - https://docs.pypsa.org/v1.3.0/user-guide/collection/
+    sampled_runs:
       value: n
-      source: []
-    visualisation:
-      charts:
+      source:
+        - https://docs.pypsa.org/v1.3.0/user-guide/faq/#can-you-do-generation-adequacy-studies-with-monte-carlo-unplanned-outages
+        - https://github.com/PyPSA/PyPSA/issues/1484
+        - https://pypsa.org/roadmap
+    coupled_models:
+      limited_foresight:
+        investment:
+          # Tenuous: no built-in myopic loop.
+          # The documented example iterates over investment periods in user code, passing optimised capacities on with `n.optimize(snapshots=...)` excluding not-yet-built components.
+          value: y
+          source:
+            - https://docs.pypsa.org/v1.3.0/examples/myopic-pathway/
+        operation:
+          value: y
+          source:
+            - https://docs.pypsa.org/v1.3.0/api/networks/optimize/#pypsa.Network.optimize.optimize_with_rolling_horizon
+            - https://docs.pypsa.org/v1.3.0/examples/rolling-horizon/
+            - https://docs.pypsa.org/v1.3.0/examples/water-value/
+      fidelity_sequence:
+        # Tenuous: the hand-over helpers exist (`fix_optimal_capacities()`, `optimize_and_run_non_linear_powerflow()`) but PyPSA does not manage a declared sequence of model instances;
+        # the user chains the calls.
         value: y
         source:
-          # Static (matplotlib/seaborn) and interactive (plotly) area, bar, line,
-          # scatter, box, violin and histogram plots of any statistics metric.
-          - https://docs.pypsa.org/v1.3.0/user-guide/plotting/charts/
-      network_maps:
+          - https://docs.pypsa.org/v1.3.0/api/networks/optimize/#pypsa.Network.optimize.fix_optimal_capacities
+          - https://docs.pypsa.org/v1.3.0/api/networks/optimize/#pypsa.Network.optimize.optimize_and_run_non_linear_powerflow
+          - https://docs.pypsa.org/v1.3.0/examples/scigrid-lopf-then-pf/
+      market_sequence:
+        value: n
+        source:
+          # The redispatch example chains market and redispatch stages by hand, with no tool-managed bidirectional exchange.
+          - https://docs.pypsa.org/v1.3.0/user-guide/faq/#can-you-model-intra-day-as-well-as-day-ahead-markets
+          - https://docs.pypsa.org/v1.3.0/examples/scigrid-redispatch/
+      convergence_iteration:
         value: y
         source:
-          - https://docs.pypsa.org/v1.3.0/user-guide/plotting/static-map/
-          - https://docs.pypsa.org/v1.3.0/user-guide/plotting/explore/
+          # Iterating line capacities against their impedances until convergence.
+          - https://docs.pypsa.org/v1.3.0/api/networks/optimize/#pypsa.Network.optimize.optimize_transmission_expansion_iteratively
+          - https://docs.pypsa.org/v1.3.0/user-guide/optimization/power-flow/#kirchhoffs-voltage-law-kvl
   io:
     plain_text:
       input:
@@ -803,8 +984,7 @@ features:
       input:
         value: n
         source:
-          # netCDF as a format supports lazy loading, but PyPSA reads networks fully
-          # into memory; lazy/streaming IO is an open issue and a roadmap item.
+          # netCDF as a format supports lazy loading, but PyPSA reads networks fully into memory; lazy/streaming IO is an open issue and a roadmap item.
           - https://github.com/PyPSA/PyPSA/issues/1705
           - https://pypsa.org/roadmap
       output:
@@ -813,10 +993,8 @@ features:
           - https://github.com/PyPSA/PyPSA/issues/1705
           - https://pypsa.org/roadmap
     standardised:
-      # Tenuous: the only community-format readers are for PYPOWER `ppc` dictionaries
-      # (the Python port of the MATPOWER case format) and pandapower networks, both
-      # partial. PSSE RAW / CIM are not supported (issue #24) and there is no
-      # ontology-aligned or IAMC-style interchange.
+      # Tenuous: the only community-format readers are for PYPOWER `ppc` dictionaries (the Python port of the MATPOWER case format) and pandapower networks, both partial.
+      # PSSE RAW / CIM are not supported (issue #24) and there is no ontology-aligned or IAMC-style interchange.
       input:
         value: y
         source:
@@ -828,304 +1006,25 @@ features:
         source:
           - https://docs.pypsa.org/v1.3.0/user-guide/import-export/#pypower
           - https://github.com/PyPSA/PyPSA/issues/24
-  edge_effects:
-    time_operational:
-      value: y
-      source:
-        # Cyclic storage levels across the horizon or per investment period.
-        - https://docs.pypsa.org/v1.3.0/user-guide/optimization/storage/
-        - https://docs.pypsa.org/v1.3.0/user-guide/optimization/pathway-planning/#storage-cyclicity-and-initial-energy-levels
-    time_financial:
-      value: y
-      source:
-        # Type II annuitisation is chosen specifically because "the end-of-horizon
-        # effects are smaller compared to Type I".
-        - https://docs.pypsa.org/v1.3.0/user-guide/optimization/pathway-planning/#literature
-        - https://docs.pypsa.org/v1.3.0/user-guide/optimization/objective/#specifying-capital-costs
-    energy_balance:
-      # Tenuous: PyPSA relies on round-trip losses making simultaneous charge and
-      # discharge uneconomic rather than forbidding it; there is no complementarity
-      # constraint or binary to rule it out.
-      value: n
-      source:
-        - https://docs.pypsa.org/v1.3.0/user-guide/optimization/storage/#storage-units
-  actors:
-    portfolio:
-      value: n
-      source: []
-    distributed_objectives:
-      value: n
-      source: []
-    equilibrium:
-      value: y
-      source:
-        # Cournot-Nash equilibrium via a "fictitious objective", i.e. a quadratic
-        # markup reformulation of the cost-minimisation objective.
-        - https://docs.pypsa.org/v1.3.0/examples/imperfect-competition/
-        - https://docs.pypsa.org/v1.3.0/user-guide/optimization/objective/#quadratic-marginal-costs
-    heuristic_markup:
-      value: n
-      source:
-        - https://github.com/PyPSA/PyPSA/issues/1735
-  objective:
-    multi_objective_weighted:
-      # Tenuous: the deterministic objective is always minimum system cost. Weighted
-      # combinations of several user-named objectives are only available through the
-      # MGA machinery, under a cost-slack constraint.
-      value: y
-      source:
-        - https://docs.pypsa.org/v1.3.0/user-guide/optimization/modelling-to-generate-alternatives/
-        - https://docs.pypsa.org/v1.3.0/examples/near-opt-space/
-        - https://docs.pypsa.org/v1.3.0/user-guide/optimization/custom-constraints/
-    multi_objective_pareto:
-      value: n
-      source:
-        # Near-optimal space exploration sweeps directions within a cost slack rather
-        # than generating a Pareto frontier across objectives.
-        - https://docs.pypsa.org/v1.3.0/examples/near-opt-space/
-    quadratic:
-      value: y
-      source:
-        - https://docs.pypsa.org/v1.3.0/user-guide/optimization/objective/#quadratic-marginal-costs
-    tie_breaking:
-      value: n
-      source: []
-  uncertainty:
-    two_stage_stochastic:
-      value: y
-      source:
-        - https://docs.pypsa.org/v1.3.0/user-guide/optimization/stochastic/
-        - https://docs.pypsa.org/v1.3.0/examples/stochastic-optimization/
-    multi_stage_stochastic:
-      value: n
-      source:
-        # Investment is fixed as first stage and dispatch as recourse; further stages
-        # are explicitly "planned for future releases".
-        - https://docs.pypsa.org/v1.3.0/user-guide/optimization/stochastic/#risk-neutral-two-stage-stochastic-programming
-        - https://github.com/PyPSA/PyPSA/issues/1477
-    risk_aversion:
-      value: y
-      source:
-        # CVaR with configurable confidence level `alpha` and tail weight `omega`.
-        - https://docs.pypsa.org/v1.3.0/user-guide/optimization/stochastic/#risk-preferences-with-conditional-value-at-risk-cvar
-        - https://docs.pypsa.org/v1.3.0/user-guide/design/#scenarios
-    near_optimal:
-      value: y
-      source:
-        - https://docs.pypsa.org/v1.3.0/user-guide/optimization/modelling-to-generate-alternatives/
-        - https://docs.pypsa.org/v1.3.0/examples/mga/
-        - https://docs.pypsa.org/v1.3.0/examples/near-opt-space/
-    robust_optimisation:
-      # Tenuous: there is no dedicated robust formulation. Worst-case minimisation is
-      # approximated by setting CVaR `omega=1` and `alpha = 1 - p(worst scenario)` over
-      # a discrete scenario set.
-      value: y
-      source:
-        - https://docs.pypsa.org/v1.3.0/user-guide/optimization/stochastic/#risk-preferences-with-conditional-value-at-risk-cvar
-  tractability:
-    dimension_reduction:
-      adjacency_aggregation:
-        temporal:
-          value: y
-          source:
-            # `n.cluster.temporal.resample()` for contiguous averaging and
-            # `.segment()` for contiguous variable-length tsam segments.
-            - https://docs.pypsa.org/v1.3.0/user-guide/clustering/#temporal-clustering
-            - https://docs.pypsa.org/v1.3.0/examples/time-series-aggregation/
-        spatial:
-          value: y
-          source:
-            # A user-supplied busmap or hierarchical / greedy-modularity clustering
-            # merges adjacent buses into contiguous zones.
-            - https://docs.pypsa.org/v1.3.0/user-guide/clustering/#custom-clustering
-            - https://docs.pypsa.org/v1.3.0/user-guide/clustering/#hierarchical-clustering
-      similarity_aggregation:
-        temporal:
-          # Tenuous: `resample`/`segment` both preserve adjacency. Non-contiguous
-          # typical periods have to be computed outside PyPSA (e.g. with tsam) and
-          # applied through `n.cluster.temporal.from_snapshot_map()`.
-          value: y
-          source:
-            - https://docs.pypsa.org/v1.3.0/user-guide/clustering/#temporal-clustering
-            - https://docs.pypsa.org/v1.3.0/api/networks/cluster/
-        spatial:
-          value: y
-          source:
-            # k-means on weighted coordinates and HAC on arbitrary feature matrices
-            # (e.g. solar profiles) group buses by likeness.
-            - https://docs.pypsa.org/v1.3.0/user-guide/clustering/#k-means-clustering
-            - https://docs.pypsa.org/v1.3.0/user-guide/clustering/#hierarchical-clustering
-        assets:
-          value: y
-          source:
-            # `aggregate_one_ports` / `aggregate_generators_carriers` collapse
-            # components to one representative per carrier and bus.
-            - https://docs.pypsa.org/v1.3.0/user-guide/clustering/#custom-clustering
-            - https://docs.pypsa.org/v1.3.0/api/networks/cluster/
-        scenarios:
-          value: n
-          source: []
-      equivalencing:
-        spatial:
-          value: n
-          source:
-            # Clustering aggregates buses; there is no Ward/REI/Kron-style boundary
-            # equivalent of an external network.
-            - https://docs.pypsa.org/v1.3.0/api/networks/cluster/
-        assets:
-          value: n
-          source: []
-      filtering:
-        temporal:
-          value: y
-          source:
-            # `n.cluster.temporal.downsample()` keeps every Nth snapshot;
-            # `n.set_snapshots()` / `n.optimize(snapshots=...)` select a subset.
-            - https://docs.pypsa.org/v1.3.0/user-guide/clustering/#temporal-clustering
-            - https://docs.pypsa.org/v1.3.0/user-guide/design/#snapshots
-        spatial:
-          value: n
-          source:
-            - https://github.com/PyPSA/PyPSA/issues/1400
-        assets:
-          value: y
-          source:
-            # The `active` attribute excludes components from the built problem
-            # without removing them from the network.
-            - https://docs.pypsa.org/v1.3.0/user-guide/components/generators/
-            - https://docs.pypsa.org/v1.3.0/api/components/components/#pypsa.Components.active_assets
-        scenarios:
-          value: n
-          source: []
-      non_contiguity_handling:
-        temporal:
-          value: n
-          source: []
-        spatial:
-          value: n
-          source: []
-    variable_fidelity:
-      formulation:
-        # Tenuous: `committable` / `p_nom_mod` are per-component switches, so differing
-        # fidelity across the horizon is achieved by defining separate components per
-        # investment period rather than by a fidelity setting.
-        value: y
-        source:
-          - https://docs.pypsa.org/v1.3.0/user-guide/optimization/pathway-planning/#implementation
-          - https://docs.pypsa.org/v1.3.0/user-guide/optimization/unit-commitment/
-      resolution:
-        temporal:
-          # Snapshots may differ between investment periods, but not between buses or
-          # carriers - non-uniform time resolution per bus is a roadmap item.
-          value: y
-          source:
-            - https://docs.pypsa.org/v1.3.0/user-guide/design/#investment-periods
-            - https://github.com/PyPSA/PyPSA/issues/1286
-        spatial:
-          value: n
-          source: []
-        assets:
-          value: n
-          source: []
-        scenarios:
-          value: n
-          source: []
-    reformulation:
-      constraint_screening:
-        value: n
-        source:
-          - https://github.com/PyPSA/PyPSA/issues/1589
-      linearised_unit_commitment:
-        value: y
-        source:
-          # `n.optimize(linearized_unit_commitment=True)` with tightening constraints.
-          - https://docs.pypsa.org/v1.3.0/user-guide/optimization/unit-commitment/#linearization
-          - https://docs.pypsa.org/v1.3.0/examples/uc-prices/
-      nonlinear_handling:
-        convex_relaxation:
-          value: n
-          source:
-            - https://github.com/PyPSA/PyPSA/issues/1706
-        function_conversion:
-          value: n
-          source:
-            # The secant loss approximation auto-segments to an error tolerance, but
-            # only for PyPSA's own loss parabola; user-supplied curves must be handed
-            # over as breakpoints.
-            - https://docs.pypsa.org/v1.3.0/user-guide/optimization/piecewise/#defining-piecewise-data
-            - https://docs.pypsa.org/v1.3.0/user-guide/optimization/power-flow/#secant-based-linearization-with-error-control
-      decomposition:
-        value: dev
-        source:
-          - https://github.com/PyPSA/PyPSA/pull/1774
-          - https://github.com/PyPSA/PyPSA/pull/1558
-          - https://github.com/PyPSA/PyPSA/issues/1712
-      approximation:
-        value: n
-        source: []
-      numeric_scaling:
-        value: dev
-        source:
-          - https://github.com/PyPSA/PyPSA/pull/1912
-          - https://pypsa.org/roadmap
-  orchestration:
-    coupled_models:
-      limited_foresight:
-        investment:
-          value: y
-          source:
-            - https://docs.pypsa.org/v1.3.0/examples/myopic-pathway/
-        operation:
-          value: y
-          source:
-            - https://docs.pypsa.org/v1.3.0/api/networks/optimize/#pypsa.Network.optimize.optimize_with_rolling_horizon
-            - https://docs.pypsa.org/v1.3.0/examples/rolling-horizon/
-            - https://docs.pypsa.org/v1.3.0/examples/water-value/
-      fidelity_sequence:
-        # Tenuous: the hand-over helpers exist (`fix_optimal_capacities()`,
-        # `optimize_and_run_non_linear_powerflow()`) but PyPSA does not manage a
-        # declared sequence of model instances; the user chains the calls.
-        value: y
-        source:
-          - https://docs.pypsa.org/v1.3.0/api/networks/optimize/#pypsa.Network.optimize.fix_optimal_capacities
-          - https://docs.pypsa.org/v1.3.0/api/networks/optimize/#pypsa.Network.optimize.optimize_and_run_non_linear_powerflow
-          - https://docs.pypsa.org/v1.3.0/examples/scigrid-lopf-then-pf/
-      market_sequence:
-        value: n
-        source:
-          # The redispatch example chains market and redispatch stages by hand, with no
-          # tool-managed bidirectional exchange.
-          - https://docs.pypsa.org/v1.3.0/user-guide/faq/#can-you-model-intra-day-as-well-as-day-ahead-markets
-          - https://docs.pypsa.org/v1.3.0/examples/scigrid-redispatch/
-      convergence_iteration:
-        value: y
-        source:
-          # Iterating line capacities against their impedances until convergence.
-          - https://docs.pypsa.org/v1.3.0/api/networks/optimize/#pypsa.Network.optimize.optimize_transmission_expansion_iteratively
-          - https://docs.pypsa.org/v1.3.0/user-guide/optimization/power-flow/#kirchhoffs-voltage-law-kvl
-    scenario_runs:
-      # Tenuous: `NetworkCollection` collates and compares solved networks, but the
-      # runs themselves have to be launched by the user.
-      value: n
-      source:
-        - https://docs.pypsa.org/v1.3.0/user-guide/collection/
-    sampled_runs:
-      value: n
-      source:
-        - https://docs.pypsa.org/v1.3.0/user-guide/faq/#can-you-do-generation-adequacy-studies-with-monte-carlo-unplanned-outages
-        - https://github.com/PyPSA/PyPSA/issues/1484
-        - https://pypsa.org/roadmap
   preprocessing:
+    download:
+      value: n
+      source:
+        - https://github.com/PyPSA/PyPSA/issues/1480
+    model_catalogue:
+      value: y
+      source:
+        # `pypsa.examples` retrieves ready-made networks (ac_dc_meshed, scigrid_de, model_energy, carbon_management, ...).
+        - https://docs.pypsa.org/v1.3.0/api/other/api-examples/
+    resource_conversion:
+      value: n
+      source:
+        # Weather-to-profile conversion lives in the separate `atlite` package, not in PyPSA itself.
+        - https://github.com/PyPSA/PyPSA/issues/1695
     forecasting:
       value: n
       source:
         - https://github.com/PyPSA/PyPSA/issues/1483
-    resource_conversion:
-      value: n
-      source:
-        # Weather-to-profile conversion lives in the separate `atlite` package, not in
-        # PyPSA itself.
-        - https://github.com/PyPSA/PyPSA/issues/1695
     spatial_distribution:
       demand:
         value: n
@@ -1135,23 +1034,6 @@ features:
         source:
           # `calculate_line_length()` derives line lengths from bus coordinates.
           - https://docs.pypsa.org/v1.3.0/api/components/types/lines/#pypsa.components.Lines.calculate_line_length
-      slack:
-        # Distributed slack is available in the non-linear power flow only; the
-        # request to extend it to `n.lpf()` is open.
-        value: y
-        source:
-          - https://docs.pypsa.org/v1.3.0/user-guide/power-flow/
-          - https://github.com/PyPSA/PyPSA/issues/1767
-    download:
-      value: n
-      source:
-        - https://github.com/PyPSA/PyPSA/issues/1480
-    model_catalogue:
-      value: y
-      source:
-        # `pypsa.examples` retrieves ready-made networks (ac_dc_meshed, scigrid_de,
-        # model_energy, carbon_management, ...).
-        - https://docs.pypsa.org/v1.3.0/api/other/api-examples/
     scenario_generation:
       value: n
       source: []
@@ -1162,54 +1044,28 @@ features:
         - https://docs.pypsa.org/v1.3.0/user-guide/options/#parameters-options
   postprocessing:
     metrics:
-      impact_assessment:
-        emissions:
-          value: y
-          source:
-            # `n.carriers.co2_emissions` with the `primary_energy` global constraint
-            # gives emissions and their shadow price; a dedicated `emissions`
-            # statistic is in development (PR #1927).
-            - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#primary-energy
-            - https://docs.pypsa.org/v1.3.0/user-guide/components/carriers/
-        resource_use:
-          # Tenuous: there is no resource-use metric. Non-carrier quantities such as
-          # water or land have to be modelled as their own bus/carrier, after which
-          # `n.statistics.energy_balance()` reports their consumption.
-          value: y
-          source:
-            - https://docs.pypsa.org/v1.3.0/user-guide/faq/#does-pypsa-model-more-than-just-the-power-system-can-methane-hydrogen-carbon-dioxide-networks-be-included
-            - https://docs.pypsa.org/v1.3.0/user-guide/statistics/#metrics
-        socioeconomic:
-          value: n
-          source: []
       operational:
-        curtailment:
-          value: y
-          source:
-            - https://docs.pypsa.org/v1.3.0/api/networks/statistics/#pypsa.Network.statistics.curtailment
         capacity_factor:
           value: y
           source:
             - https://docs.pypsa.org/v1.3.0/api/networks/statistics/#pypsa.Network.statistics.capacity_factor
-        full_load_hours:
+        operating_hours:
+          # Postprocessing features cover analyses the tool itself can trigger.
+          # No statistic counts running or committed snapshots; the commitment status (`n.generators_t.status`) or non-zero dispatch has to be summed by the user.
           value: n
           source:
             - https://docs.pypsa.org/v1.3.0/user-guide/statistics/#metrics
-      financial:
-        levelised_cost:
-          value: dev
-          source:
-            - https://github.com/PyPSA/PyPSA/pull/1926
-        net_present_value:
+        binding_hours:
+          # No statistic counts snapshots at the upper bound (e.g. line congestion hours); the open `congestion_rent` statistic PR reports rents, not hours.
           value: n
           source:
             - https://docs.pypsa.org/v1.3.0/user-guide/statistics/#metrics
-        asset_accounts:
+            - https://github.com/PyPSA/PyPSA/pull/1924
+        curtailment:
           value: y
           source:
-            # Per-component CAPEX, FOM, OPEX, revenue and market value.
-            - https://docs.pypsa.org/v1.3.0/user-guide/statistics/#metrics
-            - https://docs.pypsa.org/v1.3.0/api/networks/statistics/#pypsa.Network.statistics.revenue
+            - https://docs.pypsa.org/v1.3.0/api/networks/statistics/#pypsa.Network.statistics.curtailment
+      financial:
         marginal_price:
           value: y
           source:
@@ -1224,21 +1080,48 @@ features:
         water_value:
           value: y
           source:
-            # Marginal storage values extracted from a perfect-foresight run and fed
-            # back as a future cost function into rolling-horizon operation.
+            # Marginal storage values extracted from a perfect-foresight run and fed back as a future cost function into rolling-horizon operation.
             - https://docs.pypsa.org/v1.3.0/examples/water-value/
             - https://docs.pypsa.org/v1.3.0/user-guide/optimization/storage/
-        contract_settlement:
-          # Tenuous: the settlement example is only published on `latest` (it is absent
-          # from every pinned docs build up to and including v1.3.0), so this link is
-          # unversioned. Nothing in the workflow is version-specific: it uses only
-          # `n.generators_t.p` and `n.buses_t.marginal_price` from a solved network.
+        asset_accounts:
           value: y
           source:
-            # Two-sided CfDs, feed-in premiums, cap-and-floor, virtual and baseload
-            # PPAs settled post-hoc against dispatch and prices.
+            # Per-component CAPEX, fixed O&M, OPEX, revenue and market value.
+            - https://docs.pypsa.org/v1.3.0/user-guide/statistics/#metrics
+            - https://docs.pypsa.org/v1.3.0/api/networks/statistics/#pypsa.Network.statistics.revenue
+        contract_settlement:
+          # Tenuous: the settlement example is only published on `latest` (merged after v1.3.0, so absent from every pinned docs build), so this link is unversioned.
+          # Nothing in the workflow is version-specific: it uses only `n.generators_t.p` and `n.buses_t.marginal_price` from a solved network.
+          value: y
+          source:
+            # Two-sided CfDs, feed-in premiums, cap-and-floor, virtual and baseload PPAs settled post-hoc against dispatch and prices.
             - https://docs.pypsa.org/latest/examples/cfd-ppa-settlement/
             - https://github.com/PyPSA/PyPSA/pull/1727
+        levelised_cost:
+          value: dev
+          source:
+            - https://github.com/PyPSA/PyPSA/pull/1926
+        net_present_value:
+          value: n
+          source:
+            - https://docs.pypsa.org/v1.3.0/user-guide/statistics/#metrics
+      impact_assessment:
+        emissions:
+          value: y
+          source:
+            # `n.carriers.co2_emissions` with the `primary_energy` global constraint gives emissions and their shadow price; a dedicated `emissions` statistic is in development (PR #1927).
+            - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#primary-energy
+            - https://docs.pypsa.org/v1.3.0/user-guide/components/carriers/
+        resource_use:
+          # Tenuous: there is no resource-use metric.
+          # Non-carrier quantities such as water or land have to be modelled as their own bus/carrier, after which `n.statistics.energy_balance()` reports their consumption.
+          value: y
+          source:
+            - https://docs.pypsa.org/v1.3.0/user-guide/faq/#does-pypsa-model-more-than-just-the-power-system-can-methane-hydrogen-carbon-dioxide-networks-be-included
+            - https://docs.pypsa.org/v1.3.0/user-guide/statistics/#metrics
+        socioeconomic:
+          value: n
+          source: []
       network_transfer_metrics:
         transfer_capacity:
           value: n
@@ -1269,42 +1152,116 @@ features:
           # `groupby` over carrier, bus, country, location, unit or custom groupers.
           - https://docs.pypsa.org/v1.3.0/user-guide/statistics/#grouping
       disaggregation:
+        # Temporal clustering returns a `snapshot_map` and spatial clustering a `busmap`, but mapping results back to full resolution is left to the user.
         value: n
-        source: []
+        source:
+          - https://docs.pypsa.org/v1.3.0/api/networks/cluster/
       scenario_comparison:
         value: y
         source:
           - https://docs.pypsa.org/v1.3.0/user-guide/collection/
-  traceability:
-    run_logs:
+  interface:
+    gui:
+      build:
+        value: n
+        source:
+          - https://docs.pypsa.org/v1.3.0/user-guide/faq/#does-pypsa-have-a-gui
+      run:
+        value: n
+        source:
+          - https://docs.pypsa.org/v1.3.0/user-guide/faq/#does-pypsa-have-a-gui
+      analyse:
+        # No GUI ships with PyPSA.
+        # The separate `pypsa-app` web application for analysing networks is an early alpha companion project (#1479).
+        value: n
+        source:
+          - https://docs.pypsa.org/v1.3.0/user-guide/faq/#does-pypsa-have-a-gui
+          - https://github.com/PyPSA/PyPSA/issues/1479
+          - https://pypsa.org/roadmap
+    api:
+      build:
+        value: y
+        source:
+          - https://docs.pypsa.org/v1.3.0/user-guide/import-export/#adding-removing-merging
+          - https://docs.pypsa.org/v1.3.0/api/networks/network/
+      run:
+        value: y
+        source:
+          - https://docs.pypsa.org/v1.3.0/api/networks/optimize/
+      analyse:
+        value: y
+        source:
+          - https://docs.pypsa.org/v1.3.0/user-guide/statistics/
+          - https://docs.pypsa.org/v1.3.0/api/networks/statistics/
+    cli:
+      build:
+        value: n
+        source:
+          - https://github.com/PyPSA/PyPSA/issues/1486
+      run:
+        value: n
+        source:
+          - https://github.com/PyPSA/PyPSA/issues/1486
+      analyse:
+        value: n
+        source:
+          - https://github.com/PyPSA/PyPSA/issues/1486
+    solver_configuration:
       value: y
       source:
-        - https://docs.pypsa.org/v1.3.0/user-guide/logging/
-    infeasibility_diagnosis:
-      value: y
-      source:
-        # `n.optimize(compute_infeasibilities=True)` returns an IIS (Gurobi only).
-        - https://docs.pypsa.org/v1.3.0/examples/tracing-infeasibilities/
+        # `solver_name` / `solver_options` per call or as global options.
         - https://docs.pypsa.org/v1.3.0/user-guide/troubleshooting/#optimisation-convergence-infeasibility
+        - https://docs.pypsa.org/v1.3.0/user-guide/options/#parameters-options
+    remote_execution:
+      value: n
+      source: []
+    visualisation:
+      charts:
+        value: y
+        source:
+          # Static (matplotlib/seaborn) and interactive (plotly) area, bar, line, scatter, box, violin and histogram plots of any statistics metric.
+          - https://docs.pypsa.org/v1.3.0/user-guide/plotting/charts/
+      network_maps:
+        value: y
+        source:
+          - https://docs.pypsa.org/v1.3.0/user-guide/plotting/static-map/
+          - https://docs.pypsa.org/v1.3.0/user-guide/plotting/explore/
+      report_templates:
+        # No report or dashboard templates; automatic report creation is part of the user-interface request.
+        value: n
+        source:
+          - https://github.com/PyPSA/PyPSA/issues/1479
+  traceability:
     metadata:
       provenance:
-        value: n
-        source: []
+        # Tenuous: `n.meta` is a free-form dictionary persisted with the network on export, so sources, versions and licences can be recorded, but there is no structured per-input provenance.
+        value: y
+        source:
+          - https://docs.pypsa.org/v1.3.0/api/networks/network/#pypsa.Network.meta
       units:
         value: n
         source:
-          # `n.buses.unit` is "Only descriptive. Does not influence any PyPSA
-          # functions"; conversions must be encoded in efficiencies by hand.
+          # `n.buses.unit` is "Only descriptive. Does not influence any PyPSA functions".
+          # Conversions must be encoded in efficiencies by hand.
           - https://docs.pypsa.org/v1.3.0/user-guide/design/#unit-conventions
           - https://github.com/PyPSA/PyPSA/issues/1284
       propagation:
         value: n
         source:
           - https://github.com/PyPSA/PyPSA/issues/1622
+    run_logs:
+      value: y
+      source:
+        - https://docs.pypsa.org/v1.3.0/user-guide/logging/
     intermediate_access:
       value: y
       source:
-        # `n.model` exposes the built variables, constraints and duals and can be
-        # written to netCDF independently of the network.
+        # `n.model` exposes the built variables, constraints and duals and can be written to netCDF independently of the network.
         - https://docs.pypsa.org/v1.3.0/user-guide/optimization/custom-constraints/
         - https://docs.pypsa.org/v1.3.0/user-guide/network-optimization/#modify-model-re-optimize
+    infeasibility_diagnosis:
+      value: y
+      source:
+        # `n.optimize(compute_infeasibilities=True)` returns an IIS (Gurobi only).
+        - https://docs.pypsa.org/v1.3.0/examples/tracing-infeasibilities/
+        - https://docs.pypsa.org/v1.3.0/user-guide/troubleshooting/#optimisation-convergence-infeasibility

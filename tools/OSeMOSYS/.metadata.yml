@@ -5,7 +5,7 @@
 
 # Changes here will be overwritten by Copier
 # DO NOT MANUALLY MODIFY THIS FILE
-_commit: 0cd1a85
+_commit: v0.3.0
 _src_path: gh:open-energy-transition/openmod-features
 description: OSeMOSYS is an open source modelling system for long-run integrated assessment
     and energy planning. It has been employed to develop energy systems models from

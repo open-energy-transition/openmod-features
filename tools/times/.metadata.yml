@@ -5,8 +5,11 @@
 
 # Changes here will be overwritten by Copier
 # DO NOT MANUALLY MODIFY THIS FILE
-_commit: 0cd1a85
+_commit: v0.3.0
 _src_path: gh:open-energy-transition/openmod-features
+description: TIMES (The Integrated MARKAL-EFOM System) is a technology-rich, bottom-up
+    model generator for long-term, multi-regional energy system planning, developed
+    and maintained by the IEA Energy Technology Systems Analysis Programme (ETSAP).
 docs: https://iea-etsap.org/index.php/documentation
 list_type: tool
 maintainers: gianvicolux, willu47

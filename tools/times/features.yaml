@@ -3,43 +3,65 @@
 #
 # SPDX-License-Identifier: CC-BY-4.0
 
-# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/0cd1a85/schema/tool-schema.yaml
+# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/v0.3.0/schema/tool-schema.yaml
 
+# Assessed against TIMES v4.9.7 (released 12th August 2026), the latest release of etsap-TIMES/TIMES_model.
+# Documentation links point to the Read the Docs edition of the official TIMES documentation (Parts I-IV,
+# (c) IEA-ETSAP, migrated from the PDFs in etsap-TIMES/TIMES_Documentation; only `latest` is published),
+# to user notes in etsap-TIMES/TIMES_Documentation (pinned to a commit), to extension documents on the
+# IEA-ETSAP website, and to the GAMS source pinned to the v4.9.7 tag.
+# VEDA (KanORS, commercial), TIMES-MIRO (GAMS) and xl2times are treated as companion tools: capabilities
+# provided only by them are `n`, with a comment.
+# No open pull requests exist in etsap-TIMES/TIMES_model or etsap-TIMES/TIMES_Documentation, so there are no `dev` entries.
+
+version: 'v4.9.7'
 features:
   processes:
     boundary_exchange:
       value: y
       source:
-        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
-        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf
+        # Import/export and mining processes (exogenous trade), bounded by activity/cumulative bounds.
+        - https://times.readthedocs.io/en/latest/part-1/01-introduction.html#the-supply-component-of-a-times-scenario
+        - https://times.readthedocs.io/en/latest/part-2/04-special-processes.html#structure-and-types-of-endogenous-trade
     conversion:
       one_to_one:
         value: y
         source:
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+          - https://times.readthedocs.io/en/latest/part-1/02-basic-structure.html#general-processes
+          - https://times.readthedocs.io/en/latest/part-1/05-times-optimisation.html#eq-ptrans-r-v-t-p-cg1-cg2-s-efficiency-definition
       multi_carrier_io:
         value: y
         source:
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+          # Commodity groups on input/output, e.g. back-pressure CHP with fixed heat/power ratio.
+          - https://times.readthedocs.io/en/latest/part-2/04-special-processes.html#back-pressure-turbine-systems
+          - https://times.readthedocs.io/en/latest/part-1/05-times-optimisation.html#defining-flow-relationships-in-a-process
       flexible_ratio:
         value: y
         source:
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+          # Flexible processes with flow-share bounds (FLO_SHAR); pass-out CHP operating region.
+          - https://times.readthedocs.io/en/latest/part-2/04-special-processes.html#pass-out-turbine-systems
+          - https://times.readthedocs.io/en/latest/part-1/05-times-optimisation.html#limiting-flow-shares-in-flexible-processes
     temporal_transfer:
       value: y
       source:
-        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+        # Timeslice, day/night, inter-period and general (STS) storage processes.
+        - https://times.readthedocs.io/en/latest/part-2/04-special-processes.html#storage-processes
+        - https://times.readthedocs.io/en/latest/part-1/02-basic-structure.html#storage-processes-class-stg
     spatial_transfer:
       value: y
       source:
-        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf
-        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+        - https://times.readthedocs.io/en/latest/part-1/02-basic-structure.html#inter-regional-exchange-processes-class-ire
+        - https://times.readthedocs.io/en/latest/part-2/04-special-processes.html#inter-regional-exchange-processes
     delayed_transfer:
       value: n
       source: []
     buffered_transfer:
-      value: n
-      source: []
+      value: y
+      source:
+        # Dynamic linepack in gas grids with Weymouth equations.
+        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/ae3b6eee0d785cbf30d20ec66c1d33b632693d10/User_Notes/TIMES-Grid-Features.pdf
+        - https://iea-etsap.org/wp-content/uploads/2026/06/Gas-pipelines-modelling.pdf
+        - https://github.com/etsap-TIMES/TIMES_model/blob/v4.9.7/gasgrids.vda
     discrete_transport:
       value: n
       source: []
@@ -50,11 +72,16 @@ features:
       inelastic:
         value: y
         source:
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+          # Demand commodities with exogenous projections are balanced like any other commodity;
+          # load-shifting storage processes represent shiftable demand.
+          - https://times.readthedocs.io/en/latest/part-1/01-introduction.html#the-demand-component-of-a-times-scenario
+          - https://times.readthedocs.io/en/latest/part-2/04-special-processes.html#load-shifting-storage-processes
       price_responsive:
         value: y
         source:
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+          # Elastic demands (partial equilibrium), stepwise-linearised demand curves.
+          - https://times.readthedocs.io/en/latest/part-1/04-times-math.html#defining-demand-functions
+          - https://times.readthedocs.io/en/latest/part-2/10-demand-functions/03-parameters.html#switches
       mobile_storage:
         value: n
         source: []
@@ -62,15 +89,29 @@ features:
     power_flow:
       optimal_power_flow:
         dc_opf:
+          value: y
+          source:
+            # Linear DC power flow in phase-angle or PTDF formulation (grid modelling features).
+            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/ae3b6eee0d785cbf30d20ec66c1d33b632693d10/User_Notes/TIMES-Grid-Features.pdf
+            # Design report sec. 2 (PTDF-based formulation with transmission expansion planning).
+            - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES-Grid-Features-Report.pdf
+            - https://times.readthedocs.io/en/latest/part-1/05-times-optimisation.html#electricity-grid-modeling
+            - https://github.com/etsap-TIMES/TIMES_model/blob/v4.9.7/powerflo.vda
+        ac_opf:
           value: n
           source: []
-        ac_opf:
+        unbalanced_flows:
           value: n
           source: []
       sensitivity_limits:
         ptdf:
-          value: n
-          source: []
+          value: y
+          source:
+            # `GR_PTDF(r,y,p,n,r2,n2)` lets the user supply PTDFs for the PTDF formulation.
+            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/ae3b6eee0d785cbf30d20ec66c1d33b632693d10/User_Notes/TIMES-Grid-Features.pdf
+            # Design report sec. 2.1-2.2: a precomputed PTDF matrix covering existing and candidate
+            # lines, with virtual flows cancelling unbuilt lines.
+            - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES-Grid-Features-Report.pdf
         outage_factors:
           value: n
           source: []
@@ -79,11 +120,23 @@ features:
           source: []
       network_limits:
         thermal:
-          value: n
-          source: []
+          value: y
+          source:
+            # Line capacities (and candidate line capacity bounds) limit DC flows.
+            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/ae3b6eee0d785cbf30d20ec66c1d33b632693d10/User_Notes/TIMES-Grid-Features.pdf
         phase_angle:
+          # Phase-angle variables (VAR_COMAUX) exist in the phase-angle formulation, but only the
+          # reference node's angle is fixed; no parameter bounds angle differences. PR #105 claimed `y`
+          # from the grid features note, which documents angle-based flow equations, not angle limits.
           value: n
-          source: []
+          source:
+            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/ae3b6eee0d785cbf30d20ec66c1d33b632693d10/User_Notes/TIMES-Grid-Features.pdf
+            - https://github.com/etsap-TIMES/TIMES_model/blob/v4.9.7/powerflo.vda#L222-L224
+      losses:
+        # Grid line losses are fixed proportions (or allocated in proportion to demand), not flow-dependent.
+        value: n
+        source:
+          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/ae3b6eee0d785cbf30d20ec66c1d33b632693d10/User_Notes/TIMES-Grid-Features.pdf
       network_devices:
         transformers:
           value: n
@@ -94,204 +147,267 @@ features:
         hvdc_converters:
           value: n
           source: []
-      unbalanced_flows:
-        value: n
-        source: []
     hydraulic_flow:
       linearised_flow:
-        value: n
-        source: []
+        value: y
+        source:
+          # Linearised Weymouth equations with nodal pressure bounds (GG_PRBD) and compressor boosts
+          # (GG_GAMMA).
+          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/ae3b6eee0d785cbf30d20ec66c1d33b632693d10/User_Notes/TIMES-Grid-Features.pdf
+          # Design report sec. 3.2.4.
+          - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES-Grid-Features-Report.pdf
+          - https://iea-etsap.org/wp-content/uploads/2026/06/Gas-pipelines-modelling.pdf
+          - https://github.com/etsap-TIMES/TIMES_model/blob/v4.9.7/gasgrids.vda
       composition_tracking:
-        value: n
-        source: []
+        # Tenuous: multi-carrier pipelines carry several commodities (e.g. natural gas and biogas), each
+        # balanced separately; blend limits must be added with flow-share bounds or user constraints.
+        value: y
+        source:
+          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/ae3b6eee0d785cbf30d20ec66c1d33b632693d10/User_Notes/TIMES-Grid-Features.pdf
   decisions:
     investment:
       exogenous_capacity:
         value: y
         source:
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+          # Existing capacity (NCAP_PASTI) and fixed capacity bounds.
+          - https://times.readthedocs.io/en/latest/part-1/05-times-optimisation.html#capacity-transfer-conservation-of-investments
       continuous_capacity:
         value: y
         source:
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf
+          - https://times.readthedocs.io/en/latest/part-2/05-variables.html#var-ncap-r-v-p
       integer_investment_exogenous_capacity:
         value: y
         source:
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+          # Lumpy investments (NCAP_DISC) as a MIP.
+          - https://times.readthedocs.io/en/latest/part-1/10-lumpy-investment.html#formulation-and-solution-of-the-mixed-integer-linear-program
+          - https://times.readthedocs.io/en/latest/part-2/06-equations.html#equation-eq-dscncap
       integer_investment_continuous_capacity:
-        value: n
-        source: []
-      retrofit:
         value: y
         source:
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+          # Semi-continuous new capacity above a minimum size (NCAP_SEMI).
+          - https://times.readthedocs.io/en/latest/part-2/06-equations.html#equation-eq-dscncap
+          - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES_Dispatching-and-unit-commitment.pdf
       multi_period:
         value: y
         source:
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+          - https://times.readthedocs.io/en/latest/part-1/02-basic-structure.html#time-horizon
+          - https://times.readthedocs.io/en/latest/part-1/05-times-optimisation.html#decision-variables
+      retrofit:
+        value: y
+        source:
+          # Retrofits and lifetime extensions (PRC_REFIT).
+          - https://times.readthedocs.io/en/latest/part-2/06-equations.html#equation-eql-refit
+          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/ae3b6eee0d785cbf30d20ec66c1d33b632693d10/User_Notes/TIMES-Refits-Note.pdf
+      endogenous_retirement:
+        value: y
+        source:
+          - https://times.readthedocs.io/en/latest/part-1/05-times-optimisation.html#early-retirement-of-capacity
+          - https://times.readthedocs.io/en/latest/part-1/10-lumpy-investment.html#discrete-early-retirement-of-capacity
     operation:
       unit_commitment:
         value: y
         source:
-          - https://iea-etsap.org/projects/TIMES_Dispatching_Documentation.pdf
+          # Dispatching and unit commitment extension; linearised by default, with a discrete (MIP)
+          # option.
+          - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES_Dispatching-and-unit-commitment.pdf
+          - https://times.readthedocs.io/en/latest/part-2/06-equations.html#equation-eqe-actups
       maintenance_scheduling:
-        value: n
-        source: []
+        value: y
+        source:
+          # Ancillary Balancing Services (ABS) extension: TIMES optimally decides when maintenance takes
+          # place.
+          - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES_Introducing-ancillary-services-markets.pdf
+          - https://github.com/etsap-TIMES/TIMES_model/blob/v4.9.7/equ_ext.abs
   constraints:
     scope:
       temporal:
         pointwise:
           investment:
-            size_bounds:
-              value: y
-              source:
-                - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
-            discrete_increments:
-              value: y
-              source:
-                - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf
-                - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
-            unit_purchase:
-              value: y
-              source:
-                - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf
-                - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+            value: y
+            source:
+              # Bounds on new capacity per period (NCAP_BND).
+              - https://times.readthedocs.io/en/latest/part-1/02-basic-structure.html#bounds
           operation:
             availability_derating:
               value: y
               source:
-                - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+                # Timeslice-specific availability factors (NCAP_AF/NCAP_AFS), including for storage
+                # levels.
+                - https://times.readthedocs.io/en/latest/part-1/05-times-optimisation.html#eq-capact-r-v-t-p-s-use-of-capacity
+                - https://times.readthedocs.io/en/latest/part-2/04-special-processes.html#availability-factors-for-storage-processes
             minimum_stable_level:
               value: y
               source:
-                - https://iea-etsap.org/projects/TIMES_Dispatching_Documentation.pdf
+                # ACT_MINLD on online capacity (dispatching extension).
+                - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES_Dispatching-and-unit-commitment.pdf
+                - https://times.readthedocs.io/en/latest/part-2/06-equations.html#equation-eqe-actups
             forced_offline:
               value: y
               source:
-                - https://iea-etsap.org/projects/TIMES-BS-Documentation.pdf
+                # Zero timeslice availability factor or activity bound in given timeslices.
+                - https://times.readthedocs.io/en/latest/part-2/06-equations.html#equation-eq-l-capact
+                - https://times.readthedocs.io/en/latest/part-2/06-equations.html#equation-eq-l-actbnd
             forced_online:
               value: y
               source:
-                - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+                # Lower availability-factor or activity bounds per timeslice (must-run).
+                - https://times.readthedocs.io/en/latest/part-2/06-equations.html#equation-eq-l-capact
+                - https://times.readthedocs.io/en/latest/part-2/06-equations.html#equation-eq-l-actbnd
         sequential:
           investment:
-            build_rate:
-              value: y
-              source:
-                - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf
-                - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
-            retirement:
-              value: y
-              source:
-                - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
             availability_window:
               value: y
               source:
-                - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+                # NCAP_START (earliest start year) and construction lead times (NCAP_ILED).
+                - https://times.readthedocs.io/en/latest/part-2/03-parameters.html#overview-of-user-input-parameters
+                - https://times.readthedocs.io/en/latest/part-1/13-history.html#investment-and-dismantling-lead-times-and-costs
+            relative_build_rate:
+              value: y
+              source:
+                # Growth constraints via user constraints with the GROWTH modifier.
+                - https://times.readthedocs.io/en/latest/part-1/05-times-optimisation.html#growth-constraints
+                - https://times.readthedocs.io/en/latest/part-2/06-equations.html#growth-modifier
+            technical_lifetime:
+              value: y
+              source:
+                - https://times.readthedocs.io/en/latest/part-1/05-times-optimisation.html#eq-cpt-r-t-p-capacity-transfer
           operation:
             ramping:
               value: y
               source:
-                - https://iea-etsap.org/projects/TIMES_Dispatching_Documentation.pdf
-                - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+                - https://times.readthedocs.io/en/latest/part-2/06-equations.html#equation-eq-actramp
+                - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES_Dispatching-and-unit-commitment.pdf
             start_shut_trajectory:
               value: y
               source:
-                - https://iea-etsap.org/projects/TIMES_Dispatching_Documentation.pdf
+                # Start-up and shut-down phases by start-up type (ACT_SDTIME).
+                - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES_Dispatching-and-unit-commitment.pdf
             commitment_duration:
               value: y
               source:
-                - https://iea-etsap.org/projects/TIMES_Dispatching_Documentation.pdf
+                # Minimum up/down times (ACT_TIME UP/LO).
+                - https://times.readthedocs.io/en/latest/part-2/06-equations.html#equation-eql-actupc
+                - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES_Dispatching-and-unit-commitment.pdf
             start_consumption:
+              # Tenuous: represented as increased specific fuel consumption during the start-up phase
+              # (ACT_LOSSD), not as a lump fuel requirement per start.
               value: y
               source:
-                - https://iea-etsap.org/projects/TIMES_Dispatching_Documentation.pdf
+                - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES_Dispatching-and-unit-commitment.pdf
         cumulative:
           investment:
             capacity_target:
               value: y
               source:
-                - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+                # Installed capacity bounds (CAP_BND) and peaking reserve with capacity credit
+                # (NCAP_PKCNT).
+                - https://times.readthedocs.io/en/latest/part-1/02-basic-structure.html#bounds
+                - https://times.readthedocs.io/en/latest/part-1/05-times-optimisation.html#eq-peak-r-t-c-s-commodity-peak-requirement
             expansion_budget:
               value: y
               source:
-                - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf
-                - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf
+                # Bounds on regional (cumulative) cost components, incl. investment costs
+                # (REG_BNDCST).
+                - https://times.readthedocs.io/en/latest/part-2/06-equations.html#equation-eq-bndcst
             event_count:
               value: n
               source: []
             path_dependent:
-              value: y
+              # Endogenous learning (ETL) acts on investment cost, not on deployment bounds (see
+              # `cost.scope.temporal.cumulative.investment`).
+              value: n
               source:
-                - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+                - https://times.readthedocs.io/en/latest/part-1/11-tech-learning.html#the-times-formulation-of-etl
           operation:
             flow_volume:
               value: y
               source:
-                - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+                # Cumulative bounds on flows, activity and commodity production (FLO_CUM, ACT_CUM,
+                # COM_CUMPRD).
+                - https://times.readthedocs.io/en/latest/part-2/06-equations.html#equation-eq-cumflo
+                - https://times.readthedocs.io/en/latest/part-2/06-equations.html#equation-eq-cumnet-prd
             impact_budget:
               value: y
               source:
-                - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+                # Annual or cumulative bounds on emission commodities (COM_BNDNET / COM_CUMNET);
+                # climate-module bounds.
+                - https://times.readthedocs.io/en/latest/part-2/06-equations.html#equation-eq-cumnet-prd
+                - https://times.readthedocs.io/en/latest/part-2/07-climate-module/03-parameters.html#upper-bounds-on-climate-variables
             event_count:
-              value: n
-              source: []
+              value: y
+              source:
+                # Maximum number of start-up cycles within each process timeslice cycle (ACT_TIME
+                # with bd=N).
+                - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES_Dispatching-and-unit-commitment.pdf
             state_duration:
               value: n
               source: []
             path_dependent:
+              # Storage lifetime cycle limits (STG_MAXCYC) can be exceeded by paying for replacement
+              # capacity rather than lowering available capacity; recorded under
+              # `cost.scope.temporal.cumulative.operation` instead.
               value: n
-              source: []
+              source:
+                - https://times.readthedocs.io/en/latest/part-2/06-equations.html#equation-eq-stgccl
         boundary_conditions:
           investment:
             value: y
             source:
-              - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+              # Residual capacity stock (NCAP_PASTI); end-state targets via capacity bounds in the
+              # final period.
+              - https://times.readthedocs.io/en/latest/part-1/05-times-optimisation.html#capacity-transfer-conservation-of-investments
+              - https://times.readthedocs.io/en/latest/part-1/02-basic-structure.html#bounds
           operation:
             value: y
             source:
-              - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+              # Initial storage levels and inter-period storage; FIXBOH fixes early periods to a
+              # previous solution.
+              - https://times.readthedocs.io/en/latest/part-2/06-equations.html#eq-stgips-storage-between-periods
+              - https://times.readthedocs.io/en/latest/part-3/03-switches.html#fixing-initial-periods-fixboh
+      spatial:
+        investment:
+          value: y
+          source:
+            # User constraints can sum over regions (EQ_UC / EQ_UCT).
+            - https://times.readthedocs.io/en/latest/part-2/06-equations.html#equation-eq-l-uc-eqe-uc
+            - https://times.readthedocs.io/en/latest/part-2/06-equations.html#equation-eq-l-uct-eqe-uct
+        operation:
+          value: y
+          source:
+            - https://times.readthedocs.io/en/latest/part-2/06-equations.html#equation-eq-l-uc-eqe-uc
+            - https://times.readthedocs.io/en/latest/part-2/07-climate-module/03-parameters.html#mapping-of-regional-emissions-to-global-emissions
       assets:
         spanning:
           investment:
             value: y
             source:
-              - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf
-              - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf
+              - https://times.readthedocs.io/en/latest/part-1/05-times-optimisation.html#user-constraints
+              - https://times.readthedocs.io/en/latest/part-2/06-equations.html#lhs-user-constraints
           operation:
             value: y
             source:
-              - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf
-              - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf
+              - https://times.readthedocs.io/en/latest/part-1/05-times-optimisation.html#user-constraints
+              - https://times.readthedocs.io/en/latest/part-2/06-equations.html#lhs-user-constraints
         dedicated_flow_routing:
+          # Tenuous: no dedicated construct; flows are routed to named processes by defining a dedicated
+          # commodity between them, as the RES topology is fully user-defined.
           value: y
           source:
-            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
-      spatial:
-        investment:
-          value: y
-          source:
-            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf
-            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf
-        operation:
-          value: y
-          source:
-            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+            - https://times.readthedocs.io/en/latest/part-1/02-basic-structure.html#the-res
     functional_form:
       linear_multi_variable:
         investment:
           value: y
           source:
-            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf
-            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf
+            # User constraints on capacity/new-capacity terms, e.g. CAPFLO/CAPACT modifiers.
+            - https://times.readthedocs.io/en/latest/part-2/06-equations.html#lhs-user-constraints
+            - https://times.readthedocs.io/en/latest/part-2/06-equations.html#capflo-modifier
         operation:
           value: y
           source:
-            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf
-            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf
+            # Flow-share bounds (EQ_INSHR/OUTSHR) and pass-out CHP operating regions.
+            - https://times.readthedocs.io/en/latest/part-2/06-equations.html#equations-eq-l-inshr-eq-l-outshr
+            - https://times.readthedocs.io/en/latest/part-2/04-special-processes.html#pass-out-turbine-systems
       quadratic:
         investment:
           value: n
@@ -301,31 +417,45 @@ features:
           source: []
       nonlinear:
         investment:
-          value: y
+          # The non-linear MACRO production function (TIMES-MACRO) couples energy-system cost to the
+          # economy but does not constrain individual investment decisions non-linearly.
+          value: n
           source:
-            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf
-            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+            - https://times.readthedocs.io/en/latest/part-1/12-general-equilibrium.html#formulation-of-the-macro-model
         operation:
-          value: y
-          source:
-            - https://iea-etsap.org/projects/TIMES_Dispatching_Documentation.pdf
-    soft_constraints:
-      value: n
-      source: []
+          value: n
+          source: []
     reliability:
+      unserved_demand:
+        # Tenuous: via high-cost dummy import (backstop) processes for commodities and demands, which VEDA
+        # adds by default; there is no dedicated load-shedding variable in TIMES.
+        value: y
+        source:
+          - https://times.readthedocs.io/en/latest/part-4/02-intro-to-veda.html#transformation-insert-and-update-tables
       operating_reserve:
         online_headroom:
           value: y
           source:
-            - https://iea-etsap.org/projects/TIMES-BS-Documentation.pdf
-            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+            # ABS extension: spinning reserve provision from online capacity (FCR/aFRR/mFRR/RR).
+            - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES_Introducing-ancillary-services-markets.pdf
+            - https://github.com/etsap-TIMES/TIMES_model/blob/v4.9.7/equ_ext.abs
         standby_capability:
           value: y
           source:
-            - https://iea-etsap.org/projects/TIMES-BS-Documentation.pdf
+            # ABS extension: mFRR/RR reserves can be supplied by offline (non-spinning) capacity.
+            - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES_Introducing-ancillary-services-markets.pdf
         inertia:
           value: n
           source: []
+      contingency_constrained:
+        # Tenuous: simplified N-1 security constraints bound each region's net grid injection by a fraction
+        # of its interconnection capacity (GR_XBND), rather than enforcing post-contingency feasibility per
+        # outage.
+        value: y
+        source:
+          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/ae3b6eee0d785cbf30d20ec66c1d33b632693d10/User_Notes/TIMES-Grid-Features.pdf
+          # Design report sec. 3.3.2.
+          - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES-Grid-Features-Report.pdf
       probabilistic_reliability_limit:
         loss_of_load:
           value: n
@@ -333,13 +463,9 @@ features:
         unserved_energy:
           value: n
           source: []
-      unserved_demand:
-        value: y
-        source:
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-IV.pdf
-      contingency_constrained:
-        value: n
-        source: []
+    soft_constraints:
+      value: n
+      source: []
   cost:
     scope:
       temporal:
@@ -347,214 +473,472 @@ features:
           investment:
             value: y
             source:
-              - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf
-              - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+              # Decommissioning (dismantling) costs NCAP_DCOST.
+              - https://times.readthedocs.io/en/latest/part-2/06-equations.html#decommissioning-dismantling-capital-costs-invdecom-y
           operation:
+            ramping:
+              value: y
+              source:
+                # Ramp-up/down costs (ACT_CSTRMP).
+                - https://times.readthedocs.io/en/latest/part-2/06-equations.html#equation-eq-actrampc
             start_up:
               value: y
               source:
-                - https://iea-etsap.org/projects/TIMES_Dispatching_Documentation.pdf
+                # ACT_CSTUP / ACT_CSTSD(UP).
+                - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES_Dispatching-and-unit-commitment.pdf
             shut_down:
               value: y
               source:
-                - https://iea-etsap.org/projects/TIMES_Dispatching_Documentation.pdf
-            ramping:
-              value: n
-              source: []
+                # ACT_CSTSD(LO).
+                - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES_Dispatching-and-unit-commitment.pdf
             start_state_dependent:
-              value: n
-              source: []
+              value: y
+              source:
+                # Hot/warm/cold start-up costs, with ACT_MAXNON defining the transition times.
+                - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES_Dispatching-and-unit-commitment.pdf
         cumulative:
           investment:
             value: y
             source:
-              - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+              # Endogenous technology learning (ETL), incl. clustered and multi-regional learning
+              # (MIP).
+              - https://times.readthedocs.io/en/latest/part-1/11-tech-learning.html#the-times-formulation-of-etl
+              - https://times.readthedocs.io/en/latest/part-1/11-tech-learning.html#clustered-learning
           operation:
-            value: n
-            source: []
-      assets:
-        investment:
-          value: n
-          source: []
-        operation:
-          value: n
-          source: []
+            # Tenuous: storage cycling beyond the lifetime cycle limit (STG_MAXCYC) incurs replacement
+            # capacity priced at the investment annuity, i.e. cost rising with cumulative cycling; no
+            # general operating-cost dependence on history.
+            value: y
+            source:
+              - https://times.readthedocs.io/en/latest/part-2/06-equations.html#equation-eq-stgccl
       spatial:
         investment:
           value: n
           source: []
         operation:
+          # Tenuous: COM_CSTBAL puts a cost on a grid node's aggregate generation, imports, exports or net
+          # imports (types PRD/IMP/EXP/NTX) summed over all its connecting lines; only for grids defined
+          # with the grid modelling features.
+          value: y
+          source:
+            # User note sec. 2.5 (Costs on Grid Flows); design report sec. 3.3.3.
+            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/ae3b6eee0d785cbf30d20ec66c1d33b632693d10/User_Notes/TIMES-Grid-Features.pdf
+            - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES-Grid-Features-Report.pdf
+      assets:
+        investment:
           value: n
           source: []
+        operation:
+          # Tenuous: elastic supply cost curves and damage cost functions price a commodity's aggregate
+          # production or emissions across all processes, non-linearly (stepwise), rather than per asset.
+          value: y
+          source:
+            - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES_Elastic-supply-cost-curves.pdf
+            - https://times.readthedocs.io/en/latest/part-2/08-damage-cost-function/05-equations.html#eq-damage-r-t-c
     functional_form:
       fixed_charge:
         investment:
           value: n
           source: []
         operation:
-          value: y
+          # No no-load cost on online capacity; ACT_CSTPL is a partial-load cost per unit of activity (see
+          # `nonlinear.operation`).
+          value: n
           source:
-            - https://iea-etsap.org/projects/TIMES_Dispatching_Documentation.pdf
+            - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES_Dispatching-and-unit-commitment.pdf
       nonlinear:
         investment:
+          value: n
+          source: []
+        operation:
           value: y
           source:
-            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf
-            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
-        operation:
-          flow_dependent:
-            value: y
-            source:
-              - https://iea-etsap.org/projects/TIMES_Dispatching_Documentation.pdf
-          bid_bands:
-            value: n
-            source: []
+            # Partial-load efficiency losses / cost penalties (ACT_LOSPL, ACT_CSTPL) and stepwise
+            # elastic supply cost curves.
+            - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES_Dispatching-and-unit-commitment.pdf
+            - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES_Elastic-supply-cost-curves.pdf
       threshold_deviation:
         investment:
-          value: y
-          source:
-            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf
-            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+          value: n
+          source: []
         operation:
           value: n
           source: []
-    annuitisation:
-      discounting:
+    time_value:
+      annuitisation:
         value: y
         source:
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+          # Investment cost annuities with general and technology-specific (hurdle) discount rates
+          # (G_DRATE / NCAP_DRATE).
+          - https://times.readthedocs.io/en/latest/part-2/06-equations.html#investment-costs-invcost-y
+          - https://times.readthedocs.io/en/latest/part-1/05-times-optimisation.html#cash-flow-tracking
       fiscal_treatment:
         value: y
         source:
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
-  model_definition:
-    dimension_groups:
+          # Taxes and subsidies on investment and capacity; functional depreciation for salvage value
+          # (NCAP_FDR).
+          - https://times.readthedocs.io/en/latest/part-2/06-equations.html#taxes-and-subsidies-on-investments
+          - https://times.readthedocs.io/en/latest/part-2/06-equations.html#annual-taxes-subsidies-on-capacity-fixtaxsub-y
+      period_discounting:
+        value: y
+        source:
+          - https://times.readthedocs.io/en/latest/part-2/06-equations.html#discounting-options
+          - https://times.readthedocs.io/en/latest/part-1/05-times-optimisation.html#times-objective-function-discounted-total-system-cost
+  objective:
+    quadratic:
+      # Elastic demands are stepwise-linearised; the TIMES-MICRO variant passes a general non-linear (not
+      # quadratic) objective to an NLP solver.
+      value: n
+      source:
+        - https://times.readthedocs.io/en/latest/part-1/04-times-math.html#linearization-of-the-mathematical-program
+    multi_objective_weighted:
       value: y
       source:
-        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf
-        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf
-    component_templating:
+        # Two-phase tradeoff analysis optimises a weighted combination of user-constraint expressions.
+        - https://times.readthedocs.io/en/latest/part-1/06-parametric-analysis.html#two-phase-tradeoff-analysis
+        - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES_Stochastic-programming-and-tradeoff-analysis.pdf
+    multi_objective_pareto:
+      # Tenuous: multiphase tradeoff analysis bounds earlier objectives' deviation in later phases
+      # (lexicographic / epsilon-constraint style); sweeping the tolerances traces a frontier, but no
+      # automated Pareto set generation.
+      value: y
+      source:
+        - https://times.readthedocs.io/en/latest/part-1/06-parametric-analysis.html#multiphase-tradeoff-analysis
+    tie_breaking:
       value: n
       source: []
+  edge_effects:
+    time_operational:
+      value: y
+      source:
+        # Timeslice storage is cyclic within its timeslice cycle; inter-period storage carries state across
+        # periods.
+        - https://times.readthedocs.io/en/latest/part-2/04-special-processes.html#timeslice-storage
+        - https://times.readthedocs.io/en/latest/part-2/04-special-processes.html#inter-period-storage
+    time_financial:
+      value: y
+      source:
+        - https://times.readthedocs.io/en/latest/part-2/06-equations.html#salvage-value-salvage-eoh-1
+    energy_balance:
+      # Tenuous: only for bi-directional gas-grid pipelines, whose optional binary direction variables (VAR_Y,
+      # MIP) allow one flow direction per timeslice, and for night-storage devices, which charge only in
+      # designated timeslices. Electricity lines and other storage rely on costs and losses; the electricity
+      # grid note cited by PR #105 only advises defining investment costs to avoid arbitrary flows in both
+      # directions.
+      value: y
+      source:
+        # Design report sec. 3.1.3 and 3.2.4.4 (eq. 30); user note sec. 4.5 (binaries activated by GG_PP
+        # data).
+        - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES-Grid-Features-Report.pdf
+        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/ae3b6eee0d785cbf30d20ec66c1d33b632693d10/User_Notes/TIMES-Grid-Features.pdf
+        - https://times.readthedocs.io/en/latest/part-2/04-special-processes.html#day-night-storage
+  actors:
+    portfolio:
+      value: n
+      source: []
+    heuristic_markup:
+      value: n
+      source: []
+    distributed_objectives:
+      # The experimental logit market-sharing mechanism (ECB extension) imitates heterogeneous consumer
+      # choice, but does not give actors their own objectives.
+      value: n
+      source:
+        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/ae3b6eee0d785cbf30d20ec66c1d33b632693d10/User_Notes/TIMES-Logit-Market-Sharing.pdf
+    equilibrium:
+      # TIMES computes a single competitive partial equilibrium (maximised total surplus), not an equilibrium
+      # between competing actors.
+      value: n
+      source:
+        - https://times.readthedocs.io/en/latest/part-1/03-economic-rationale.html#partial-equilibrium
+  uncertainty:
+    two_stage_stochastic:
+      value: y
+      source:
+        - https://times.readthedocs.io/en/latest/part-1/08-stochastic-programming.html#stochastic-programming-concepts-and-formulation
+        - https://times.readthedocs.io/en/latest/part-3/03-switches.html#stochastics-stages
+    multi_stage_stochastic:
+      value: y
+      source:
+        # General event trees with several stages (STAGES).
+        - https://times.readthedocs.io/en/latest/part-1/08-stochastic-programming.html#stochastic-programming-concepts-and-formulation
+        - https://times.readthedocs.io/en/latest/part-3/03-switches.html#stochastics-stages
+    risk_aversion:
+      value: y
+      source:
+        # Expected utility with linearised risk aversion (E-V approach).
+        - https://times.readthedocs.io/en/latest/part-1/08-stochastic-programming.html#utility-function-with-linearized-risk-aversion
+    robust_optimisation:
+      # The minimax regret criterion is described but only the expected-utility alternative is implemented.
+      value: n
+      source:
+        - https://times.readthedocs.io/en/latest/part-1/08-stochastic-programming.html#alternative-criteria-for-the-objective-function
+    near_optimal:
+      # Tenuous: no dedicated MGA algorithm. The multiphase tradeoff facility minimises cost in one phase,
+      # then optimises another user-constraint objective (e.g. emissions, CCS use) with total cost held within
+      # a set percentage of the optimum, giving one alternative per phase. ETSAP's near-optimal webinar
+      # demonstrates this and notes that systematic methods (e.g. ORACLE) are not yet possible.
+      value: y
+      source:
+        - https://times.readthedocs.io/en/latest/part-1/06-parametric-analysis.html#multiphase-tradeoff-analysis
+        # User note sec. 3.2 and 5.6.2 (possible uses); identical to the 2025/12
+        # TIMES-Stochastic-Final2016.pdf cited by PR #105.
+        - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES_Stochastic-programming-and-tradeoff-analysis.pdf
+        # Webinar slides 21-30 (near-optimal multiphase examples) and 64 (ORACLE not yet possible).
+        - https://iea-etsap.org/wp-content/uploads/2025/12/Webinar-Near-Optimal-20260302.pdf
+  model_definition:
     configurable_dimensions:
       value: y
       source:
-        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+        # Parameters can be vintage-, age-, timeslice- or period-dependent, with inter/extrapolation and
+        # timeslice inheritance.
+        - https://times.readthedocs.io/en/latest/part-2/03-parameters.html#inter-and-extrapolation-of-user-input-parameters
+        - https://times.readthedocs.io/en/latest/part-2/03-parameters.html#inheritance-and-aggregation-of-timesliced-input-parameters
     extensible_dimensions:
       value: n
       source: []
+    dimension_groups:
+      value: y
+      source:
+        # Commodity groups, process/commodity classification sets, and sets used in user constraints.
+        - https://times.readthedocs.io/en/latest/part-1/02-basic-structure.html#process-and-commodity-classification
+        - https://times.readthedocs.io/en/latest/part-2/02-sets.html#overview-of-all-user-input-sets
+    component_templating:
+      # Templating and rule-based generation of processes is done in the VEDA front end (e.g. transformation
+      # tables), not in TIMES.
+      value: n
+      source:
+        - https://times.readthedocs.io/en/latest/part-4/02-intro-to-veda.html#transformation-insert-and-update-tables
   math:
     formulation_transparency:
       value: y
       source:
-        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+        # Full sets, parameters, variables and equations in Part II; GAMS source under GPL-3.0.
+        - https://times.readthedocs.io/en/latest/part-2/06-equations.html#constraints
+        - https://github.com/etsap-TIMES/TIMES_model/tree/v4.9.7
     problem_file_export:
-      value: y
-      source:
-        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf
+      # Tenuous: GAMS can write the model via its CONVERT tool, but LP/MPS export is not documented as a TIMES
+      # feature.
+      value: n
+      source: []
     dual_extraction:
       value: y
       source:
-        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+        - https://times.readthedocs.io/en/latest/part-1/14-linear-programming.html#economic-interpretation-of-the-dual-variables
+        - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES_Interpreting-the-dual-solution.pdf
     piecewise_formulation:
-      value: y
-      source:
-        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf
-        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+      value: n
+      source: []
     user_defined_math:
       value: y
       source:
-        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf
-        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf
-  interface:
-    gui:
-      build:
+        # Generic user-constraint framework plus user extensions of the GAMS code.
+        - https://times.readthedocs.io/en/latest/part-2/06-equations.html#user-constraints
+        - https://times.readthedocs.io/en/latest/part-3/03-switches.html#user-extensions
+  tractability:
+    dimension_reduction:
+      adjacency_aggregation:
+        temporal:
+          # Years are merged into contiguous model periods of user-chosen, variable length, independent of
+          # the data years (inputs are interpolated), with objective-function variants (MOD/ALT/LIN) to
+          # reduce the cost distortions of long periods; timesliced inputs are aggregated up the timeslice
+          # tree. There is no resampling of a chronological series.
+          value: y
+          source:
+            - https://times.readthedocs.io/en/latest/part-1/02-basic-structure.html#decoupling-of-data-and-model-horizon
+            # Sec. 2 (period definitions and distortions) and 3 (MOD/ALT/LIN variants); cited by PR #105
+            # for `distortion_mitigation`.
+            - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES_Objective-function-variants.pdf
+            # Part II sec. 3.1.2, cited by PR #105 for temporal resampling.
+            - https://times.readthedocs.io/en/latest/part-2/03-parameters.html#inheritance-and-aggregation-of-timesliced-input-parameters
+        spatial:
+          value: n
+          source: []
+      similarity_aggregation:
+        temporal:
+          value: y
+          source:
+            # Years are represented by a user-defined tree of non-chronological timeslices
+            # (season/weekly/day-night).
+            - https://times.readthedocs.io/en/latest/part-2/02-sets.html#timeslices
+            - https://iea-etsap.org/wp-content/uploads/2026/06/Flexible-temporal-and-spatial-resolution.pdf
+        spatial:
+          value: n
+          source: []
+        assets:
+          value: n
+          source: []
+        scenarios:
+          value: n
+          source: []
+      non_contiguity_handling:
+        temporal:
+          value: y
+          source:
+            # Storage between timeslices/seasons and general (STS) storage linking timeslice levels.
+            - https://times.readthedocs.io/en/latest/part-2/06-equations.html#eq-stgtss-storage-between-timeslices-including-night-storage-devices
+            - https://times.readthedocs.io/en/latest/part-2/06-equations.html#equations-eq-stsbal
+            # PR #105's `distortion_mitigation` source (objective-function variants) concerns multi-year
+            # periods, so it is listed under `adjacency_aggregation.temporal`.
+        spatial:
+          value: n
+          source: []
+      equivalencing:
+        spatial:
+          # No network reduction or equivalencing. PR #105 claimed `y` citing the grid features report,
+          # which covers DC/PTDF power flow, gas grids and allocating regional supply and demand to grid
+          # nodes, not equivalencing.
+          value: n
+          source:
+            - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES-Grid-Features-Report.pdf
+        assets:
+          value: n
+          source: []
+      filtering:
+        temporal:
+          # Tenuous: the model periods (milestone years) are chosen independently of the data years, so a
+          # study window can be selected.
+          value: y
+          source:
+            - https://times.readthedocs.io/en/latest/part-1/02-basic-structure.html#decoupling-of-data-and-model-horizon
+        spatial:
+          value: n
+          source: []
+        assets:
+          value: n
+          source: []
+        scenarios:
+          value: n
+          source: []
+    variable_fidelity:
+      formulation:
         value: y
         source:
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-IV.pdf
-          - https://github.com/GAMS-dev/TIMES_MIRO
-      run:
+          # Unit commitment (linear or MIP) and lumpy investment apply only to the processes they are
+          # defined for.
+          - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES_Dispatching-and-unit-commitment.pdf
+          - https://times.readthedocs.io/en/latest/part-1/10-lumpy-investment.html#formulation-and-solution-of-the-mixed-integer-linear-program
+      resolution:
+        temporal:
+          value: y
+          source:
+            # Process/commodity timeslice levels (PRC_TSL, COM_TSL), and dynamic timeslice trees varying
+            # by period (DYNTS).
+            - https://times.readthedocs.io/en/latest/part-2/02-sets.html#timeslices
+            - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES_New-features-in-ETSAP-TIMES-Versions-4.0-to-4.7.pdf
+        spatial:
+          value: n
+          source: []
+        assets:
+          value: n
+          source: []
+        scenarios:
+          # Tenuous: stochastic event trees are user-defined, so branching can be finer in some stages
+          # than others.
+          value: y
+          source:
+            - https://times.readthedocs.io/en/latest/part-1/08-stochastic-programming.html#stochastic-programming-concepts-and-formulation
+    reformulation:
+      linearised_unit_commitment:
         value: y
         source:
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-IV.pdf
-          - https://github.com/GAMS-dev/TIMES_MIRO
-      analyse:
+          # The default dispatching formulation uses continuous online-capacity variables.
+          - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES_Dispatching-and-unit-commitment.pdf
+      nonlinear_handling:
+        convex_relaxation:
+          # Tenuous: the non-convex Weymouth gas-flow equation is linearised around fixed pressure points
+          # (GG_PP), with LP relaxations of the grid MIP options.
+          value: y
+          source:
+            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/ae3b6eee0d785cbf30d20ec66c1d33b632693d10/User_Notes/TIMES-Grid-Features.pdf
+        function_conversion:
+          value: y
+          source:
+            # Demand curves from user elasticities, and learning curves from progress ratios, are
+            # segmented automatically.
+            - https://times.readthedocs.io/en/latest/part-1/04-times-math.html#linearization-of-the-mathematical-program
+            - https://times.readthedocs.io/en/latest/part-1/11-tech-learning.html#calculation-of-break-points-and-segment-lengths
+      constraint_screening:
+        # The TIMES reduction algorithm removes provably redundant variables and equations (exact
+        # substitution), rather than omitting constraints unlikely to bind.
+        value: n
+        source:
+          - https://times.readthedocs.io/en/latest/part-3/03-switches.html#the-times-reduction-algorithm
+      decomposition:
         value: y
         source:
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-IV.pdf
-          - https://github.com/GAMS-dev/TIMES_MIRO
-    api:
-      build:
-        value: dev
+          # TIMES-MACRO-MSA decomposes the model into an LP (TIMES) and an NLP (MACRO), iterated to
+          # convergence.
+          - https://times.readthedocs.io/en/latest/part-1/12-general-equilibrium.html#a-sketch-of-the-algorithm-to-solve-times-macro-msa
+          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/ae3b6eee0d785cbf30d20ec66c1d33b632693d10/User_Notes/TIMES-Macro-MSA.pdf
+      numeric_scaling:
+        # Tenuous: built-in scaling constants for cumulative flow and cost equations (CUFSCAL, CUCSCAL); no
+        # general data scaling.
+        value: y
         source:
-          - https://github.com/etsap-TIMES/xl2times?tab=readme-ov-file
-          - https://github.com/olejandro/times-dk_gams
-      run:
-        value: dev
-        source:
-          - https://github.com/olejandro/times-dk_gams
-      analyse:
-        value: n
-        source: []
-    cli:
-      build:
-        value: n
-        source: []
-      run:
-        value: n
-        source: []
-      analyse:
-        value: n
-        source: []
-    remote_execution:
+          - https://github.com/etsap-TIMES/TIMES_model/blob/v4.9.7/eqmain.mod
+  orchestration:
+    scenario_runs:
+      # Tenuous: sensitivity cases differing in a few parameters can be run as states of the world in one
+      # TIMES run (SENSIS), with warm starts; batch runs of named scenarios are otherwise managed in VEDA.
+      value: y
+      source:
+        - https://times.readthedocs.io/en/latest/part-3/03-switches.html#sensitivity-sensis
+    sampled_runs:
+      # Tenuous: ETSAP markets a Monte Carlo Analysis (MCA) feature and the source has `MCA` hooks, but the
+      # MCA extension files are not included in the public TIMES_model repository.
       value: n
-      source: []
-    solver_configuration:
-      value: y
       source:
-        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf
-        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-IV.pdf
-    analysis_templates:
-      value: y
-      source:
-        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf
-        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-IV.pdf
-    visualisation:
-      charts:
+        - https://iea-etsap.org/wp-content/uploads/2026/06/Monte-Carlo-Analysis-MCA-in-TIMES-.pdf
+        - https://github.com/etsap-TIMES/TIMES_model/blob/v4.9.7/solve.stc
+    coupled_models:
+      limited_foresight:
+        investment:
+          value: y
+          source:
+            - https://times.readthedocs.io/en/latest/part-1/09-limited-foresight.html#the-time-stepped-option-timestep
+            - https://times.readthedocs.io/en/latest/part-3/03-switches.html#limit-foresight-stepwise-solving-timestep
+        operation:
+          value: n
+          source: []
+      fidelity_sequence:
+        # Tenuous: FIXBOH and REG_BDNCAP fix periods or capacities to a previous solution, so a detailed
+        # follow-up run can reuse the results of a coarser one; the user sets up both runs.
         value: y
         source:
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-IV.pdf
-      network_maps:
+          - https://times.readthedocs.io/en/latest/part-1/09-limited-foresight.html#the-fixboh-feature
+          - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES_New-features-in-ETSAP-TIMES-Versions-4.0-to-4.7.pdf
+      market_sequence:
         value: n
         source: []
+      convergence_iteration:
+        value: y
+        source:
+          # TIMES-MACRO-MSA iterates TIMES and MACRO until convergence.
+          - https://times.readthedocs.io/en/latest/part-1/12-general-equilibrium.html#a-sketch-of-the-algorithm-to-solve-times-macro-msa
   io:
     plain_text:
       input:
         value: y
         source:
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf
+          # GAMS *.DD data files.
+          - https://times.readthedocs.io/en/latest/part-3/02-model-run.html#overview-of-the-model-run-process
       output:
         value: y
         source:
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-IV.pdf
+          # <case>.VD* text result files (via GDX2VEDA).
+          - https://times.readthedocs.io/en/latest/part-3/02-model-run.html#results-files
+          - https://times.readthedocs.io/en/latest/part-4/05-results-files.html#b-1-scenarioname-vd
     binary:
       input:
         value: y
         source:
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-IV.pdf
+          # DATAGDX: read all input data from a GDX file.
+          - https://times.readthedocs.io/en/latest/part-3/03-switches.html#miscellaneous-controls
       output:
         value: y
         source:
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-IV.pdf
+          - https://times.readthedocs.io/en/latest/part-3/02-model-run.html#results-files
     database:
       input:
         value: n
@@ -583,280 +967,137 @@ features:
       output:
         value: n
         source: []
-  edge_effects:
-    time_operational:
-      value: y
-      source:
-        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
-    time_financial:
-      value: y
-      source:
-        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf
-        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
-    energy_balance:
-      value: n
-      source: []
-  actors:
-    portfolio:
-      value: n
-      source: []
-    distributed_objectives:
-      value: n
-      source: []
-    equilibrium:
-      value: n
-      source: []
-    heuristic_markup:
-      value: n
-      source: []
-  objective:
-    multi_objective_weighted:
-      value: n
-      source: []
-    multi_objective_pareto:
-      value: n
-      source: []
-    quadratic:
-      value: n
-      source: []
-    tie_breaking:
-      value: n
-      source: []
-  uncertainty:
-    two_stage_stochastic:
-      value: y
-      source:
-        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
-    multi_stage_stochastic:
-      value: y
-      source:
-        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
-    risk_aversion:
-      value: y
-      source:
-        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
-    near_optimal:
-      value: n
-      source: []
-    robust_optimisation:
-      value: n
-      source: []
-  tractability:
-    dimension_reduction:
-      adjacency_aggregation:
-        temporal:
-          value: y
-          source:
-            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf
-            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
-        spatial:
-          value: n
-          source: []
-      similarity_aggregation:
-        temporal:
-          value: y
-          source:
-            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf
-            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
-        spatial:
-          value: n
-          source: []
-        assets:
-          value: n
-          source: []
-        scenarios:
-          value: n
-          source: []
-      equivalencing:
-        spatial:
-          value: n
-          source: []
-        assets:
-          value: n
-          source: []
-      filtering:
-        temporal:
-          value: n
-          source: []
-        spatial:
-          value: n
-          source: []
-        assets:
-          value: n
-          source: []
-        scenarios:
-          value: n
-          source: []
-      non_contiguity_handling:
-        temporal:
-          value: y
-          source:
-            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
-        spatial:
-          value: n
-          source: []
-    variable_fidelity:
-      formulation:
-        value: n
-        source: []
-      resolution:
-        temporal:
-          value: y
-          source:
-            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf
-            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
-        spatial:
-          value: n
-          source: []
-        assets:
-          value: n
-          source: []
-        scenarios:
-          value: n
-          source: []
-    reformulation:
-      constraint_screening:
-        value: n
-        source: []
-      linearised_unit_commitment:
-        value: n
-        source: []
-      nonlinear_handling:
-        convex_relaxation:
-          value: n
-          source: []
-        function_conversion:
-          value: n
-          source: []
-      decomposition:
-        value: y
-        source:
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf
-      approximation:
-        value: n
-        source: []
-      numeric_scaling:
-        value: n
-        source: []
-  orchestration:
-    coupled_models:
-      limited_foresight:
-        investment:
-          value: y
-          source:
-            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf
-        operation:
-          value: n
-          source: []
-      fidelity_sequence:
-        value: n
-        source: []
-      market_sequence:
-        value: n
-        source: []
-      convergence_iteration:
-        value: n
-        source: []
-    scenario_runs:
-      value: y
-      source:
-        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf
-        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-IV.pdf
-    sampled_runs:
-      value: y
-      source:
-        - https://iea-etsap.org/index.php/etsap-projects
   preprocessing:
-    forecasting:
-      value: y
+    download:
+      value: n
+      source: []
+    model_catalogue:
+      # The DemoS training models are downloaded from the ETSAP website for use in VEDA, not retrieved by
+      # TIMES.
+      value: n
       source:
-        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+        - https://times.readthedocs.io/en/latest/part-4/01-overview.html#downloading-and-setting-up-the-demos-models
     resource_conversion:
       value: n
       source: []
+    forecasting:
+      # Changed from the 0.2.0 list: demand projections (COM_PROJ) are exogenous inputs to TIMES; driver-based
+      # projection is done in the VEDA front end.
+      value: n
+      source:
+        - https://times.readthedocs.io/en/latest/part-4/03-demos-models.html#demos-010-demand-projections-and-elastic-demand
     spatial_distribution:
       demand:
-        value: n
-        source: []
+        value: y
+        source:
+          # Automated allocation of regional demand and generation to grid nodes (GR_DEMFR, GR_ENDFR,
+          # GR_GENFR).
+          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/ae3b6eee0d785cbf30d20ec66c1d33b632693d10/User_Notes/TIMES-Grid-Features.pdf
+          # Design report sec. 3.3.1.
+          - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES-Grid-Features-Report.pdf
       network_geometry:
         value: n
         source: []
-      slack:
-        value: n
-        source: []
-    download:
-      value: dev
-      source:
-        - https://github.com/MaREI-EPMG/TIMES-GEO
-    model_catalogue:
+    scenario_generation:
+      # Sampling-based scenario generation belongs to the MCA extension, which is not in the public repository
+      # (see `orchestration.sampled_runs`).
       value: n
       source: []
-    scenario_generation:
-      value: y
-      source:
-        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
     input_validation:
       value: y
       source:
-        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf
+        # QA checks of the input data are written to a LOG report; DATAGDX filters domain violations.
+        - https://times.readthedocs.io/en/latest/part-3/02-model-run.html#qa-check-report-log
   postprocessing:
     metrics:
-      impact_assessment:
-        emissions:
-          value: y
-          source:
-            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
-        resource_use:
-          value: n
-          source: []
-        socioeconomic:
-          value: n
-          source: []
       operational:
-        curtailment:
-          value: n
-          source: []
         capacity_factor:
+          # Not a TIMES report parameter; derived in VEDA-BE from activity and capacity.
+          value: n
+          source:
+            - https://times.readthedocs.io/en/latest/part-2/03-parameters.html#overview-of-report-parameters
+        operating_hours:
           value: n
           source: []
-        full_load_hours:
+        binding_hours:
           value: n
           source: []
+        curtailment:
+          # No curtailment report; ETSAP's residual load curve note says curtailment cannot be reliably
+          # accounted when variable renewables have upper-bound availability factors.
+          value: n
+          source:
+            # Sec. 2.3.1 (Accounting Power Curtailment).
+            - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES_Residual-load-curves.pdf
       financial:
-        levelised_cost:
-          value: y
-          source:
-            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
-        net_present_value:
-          value: y
-          source:
-            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf
-            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
-        asset_accounts:
-          value: n
-          source: []
         marginal_price:
           value: y
           source:
-            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
+            # Commodity balance marginals (EQ_COMBAL) are reported as commodity prices by region, period
+            # and timeslice.
+            - https://times.readthedocs.io/en/latest/part-1/14-linear-programming.html#economic-interpretation-of-the-dual-variables
+            - https://times.readthedocs.io/en/latest/part-2/03-parameters.html#overview-of-report-parameters
         price_formation:
           value: n
           source: []
         water_value:
           value: n
           source: []
+        asset_accounts:
+          value: y
+          source:
+            # Cost components (CST_*) and present values (CST_PVP) by process; value flows by process
+            # (RPT_OPT FLO 3).
+            - https://times.readthedocs.io/en/latest/part-2/03-parameters.html#acronyms-used-in-cost-reporting-parameters
+            - https://times.readthedocs.io/en/latest/part-3/03-switches.html#reporting-options-activated-by-rpt-opt
         contract_settlement:
           value: n
           source: []
-      network_transfer_metrics:
-        transfer_capacity:
+        levelised_cost:
           value: y
           source:
-            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf
-        flow_sensitivity:
+            - https://times.readthedocs.io/en/latest/part-2/03-parameters.html#the-levelized-cost-reporting-option
+        net_present_value:
+          value: y
+          source:
+            # Discounted total system cost by region (REG_OBJ) and present value of costs by process
+            # (CST_PVP).
+            - https://times.readthedocs.io/en/latest/part-1/05-times-optimisation.html#times-objective-function-discounted-total-system-cost
+            - https://times.readthedocs.io/en/latest/part-2/03-parameters.html#overview-of-report-parameters
+      impact_assessment:
+        emissions:
+          value: y
+          source:
+            # Emissions are commodities, reported by process and region; climate module reports
+            # concentrations and forcing.
+            - https://times.readthedocs.io/en/latest/part-2/03-parameters.html#overview-of-report-parameters
+            - https://times.readthedocs.io/en/latest/part-2/07-climate-module/03-parameters.html#reporting-parameters
+        resource_use:
+          # Tenuous: non-carrier resources (e.g. land, water, materials) are reported only if modelled as
+          # commodities.
+          value: y
+          source:
+            - https://times.readthedocs.io/en/latest/part-1/02-basic-structure.html#the-components-of-a-reference-energy-system-res-processes-commodities-flows
+        socioeconomic:
+          # Tenuous: TIMES-MACRO and TIMES-MACRO-MSA report GDP and the GDP loss against the baseline;
+          # there are no job or distributional metrics.
+          value: y
+          source:
+            - https://times.readthedocs.io/en/latest/part-1/12-general-equilibrium.html#formulation-of-the-macro-model
+            # MSA note sec. 3.2.2 (reporting parameters GDP-ACT, GDPLOS).
+            - https://github.com/etsap-TIMES/TIMES_Documentation/blob/ae3b6eee0d785cbf30d20ec66c1d33b632693d10/User_Notes/TIMES-Macro-MSA.pdf
+      network_transfer_metrics:
+        transfer_capacity:
           value: n
           source: []
+        flow_sensitivity:
+          # PTDFs are supplied as input (GR_PTDF, a precomputed matrix), not calculated by TIMES. The
+          # `postprocessing.ptdf` claim in PR #105 is PTDF-limited flow, i.e.
+          # `network.power_flow.sensitivity_limits.ptdf`.
+          value: n
+          source:
+            # Design report sec. 2.1 and 2.2.2.
+            - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES-Grid-Features-Report.pdf
       probabilistic_reliability_assessment:
         loss_of_load:
           value: n
@@ -869,28 +1110,89 @@ features:
           source: []
     transformation:
       aggregation:
-        value: y
-        source:
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-IV.pdf
+        # Changed from the 0.2.0 list: aggregation of results into sectors/groups is done in VEDA-BE (a
+        # separate product).
+        value: n
+        source: []
       disaggregation:
         value: n
         source: []
       scenario_comparison:
+        # Results of several runs are compared in VEDA-BE, not in TIMES.
+        value: n
+        source: []
+  interface:
+    gui:
+      build:
+        # Tenuous: TIMES has no GUI of its own. VEDA (KanORS, commercial) is the usual front end and
+        # TIMES-MIRO (GAMS) is a separate app, so both are treated as companion tools.
+        value: n
+        source:
+          - https://times.readthedocs.io/en/latest/part-4/01-overview.html#downloading-and-registering-veda2-0
+          - https://github.com/GAMS-dev/TIMES_MIRO
+      run:
+        # Tenuous: see `gui.build`.
+        value: n
+        source:
+          - https://times.readthedocs.io/en/latest/part-4/02-intro-to-veda.html#run-manager
+      analyse:
+        # Tenuous: see `gui.build`.
+        value: n
+        source:
+          - https://times.readthedocs.io/en/latest/part-4/02-intro-to-veda.html#results
+    api:
+      build:
+        value: n
+        source: []
+      run:
+        value: n
+        source: []
+      analyse:
+        value: n
+        source: []
+    cli:
+      build:
+        value: n
+        source: []
+      run:
         value: y
         source:
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf
-          - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-IV.pdf
+          # Runs are launched with GAMS on a <case>.RUN file (e.g. via VTRUN.CMD).
+          - https://times.readthedocs.io/en/latest/part-3/02-model-run.html#overview-of-the-model-run-process
+      analyse:
+        value: n
+        source: []
+    solver_configuration:
+      value: y
+      source:
+        # <Solver>.OPT files and GAMS options (e.g. BRATIO for warm starts).
+        - https://times.readthedocs.io/en/latest/part-3/02-model-run.html#overview-of-the-model-run-process
+        - https://times.readthedocs.io/en/latest/part-3/03-switches.html#sensitivity-sensis
+    remote_execution:
+      # Tenuous: sensitivity (SENSIS) cases can be solved as asynchronous parallel jobs with the GAMS grid
+      # computing facility, but dispatching runs to remote compute is not documented; ETSAP's HPC report runs
+      # a grid of local CPUs and calls it a first attempt.
+      value: n
+      source:
+        # New features 4.0-4.7, 'Grid computing and MCA with sensitivity analysis'.
+        - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES_New-features-in-ETSAP-TIMES-Versions-4.0-to-4.7.pdf
+        - https://github.com/etsap-TIMES/TIMES_model/blob/v4.9.7/solve.stc
+        # HPC report sec. 8.2.
+        - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES-HPC_final.pdf
+    visualisation:
+      charts:
+        # Charts are produced in VEDA-BE (companion tool).
+        value: n
+        source: []
+      network_maps:
+        # The RES viewer is part of VEDA (companion tool).
+        value: n
+        source:
+          - https://times.readthedocs.io/en/latest/part-4/02-intro-to-veda.html#item-details-res-viewer
+      report_templates:
+        value: n
+        source: []
   traceability:
-    run_logs:
-      value: y
-      source:
-        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf
-        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-IV.pdf
-    infeasibility_diagnosis:
-      value: y
-      source:
-        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-IV.pdf
     metadata:
       provenance:
         value: n
@@ -901,7 +1203,18 @@ features:
       propagation:
         value: n
         source: []
-    intermediate_access:
+    run_logs:
       value: y
       source:
-        - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf
+        - https://times.readthedocs.io/en/latest/part-3/02-model-run.html#gams-listing-file-lst
+        - https://times.readthedocs.io/en/latest/part-3/02-model-run.html#qa-check-report-log
+    intermediate_access:
+      # GAMS savepoint/loadpoint files persist the solved model state on disk, but there is no in-memory API.
+      value: n
+      source:
+        - https://times.readthedocs.io/en/latest/part-3/03-switches.html#gams-savepoint-loadpoint-controls
+    infeasibility_diagnosis:
+      # Tenuous: relies on the solver's infeasibility finder (e.g. CPLEX IIS), as documented for TIMES runs.
+      value: y
+      source:
+        - https://times.readthedocs.io/en/latest/part-3/02-model-run.html#errors-and-their-resolution

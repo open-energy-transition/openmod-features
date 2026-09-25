@@ -3,35 +3,56 @@
 #
 # SPDX-License-Identifier: CC-BY-4.0
 
-# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/0cd1a85/schema/tool-schema.yaml
+# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/v0.3.0/schema/tool-schema.yaml
 
+# Assessed against GenX v0.4.5 (released 11th July 2025), the latest tagged and registered release.
+# (A v0.4.6 hotfix with no new features is on `main` but untagged, and has no versioned docs.)
+# `dev` entries link to open pull requests or unreleased changes on the `develop` branch.
+
+version: 'v0.4.5'
 features:
   processes:
     boundary_exchange:
       value: y
       source:
-        - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.1-Fuels_data.csv
+        # Fuels enter the system at a time-varying price with unlimited availability.
+        - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_input/#1.1-Fuels_data.csv
+        - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/core/#Fuel
     conversion:
       one_to_one:
         value: y
         source:
-          - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.1-Fuels_data.csv
-          - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.4-Resources-input-files
+          # Thermal plants (fuel -> electricity via heat rate); electrolysers
+          # (electricity -> hydrogen).
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Resources/thermal/
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Resources/electrolyzers/
       multi_carrier_io:
-        value: n
-        source: []
+        value: y
+        source:
+          # Multi-fuel thermal plants burn several fuels at once; Allam cycle plants
+          # couple fuel, electricity and (liquid) oxygen flows.
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/core/#Fuel
+          - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_input/#Table-6a:-Additional-columns-in-the-Thermal.csv-file
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Resources/allam_cycle/
       flexible_ratio:
-        value: n
-        source: []
+        value: y
+        source:
+          # Multi-fuel blending: the share of each fuel is a decision variable bounded by
+          # `Fuel*_Min_Cofire_Level` / `Fuel*_Max_Cofire_Level`.
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/core/#Fuel
+          - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_input/#Table-6a:-Additional-columns-in-the-Thermal.csv-file
     temporal_transfer:
       value: y
       source:
-        - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#Table-9a:-Additional-columns-in-the-Storage.csv-file
+        - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Resources/storage/
+        - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Resources/hydro_res/
+        - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Resources/long_duration_storage/
     spatial_transfer:
       value: y
       source:
-        - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.2-Network.csv
-        - https://genxproject.github.io/GenX.jl/stable/Model_Concept_Overview/model_introduction/
+        # Inter-zonal transport model bounded by `Line_Max_Flow_MW` (plus expansion).
+        - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/core/#Transmission
+        - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_input/#1.2-Network.csv
     delayed_transfer:
       value: n
       source: []
@@ -46,13 +67,21 @@ features:
       source: []
     explicit_demand:
       inelastic:
+        # Tenuous: zonal demand is an exogenous profile in the power balance. Demand
+        # processes with their own constraints exist as `Flex_demand` (deferrable demand
+        # with delay/advance limits) and electrolysers (minimum annual production).
         value: y
         source:
-          - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.3-Demand_data.csv-(Load_data.csv)
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Resources/flexible_demand/
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Resources/electrolyzers/
       price_responsive:
         value: y
         source:
-          - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.3-Demand_data.csv-(Load_data.csv)
+          # Demand curtailment segments with their own cost and maximum share form a
+          # stepwise demand curve; electrolysers consume against a hydrogen price.
+          - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_input/#1.3-Demand_data.csv-(Load_data.csv)
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/core/#Non-served-Energy
+          - https://genxproject.github.io/GenX.jl/v0.4.5/limitations_genx/#7.-Demand
       mobile_storage:
         value: n
         source: []
@@ -62,14 +91,23 @@ features:
         dc_opf:
           value: y
           source:
-            - https://genxproject.github.io/GenX.jl/stable/Model_Reference/core/#Transmission
+            # `DC_OPF: 1` adds B-theta flow constraints between zones.
+            - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/core/#Transmission
+            - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_configuration/#4.-Network-related
+            - https://github.com/GenXProject/GenX.jl/tree/v0.4.5/example_systems/10_IEEE_9_bus_DC_OPF
         ac_opf:
+          value: n
+          source: []
+        unbalanced_flows:
           value: n
           source: []
       sensitivity_limits:
         ptdf:
+          # A PTDF-based formulation is being tested alongside Benders decomposition but
+          # has no open PR yet (issue #861).
           value: n
-          source: []
+          source:
+            - https://github.com/GenXProject/GenX.jl/issues/861
         outage_factors:
           value: n
           source: []
@@ -80,10 +118,21 @@ features:
         thermal:
           value: y
           source:
-            - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.2-Network.csv
+            - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/core/#Transmission
+            - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_input/#1.2-Network.csv
         phase_angle:
-          value: n
-          source: []
+          value: y
+          source:
+            # `Angle_Limit_Rad` per line in the DC-OPF formulation.
+            - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/core/#Transmission
+            - https://github.com/GenXProject/GenX.jl/blob/v0.4.5/src/load_inputs/load_network_data.jl
+      losses:
+        value: y
+        source:
+          # `Trans_Loss_Segments >= 2` gives a piecewise-linear approximation of quadratic
+          # (I^2R) losses from line resistance and voltage.
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/core/#Transmission
+          - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_configuration/#4.-Network-related
       network_devices:
         transformers:
           value: n
@@ -94,9 +143,6 @@ features:
         hvdc_converters:
           value: n
           source: []
-      unbalanced_flows:
-        value: n
-        source: []
     hydraulic_flow:
       linearised_flow:
         value: n
@@ -109,106 +155,141 @@ features:
       exogenous_capacity:
         value: y
         source:
-          - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.4-Resources-input-files
+          # `New_Build = 0`, `Can_Retire = 0` with `Existing_Cap_MW`.
+          - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_input/#Table-5a:-Columns-in-resource-.csv-files-that-are-common-to-all-resources
       continuous_capacity:
         value: y
         source:
-          - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.4-Resources-input-files
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/core/#Discharge
+          - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_input/#Table-5a:-Columns-in-resource-.csv-files-that-are-common-to-all-resources
       integer_investment_exogenous_capacity:
         value: y
         source:
-          - https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/thermal_commit/
+          # With `UCommit = 1`, new, retired and retrofitted capacity of committed
+          # resources is an integer number of `Cap_Size` units.
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/core/#Unit-Commitment
+          - https://github.com/GenXProject/GenX.jl/blob/v0.4.5/src/model/core/ucommit.jl
       integer_investment_continuous_capacity:
         value: n
         source: []
-      retrofit:
-        value: y
-        source:
-          - https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/resource/
       multi_period:
         value: y
         source:
-          - https://genxproject.github.io/GenX.jl/stable/User_Guide/multi_stage_input/
+          # Perfect-foresight multi-stage planning (solved by dual dynamic programming).
+          - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/multi_stage_input/
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Multi_Stage/multi_stage_overview/
+      retrofit:
+        value: y
+        source:
+          # `Can_Retrofit` / `Retrofit_Id` / `Retrofit_Efficiency`: retired source capacity
+          # is replaced by retrofit options (e.g. CCS, fuel switching).
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Resources/retrofit/
+          - https://github.com/GenXProject/GenX.jl/tree/v0.4.5/example_systems/9_three_zones_w_retrofit
+      endogenous_retirement:
+        value: y
+        source:
+          # `Can_Retire = 1` makes retirement of existing capacity a decision variable.
+          - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_input/#Table-5a:-Columns-in-resource-.csv-files-that-are-common-to-all-resources
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/core/#Discharge
     operation:
       unit_commitment:
         value: y
         source:
-          - https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/thermal_commit/
+          # Clustered integer (`UCommit = 1`) or linearised (`UCommit = 2`) commitment.
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Resources/thermal_commit/
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/core/#Unit-Commitment
       maintenance_scheduling:
         value: y
         source:
-          - https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/maintenance/
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Resources/maintenance/
   constraints:
     scope:
       temporal:
         pointwise:
           investment:
-            size_bounds:
-              value: y
-              source:
-                - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.4-Resources-input-files
-            discrete_increments:
-              value: y
-              source:
-                - https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/thermal_commit/
-            unit_purchase:
-              value: y
-              source:
-                - https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/thermal_commit/
+            value: y
+            source:
+              # Multi-stage: `Min_Retired_Cap_MW` forces retirements within a stage and
+              # `Line_Max_Reinforcement_MW` caps line expansion per stage.
+              - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/multi_stage_input/#Additional-inputs-needed-for-multi-stage-modeling
+              - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_input/#1.2-Network.csv
           operation:
             availability_derating:
               value: y
               source:
-                - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.5-Generator_variability.csv
+                # Time-varying capacity factors per resource in `Generators_variability.csv`.
+                - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_input/#1.5-Generator_variability.csv
+                - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Resources/curtailable_variable_renewable/
             minimum_stable_level:
               value: y
               source:
-                - https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/thermal_commit/
+                # `Min_Power` applied to the commitment state.
+                - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Resources/thermal_commit/
+                - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_input/#Table-6a:-Additional-columns-in-the-Thermal.csv-file
             forced_offline:
               value: y
               source:
-                - https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/maintenance/
+                # Zero availability in `Generators_variability.csv`, or maintenance windows
+                # (optimised, or pre-scheduled via the documented hint).
+                - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Resources/maintenance/#Hint:-pre-scheduling-maintenance
+                - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_input/#1.5-Generator_variability.csv
             forced_online:
               value: y
               source:
-                - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.4-Resources-input-files
+                # Must-run resources produce exactly availability x capacity.
+                - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Resources/must_run/
         sequential:
           investment:
-            build_rate:
-              value: y
-              source:
-                - https://genxproject.github.io/GenX.jl/stable/User_Guide/multi_stage_input/
-            retirement:
-              value: y
-              source:
-                - https://genxproject.github.io/GenX.jl/stable/User_Guide/multi_stage_input/
             availability_window:
+              # Tenuous: no build-window parameter. Each multi-stage stage has its own input
+              # folder, so `New_Build` can be switched off in chosen stages.
+              value: y
+              source:
+                - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/multi_stage_input/#Input-data-files
+            relative_build_rate:
               value: n
               source: []
+            technical_lifetime:
+              value: y
+              source:
+                # `Lifetime` enforces endogenous retirement of new builds in later stages.
+                - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Multi_Stage/endogenous_retirement/
+                - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/multi_stage_input/#Additional-inputs-needed-for-multi-stage-modeling
           operation:
             ramping:
               value: y
               source:
-                - https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/thermal_commit/
+                - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Resources/thermal_commit/
+                - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Resources/thermal_no_commit/
+                - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Resources/hydro_res/
             start_shut_trajectory:
+              # Units starting/shutting may move by max(`Min_Power`, ramp rate) in the
+              # transition step; there is no separate start-up/shut-down trajectory input.
               value: n
-              source: []
+              source:
+                - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Resources/thermal_commit/
             commitment_duration:
               value: y
               source:
-                - https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/thermal_commit/
+                # `Up_Time` / `Down_Time`; fusion `max_up_time` caps pulse length.
+                - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Resources/thermal_commit/
+                - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Resources/fusion/#Hourly-scale-pulsed-operational-behavior
             start_consumption:
               value: y
               source:
-                - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.1-Fuels_data.csv
-                - https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/thermal_commit/
+                # `Start_Fuel_MMBTU_per_MW` per start (single- or multi-fuel).
+                - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_input/#Table-6b:-Settings-specific-columns-in-the-Thermal.csv-file
+                - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/core/#Fuel
         cumulative:
           investment:
             capacity_target:
               value: y
               source:
-                - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_configuration/#3.-Policy-related
-                - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#2.4-Capacity_reserve_margin.csv
+                # Minimum/maximum capacity requirements over sets of resources and zones;
+                # capacity reserve margin on de-rated capacity; per-resource Max/Min_Cap_MW.
+                - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/policies/#Minimum-Capacity-Requirement
+                - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/policies/#Maximum-Capacity-Requirement
+                - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/policies/#Capacity-Reserve-Margin
             expansion_budget:
               value: n
               source: []
@@ -222,20 +303,25 @@ features:
             flow_volume:
               value: y
               source:
-                - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_configuration/#3.-Policy-related
+                # Annual minimum hydrogen production; energy share requirements; fusion
+                # maximum full-power-years per year.
+                - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/policies/#Hydrogen-Production-Demand-Requirement-(Electrolyzer)
+                - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/policies/#Energy-Share-Requirement
+                - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Resources/fusion/#Max-FPY-per-year-constraint
             impact_budget:
               value: y
               source:
-                - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_configuration/#3.-Policy-related
-                - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_output/#1.3-emissions.csv
+                # Mass- or rate-based CO2 caps. CO2 is the only non-carrier quantity tracked.
+                - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/policies/#CO_2-Constraint-Policy
+                - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_input/#2.3-CO2_cap.csv
             event_count:
+              # Only for fusion plants: `max_starts` limits pulse starts per year.
               value: y
               source:
-                - https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/maintenance/
+                - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Resources/fusion/#Pulses-are-stressful
             state_duration:
-              value: y
-              source:
-                - https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/maintenance/
+              value: n
+              source: []
             path_dependent:
               value: n
               source: []
@@ -243,45 +329,63 @@ features:
           investment:
             value: y
             source:
-              - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.4-Resources-input-files
+              # Brownfield stock via `Existing_Cap_MW` (and energy/charge equivalents).
+              - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_input/#Table-5a:-Columns-in-resource-.csv-files-that-are-common-to-all-resources
           operation:
-            value: y
+            # Storage and commitment states wrap cyclically within each period; there are
+            # no inputs for initial or final operating states.
+            value: n
             source:
-              - https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/hydro_inter_period_linkage/
-              - https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/long_duration_storage/
+              - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Resources/storage/
+      spatial:
+        investment:
+          value: y
+          source:
+            # Min/max capacity requirements and capacity reserve margins span sets of zones.
+            - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/policies/#Minimum-Capacity-Requirement
+            - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/policies/#Capacity-Reserve-Margin
+        operation:
+          value: y
+          source:
+            # CO2 caps and energy share requirements can span several zones with trading.
+            - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/policies/#CO_2-Constraint-Policy
+            - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/policies/#Energy-Share-Requirement
       assets:
         spanning:
           investment:
             value: y
             source:
-              - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_configuration/#3.-Policy-related
+              # Eligible resources are tagged per requirement in the `policy_assignments` files.
+              - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/policies/#Minimum-Capacity-Requirement
+              - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_input/#Policy-related-columns-for-all-resources
           operation:
             value: y
             source:
-              - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_configuration/#3.-Policy-related
+              # Energy share requirements over qualifying resources; CO2 caps; hourly
+              # clean-supply matching for electrolysers.
+              - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/policies/#Energy-Share-Requirement
+              - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/policies/#Hourly-clean-supply-matching-constraint
         dedicated_flow_routing:
-          value: n
-          source: []
-      spatial:
-        investment:
-          value: y
+          # Hydro cascades linking reservoirs are an open PR. (Co-located VRE-storage
+          # resources route DC output to on-site storage, but only within one resource.)
+          value: dev
           source:
-            - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_configuration/#3.-Policy-related
-        operation:
-          value: y
-          source:
-            - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_configuration/#3.-Policy-related
-            - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#2.4-Capacity_reserve_margin.csv
+            - https://github.com/GenXProject/GenX.jl/pull/911
+            - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Resources/vre_stor/
     functional_form:
       linear_multi_variable:
         investment:
           value: y
           source:
-            - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#Table-9a:-Additional-columns-in-the-Storage.csv-file
+            # Storage `Min_Duration` / `Max_Duration` energy-to-power envelopes; retrofit
+            # capacity exchange rates; co-located VRE-storage component ratios.
+            - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Resources/storage/
+            - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Resources/retrofit/
         operation:
           value: y
           source:
-            - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#2.1-Operational_reserves.csv
+            # Multi-fuel cofiring bounds link fuel-use and power variables.
+            - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/core/#Fuel
       quadratic:
         investment:
           value: n
@@ -296,22 +400,36 @@ features:
         operation:
           value: y
           source:
-            - https://genxproject.github.io/GenX.jl/stable/Model_Reference/core/#Transmission
-    soft_constraints:
-      value: n
-      source: []
+            # Piecewise-linear part-load heat rate (fuel use) curves; piecewise-linearised
+            # quadratic transmission losses.
+            - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/core/#Fuel
+            - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/core/#Transmission
     reliability:
+      unserved_demand:
+        value: y
+        source:
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/core/#Non-served-Energy
+          - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_input/#1.3-Demand_data.csv-(Load_data.csv)
       operating_reserve:
         online_headroom:
           value: y
           source:
-            - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#2.1-Operational_reserves.csv
+            # Regulation and upward spinning/contingency reserves, with a penalty for
+            # unmet reserves.
+            - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/core/#Operational-Reserves
+            - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_input/#2.1-Operational_reserves.csv
         standby_capability:
           value: n
           source: []
         inertia:
           value: n
           source: []
+      contingency_constrained:
+        # The reserve requirement can be sized to the largest installed or committed unit,
+        # but no post-contingency dispatch or network state is modelled.
+        value: n
+        source:
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/core/#Operational-Reserves
       probabilistic_reliability_limit:
         loss_of_load:
           value: n
@@ -319,13 +437,12 @@ features:
         unserved_energy:
           value: n
           source: []
-      unserved_demand:
-        value: y
-        source:
-          - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.3-Demand_data.csv-(Load_data.csv)
-      contingency_constrained:
-        value: n
-        source: []
+    soft_constraints:
+      # Slack variables with a price cap exist only for the five policy constraint types
+      # (CRM, CO2, ESR, min/max capacity); there is no generic mechanism.
+      value: n
+      source:
+        - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/slack_variables_overview/
   cost:
     scope:
       temporal:
@@ -334,14 +451,15 @@ features:
             value: n
             source: []
           operation:
+            ramping:
+              value: n
+              source: []
             start_up:
               value: y
               source:
-                - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.4-Resources-input-files
+                - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/core/#Unit-Commitment
+                - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_input/#Table-6b:-Settings-specific-columns-in-the-Thermal.csv-file
             shut_down:
-              value: n
-              source: []
-            ramping:
               value: n
               source: []
             start_state_dependent:
@@ -354,14 +472,17 @@ features:
           operation:
             value: n
             source: []
-      assets:
+      spatial:
         investment:
           value: n
           source: []
         operation:
+          # Policy slack penalties price the violation of a multi-zone cap, but are not a
+          # general cost term on aggregated quantities.
           value: n
-          source: []
-      spatial:
+          source:
+            - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/slack_variables_overview/
+      assets:
         investment:
           value: n
           source: []
@@ -374,144 +495,346 @@ features:
           value: n
           source: []
         operation:
-          value: n
-          source: []
+          # Tenuous: no explicit no-load cost parameter. With piecewise fuel usage and unit
+          # commitment, the zero-load fuel intercept is multiplied by the commitment state,
+          # giving a fuel cost per committed timestep irrespective of output.
+          value: y
+          source:
+            - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/core/#Fuel
+            - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_input/#Table-6a:-Additional-columns-in-the-Thermal.csv-file
       nonlinear:
         investment:
           value: n
           source: []
         operation:
-          flow_dependent:
-            value: n
-            source: []
-          bid_bands:
-            value: n
-            source: []
-      threshold_deviation:
-        investment:
           value: y
           source:
-            - https://genxproject.github.io/GenX.jl/stable/Model_Reference/write_outputs/#Write-Subsidy-Revenue
+            # Piecewise-linear heat-rate curves make fuel cost per MWh vary with output.
+            - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/core/#Fuel
+            - https://github.com/GenXProject/GenX.jl/tree/v0.4.5/example_systems/5_three_zones_w_piecewise_fuel
+      threshold_deviation:
+        investment:
+          value: n
+          source: []
         operation:
           value: n
           source: []
-    annuitisation:
-      discounting:
+    time_value:
+      annuitisation:
+        # Tenuous: single-stage runs take pre-annualised `Inv_Cost_per_MWyr` inputs. In
+        # multi-stage runs `WACC` and `Capital_Recovery_Period` convert annuities into the
+        # capital cost incurred within the horizon.
         value: y
         source:
-          - https://genxproject.github.io/GenX.jl/stable/User_Guide/multi_stage_input/
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Multi_Stage/configure_multi_stage_inputs/
+          - https://genxproject.github.io/GenX.jl/v0.4.5/limitations_genx/#2.-Cost
       fiscal_treatment:
-        value: n
-        source: []
-  model_definition:
-    dimension_groups:
+        # Investment and production incentive (tax credit) inputs are an open PR.
+        value: dev
+        source:
+          - https://github.com/GenXProject/GenX.jl/pull/877
+          - https://github.com/GenXProject/GenX.jl/issues/874
+      period_discounting:
+        value: y
+        source:
+          # Multi-stage `WACC` setting is the social discount rate between stages.
+          - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/multi_stage_input/#Settings-Files
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Multi_Stage/dual_dynamic_programming/
+  objective:
+    quadratic:
+      value: n
+      source: []
+    multi_objective_weighted:
+      value: n
+      source: []
+    multi_objective_pareto:
+      value: n
+      source: []
+    tie_breaking:
+      # Tenuous: `VirtualChargeDischargeCost` (default 1 USD/MWh) is a small documented
+      # penalty on otherwise free virtual storage charge/discharge for capacity reserves.
       value: y
       source:
-        - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/#1.4-Resources-input-files
-    component_templating:
+        - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_configuration/#1.-Model-structure-related-settings-parameters
+  edge_effects:
+    time_operational:
+      value: y
+      source:
+        # Storage, hydro and commitment states wrap around within each (representative)
+        # period; long-duration storage links periods across the year.
+        - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Resources/storage/
+        - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Resources/long_duration_storage/
+    time_financial:
+      value: y
+      source:
+        # Annuities falling after the horizon are assumed recoverable and excluded.
+        - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Multi_Stage/configure_multi_stage_inputs/
+    energy_balance:
+      # Tenuous: only for transmission. With integer unit commitment, binaries prevent
+      # "phantom losses" from simultaneous flow in both directions. Storage relies on
+      # losses and variable costs instead (issue #547).
+      value: y
+      source:
+        - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/core/#Transmission
+        - https://github.com/GenXProject/GenX.jl/issues/547
+  actors:
+    portfolio:
       value: n
       source: []
+    heuristic_markup:
+      value: n
+      source: []
+    distributed_objectives:
+      value: n
+      source: []
+    equilibrium:
+      value: n
+      source:
+        # Perfect-market, single central planner.
+        - https://genxproject.github.io/GenX.jl/v0.4.5/limitations_genx/#3.Market
+  uncertainty:
+    two_stage_stochastic:
+      value: n
+      source:
+        - https://genxproject.github.io/GenX.jl/v0.4.5/limitations_genx/#5.-Uncertainty
+        - https://github.com/GenXProject/GenX.jl/issues/148
+    multi_stage_stochastic:
+      # Dual dynamic programming is used only for deterministic multi-stage planning.
+      value: n
+      source:
+        - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Multi_Stage/dual_dynamic_programming/
+    risk_aversion:
+      value: n
+      source: []
+    robust_optimisation:
+      value: n
+      source: []
+    near_optimal:
+      value: y
+      source:
+        - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/generate_alternatives/
+        - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/mga/
+  model_definition:
     configurable_dimensions:
+      # Each input's dimensionality is fixed by the file schema (e.g. fuel prices and
+      # availability are always hourly, costs always static).
+      value: n
+      source:
+        - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_input/
+    extensible_dimensions:
       value: n
       source: []
-    extensible_dimensions:
+    dimension_groups:
+      # Tenuous: resources are tagged into overlapping groups through per-policy
+      # eligibility columns (`ESR_*`, `Min_Cap_*`, ...) and `Resource_Type` for MGA.
+      # There is no general-purpose grouping object.
+      value: y
+      source:
+        - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_input/#Policy-related-columns-for-all-resources
+        - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/generate_alternatives/
+    component_templating:
       value: n
       source: []
   math:
     formulation_transparency:
       value: y
       source:
-        - https://genxproject.github.io/GenX.jl/stable/Model_Concept_Overview/objective_function/
-        - https://genxproject.github.io/GenX.jl/stable/Model_Reference/core/#Transmission
+        - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Concept_Overview/model_notation/
+        - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Concept_Overview/objective_function/
+        - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/core/
     problem_file_export:
-      value: n
-      source: []
+      value: y
+      source:
+        # `PrintModel: 1` writes the model as an .lp file.
+        - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_configuration/#5.-Outputs
     dual_extraction:
       value: y
       source:
-        - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_output/
+        # `WriteShadowPrices`; prices, reliability, storage and policy duals are written out.
+        - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_configuration/#5.-Outputs
+        - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_output/#1.7-prices.csv
     piecewise_formulation:
-      value: y
-      source:
-        - https://genxproject.github.io/GenX.jl/stable/Model_Reference/core/#Transmission
+      value: n
+      source: []
     user_defined_math:
+      # Tenuous: there is no user-constraint interface. `generate_model` returns the JuMP
+      # model, which can be edited before `solve_model`, and the developer guide explains
+      # how to add new resource modules.
       value: y
       source:
-        - https://genxproject.github.io/GenX.jl/stable/Tutorials/Tutorial_1_configuring_settings/
-  interface:
-    gui:
-      build:
+        - https://genxproject.github.io/GenX.jl/v0.4.5/Public_API/public_api/
+        - https://genxproject.github.io/GenX.jl/v0.4.5/developer_guide/#How-to-add-a-new-resource-to-GenX
+        - https://genxproject.github.io/GenX.jl/v0.4.5/Tutorials/Tutorial_4_model_generation/
+  tractability:
+    dimension_reduction:
+      adjacency_aggregation:
+        temporal:
+          # Coarser timesteps must be prepared by the user, rescaling all time-related
+          # parameters by hand; GenX is built around hourly steps (issue #295).
+          value: n
+          source:
+            - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_input/#1.3-Demand_data.csv-(Load_data.csv)
+            - https://github.com/GenXProject/GenX.jl/issues/295
+        spatial:
+          value: n
+          source: []
+      similarity_aggregation:
+        temporal:
+          value: y
+          source:
+            # k-means / k-medoids representative periods with optional extreme periods.
+            - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/TDR_input/
+            - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/TDR/
+        spatial:
+          # Zonal and resource clustering is done upstream by the companion PowerGenome
+          # tool, not by GenX.
+          value: n
+          source: []
+        assets:
+          # GenX commits user-defined clusters of identical units, but does not form those
+          # clusters itself (PowerGenome does).
+          value: n
+          source:
+            - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Resources/thermal_commit/
+        scenarios:
+          value: n
+          source: []
+      non_contiguity_handling:
+        temporal:
+          value: y
+          source:
+            # Long-duration storage / hydro inter-period linkage via `Period_map.csv`.
+            - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Resources/long_duration_storage/
+            - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Resources/hydro_inter_period_linkage/
+        spatial:
+          value: n
+          source: []
+      equivalencing:
+        spatial:
+          value: n
+          source: []
+        assets:
+          value: n
+          source: []
+      filtering:
+        temporal:
+          value: n
+          source: []
+        spatial:
+          value: n
+          source: []
+        assets:
+          value: n
+          source: []
+        scenarios:
+          value: n
+          source: []
+    variable_fidelity:
+      formulation:
+        value: y
+        source:
+          # Per-resource choice between committed (`Model = 1`) and simplified
+          # economic-dispatch (`Model = 2`) thermal formulations.
+          - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_input/#Table-6a:-Additional-columns-in-the-Thermal.csv-file
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Resources/thermal/
+      resolution:
+        temporal:
+          value: n
+          source: []
+        spatial:
+          value: n
+          source: []
+        assets:
+          value: n
+          source: []
+        scenarios:
+          value: n
+          source: []
+    reformulation:
+      linearised_unit_commitment:
+        value: y
+        source:
+          - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_configuration/#1.-Model-structure-related-settings-parameters
+      nonlinear_handling:
+        convex_relaxation:
+          value: n
+          source: []
+        function_conversion:
+          # Piecewise fuel-usage segments must be supplied by the user.
+          value: n
+          source:
+            - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/core/#Fuel
+      constraint_screening:
         value: n
         source: []
-      run:
-        value: n
-        source: []
-      analyse:
-        value: n
-        source: []
-    api:
-      build:
+      decomposition:
         value: y
         source:
-          - https://genxproject.github.io/GenX.jl/stable/Tutorials/Tutorials_intro/
-          - https://genxproject.github.io/GenX.jl/stable/Getting_Started/examples_casestudies/
-      run:
+          # Dual dynamic programming for perfect-foresight multi-stage planning. Benders
+          # decomposition is merged to `develop` (PR #914) but not yet released.
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/Multi_Stage/dual_dynamic_programming/
+          - https://github.com/GenXProject/GenX.jl/pull/914
+      numeric_scaling:
         value: y
         source:
-          - https://genxproject.github.io/GenX.jl/stable/Tutorials/Tutorials_intro/
-      analyse:
-        value: y
-        source:
-          - https://genxproject.github.io/GenX.jl/stable/Tutorials/Tutorial_8_outputs/
-    cli:
-      build:
-        value: y
-        source:
-          - https://github.com/danielolsen/pygenx
-      run:
-        value: y
-        source:
-          - https://github.com/danielolsen/pygenx
-      analyse:
-        value: n
-        source: []
-    remote_execution:
+          # `ParameterScale` (MW -> GW units) and `ObjScale`.
+          - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_configuration/#2.-Solution-strategy
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Concept_Overview/objective_function/#Objective-Scaling
+  orchestration:
+    scenario_runs:
+      # Batch runs of cases are offered by the third-party SimpleGenXCaseRunner.
       value: n
-      source: []
-    solver_configuration:
+      source:
+        - https://genxproject.github.io/GenX.jl/v0.4.5/additional_third_party_extensions/
+    sampled_runs:
       value: y
       source:
-        - https://genxproject.github.io/GenX.jl/stable/User_Guide/solver_configuration/
-        - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_configuration/#6.-Solver-relate
-    analysis_templates:
-      value: n
-      source: []
-    visualisation:
-      charts:
-        value: y
-        source:
-          - https://genxproject.github.io/GenX.jl/stable/Tutorials/Tutorial_8_outputs/
-      network_maps:
-        value: y
-        source:
-          - https://genxproject.github.io/GenX.jl/stable/Tutorials/Tutorial_2_network_visualization/
+        # Method of Morris runs an ensemble over sampled parameter ranges and collates
+        # the sensitivities.
+        - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/methodofmorris/
+        - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/methodofmorris_input/
+    coupled_models:
+      limited_foresight:
+        investment:
+          value: y
+          source:
+            # `Myopic: 1` solves stages in sequence, passing on capacity.
+            - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/multi_stage_input/
+            - https://genxproject.github.io/GenX.jl/v0.4.5/Public_API/public_api/#GenX.run_myopic_multistage
+        operation:
+          value: n
+          source: []
+      fidelity_sequence:
+        value: n
+        source: []
+      market_sequence:
+        value: n
+        source: []
+      convergence_iteration:
+        value: n
+        source: []
   io:
     plain_text:
       input:
         value: y
         source:
-          - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_input/
+          # CSV inputs and YAML settings.
+          - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_input/
+          - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_configuration/
       output:
         value: y
         source:
-          - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_output/
+          - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_output/
     binary:
       input:
-        value: n
-        source: []
+        # Gzipped CSV / Parquet inputs are an open PR.
+        value: dev
+        source:
+          - https://github.com/GenXProject/GenX.jl/pull/878
       output:
-        value: n
-        source: []
+        value: dev
+        source:
+          - https://github.com/GenXProject/GenX.jl/pull/878
     database:
       input:
         value: n
@@ -540,191 +863,21 @@ features:
       output:
         value: n
         source: []
-  edge_effects:
-    time_operational:
-      value: y
-      source:
-        - https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/hydro_inter_period_linkage/
-        - https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/long_duration_storage/
-    time_financial:
-      value: n
-      source:
-        - https://genxproject.github.io/GenX.jl/stable/limitations_genx/#2.-Cost
-    energy_balance:
-      value: y
-      source:
-        - https://genxproject.github.io/GenX.jl/stable/Model_Concept_Overview/power_balance/
-  actors:
-    portfolio:
-      value: n
-      source: []
-    distributed_objectives:
-      value: n
-      source: []
-    equilibrium:
-      value: n
-      source: []
-    heuristic_markup:
-      value: n
-      source: []
-  objective:
-    multi_objective_weighted:
-      value: n
-      source: []
-    multi_objective_pareto:
-      value: n
-      source: []
-    quadratic:
-      value: n
-      source: []
-    tie_breaking:
-      value: n
-      source: []
-  uncertainty:
-    two_stage_stochastic:
-      value: n
-      source: []
-    multi_stage_stochastic:
-      value: n
-      source: []
-    risk_aversion:
-      value: n
-      source: []
-    near_optimal:
-      value: y
-      source:
-        - https://genxproject.github.io/GenX.jl/stable/User_Guide/generate_alternatives/
-    robust_optimisation:
-      value: n
-      source: []
-  tractability:
-    dimension_reduction:
-      adjacency_aggregation:
-        temporal:
-          value: y
-          source:
-            - https://genxproject.github.io/GenX.jl/stable/User_Guide/TDR_input/
-        spatial:
-          value: n
-          source: []
-      similarity_aggregation:
-        temporal:
-          value: y
-          source:
-            - https://genxproject.github.io/GenX.jl/stable/User_Guide/TDR_input/
-        spatial:
-          value: n
-          source: []
-        assets:
-          value: n
-          source: []
-        scenarios:
-          value: n
-          source: []
-      equivalencing:
-        spatial:
-          value: n
-          source: []
-        assets:
-          value: n
-          source: []
-      filtering:
-        temporal:
-          value: y
-          source:
-            - https://genxproject.github.io/GenX.jl/stable/User_Guide/TDR_input/
-        spatial:
-          value: n
-          source: []
-        assets:
-          value: n
-          source: []
-        scenarios:
-          value: n
-          source: []
-      non_contiguity_handling:
-        temporal:
-          value: y
-          source:
-            - https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/long_duration_storage/
-            - https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/hydro_inter_period_linkage/
-        spatial:
-          value: n
-          source: []
-    variable_fidelity:
-      formulation:
-        value: n
-        source: []
-      resolution:
-        temporal:
-          value: n
-          source: []
-        spatial:
-          value: n
-          source: []
-        assets:
-          value: n
-          source: []
-        scenarios:
-          value: n
-          source: []
-    reformulation:
-      constraint_screening:
-        value: n
-        source: []
-      linearised_unit_commitment:
-        value: y
-        source:
-          - https://genxproject.github.io/GenX.jl/stable/Model_Reference/Resources/thermal_commit/
-      nonlinear_handling:
-        convex_relaxation:
-          value: n
-          source: []
-        function_conversion:
-          value: n
-          source: []
-      decomposition:
-        value: y
-        source:
-          - https://genxproject.github.io/GenX.jl/stable/User_Guide/multi_stage_input/
-      approximation:
-        value: y
-        source:
-          - https://genxproject.github.io/GenX.jl/stable/User_Guide/multi_stage_input/
-      numeric_scaling:
-        value: y
-        source:
-          - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_configuration/#6.-Solver-relate
-  orchestration:
-    coupled_models:
-      limited_foresight:
-        investment:
-          value: y
-          source:
-            - https://genxproject.github.io/GenX.jl/stable/User_Guide/multi_stage_input/
-        operation:
-          value: n
-          source: []
-      fidelity_sequence:
-        value: n
-        source: []
-      market_sequence:
-        value: n
-        source: []
-      convergence_iteration:
-        value: n
-        source: []
-    scenario_runs:
-      value: n
-      source: []
-    sampled_runs:
-      value: n
-      source: []
   preprocessing:
-    forecasting:
+    download:
       value: n
       source: []
+    model_catalogue:
+      # Tenuous: ready-to-run example systems ship with the repository.
+      value: y
+      source:
+        - https://genxproject.github.io/GenX.jl/v0.4.5/Getting_Started/examples_casestudies/
+        - https://github.com/GenXProject/GenX.jl/tree/v0.4.5/example_systems
     resource_conversion:
+      # Weather-to-profile conversion is done upstream (e.g. by PowerGenome).
+      value: n
+      source: []
+    forecasting:
       value: n
       source: []
     spatial_distribution:
@@ -734,71 +887,83 @@ features:
       network_geometry:
         value: n
         source: []
-      slack:
-        value: n
-        source: []
-    download:
-      value: n
-      source: []
-    model_catalogue:
+    scenario_generation:
+      # Tenuous: the Method of Morris builds its sampled parameter design matrix from the
+      # user's parameter ranges.
       value: y
       source:
-        - https://genxproject.github.io/GenX.jl/stable/Getting_Started/examples_casestudies/
-    scenario_generation:
-      value: n
-      source: []
+        - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/methodofmorris_input/
     input_validation:
-      value: n
-      source: []
+      value: y
+      source:
+        # Checks on settings, resource flags, policy files and required columns.
+        - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/load_inputs/#Standardized-loading-of-dataframes-from-CSV-files
+        - https://github.com/GenXProject/GenX.jl/blob/v0.4.5/src/configure_settings/configure_settings.jl
   postprocessing:
     metrics:
-      impact_assessment:
-        emissions:
-          value: y
-          source:
-            - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_output/#1.3-emissions.csv
-        resource_use:
-          value: n
-          source: []
-        socioeconomic:
-          value: n
-          source: []
       operational:
-        curtailment:
-          value: y
-          source:
-            - https://genxproject.github.io/GenX.jl/stable/Model_Reference/write_outputs/#Write-Curtailment
         capacity_factor:
           value: y
           source:
-            - https://genxproject.github.io/GenX.jl/stable/Model_Reference/write_outputs/
-        full_load_hours:
+            - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/write_outputs/#Write-Capacity-Factors
+        operating_hours:
+          # Commitment states are written per timestep (`commit.csv`) but running hours
+          # are not totalled.
           value: n
           source: []
+        binding_hours:
+          value: n
+          source: []
+        curtailment:
+          value: y
+          source:
+            - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/write_outputs/#Write-Curtailment
       financial:
+        marginal_price:
+          value: y
+          source:
+            # Zonal marginal electricity prices from power-balance duals (not decomposed).
+            - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_output/#1.7-prices.csv
+            - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/write_outputs/#Write-Prices
+        price_formation:
+          value: y
+          source:
+            # For MILP runs, integers are fixed and the LP re-solved to obtain prices.
+            - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/solve_model/
+            - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_output/#1.7-prices.csv
+        water_value:
+          # Storage balance duals are reported per timestep, but no reusable future cost
+          # function is built.
+          value: n
+          source:
+            - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/write_outputs/#Write-Storage-Dual
+        asset_accounts:
+          value: y
+          source:
+            - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_output/#1.9-NetRevenue.csv
+            - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/write_outputs/#Write-Net-Revenue
+        contract_settlement:
+          value: n
+          source: []
         levelised_cost:
           value: n
           source: []
         net_present_value:
+          # Tenuous: multi-stage runs report discounted system costs per stage; there is no
+          # per-asset NPV.
           value: y
           source:
-            - https://genxproject.github.io/GenX.jl/stable/User_Guide/multi_stage_input/
-            - https://genxproject.github.io/GenX.jl/stable/Model_Reference/write_outputs/
-        asset_accounts:
+            - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/write_outputs/#GenX.write_multi_stage_costs
+      impact_assessment:
+        emissions:
           value: y
           source:
-            - https://genxproject.github.io/GenX.jl/stable/Model_Reference/write_outputs/
-        marginal_price:
-          value: y
-          source:
-            - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_output/
-        price_formation:
+            - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_output/#1.3-emissions.csv
+            - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/core/#CO2
+        resource_use:
           value: n
           source: []
-        water_value:
-          value: n
-          source: []
-        contract_settlement:
+        socioeconomic:
           value: n
           source: []
       network_transfer_metrics:
@@ -813,31 +978,105 @@ features:
           value: n
           source: []
         unserved_energy:
-          value: y
-          source:
-            - https://genxproject.github.io/GenX.jl/stable/User_Guide/model_output/#1.6-reliability.csv
-        capacity_credit:
+          # `nse.csv` reports deterministic non-served energy, and `reliability.csv` its
+          # dual, not an expected value over outage states.
           value: n
-          source: []
+          source:
+            - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_output/#1.4-nse.csv
+            - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_output/#1.6-reliability.csv
+        capacity_credit:
+          # `CapacityValue.csv` reports each resource's contribution in hours when the
+          # capacity reserve margin binds, from input de-rating factors; this is not ELCC.
+          value: n
+          source:
+            - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_output/#2.1-CapacityValue.csv
     transformation:
       aggregation:
         value: y
         source:
-          - https://genxproject.github.io/GenX.jl/stable/Tutorials/Tutorial_8_outputs/
+          # Annual sums and zonal totals in outputs; `WriteOutputs: annual`.
+          - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_output/
+          - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_configuration/#5.-Outputs
       disaggregation:
         value: y
         source:
-          - https://genxproject.github.io/GenX.jl/stable/Model_Reference/write_outputs/#GenX.write_full_time_series_reconstruction-Tuple{AbstractString,%20Dict,%20DataFrames.DataFrame,%20String}
+          # `OutputFullTimeSeries` maps representative-period results back to the full year.
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/TDR/#GenX.full_time_series_reconstruction
+          - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_configuration/#5.-Outputs
       scenario_comparison:
+        # Tenuous: only collated across the stages of a multi-stage run and across MGA
+        # iterations. There is no comparison of independent scenarios.
+        value: y
+        source:
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/write_outputs/#Write-Multi-stage-files
+          - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/generate_alternatives/
+  interface:
+    gui:
+      build:
+        value: n
+        source: []
+      run:
+        value: n
+        source: []
+      analyse:
+        value: n
+        source: []
+    api:
+      build:
+        value: y
+        source:
+          # Julia API: `load_inputs`, `generate_model`.
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Public_API/public_api/
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Tutorials/Tutorial_4_model_generation/
+      run:
+        value: y
+        source:
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Public_API/public_api/#GenX.run_genx_case!
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Tutorials/Tutorial_5_solve_model/
+      analyse:
+        value: y
+        source:
+          # The solved JuMP model is returned for querying; outputs are read back as
+          # DataFrames in the tutorials.
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Public_API/public_api/#GenX.solve_model
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Tutorials/Tutorial_8_outputs/
+    cli:
+      build:
+        value: n
+        source: []
+      run:
+        # Tenuous: no dedicated CLI; a case is run from the shell with
+        # `julia --project=<GenX> <case>/Run.jl`.
+        value: y
+        source:
+          - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/running_model/
+      analyse:
+        value: n
+        source: []
+    solver_configuration:
+      value: y
+      source:
+        - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/solver_configuration/
+        - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/solver_configuration_api/
+    remote_execution:
+      # Batch submission to clusters is offered by the third-party SimpleGenXCaseRunner.
+      value: n
+      source:
+        - https://genxproject.github.io/GenX.jl/v0.4.5/additional_third_party_extensions/
+    visualisation:
+      charts:
+        # The tutorials plot results with external Julia packages; GenX ships no plotting.
+        value: n
+        source:
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Tutorials/Tutorial_8_outputs/
+      network_maps:
+        value: n
+        source:
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Tutorials/Tutorial_2_network_visualization/
+      report_templates:
         value: n
         source: []
   traceability:
-    run_logs:
-      value: n
-      source: []
-    infeasibility_diagnosis:
-      value: n
-      source: []
     metadata:
       provenance:
         value: n
@@ -846,9 +1085,27 @@ features:
         value: n
         source: []
       propagation:
-        value: n
-        source: []
+        value: y
+        source:
+          # `run_settings.yml` and `system_summary.yml` (incl. GenX version) are written
+          # alongside results.
+          - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/write_outputs/#Write-Settings-Files
+    run_logs:
+      # Tenuous: progress and solver logs go to the console only; `status.csv` and the
+      # multi-stage stats file record solve status, times and bounds.
+      value: y
+      source:
+        - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_output/#1.8-status.csv
+        - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/write_outputs/#Write-Status
     intermediate_access:
       value: y
       source:
-        - https://genxproject.github.io/GenX.jl/stable/Tutorials/Tutorial_1_configuring_settings/
+        # The inputs dictionary and built JuMP model are returned by the public API.
+        - https://genxproject.github.io/GenX.jl/v0.4.5/Public_API/public_api/#GenX.load_inputs
+        - https://genxproject.github.io/GenX.jl/v0.4.5/Public_API/public_api/#GenX.generate_model
+    infeasibility_diagnosis:
+      value: y
+      source:
+        # `ComputeConflicts: 1` computes an IIS with Gurobi or CPLEX.
+        - https://genxproject.github.io/GenX.jl/v0.4.5/User_Guide/model_configuration/#6.-Solver-related
+        - https://genxproject.github.io/GenX.jl/v0.4.5/Model_Reference/solve_model/

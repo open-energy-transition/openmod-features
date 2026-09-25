@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: tools/PLEXOS/features.yaml CODEOWNERS
+# SPDX-FileCopyrightText: openmod-features contributors
+#
+# SPDX-License-Identifier: CC-BY-4.0
+
+# Changes here will be overwritten by Copier
+# DO NOT MANUALLY MODIFY THIS FILE
+_commit: v0.3.0
+_src_path: gh:open-energy-transition/openmod-features
+description: Commercial energy market simulation and optimisation software by Energy
+    Exemplar, covering capacity expansion, medium/short-term scheduling, and adequacy
+    (PASA) across electric, gas, water, heat and hydrogen systems.
+docs: https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/index.htm
+list_type: tool
+maintainers: brynpickering
+name: PLEXOS®
+shortname: PLEXOS
+source: https://www.energyexemplar.com/plexos
