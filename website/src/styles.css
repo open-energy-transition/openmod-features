@@ -334,6 +334,47 @@ a:active {
       var(--atlas-surface-inset);
   }
 
+  .atlas-about-item {
+    position: relative;
+    border: 1px solid var(--atlas-line-soft);
+    border-radius: var(--atlas-radius-sm);
+    background: var(--atlas-surface-inset);
+  }
+
+  .atlas-about-link {
+    padding-right: 2rem;
+    transition:
+      border-color 140ms ease,
+      background-color 140ms ease,
+      color 140ms ease;
+  }
+
+  .atlas-about-link:hover {
+    border-color: rgb(13 118 111 / 0.24);
+    background: var(--atlas-hydro-wash);
+  }
+
+  .atlas-about-link:hover .atlas-muted {
+    color: var(--atlas-hydro-strong);
+  }
+
+  .atlas-about-link-icon {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    height: 0.72rem;
+    width: 0.72rem;
+    color: var(--atlas-ink-faint);
+    transition:
+      color 140ms ease,
+      transform 140ms ease;
+  }
+
+  .atlas-about-link:hover .atlas-about-link-icon {
+    color: var(--atlas-hydro-strong);
+    transform: translate(1px, -1px);
+  }
+
   .atlas-tint-card {
     border: 1px solid rgb(13 118 111 / 0.16);
     border-radius: var(--atlas-radius-sm);
@@ -976,7 +1017,7 @@ a:active {
     border: 1px solid var(--atlas-line-strong);
     border-radius: var(--atlas-radius-sm);
     background:
-      linear-gradient(180deg, rgb(255 255 255 / 0.28), transparent 68%),
+      linear-gradient(135deg, var(--atlas-crimson-wash), transparent 48%),
       var(--atlas-surface-raised);
     color: var(--atlas-ink);
     box-shadow: var(--atlas-button-inset);
@@ -986,12 +1027,6 @@ a:active {
     border-color: rgb(13 118 111 / 0.34);
     background: var(--atlas-hydro-wash);
     color: var(--atlas-hydro-strong);
-  }
-
-  .atlas-home-action[data-variant='primary'] {
-    background:
-      linear-gradient(135deg, var(--atlas-crimson-wash), transparent 48%),
-      var(--atlas-surface-raised);
   }
 
   .atlas-home-action-icon {
@@ -1319,6 +1354,7 @@ a:active {
   :root[data-theme='dark'] .atlas-panel,
   :root[data-theme='dark'] .atlas-toolbar,
   :root[data-theme='dark'] .atlas-sticky-toolbar,
+  :root[data-theme='dark'] .atlas-home-action,
   :root[data-theme='dark'] .atlas-primary-button,
   :root[data-theme='dark'] .atlas-secondary-button,
   :root[data-theme='dark'] .atlas-github-button,
@@ -1347,6 +1383,34 @@ a:active {
 
   :root[data-theme='dark'] .atlas-theme-switch::before {
     opacity: 0;
+  }
+
+  :root[data-theme='dark'] .atlas-home-action {
+    border-color: var(--atlas-line);
+    background:
+      linear-gradient(135deg, var(--atlas-crimson-wash), transparent 48%),
+      #0f1f1c;
+    color: var(--atlas-ink);
+  }
+
+  :root[data-theme='dark'] .atlas-home-action[data-variant='primary'] {
+    border-color: var(--atlas-line);
+  }
+
+  :root[data-theme='dark'] .atlas-home-action-icon {
+    border-color: var(--atlas-line);
+    background-color: #0b1715;
+    box-shadow: none;
+  }
+
+  :root[data-theme='dark'] .atlas-about-item {
+    border-color: var(--atlas-line-soft);
+    background: #0a1513;
+  }
+
+  :root[data-theme='dark'] .atlas-about-link:hover {
+    border-color: var(--atlas-line-strong);
+    background: #0d1c19;
   }
 
   :root[data-theme='dark'] .atlas-panel,

@@ -17,6 +17,7 @@ import {
   FaRegCircleQuestion,
   FaRotate,
   FaScaleBalanced,
+  FaUpRightFromSquare,
 } from 'react-icons/fa6'
 import { useDashboardContext } from '../components/dashboard-layout'
 import { Panel } from '../components/page-shell'
@@ -194,15 +195,16 @@ function InfoItem({
         href={href}
         target="_blank"
         rel="noreferrer"
-        className="atlas-subtle-card atlas-focus grid grid-cols-[1.25rem_minmax(0,1fr)] gap-3 p-3 outline-none hover:border-[rgb(13_118_111_/_0.24)] hover:bg-[var(--atlas-hydro-wash)]"
+        className="atlas-about-item atlas-about-link atlas-focus grid grid-cols-[1.25rem_minmax(0,1fr)] gap-3 p-3 outline-none"
       >
         {content}
+        <FaUpRightFromSquare className="atlas-about-link-icon" aria-hidden="true" />
       </a>
     )
   }
 
   return (
-    <div className="atlas-subtle-card grid grid-cols-[1.25rem_minmax(0,1fr)] gap-3 p-3">
+    <div className="atlas-about-item grid grid-cols-[1.25rem_minmax(0,1fr)] gap-3 p-3">
       {content}
     </div>
   )
