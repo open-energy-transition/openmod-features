@@ -28,6 +28,7 @@ import {
 } from '../components/status-cells'
 import {
   calculateCategoryUseCaseCoverage,
+  calculateGroupUseCaseCoverage,
   calculateUseCaseCoverage,
   getToolFeature,
   getUseCaseValue,
@@ -40,7 +41,6 @@ import {
 import type { UseCaseRecord } from '../data/types'
 import {
   filterTaxonomy,
-  sortTaxonomyAlphabetically,
   syncSelectedIds,
   toggleSetValue,
 } from '../lib/dashboard-utils'
@@ -100,9 +100,7 @@ function UseCaseFitPage() {
   const selectedUseCases = data.useCases.filter((useCase) =>
     selectedUseCaseIds.has(useCase.id),
   )
-  const filteredTaxonomy = sortTaxonomyAlphabetically(
-    filterTaxonomy(data.taxonomy, query),
-  )
+  const filteredTaxonomy = filterTaxonomy(data.taxonomy, query)
   const allExpanded =
     filteredTaxonomy.length > 0 &&
     filteredTaxonomy.every((category) => expanded.has(category.id))
@@ -131,8 +129,8 @@ function UseCaseFitPage() {
               <CustomBadge />
             </div>
             <p className="mt-1 text-sm text-[var(--atlas-hydro-strong)]">
-              Comparing the shareable custom use case. Add built-in use cases from
-              the filter when you need a side-by-side review.
+              Comparing a shareable custom benchmark. Add built-in use cases when
+              you need a side-by-side workflow review.
             </p>
           </div>
           <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
@@ -191,17 +189,17 @@ function UseCaseFitPage() {
       {selectedUseCases.length === 0 ? (
         <EmptyState
           title="No use cases selected"
-          detail="Select at least one use case to compare requirements."
+          detail="Select at least one workflow to compare tool fit."
         />
       ) : displayedTools.length === 0 ? (
         <EmptyState
           title="No tools selected"
-          detail="Select at least one tool to compare use-case fit."
+          detail="Select at least one tool to rank against the selected workflows."
         />
       ) : filteredTaxonomy.length === 0 ? (
         <EmptyState
           title="No matching features"
-          detail="Clear the search to show the full taxonomy."
+          detail="Clear the search to show the feature rows behind each fit score."
         />
       ) : (
         <FeatureTable minWidth="980px">
@@ -264,6 +262,17 @@ function UseCaseFitPage() {
                       renderCategoryCell={(useCase) => (
                         <CoverageBadge
                           coverage={calculateCategoryUseCaseCoverage(
+                            category,
+                            tool,
+                            useCase,
+                            coverageOptions,
+                          )}
+                        />
+                      )}
+                      renderGroupCell={(useCase, group) => (
+                        <CoverageBadge
+                          coverage={calculateGroupUseCaseCoverage(
+                            group,
                             category,
                             tool,
                             useCase,
@@ -356,7 +365,12 @@ function UseCaseAssumptionsDrawer({
               </Drawer.Close>
             </div>
 
-            <div className="grid gap-4 overflow-y-auto px-5 py-4">
+            <div
+              className="atlas-drawer-scroll grid gap-4 overflow-y-auto px-5 py-4"
+              onScroll={(event) => event.stopPropagation()}
+              onTouchMove={(event) => event.stopPropagation()}
+              onWheel={(event) => event.stopPropagation()}
+            >
               <div className="grid grid-cols-2 gap-3">
                 <div className="atlas-subtle-card px-3 py-2">
                   <p className="atlas-caption text-xs">Assumptions</p>

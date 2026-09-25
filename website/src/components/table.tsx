@@ -3,7 +3,13 @@
 // SPDX-License-Identifier: MIT
 
 import { Combobox } from '@base-ui/react/combobox'
-import type { ReactNode } from 'react'
+import {
+  Fragment,
+  useRef,
+  type KeyboardEvent,
+  type PointerEvent,
+  type ReactNode,
+} from 'react'
 import {
   FaCheck,
   FaChevronDown,
@@ -14,10 +20,12 @@ import { CUSTOM_USE_CASE_ID } from '../data/custom-use-case'
 import type {
   TaxonomyCategory,
   TaxonomyFeature,
+  TaxonomyGroup,
   ToolRecord,
   UseCaseRecord,
 } from '../data/types'
 import { Hint } from './ui'
+import { useFeatureTableContext } from './page-shell'
 
 export function TableToolbar({
   query,
@@ -299,6 +307,7 @@ export function CategoryRows<T extends { id: string }>({
   onToggle,
   columns,
   renderCategoryCell,
+  renderGroupCell,
   renderFeatureCell,
   muted = false,
   isFeatureMuted = () => false,
@@ -308,10 +317,18 @@ export function CategoryRows<T extends { id: string }>({
   onToggle: () => void
   columns: T[]
   renderCategoryCell: (column: T) => ReactNode
+  renderGroupCell?: (column: T, group: TaxonomyGroup) => ReactNode
   renderFeatureCell: (column: T, feature: TaxonomyFeature) => ReactNode
   muted?: boolean
   isFeatureMuted?: (featureId: string) => boolean
 }) {
+  const groupedFeatureIds = new Set(
+    category.groups?.flatMap((group) => group.memberIds) ?? [],
+  )
+  const directFeatures = category.members.filter(
+    (feature) => !groupedFeatureIds.has(feature.id),
+  )
+
   return (
     <>
       <tr className={`atlas-category-row ${muted ? 'atlas-filter-muted' : ''}`}>
@@ -339,43 +356,191 @@ export function CategoryRows<T extends { id: string }>({
           </td>
         ))}
       </tr>
-      {expanded
-        ? category.members.map((feature) => (
-            <tr
+      {expanded ? (
+        <>
+          {category.groups?.map((group) => {
+            const groupFeatures = category.members.filter((feature) =>
+              group.memberIds.includes(feature.id),
+            )
+
+            return (
+              <Fragment key={group.id}>
+                <tr className="atlas-group-row">
+                  <StickyCell>
+                    <span className="block pl-7 text-sm font-semibold text-[var(--atlas-ink)]">
+                      <Hint label={group.description}>{group.displayName}</Hint>
+                    </span>
+                  </StickyCell>
+                  {columns.map((column) => (
+                    <td
+                      key={column.id}
+                      className="atlas-cell-border px-3 py-2 text-center"
+                    >
+                      {renderGroupCell ? renderGroupCell(column, group) : null}
+                    </td>
+                  ))}
+                </tr>
+                {groupFeatures.map((feature) => (
+                  <FeatureRow
+                    key={feature.id}
+                    feature={feature}
+                    columns={columns}
+                    renderFeatureCell={renderFeatureCell}
+                    muted={isFeatureMuted(feature.id)}
+                    indentClassName="pl-10"
+                  />
+                ))}
+              </Fragment>
+            )
+          })}
+          {directFeatures.map((feature) => (
+            <FeatureRow
               key={feature.id}
-              className={`atlas-feature-row ${isFeatureMuted(feature.id) ? 'atlas-filter-muted' : ''}`}
-            >
-              <StickyCell>
-                <span className="block pl-7 text-[var(--atlas-ink-soft)]">
-                  <Hint label={feature.description}>{feature.label}</Hint>
-                </span>
-              </StickyCell>
-              {columns.map((column) => (
-                <td
-                  key={column.id}
-                  className="atlas-cell-border px-3 py-2 text-center"
-                >
-                  {renderFeatureCell(column, feature)}
-                </td>
-              ))}
-            </tr>
-          ))
-        : null}
+              feature={feature}
+              columns={columns}
+              renderFeatureCell={renderFeatureCell}
+              muted={isFeatureMuted(feature.id)}
+              indentClassName="pl-7"
+            />
+          ))}
+        </>
+      ) : null}
     </>
   )
 }
 
-export function StickyHead({ children }: { children: ReactNode }) {
+function FeatureRow<T extends { id: string }>({
+  feature,
+  columns,
+  renderFeatureCell,
+  muted,
+  indentClassName,
+}: {
+  feature: TaxonomyFeature
+  columns: T[]
+  renderFeatureCell: (column: T, feature: TaxonomyFeature) => ReactNode
+  muted: boolean
+  indentClassName: string
+}) {
   return (
-    <th className="atlas-sticky-head sticky left-0 top-0 z-20 w-72 min-w-72 px-3 py-3 text-left font-semibold sm:w-80 sm:min-w-80">
+    <tr className={`atlas-feature-row ${muted ? 'atlas-filter-muted' : ''}`}>
+      <StickyCell>
+        <span className={`block ${indentClassName} text-[var(--atlas-ink-soft)]`}>
+          <Hint label={feature.description}>{feature.displayName}</Hint>
+        </span>
+      </StickyCell>
+      {columns.map((column) => (
+        <td
+          key={column.id}
+          className="atlas-cell-border px-3 py-2 text-center"
+        >
+          {renderFeatureCell(column, feature)}
+        </td>
+      ))}
+    </tr>
+  )
+}
+
+export function StickyHead({ children }: { children: ReactNode }) {
+  const context = useFeatureTableContext()
+  const cellRef = useRef<HTMLTableCellElement>(null)
+
+  function resizeTo(width: number) {
+    if (!context) {
+      return
+    }
+
+    const nextWidth = Math.min(
+      context.maxFeatureColumnWidth,
+      Math.max(context.minFeatureColumnWidth, Math.round(width)),
+    )
+    context.setFeatureColumnWidth(nextWidth)
+  }
+
+  function handlePointerDown(event: PointerEvent<HTMLButtonElement>) {
+    if (!context || !cellRef.current) {
+      return
+    }
+
+    event.preventDefault()
+    const handle = event.currentTarget
+    handle.setPointerCapture(event.pointerId)
+
+    const startX = event.clientX
+    const startWidth = cellRef.current.getBoundingClientRect().width
+
+    function handlePointerMove(moveEvent: globalThis.PointerEvent) {
+      resizeTo(startWidth + moveEvent.clientX - startX)
+    }
+
+    function handlePointerUp(upEvent: globalThis.PointerEvent) {
+      if (handle.hasPointerCapture(upEvent.pointerId)) {
+        handle.releasePointerCapture(upEvent.pointerId)
+      }
+      window.removeEventListener('pointermove', handlePointerMove)
+      window.removeEventListener('pointerup', handlePointerUp)
+      window.removeEventListener('pointercancel', handlePointerUp)
+    }
+
+    window.addEventListener('pointermove', handlePointerMove)
+    window.addEventListener('pointerup', handlePointerUp)
+    window.addEventListener('pointercancel', handlePointerUp)
+  }
+
+  function handleKeyDown(event: KeyboardEvent<HTMLButtonElement>) {
+    if (!context || !cellRef.current) {
+      return
+    }
+
+    const currentWidth =
+      context.featureColumnWidth ?? cellRef.current.getBoundingClientRect().width
+
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault()
+      resizeTo(currentWidth - (event.shiftKey ? 48 : 16))
+    } else if (event.key === 'ArrowRight') {
+      event.preventDefault()
+      resizeTo(currentWidth + (event.shiftKey ? 48 : 16))
+    } else if (event.key === 'Home') {
+      event.preventDefault()
+      resizeTo(context.minFeatureColumnWidth)
+    } else if (event.key === 'End') {
+      event.preventDefault()
+      resizeTo(context.maxFeatureColumnWidth)
+    }
+  }
+
+  return (
+    <th
+      ref={cellRef}
+      className="atlas-sticky-head sticky left-0 top-0 z-20 px-3 py-3 text-left font-semibold"
+    >
       {children}
+      {context ? (
+        <button
+          type="button"
+          aria-label="Resize feature column"
+          aria-orientation="vertical"
+          aria-valuemin={context.minFeatureColumnWidth}
+          aria-valuemax={context.maxFeatureColumnWidth}
+          aria-valuenow={Math.round(
+            context.featureColumnWidth ??
+              cellRef.current?.getBoundingClientRect().width ??
+              320,
+          )}
+          role="separator"
+          className="atlas-column-resizer atlas-focus"
+          onPointerDown={handlePointerDown}
+          onKeyDown={handleKeyDown}
+        />
+      ) : null}
     </th>
   )
 }
 
 export function StickyCell({ children }: { children: ReactNode }) {
   return (
-    <td className="atlas-sticky-cell sticky left-0 z-10 w-72 min-w-72 bg-inherit px-3 py-2 text-left sm:w-80 sm:min-w-80">
+    <td className="atlas-sticky-cell sticky left-0 z-10 bg-inherit px-3 py-2 text-left">
       {children}
     </td>
   )

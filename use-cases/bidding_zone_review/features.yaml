@@ -1,43 +1,28 @@
-
 # SPDX-FileCopyrightText: use-cases/bidding_zone_review/features.yaml CODEOWNERS
 # SPDX-FileCopyrightText: openmod-features contributors
 #
 # SPDX-License-Identifier: CC-BY-4.0
 
-# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/v0.3.0/schema/use-case-schema.yaml
+# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/0cd1a85/schema/use-case-schema.yaml
 
 assumptions:
 - >-
-  A single target year is modelled.
-  Generation, storage, and transmission capacities are fixed by the integrated resource plan (IRP) and network development plan (NDP);
-  no investment decisions are made.
+  The optimization will be run over individual years with myopic foresight over days or weeks within the year.
 - >-
-  Several candidate bidding-zone configurations are compared,
-  each formed by grouping the nodes of a detailed transmission grid model into zones.
+  Available transmission lines are set by scenarios from the network development plan (NDP), are limited between bidding zones using power transfer distribution factors, and are represented using security-constrained AC optimal power flow.
 - >-
-  For each configuration, the day-ahead market is cleared zonally using flow-based market coupling.
-  Zone-to-line power transfer distribution factors (PTDFs) and critical network elements and contingencies (CNECs) are supplied as
-  inputs.
+  Generator capacities are fixed by the integrated resource plan (IRP).
 - >-
-  The market schedule is redispatched on the nodal grid model (DC power flow, N-1 security).
-  Deviations from the schedule is priced at redispatch offers, giving congestion and redispatch costs per configuration.
+  Assets are resolved individually where possible and their unit commitment as well as economic dispatch is represented with the aim of accurately representing the day-ahead and intra-day markets.
+  This may require iterating between an optimisation and simulation run to resolve bidding decisions.
 - >-
-  Thermal and hydro units are resolved individually, with unit commitment and stepwise bid curves, to represent day-ahead scheduling realistically.
+  Only the power system is considered.
 - >-
-  The year is optimised in rolling windows of days to weeks (myopic foresight within the year), handing storage levels over between windows.
-  Seasonal hydro storage is valued with water values from a longer-horizon run.
+  The system supply-demand balance is relaxed.
+  Load shedding is limited with constraints on EENS and LOLP applied alongside a value of lost load (VOLL).
 - >-
-  Only the power system is modelled.
-  Other sectors enter as exogenous demand profiles and price-responsive demand bids.
-- >-
-  Weather uncertainty is covered by running several historical climate years as separate deterministic scenarios rather than by stochastic optimisation.
-- >-
-  Load shedding is allowed at the value of lost load (VOLL).
-  Adequacy is not a decision criterion, so no probabilistic reliability limits are applied.
-- >-
-  Configurations are assessed on socio-economic welfare,
-  zonal price differences, cross-zonal capacities, congestion rents,
-  redispatch volumes and costs, generator revenues, and CO2 emissions.
+  Resilience to weather uncertainty is addressed using multi-stage stochastic optimisation applied across rolling horizon windows.
+  This may require decomposing the problem into different optimisation problems that are iterated upon until convergence.
 - >-
   Users require a GUI to navigate model preparation, optimisation, and analysis.
 features:
@@ -74,36 +59,30 @@ features:
     power_flow:
       optimal_power_flow:
         dc_opf:
-          value: y
+          value: n
         ac_opf:
-          # Changed from the 0.2.0 list (security-constrained AC OPF): reactive power and voltage are not bidding-
-          # zone criteria, so linearised DC power flow with N-1 security is sufficient.
-          value: n
-        unbalanced_flows:
-          value: n
+          value: y
       sensitivity_limits:
         ptdf:
           value: y
         outage_factors:
-          value: y
+          value: n
         generic_constraints:
-          # CNECs enter the flow-based market model as constraints with supplied PTDF coefficients.
-          value: y
+          value: n
       network_limits:
         thermal:
-          value: y
+          value: n
         phase_angle:
           value: n
-      losses:
-        value: n
       network_devices:
         transformers:
-          value: y
+          value: n
         facts_devices:
-          # Tenuous: optimised phase-shifter set-points are a common remedial action in redispatch, but fixed settings may suffice.
-          value: y
+          value: n
         hvdc_converters:
-          value: y
+          value: n
+      unbalanced_flows:
+        value: n
     hydraulic_flow:
       linearised_flow:
         value: n
@@ -119,11 +98,9 @@ features:
         value: n
       integer_investment_continuous_capacity:
         value: n
-      multi_period:
-        value: n
       retrofit:
         value: n
-      endogenous_retirement:
+      multi_period:
         value: n
     operation:
       unit_commitment:
@@ -135,7 +112,12 @@ features:
       temporal:
         pointwise:
           investment:
-            value: n
+            size_bounds:
+              value: n
+            discrete_increments:
+              value: n
+            unit_purchase:
+              value: n
           operation:
             availability_derating:
               value: y
@@ -147,21 +129,21 @@ features:
               value: y
         sequential:
           investment:
+            build_rate:
+              value: n
+            retirement:
+              value: n
             availability_window:
-              value: n
-            relative_build_rate:
-              value: n
-            technical_lifetime:
               value: n
           operation:
             ramping:
               value: y
             start_shut_trajectory:
-              value: n
+              value: y
             commitment_duration:
               value: y
             start_consumption:
-              value: n
+              value: y
         cumulative:
           investment:
             capacity_target:
@@ -176,7 +158,7 @@ features:
             flow_volume:
               value: y
             impact_budget:
-              value: n
+              value: y
             event_count:
               value: n
             state_duration:
@@ -185,28 +167,28 @@ features:
               value: n
         boundary_conditions:
           investment:
-            value: n
+            value: y
           operation:
             value: y
-      spatial:
-        investment:
-          value: n
-        operation:
-          value: n
       assets:
         spanning:
           investment:
             value: n
           operation:
-            value: n
+            value: y
         dedicated_flow_routing:
+          value: y
+      spatial:
+        investment:
+          value: n
+        operation:
           value: y
     functional_form:
       linear_multi_variable:
         investment:
           value: n
         operation:
-          value: n
+          value: y
       quadratic:
         investment:
           value: n
@@ -216,28 +198,26 @@ features:
         investment:
           value: n
         operation:
-          value: n
+          value: y
+    soft_constraints:
+      value: y
     reliability:
-      unserved_demand:
-        value: y
       operating_reserve:
         online_headroom:
           value: y
         standby_capability:
-          value: n
+          value: y
         inertia:
           value: n
-      contingency_constrained:
-        value: y
       probabilistic_reliability_limit:
         loss_of_load:
-          # Changed from the 0.2.0 list: adequacy is not a bidding-zone criterion; load shedding is priced at VOLL instead.
-          value: n
+          value: y
         unserved_energy:
-          # Changed from the 0.2.0 list: see `loss_of_load`.
-          value: n
-    soft_constraints:
-      value: n
+          value: y
+      unserved_demand:
+        value: y
+      contingency_constrained:
+        value: y
   cost:
     scope:
       temporal:
@@ -245,11 +225,11 @@ features:
           investment:
             value: n
           operation:
-            ramping:
-              value: n
             start_up:
               value: y
             shut_down:
+              value: y
+            ramping:
               value: n
             start_state_dependent:
               value: n
@@ -258,16 +238,16 @@ features:
             value: n
           operation:
             value: n
-      spatial:
-        investment:
-          value: n
-        operation:
-          value: n
       assets:
         investment:
           value: n
         operation:
           value: n
+      spatial:
+        investment:
+          value: n
+        operation:
+          value: y
     functional_form:
       fixed_charge:
         investment:
@@ -278,269 +258,40 @@ features:
         investment:
           value: n
         operation:
-          value: y
+          flow_dependent:
+            value: y
+          bid_bands:
+            value: y
       threshold_deviation:
         investment:
           value: n
         operation:
           value: y
-    time_value:
-      annuitisation:
+    annuitisation:
+      discounting:
         value: n
       fiscal_treatment:
         value: n
-      period_discounting:
-        value: n
-  objective:
-    quadratic:
-      value: n
-    multi_objective_weighted:
-      value: n
-    multi_objective_pareto:
-      value: n
-    tie_breaking:
-      # Tenuous: many zero-marginal-cost renewables make zonal dispatch and prices degenerate; a documented tie-
-      # breaking rule keeps configurations comparable.
-      value: y
-  edge_effects:
-    time_operational:
-      value: y
-    time_financial:
-      value: n
-    energy_balance:
-      value: y
-  actors:
-    portfolio:
-      # Changed from the 0.2.0 list: market concentration per zone is computed from ownership groups
-      # (`model_definition.dimension_groups`) rather than from actor-specific constraints.
-      value: n
-    heuristic_markup:
-      value: n
-    distributed_objectives:
-      value: n
-    equilibrium:
-      value: n
-  uncertainty:
-    two_stage_stochastic:
-      value: n
-    multi_stage_stochastic:
-      # Changed from the 0.2.0 list: weather uncertainty is covered by deterministic climate-year runs
-      # (`orchestration.scenario_runs`).
-      value: n
-    risk_aversion:
-      value: n
-    robust_optimisation:
-      value: n
-    near_optimal:
-      value: n
   model_definition:
-    configurable_dimensions:
-      value: y
-    extensible_dimensions:
-      value: n
     dimension_groups:
       value: y
     component_templating:
       value: n
+    configurable_dimensions:
+      value: y
+    extensible_dimensions:
+      value: y
   math:
     formulation_transparency:
-      value: y
+      value: n
     problem_file_export:
       value: n
     dual_extraction:
       value: y
     piecewise_formulation:
-      value: n
+      value: y
     user_defined_math:
       value: y
-  tractability:
-    dimension_reduction:
-      adjacency_aggregation:
-        temporal:
-          value: n
-        spatial:
-          value: y
-      similarity_aggregation:
-        temporal:
-          # Changed from the 0.2.0 list (typical periods): rolling-horizon market simulation needs a chronological year.
-          value: n
-        spatial:
-          # Candidate zone configurations can be proposed by clustering nodes on nodal price or PTDF similarity.
-          value: y
-        assets:
-          value: n
-        scenarios:
-          value: n
-      non_contiguity_handling:
-        temporal:
-          value: n
-        spatial:
-          value: n
-      equivalencing:
-        spatial:
-          # Tenuous: grids of neighbouring countries outside the study region are usually represented as
-          # equivalents.
-          value: y
-        assets:
-          value: n
-      filtering:
-        temporal:
-          value: n
-        spatial:
-          value: n
-        assets:
-          value: n
-        scenarios:
-          value: n
-    variable_fidelity:
-      formulation:
-        value: n
-      resolution:
-        temporal:
-          value: n
-        spatial:
-          value: y
-        assets:
-          value: n
-        scenarios:
-          value: n
-    reformulation:
-      linearised_unit_commitment:
-        value: n
-      nonlinear_handling:
-        convex_relaxation:
-          value: n
-        function_conversion:
-          value: n
-      constraint_screening:
-        # CNEC selection screens out network elements that are insensitive to cross-zonal exchange.
-        value: y
-      decomposition:
-        value: n
-      numeric_scaling:
-        value: n
-  orchestration:
-    scenario_runs:
-      value: y
-    sampled_runs:
-      value: n
-    coupled_models:
-      limited_foresight:
-        investment:
-          value: n
-        operation:
-          value: y
-      fidelity_sequence:
-        # Zonal market clearing followed by nodal redispatch of the market schedule.
-        value: y
-      market_sequence:
-        value: n
-      convergence_iteration:
-        value: n
-  io:
-    plain_text:
-      input:
-        value: n
-      output:
-        value: n
-    binary:
-      input:
-        value: y
-      output:
-        value: y
-    database:
-      input:
-        value: n
-      output:
-        value: n
-    remote_storage:
-      input:
-        value: n
-      output:
-        value: n
-    lazy_loading:
-      input:
-        value: n
-      output:
-        value: n
-    standardised:
-      input:
-        value: y
-      output:
-        value: n
-  preprocessing:
-    download:
-      value: n
-    model_catalogue:
-      value: n
-    resource_conversion:
-      value: n
-    forecasting:
-      value: n
-    spatial_distribution:
-      demand:
-        value: y
-      network_geometry:
-        value: n
-    scenario_generation:
-      value: n
-    input_validation:
-      value: n
-  postprocessing:
-    metrics:
-      operational:
-        capacity_factor:
-          value: y
-        operating_hours:
-          value: n
-        binding_hours:
-          value: y
-        curtailment:
-          value: y
-      financial:
-        marginal_price:
-          value: y
-        price_formation:
-          # Tenuous: with unit commitment, zonal day-ahead prices need a pricing rule (e.g. a relaxed re-solve)
-          # rather than raw MILP duals.
-          value: y
-        water_value:
-          value: y
-        asset_accounts:
-          value: y
-        contract_settlement:
-          value: y
-        levelised_cost:
-          value: n
-        net_present_value:
-          value: n
-      impact_assessment:
-        emissions:
-          value: y
-        resource_use:
-          value: n
-        socioeconomic:
-          value: n
-      network_transfer_metrics:
-        transfer_capacity:
-          value: y
-        flow_sensitivity:
-          # Zone-to-line PTDFs must be recomputed from the nodal model for every candidate configuration.
-          value: y
-      probabilistic_reliability_assessment:
-        loss_of_load:
-          value: n
-        unserved_energy:
-          value: n
-        capacity_credit:
-          value: n
-    transformation:
-      aggregation:
-        value: y
-      disaggregation:
-        value: n
-      scenario_comparison:
-        value: y
   interface:
     gui:
       build:
@@ -563,18 +314,239 @@ features:
         value: n
       analyse:
         value: n
-    solver_configuration:
-      value: n
     remote_execution:
       value: n
+    solver_configuration:
+      value: y
+    analysis_templates:
+      value: y
     visualisation:
       charts:
         value: y
       network_maps:
         value: y
-      report_templates:
+  io:
+    plain_text:
+      input:
+        value: n
+      output:
+        value: n
+    binary:
+      input:
+        value: n
+      output:
+        value: n
+    database:
+      input:
+        value: n
+      output:
+        value: n
+    remote_storage:
+      input:
+        value: n
+      output:
+        value: n
+    lazy_loading:
+      input:
+        value: n
+      output:
+        value: n
+    standardised:
+      input:
+        value: n
+      output:
+        value: n
+  edge_effects:
+    time_operational:
+      value: y
+    time_financial:
+      value: n
+    energy_balance:
+      value: y
+  actors:
+    portfolio:
+      value: y
+    distributed_objectives:
+      value: n
+    equilibrium:
+      value: n
+    heuristic_markup:
+      value: y
+  objective:
+    multi_objective_weighted:
+      value: n
+    multi_objective_pareto:
+      value: n
+    quadratic:
+      value: n
+    tie_breaking:
+      value: n
+  uncertainty:
+    two_stage_stochastic:
+      value: n
+    multi_stage_stochastic:
+      value: y
+    risk_aversion:
+      value: n
+    near_optimal:
+      value: n
+    robust_optimisation:
+      value: n
+  tractability:
+    dimension_reduction:
+      adjacency_aggregation:
+        temporal:
+          value: n
+        spatial:
+          value: y
+      similarity_aggregation:
+        temporal:
+          value: y
+        spatial:
+          value: y
+        assets:
+          value: n
+        scenarios:
+          value: n
+      equivalencing:
+        spatial:
+          value: n
+        assets:
+          value: n
+      filtering:
+        temporal:
+          value: n
+        spatial:
+          value: n
+        assets:
+          value: n
+        scenarios:
+          value: n
+      non_contiguity_handling:
+        temporal:
+          value: n
+        spatial:
+          value: n
+    variable_fidelity:
+      formulation:
+        value: n
+      resolution:
+        temporal:
+          value: n
+        spatial:
+          value: n
+        assets:
+          value: n
+        scenarios:
+          value: n
+    reformulation:
+      constraint_screening:
+        value: n
+      linearised_unit_commitment:
+        value: n
+      nonlinear_handling:
+        convex_relaxation:
+          value: n
+        function_conversion:
+          value: n
+      decomposition:
         value: y
+      approximation:
+        value: n
+      numeric_scaling:
+        value: n
+  orchestration:
+    coupled_models:
+      limited_foresight:
+        investment:
+          value: n
+        operation:
+          value: y
+      fidelity_sequence:
+        value: n
+      market_sequence:
+        value: y
+      convergence_iteration:
+        value: y
+    scenario_runs:
+      value: n
+    sampled_runs:
+      value: n
+  preprocessing:
+    forecasting:
+      value: y
+    resource_conversion:
+      value: n
+    spatial_distribution:
+      demand:
+        value: y
+      network_geometry:
+        value: n
+      slack:
+        value: n
+    download:
+      value: y
+    model_catalogue:
+      value: n
+    scenario_generation:
+      value: n
+    input_validation:
+      value: n
+  postprocessing:
+    metrics:
+      impact_assessment:
+        emissions:
+          value: y
+        resource_use:
+          value: n
+        socioeconomic:
+          value: n
+      operational:
+        curtailment:
+          value: y
+        capacity_factor:
+          value: n
+        full_load_hours:
+          value: n
+      financial:
+        levelised_cost:
+          value: y
+        net_present_value:
+          value: n
+        asset_accounts:
+          value: y
+        marginal_price:
+          value: y
+        price_formation:
+          value: y
+        water_value:
+          value: n
+        contract_settlement:
+          value: y
+      network_transfer_metrics:
+        transfer_capacity:
+          value: n
+        flow_sensitivity:
+          value: n
+      probabilistic_reliability_assessment:
+        loss_of_load:
+          value: y
+        unserved_energy:
+          value: y
+        capacity_credit:
+          value: n
+    transformation:
+      aggregation:
+        value: n
+      disaggregation:
+        value: n
+      scenario_comparison:
+        value: n
   traceability:
+    run_logs:
+      value: y
+    infeasibility_diagnosis:
+      value: n
     metadata:
       provenance:
         value: n
@@ -582,9 +554,5 @@ features:
         value: n
       propagation:
         value: n
-    run_logs:
-      value: y
     intermediate_access:
-      value: n
-    infeasibility_diagnosis:
       value: n

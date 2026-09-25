@@ -6,9 +6,27 @@ export type FeatureValue = 'y' | 'n' | 'dev' | '?'
 
 export type TaxonomyFeature = {
   id: string
+  key: string
+  categoryId: string
   label: string
+  displayName: string
   description: string
   baseline: FeatureValue
+  pathIds: string[]
+  pathLabels: string[]
+  depth: number
+}
+
+export type TaxonomyGroup = {
+  id: string
+  key: string
+  label: string
+  displayName: string
+  description: string
+  pathIds: string[]
+  pathLabels: string[]
+  depth: number
+  memberIds: string[]
 }
 
 export type TaxonomyCategory = {
@@ -16,6 +34,7 @@ export type TaxonomyCategory = {
   label: string
   description: string
   members: TaxonomyFeature[]
+  groups?: TaxonomyGroup[]
 }
 
 export type ToolFeature = {
@@ -29,6 +48,7 @@ export type ToolRecord = {
   shortname: string
   docs?: string
   source?: string
+  version?: string
   maintainers: string[]
   features: Record<string, Record<string, ToolFeature>>
 }
@@ -45,6 +65,7 @@ export type UseCaseRecord = {
 
 export type DashboardData = {
   generatedAt: string
+  taxonomyVersion: string
   taxonomy: TaxonomyCategory[]
   tools: ToolRecord[]
   useCases: UseCaseRecord[]

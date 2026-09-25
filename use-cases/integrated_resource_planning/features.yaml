@@ -1,66 +1,52 @@
-
 # SPDX-FileCopyrightText: use-cases/integrated_resource_planning/features.yaml CODEOWNERS
 # SPDX-FileCopyrightText: openmod-features contributors
 #
 # SPDX-License-Identifier: CC-BY-4.0
 
-# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/v0.3.0/schema/use-case-schema.yaml
+# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/0cd1a85/schema/use-case-schema.yaml
 
 assumptions:
 - >-
-  Capacity expansion is optimised with perfect foresight over the full horizon (e.g. to 2050),
-  with investment decisions every N (> 1) years and the existing fleet as the starting point.
+  The optimization will be run with perfect foresight over the full model horizon, which spans multiple years/decades.
 - >-
-  Each investment period is represented by a contiguous timeseries that may be resampled (e.g. to 3-hourly).
+  Investment decisions may occur once every N (> 1) years.
+   Within a year, the timeseries is contiguous but may be resampled.
 - >-
-  The energy system is fully sector-coupled.
-  Electricity, heat, transport, hydrogen, and gas demands, and conversion between these carriers, are represented, and GHG emissions are accounted for across all sectors.
+  Large assets (e.g. thermal power plants, hydro) are individually resolved;
+  distributed assets (e.g. wind & solar) are grouped per project or region.
 - >-
-  The system is divided into a handful of regions (e.g. provinces or market zones)
-  linked by transfer capacities for electricity and gas, without network physics.
-- >-
-  Large units (e.g. nuclear, large hydro, thermal power plants) are built in discrete unit sizes.
-  Distributed assets (e.g. wind, solar, rooftop PV) are grouped per region and resource class.
-- >-
-  The thermal fleet is operated with linearised unit commitment
-  (minimum stable level, ramping, minimum up/down times, start-up costs).
-  This captures flexibility needs without integer commitment variables.
-- >-
-  Existing plants retire at the end of their technical lifetime or earlier if uneconomic.
-  New technologies are only available from given commissioning dates and are subject to per-period and relative build-rate limits.
-- >-
-  Policy targets (e.g. economy-wide CO2 caps, renewable shares, technology-specific targets) are set as user-defined
-  constraints that may span regions and subsets of technologies.
-- >-
-  Generator contract arrangements (e.g. minimum/maximum annual dispatch obligations) are represented as annual volume
-  limits.
-- >-
-  A planning reserve margin on de-rated firm capacity and an operating reserve requirement are enforced.
-  Load shedding is allowed at the value of lost load (VOLL).
-- >-
-  Resource adequacy (LOLE, EENS, capacity credit of variable renewables) is assessed post hoc rather than constrained.
-- >-
-  The preferred plans are validated in a chronological, hourly production-cost run with fixed capacities and full unit commitment.
-- >-
-  Demand-side flexibility is represented by time-shiftable loads and smart charging of electric vehicles.
-- >-
-  Hydro and other storage levels are cyclic within each period.
-  The residual value of assets outliving the horizon is accounted for.
+  Large assets are represented with unit commitment due to operating constraints which require resolving (ramping, uptimes, run ups. etc.).
 - >-
   Hydro cascading and technology chaining internal to power plants is not represented.
 - >-
-  Transmission and storage losses are fixed efficiencies, and there is no incentive to dump energy.
-  So, "unphysical" energy destruction does not need to be mitigated against.
+  Generator contract arrangements (e.g. min/max dispatch obligations) are represented.
 - >-
-  Sensitivity analysis is limited to a small set of named scenarios.
-  Stochastic optimisation, Monte Carlo sampling, and near-optimal (MGA) analysis are not employed.
+  Technology economies of scale and bidding levels are represented.
 - >-
-  There is sufficient computational capacity to run the model at the defined spatio-temporal scope and resolution
-  without decomposition.
+  Hydro storage levels are set by the model at the start/end of the time horizon.
 - >-
-  Plans are compared on system net present value, levelised costs, marginal prices, emissions, and curtailment.
+  Demand-side flexibility is represented by time-shiftable loads.
+- >-
+  LOLP/EENS constraints are not explicitly set;
+  the standard system balance constraint will set this to effectively zero energy not served.
+- >-
+  Curtailment rates are calculated in post-processing.
+- >-
+  Robustness and MGA techniques will not be employed.
+  Sensitivity analysis will be limited to a small set of tests and therefore not require monte carlo techniques.
+- >-
+  There is sufficient computational capacity to run the model with defined spatio-temporal scope and resolution without employing decomposition techniques.
+- >-
+  transmission line and storage charge/discharge losses are not defined, so "unphysical" energy destruction does not need to be mitigated against.
+- >-
+  User-defined constraints are necessary to represent policy targets (e.g. systemwide limits, possibly only affecting a subset of technologies).
 - >-
   Users require a GUI to navigate model preparation, optimisation, and analysis.
+- >-
+  The gas distribution network is resolved alongside the electricity transmission network.
+- >-
+  Transmission between regions is represented using DC optimal power flow.
+
 features:
   processes:
     boundary_exchange:
@@ -90,18 +76,13 @@ features:
       price_responsive:
         value: n
       mobile_storage:
-        # EV smart charging / vehicle-to-grid is a major source of flexibility in sector-coupled 2050 scenarios.
-        value: y
+        value: n
   network:
     power_flow:
       optimal_power_flow:
         dc_opf:
-          # Changed from the 0.2.0 list, which was inconsistent (DC OPF in the assumptions, transport model in the
-          # values): regional transfer capacities suffice at IRP spatial resolution.
-          value: n
+          value: y
         ac_opf:
-          value: n
-        unbalanced_flows:
           value: n
       sensitivity_limits:
         ptdf:
@@ -115,8 +96,6 @@ features:
           value: n
         phase_angle:
           value: n
-      losses:
-        value: n
       network_devices:
         transformers:
           value: n
@@ -124,6 +103,8 @@ features:
           value: n
         hvdc_converters:
           value: n
+      unbalanced_flows:
+        value: n
     hydraulic_flow:
       linearised_flow:
         value: n
@@ -132,25 +113,19 @@ features:
   decisions:
     investment:
       exogenous_capacity:
-        value: y
+        value: n
       continuous_capacity:
         value: y
       integer_investment_exogenous_capacity:
-        # Tenuous: integer builds turn a multi-decade, sector-coupled model into a MILP; large units may instead be
-        # built continuously and rounded post hoc.
         value: y
       integer_investment_continuous_capacity:
         value: n
-      multi_period:
-        value: y
       retrofit:
         value: n
-      endogenous_retirement:
+      multi_period:
         value: y
     operation:
       unit_commitment:
-        # Linearised in the expansion run (`tractability.reformulation.linearised_unit_commitment`) and full in the
-        # validation run.
         value: y
       maintenance_scheduling:
         value: n
@@ -159,29 +134,34 @@ features:
       temporal:
         pointwise:
           investment:
-            value: y
+            size_bounds:
+              value: y
+            discrete_increments:
+              value: y
+            unit_purchase:
+              value: y
           operation:
             availability_derating:
               value: y
             minimum_stable_level:
               value: y
             forced_offline:
-              value: n
+              value: y
             forced_online:
-              value: n
+              value: y
         sequential:
           investment:
+            build_rate:
+              value: y
+            retirement:
+              value: y
             availability_window:
-              value: y
-            relative_build_rate:
-              value: y
-            technical_lifetime:
-              value: y
+              value: n
           operation:
             ramping:
               value: y
             start_shut_trajectory:
-              value: n
+              value: y
             commitment_duration:
               value: y
             start_consumption:
@@ -212,11 +192,6 @@ features:
             value: y
           operation:
             value: y
-      spatial:
-        investment:
-          value: y
-        operation:
-          value: y
       assets:
         spanning:
           investment:
@@ -224,15 +199,18 @@ features:
           operation:
             value: y
         dedicated_flow_routing:
-          # Changed from the 0.2.0 list, which contradicted its own assumption that hydro cascades are not
-          # represented.
           value: n
-    functional_form:
-      linear_multi_variable:
+      spatial:
         investment:
           value: y
         operation:
+          value: y
+    functional_form:
+      linear_multi_variable:
+        investment:
           value: n
+        operation:
+          value: y
       quadratic:
         investment:
           value: n
@@ -240,14 +218,12 @@ features:
           value: n
       nonlinear:
         investment:
-          value: n
+          value: y
         operation:
           value: n
+    soft_constraints:
+      value: n
     reliability:
-      unserved_demand:
-        # Changed from the 0.2.0 list: load shedding at VOLL keeps runs feasible and prices reliability; adequacy is
-        # then checked post hoc.
-        value: y
       operating_reserve:
         online_headroom:
           value: y
@@ -255,15 +231,15 @@ features:
           value: n
         inertia:
           value: n
-      contingency_constrained:
-        value: n
       probabilistic_reliability_limit:
         loss_of_load:
           value: n
         unserved_energy:
           value: n
-    soft_constraints:
-      value: n
+      unserved_demand:
+        value: n
+      contingency_constrained:
+        value: n
   cost:
     scope:
       temporal:
@@ -271,11 +247,11 @@ features:
           investment:
             value: n
           operation:
-            ramping:
-              value: n
             start_up:
               value: y
             shut_down:
+              value: y
+            ramping:
               value: n
             start_state_dependent:
               value: n
@@ -284,12 +260,12 @@ features:
             value: n
           operation:
             value: n
-      spatial:
+      assets:
         investment:
           value: n
         operation:
           value: n
-      assets:
+      spatial:
         investment:
           value: n
         operation:
@@ -297,267 +273,47 @@ features:
     functional_form:
       fixed_charge:
         investment:
-          value: n
+          value: y
         operation:
           value: n
       nonlinear:
         investment:
-          # Changed from the 0.2.0 list: economies of scale are dropped; lumpy large units are covered by integer
-          # builds instead.
-          value: n
+          value: y
         operation:
-          # Changed from the 0.2.0 list: bidding levels belong to market simulation, not resource planning.
-          value: n
+          flow_dependent:
+            value: n
+          bid_bands:
+            value: y
       threshold_deviation:
         investment:
-          value: n
+          value: y
         operation:
-          value: n
-    time_value:
-      annuitisation:
+          value: y
+    annuitisation:
+      discounting:
         value: y
       fiscal_treatment:
         value: n
-      period_discounting:
-        value: y
-  objective:
-    quadratic:
-      value: n
-    multi_objective_weighted:
-      value: n
-    multi_objective_pareto:
-      value: n
-    tie_breaking:
-      value: n
-  edge_effects:
-    time_operational:
-      value: y
-    time_financial:
-      value: y
-    energy_balance:
-      value: n
-  actors:
-    portfolio:
-      value: n
-    heuristic_markup:
-      value: n
-    distributed_objectives:
-      value: n
-    equilibrium:
-      value: n
-  uncertainty:
-    two_stage_stochastic:
-      value: n
-    multi_stage_stochastic:
-      value: n
-    risk_aversion:
-      value: n
-    robust_optimisation:
-      value: n
-    near_optimal:
-      value: n
   model_definition:
-    configurable_dimensions:
-      value: y
-    extensible_dimensions:
-      value: n
     dimension_groups:
       value: y
     component_templating:
       value: n
+    configurable_dimensions:
+      value: y
+    extensible_dimensions:
+      value: n
   math:
     formulation_transparency:
-      value: y
+      value: n
     problem_file_export:
       value: n
     dual_extraction:
       value: y
     piecewise_formulation:
-      value: n
+      value: y
     user_defined_math:
       value: y
-  tractability:
-    dimension_reduction:
-      adjacency_aggregation:
-        temporal:
-          value: y
-        spatial:
-          value: n
-      similarity_aggregation:
-        temporal:
-          value: n
-        spatial:
-          value: n
-        assets:
-          value: y
-        scenarios:
-          value: n
-      non_contiguity_handling:
-        temporal:
-          value: n
-        spatial:
-          value: n
-      equivalencing:
-        spatial:
-          value: n
-        assets:
-          value: n
-      filtering:
-        temporal:
-          value: n
-        spatial:
-          value: n
-        assets:
-          value: n
-        scenarios:
-          value: n
-    variable_fidelity:
-      formulation:
-        value: n
-      resolution:
-        temporal:
-          value: n
-        spatial:
-          value: n
-        assets:
-          value: n
-        scenarios:
-          value: n
-    reformulation:
-      linearised_unit_commitment:
-        value: y
-      nonlinear_handling:
-        convex_relaxation:
-          value: n
-        function_conversion:
-          value: n
-      constraint_screening:
-        value: n
-      decomposition:
-        value: n
-      numeric_scaling:
-        value: n
-  orchestration:
-    scenario_runs:
-      value: y
-    sampled_runs:
-      value: n
-    coupled_models:
-      limited_foresight:
-        investment:
-          value: n
-        operation:
-          value: n
-      fidelity_sequence:
-        # Expansion run followed by a chronological unit-commitment validation run with fixed capacities.
-        value: y
-      market_sequence:
-        value: n
-      convergence_iteration:
-        value: n
-  io:
-    plain_text:
-      input:
-        value: n
-      output:
-        value: n
-    binary:
-      input:
-        value: y
-      output:
-        value: y
-    database:
-      input:
-        value: n
-      output:
-        value: n
-    remote_storage:
-      input:
-        value: n
-      output:
-        value: n
-    lazy_loading:
-      input:
-        value: n
-      output:
-        value: n
-    standardised:
-      input:
-        value: n
-      output:
-        value: n
-  preprocessing:
-    download:
-      # Changed from the 0.2.0 list: IRP input data come from utilities and planning agencies rather than tool-
-      # managed downloads.
-      value: n
-    model_catalogue:
-      value: n
-    resource_conversion:
-      value: n
-    forecasting:
-      value: y
-    spatial_distribution:
-      demand:
-        value: n
-      network_geometry:
-        value: n
-    scenario_generation:
-      value: n
-    input_validation:
-      value: n
-  postprocessing:
-    metrics:
-      operational:
-        capacity_factor:
-          value: y
-        operating_hours:
-          value: n
-        binding_hours:
-          value: n
-        curtailment:
-          value: y
-      financial:
-        marginal_price:
-          value: y
-        price_formation:
-          value: n
-        water_value:
-          value: n
-        asset_accounts:
-          value: n
-        contract_settlement:
-          value: n
-        levelised_cost:
-          value: y
-        net_present_value:
-          value: y
-      impact_assessment:
-        emissions:
-          value: y
-        resource_use:
-          value: n
-        socioeconomic:
-          value: n
-      network_transfer_metrics:
-        transfer_capacity:
-          value: n
-        flow_sensitivity:
-          value: n
-      probabilistic_reliability_assessment:
-        loss_of_load:
-          value: y
-        unserved_energy:
-          value: y
-        capacity_credit:
-          value: y
-    transformation:
-      aggregation:
-        value: y
-      disaggregation:
-        value: n
-      scenario_comparison:
-        value: y
   interface:
     gui:
       build:
@@ -580,29 +336,245 @@ features:
         value: n
       analyse:
         value: n
-    solver_configuration:
-      value: n
     remote_execution:
       value: n
+    solver_configuration:
+      value: y
+    analysis_templates:
+      value: y
     visualisation:
       charts:
         value: y
       network_maps:
+        value: y
+  io:
+    plain_text:
+      input:
         value: n
-      report_templates:
+      output:
+        value: n
+    binary:
+      input:
+        value: n
+      output:
+        value: n
+    database:
+      input:
+        value: n
+      output:
+        value: n
+    remote_storage:
+      input:
+        value: n
+      output:
+        value: n
+    lazy_loading:
+      input:
+        value: n
+      output:
+        value: n
+    standardised:
+      input:
+        value: n
+      output:
+        value: n
+  edge_effects:
+    time_operational:
+      value: y
+    time_financial:
+      value: y
+    energy_balance:
+      value: n
+  actors:
+    portfolio:
+      value: n
+    distributed_objectives:
+      value: n
+    equilibrium:
+      value: n
+    heuristic_markup:
+      value: n
+  objective:
+    multi_objective_weighted:
+      value: n
+    multi_objective_pareto:
+      value: n
+    quadratic:
+      value: n
+    tie_breaking:
+      value: n
+  uncertainty:
+    two_stage_stochastic:
+      value: n
+    multi_stage_stochastic:
+      value: n
+    risk_aversion:
+      value: n
+    near_optimal:
+      value: n
+    robust_optimisation:
+      value: n
+  tractability:
+    dimension_reduction:
+      adjacency_aggregation:
+        temporal:
+          value: y
+        spatial:
+          value: y
+      similarity_aggregation:
+        temporal:
+          value: n
+        spatial:
+          value: n
+        assets:
+          value: y
+        scenarios:
+          value: n
+      equivalencing:
+        spatial:
+          value: n
+        assets:
+          value: n
+      filtering:
+        temporal:
+          value: n
+        spatial:
+          value: n
+        assets:
+          value: n
+        scenarios:
+          value: n
+      non_contiguity_handling:
+        temporal:
+          value: n
+        spatial:
+          value: n
+    variable_fidelity:
+      formulation:
+        value: y
+      resolution:
+        temporal:
+          value: n
+        spatial:
+          value: n
+        assets:
+          value: y
+        scenarios:
+          value: n
+    reformulation:
+      constraint_screening:
+        value: n
+      linearised_unit_commitment:
+        value: n
+      nonlinear_handling:
+        convex_relaxation:
+          value: n
+        function_conversion:
+          value: n
+      decomposition:
+        value: n
+      approximation:
+        value: n
+      numeric_scaling:
+        value: n
+  orchestration:
+    coupled_models:
+      limited_foresight:
+        investment:
+          value: n
+        operation:
+          value: n
+      fidelity_sequence:
+        value: n
+      market_sequence:
+        value: n
+      convergence_iteration:
+        value: n
+    scenario_runs:
+      value: y
+    sampled_runs:
+      value: n
+  preprocessing:
+    forecasting:
+      value: y
+    resource_conversion:
+      value: n
+    spatial_distribution:
+      demand:
+        value: n
+      network_geometry:
+        value: n
+      slack:
+        value: n
+    download:
+      value: y
+    model_catalogue:
+      value: n
+    scenario_generation:
+      value: n
+    input_validation:
+      value: n
+  postprocessing:
+    metrics:
+      impact_assessment:
+        emissions:
+          value: y
+        resource_use:
+          value: n
+        socioeconomic:
+          value: n
+      operational:
+        curtailment:
+          value: y
+        capacity_factor:
+          value: n
+        full_load_hours:
+          value: n
+      financial:
+        levelised_cost:
+          value: y
+        net_present_value:
+          value: y
+        asset_accounts:
+          value: y
+        marginal_price:
+          value: y
+        price_formation:
+          value: n
+        water_value:
+          value: n
+        contract_settlement:
+          value: n
+      network_transfer_metrics:
+        transfer_capacity:
+          value: n
+        flow_sensitivity:
+          value: n
+      probabilistic_reliability_assessment:
+        loss_of_load:
+          value: n
+        unserved_energy:
+          value: n
+        capacity_credit:
+          value: n
+    transformation:
+      aggregation:
+        value: y
+      disaggregation:
+        value: n
+      scenario_comparison:
         value: y
   traceability:
+    run_logs:
+      value: n
+    infeasibility_diagnosis:
+      value: n
     metadata:
       provenance:
-        # Tenuous: public IRPs go through consultation, so input data sources need to be traceable.
-        value: y
+        value: n
       units:
         value: n
       propagation:
         value: n
-    run_logs:
-      value: n
     intermediate_access:
-      value: n
-    infeasibility_diagnosis:
       value: n

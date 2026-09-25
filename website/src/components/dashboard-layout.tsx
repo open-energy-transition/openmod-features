@@ -7,7 +7,6 @@ import { Switch } from '@base-ui/react/switch'
 import { Link, Outlet, useLocation } from '@tanstack/react-router'
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import {
-  FaClipboardCheck,
   FaFileCircleCheck,
   FaGithub,
   FaMoon,
@@ -138,9 +137,11 @@ export function DashboardLayout() {
           onThemeChange={setTheme}
         />
         <div className="mx-auto grid max-w-[1800px] gap-5 px-4 py-6 sm:px-6 lg:px-8">
-          <div className="flex min-w-0 flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-            <DashboardNav customUseCase={customUseCase} />
-            <CoverageControls options={coverageOptions} onChange={setCoverageOptions} />
+          <div className="atlas-sticky-toolbar sticky top-0 z-40 -mx-4 min-w-0 px-4 py-2 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+            <div className="flex w-full min-w-0 flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+              <DashboardNav customUseCase={customUseCase} />
+              <CoverageControls options={coverageOptions} onChange={setCoverageOptions} />
+            </div>
           </div>
           {location.pathname === '/' ? <HomeIntro data={dashboardData} /> : null}
           <DashboardContext.Provider
@@ -162,49 +163,42 @@ export function DashboardLayout() {
 
 function HomeIntro({ data }: { data: DashboardData }) {
   return (
-    <section className="atlas-preamble grid gap-5 p-4 lg:grid-cols-[minmax(0,1.35fr)_minmax(300px,0.65fr)] lg:items-center">
+    <section className="atlas-preamble grid gap-4 p-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
       <div className="max-w-4xl">
-        <p className="atlas-eyebrow">Project Preamble</p>
-        <h2 className="atlas-panel-title mt-1 text-lg font-semibold sm:text-xl">
-          Open energy modelling feature coverage
-        </h2>
-        <p className="atlas-copy mt-2 max-w-3xl text-sm leading-6">
-          Explore and compare open-source energy modelling tools by capability,
-          evidence, and planning use-case fit. The dashboard is generated from
-          repository feature inventory files, with coverage percentages controlled
-          by the rules beside the navigation.
+        <p className="atlas-eyebrow">Inventory Snapshot</p>
+        <p className="atlas-copy mt-1 max-w-3xl text-sm leading-6">
+          openmod-features is a community-maintained feature inventory for
+          open-source energy system modelling tools and common planning use
+          cases. Matching tool feature lists to use-case requirements helps
+          identify which tools fit a workflow and where feature gaps remain.
         </p>
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div className="mt-3 flex flex-wrap gap-2">
           <PreambleLink
-            href="https://github.com/open-energy-transition/openmod-features#add-your-tool"
+            href="https://github.com/open-energy-transition/openmod-features"
             icon={<FaScrewdriverWrench aria-hidden="true" />}
-            text="Contribute or update a tool"
+            text="Repository"
           />
           <PreambleLink
-            href="https://github.com/open-energy-transition/openmod-features#add-a-use-case"
+            href="https://github.com/open-energy-transition/openmod-features/blob/main/CONTRIBUTING.md"
             icon={<FaFileCircleCheck aria-hidden="true" />}
-            text="Contribute or update a use case"
+            text="Contributing"
           />
           <PreambleLink
             href="https://github.com/open-energy-transition/openmod-features/blob/main/GOVERNANCE.md"
-            icon={<FaClipboardCheck aria-hidden="true" />}
+            icon={<FaGithub aria-hidden="true" />}
             text="Governance"
           />
         </div>
       </div>
 
-      <dl className="grid gap-3 text-sm sm:grid-cols-3 lg:grid-cols-1">
+      <dl className="grid gap-y-4 text-sm sm:grid-cols-2 sm:gap-x-8 lg:gap-x-10">
         <ProvenanceItem
           label="Generated"
           value={new Date(data.generatedAt).toLocaleString()}
         />
         <ProvenanceItem
-          label="Inventory"
-          value={`${data.tools.length} tools / ${data.useCases.length} use cases`}
-        />
-        <ProvenanceItem
-          label="Validation"
-          value="Docs + source evidence"
+          label="Taxonomy"
+          value={data.taxonomyVersion}
         />
       </dl>
     </section>
@@ -325,10 +319,10 @@ function DashboardNav({ customUseCase }: { customUseCase: UseCaseRecord | null }
   return (
     <nav
       aria-label="Dashboard sections"
-      className="atlas-nav flex gap-1 p-1"
+      className="atlas-nav flex min-w-0 gap-1 p-1"
     >
       <NavLink to="/" customUseCase={customUseCase}>
-        Overview
+        Home
       </NavLink>
       <NavLink to="/tools" customUseCase={customUseCase}>
         Tool Matrix
@@ -338,6 +332,9 @@ function DashboardNav({ customUseCase }: { customUseCase: UseCaseRecord | null }
       </NavLink>
       <NavLink to="/builder" customUseCase={customUseCase}>
         Use Case Builder
+      </NavLink>
+      <NavLink to="/about" customUseCase={customUseCase}>
+        About
       </NavLink>
     </nav>
   )

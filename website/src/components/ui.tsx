@@ -246,6 +246,11 @@ export function ToolName({
       <span className="atlas-caption max-w-44 truncate text-xs">
         {compact ? tool.name : tool.shortname}
       </span>
+      {tool.version ? (
+        <span className="atlas-caption max-w-44 truncate text-[11px]">
+          {tool.version}
+        </span>
+      ) : null}
       {(tool.docs || tool.source) && compact ? (
         <div className="flex gap-2">
           {tool.docs ? <ExternalLink href={tool.docs} label="Docs" /> : null}
@@ -266,7 +271,7 @@ export function CoverageControls({
   return (
     <section
       aria-labelledby="coverage-options"
-      className="atlas-rule-switcher flex max-w-full flex-wrap items-center gap-2 p-1.5"
+      className="atlas-rule-switcher flex min-w-0 max-w-full flex-wrap items-center gap-2 p-1.5"
     >
       <h2
         id="coverage-options"

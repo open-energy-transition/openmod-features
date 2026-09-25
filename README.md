@@ -87,9 +87,6 @@ You can also optionally provide a documentation site URL and a longer descriptio
 Once your tool config file has been generated, you will find it under `tools/<tool-shortname>/`.
 You will then be able to update your tool's feature list at `tools/<tool-shortname>/features.yaml`.
 
-Set the top-level `version` key to the version of your tool that the feature list describes (e.g. `version: v1.2.0`).
-Quote any version that YAML would otherwise read as a number (e.g. `version: '1.2'`).
-
 All tool features default to values of `?`, i.e., unknown.
 You should update each to a value of `y` if that feature is available, `n` if it is not, or `dev` if it is actively in development.
 For each, add a `source` key pointing to URL (e.g. in your documentation, a Pull Request, a test) in which that feature is explicitly referenced.
@@ -97,7 +94,7 @@ The `source` key is not _required_ but your feature will show as unvalidated if 
 
 #### Understanding each feature
 
-All feature descriptions are in the top-level `features.yaml`.
+All feature descriptions are in `schema/features.yaml`.
 However, you may find it more useful to have descriptions for each of the features directly when working in your tool's features file.
 You can access them as tooltips [in your favourite IDE](https://github.com/redhat-developer/yaml-language-server?tab=readme-ov-file#clients).
 Activating tooltips will also provide schema validation highlighting.
@@ -179,5 +176,5 @@ For a list of all `openmod-features contributors`, see [AUTHORS.md](AUTHORS.md).
 For a list of all additional tool-level feature list (`tools/**/features.yaml`) contributors, see the GitHub tags linked to each file in `.github/CODEOWNERS`.
 
 The software in this repository is licensed under the [MIT license](LICENSES/MIT.txt).
-The generated output data (`tools/*`, `use-cases/*`, `schema/*-schema.yaml`) are licensed under the [Creative Commons Attribution 4.0 license](LICENSES/CC-BY-4.0.txt) for easier reuse.
+The generated output data (`tools/*`, `use-cases/*`, `schema/schema.yaml`) are licensed under the [Creative Commons Attribution 4.0 license](LICENSES/CC-BY-4.0.txt) for easier reuse.
 Individual configuration or generic files may be licensed [CC0 1.0 Universal](LICENSES/CC0-1.0.txt); these files are marked explicitly either in the file header or in the [REUSE.toml](REUSE.toml) file.

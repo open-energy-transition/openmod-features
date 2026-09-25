@@ -44,8 +44,6 @@ features:
           value: '?'
         ac_opf:
           value: '?'
-        unbalanced_flows:
-          value: '?'
       sensitivity_limits:
         ptdf:
           value: '?'
@@ -58,8 +56,6 @@ features:
           value: '?'
         phase_angle:
           value: '?'
-      losses:
-        value: '?'
       network_devices:
         transformers:
           value: '?'
@@ -67,6 +63,8 @@ features:
           value: '?'
         hvdc_converters:
           value: '?'
+      unbalanced_flows:
+        value: '?'
     hydraulic_flow:
       linearised_flow:
         value: '?'
@@ -82,11 +80,9 @@ features:
         value: '?'
       integer_investment_continuous_capacity:
         value: '?'
-      multi_period:
-        value: '?'
       retrofit:
         value: '?'
-      endogenous_retirement:
+      multi_period:
         value: '?'
     operation:
       unit_commitment:
@@ -98,7 +94,12 @@ features:
       temporal:
         pointwise:
           investment:
-            value: '?'
+            size_bounds:
+              value: '?'
+            discrete_increments:
+              value: '?'
+            unit_purchase:
+              value: '?'
           operation:
             availability_derating:
               value: '?'
@@ -110,11 +111,11 @@ features:
               value: '?'
         sequential:
           investment:
+            build_rate:
+              value: '?'
+            retirement:
+              value: '?'
             availability_window:
-              value: '?'
-            relative_build_rate:
-              value: '?'
-            technical_lifetime:
               value: '?'
           operation:
             ramping:
@@ -151,11 +152,6 @@ features:
             value: '?'
           operation:
             value: '?'
-      spatial:
-        investment:
-          value: '?'
-        operation:
-          value: '?'
       assets:
         spanning:
           investment:
@@ -163,6 +159,11 @@ features:
           operation:
             value: '?'
         dedicated_flow_routing:
+          value: '?'
+      spatial:
+        investment:
+          value: '?'
+        operation:
           value: '?'
     functional_form:
       linear_multi_variable:
@@ -180,9 +181,9 @@ features:
           value: '?'
         operation:
           value: '?'
+    soft_constraints:
+      value: '?'
     reliability:
-      unserved_demand:
-        value: '?'
       operating_reserve:
         online_headroom:
           value: '?'
@@ -190,15 +191,15 @@ features:
           value: '?'
         inertia:
           value: '?'
-      contingency_constrained:
-        value: '?'
       probabilistic_reliability_limit:
         loss_of_load:
           value: '?'
         unserved_energy:
           value: '?'
-    soft_constraints:
-      value: '?'
+      unserved_demand:
+        value: '?'
+      contingency_constrained:
+        value: '?'
   cost:
     scope:
       temporal:
@@ -206,11 +207,11 @@ features:
           investment:
             value: '?'
           operation:
-            ramping:
-              value: '?'
             start_up:
               value: '?'
             shut_down:
+              value: '?'
+            ramping:
               value: '?'
             start_state_dependent:
               value: '?'
@@ -219,12 +220,12 @@ features:
             value: '?'
           operation:
             value: '?'
-      spatial:
+      assets:
         investment:
           value: '?'
         operation:
           value: '?'
-      assets:
+      spatial:
         investment:
           value: '?'
         operation:
@@ -239,63 +240,28 @@ features:
         investment:
           value: '?'
         operation:
-          value: '?'
+          flow_dependent:
+            value: '?'
+          bid_bands:
+            value: '?'
       threshold_deviation:
         investment:
           value: '?'
         operation:
           value: '?'
-    time_value:
-      annuitisation:
+    annuitisation:
+      discounting:
         value: '?'
       fiscal_treatment:
         value: '?'
-      period_discounting:
-        value: '?'
-  objective:
-    quadratic:
-      value: '?'
-    multi_objective_weighted:
-      value: '?'
-    multi_objective_pareto:
-      value: '?'
-    tie_breaking:
-      value: '?'
-  edge_effects:
-    time_operational:
-      value: '?'
-    time_financial:
-      value: '?'
-    energy_balance:
-      value: '?'
-  actors:
-    portfolio:
-      value: '?'
-    heuristic_markup:
-      value: '?'
-    distributed_objectives:
-      value: '?'
-    equilibrium:
-      value: '?'
-  uncertainty:
-    two_stage_stochastic:
-      value: '?'
-    multi_stage_stochastic:
-      value: '?'
-    risk_aversion:
-      value: '?'
-    robust_optimisation:
-      value: '?'
-    near_optimal:
-      value: '?'
   model_definition:
-    configurable_dimensions:
-      value: '?'
-    extensible_dimensions:
-      value: '?'
     dimension_groups:
       value: '?'
     component_templating:
+      value: '?'
+    configurable_dimensions:
+      value: '?'
+    extensible_dimensions:
       value: '?'
   math:
     formulation_transparency:
@@ -308,83 +274,38 @@ features:
       value: '?'
     user_defined_math:
       value: '?'
-  tractability:
-    dimension_reduction:
-      adjacency_aggregation:
-        temporal:
-          value: '?'
-        spatial:
-          value: '?'
-      similarity_aggregation:
-        temporal:
-          value: '?'
-        spatial:
-          value: '?'
-        assets:
-          value: '?'
-        scenarios:
-          value: '?'
-      non_contiguity_handling:
-        temporal:
-          value: '?'
-        spatial:
-          value: '?'
-      equivalencing:
-        spatial:
-          value: '?'
-        assets:
-          value: '?'
-      filtering:
-        temporal:
-          value: '?'
-        spatial:
-          value: '?'
-        assets:
-          value: '?'
-        scenarios:
-          value: '?'
-    variable_fidelity:
-      formulation:
+  interface:
+    gui:
+      build:
         value: '?'
-      resolution:
-        temporal:
-          value: '?'
-        spatial:
-          value: '?'
-        assets:
-          value: '?'
-        scenarios:
-          value: '?'
-    reformulation:
-      linearised_unit_commitment:
+      run:
         value: '?'
-      nonlinear_handling:
-        convex_relaxation:
-          value: '?'
-        function_conversion:
-          value: '?'
-      constraint_screening:
+      analyse:
         value: '?'
-      decomposition:
+    api:
+      build:
         value: '?'
-      numeric_scaling:
+      run:
         value: '?'
-  orchestration:
-    scenario_runs:
+      analyse:
+        value: '?'
+    cli:
+      build:
+        value: '?'
+      run:
+        value: '?'
+      analyse:
+        value: '?'
+    remote_execution:
       value: '?'
-    sampled_runs:
+    solver_configuration:
       value: '?'
-    coupled_models:
-      limited_foresight:
-        investment:
-          value: '?'
-        operation:
-          value: '?'
-      fidelity_sequence:
+    analysis_templates:
+      value: '?'
+    visualisation:
+      charts:
         value: '?'
-      market_sequence:
-        value: '?'
-      convergence_iteration:
+      network_maps:
         value: '?'
   io:
     plain_text:
@@ -417,56 +338,172 @@ features:
         value: '?'
       output:
         value: '?'
-  preprocessing:
-    download:
+  edge_effects:
+    time_operational:
       value: '?'
-    model_catalogue:
+    time_financial:
+      value: '?'
+    energy_balance:
+      value: '?'
+  actors:
+    portfolio:
+      value: '?'
+    distributed_objectives:
+      value: '?'
+    equilibrium:
+      value: '?'
+    heuristic_markup:
+      value: '?'
+  objective:
+    multi_objective_weighted:
+      value: '?'
+    multi_objective_pareto:
+      value: '?'
+    quadratic:
+      value: '?'
+    tie_breaking:
+      value: '?'
+  uncertainty:
+    two_stage_stochastic:
+      value: '?'
+    multi_stage_stochastic:
+      value: '?'
+    risk_aversion:
+      value: '?'
+    near_optimal:
+      value: '?'
+    robust_optimisation:
+      value: '?'
+  tractability:
+    dimension_reduction:
+      adjacency_aggregation:
+        temporal:
+          value: '?'
+        spatial:
+          value: '?'
+      similarity_aggregation:
+        temporal:
+          value: '?'
+        spatial:
+          value: '?'
+        assets:
+          value: '?'
+        scenarios:
+          value: '?'
+      equivalencing:
+        spatial:
+          value: '?'
+        assets:
+          value: '?'
+      filtering:
+        temporal:
+          value: '?'
+        spatial:
+          value: '?'
+        assets:
+          value: '?'
+        scenarios:
+          value: '?'
+      non_contiguity_handling:
+        temporal:
+          value: '?'
+        spatial:
+          value: '?'
+    variable_fidelity:
+      formulation:
+        value: '?'
+      resolution:
+        temporal:
+          value: '?'
+        spatial:
+          value: '?'
+        assets:
+          value: '?'
+        scenarios:
+          value: '?'
+    reformulation:
+      constraint_screening:
+        value: '?'
+      linearised_unit_commitment:
+        value: '?'
+      nonlinear_handling:
+        convex_relaxation:
+          value: '?'
+        function_conversion:
+          value: '?'
+      decomposition:
+        value: '?'
+      approximation:
+        value: '?'
+      numeric_scaling:
+        value: '?'
+  orchestration:
+    coupled_models:
+      limited_foresight:
+        investment:
+          value: '?'
+        operation:
+          value: '?'
+      fidelity_sequence:
+        value: '?'
+      market_sequence:
+        value: '?'
+      convergence_iteration:
+        value: '?'
+    scenario_runs:
+      value: '?'
+    sampled_runs:
+      value: '?'
+  preprocessing:
+    forecasting:
       value: '?'
     resource_conversion:
-      value: '?'
-    forecasting:
       value: '?'
     spatial_distribution:
       demand:
         value: '?'
       network_geometry:
         value: '?'
+      slack:
+        value: '?'
+    download:
+      value: '?'
+    model_catalogue:
+      value: '?'
     scenario_generation:
       value: '?'
     input_validation:
       value: '?'
   postprocessing:
     metrics:
-      operational:
-        capacity_factor:
-          value: '?'
-        operating_hours:
-          value: '?'
-        binding_hours:
-          value: '?'
-        curtailment:
-          value: '?'
-      financial:
-        marginal_price:
-          value: '?'
-        price_formation:
-          value: '?'
-        water_value:
-          value: '?'
-        asset_accounts:
-          value: '?'
-        contract_settlement:
-          value: '?'
-        levelised_cost:
-          value: '?'
-        net_present_value:
-          value: '?'
       impact_assessment:
         emissions:
           value: '?'
         resource_use:
           value: '?'
         socioeconomic:
+          value: '?'
+      operational:
+        curtailment:
+          value: '?'
+        capacity_factor:
+          value: '?'
+        full_load_hours:
+          value: '?'
+      financial:
+        levelised_cost:
+          value: '?'
+        net_present_value:
+          value: '?'
+        asset_accounts:
+          value: '?'
+        marginal_price:
+          value: '?'
+        price_formation:
+          value: '?'
+        water_value:
+          value: '?'
+        contract_settlement:
           value: '?'
       network_transfer_metrics:
         transfer_capacity:
@@ -487,40 +524,11 @@ features:
         value: '?'
       scenario_comparison:
         value: '?'
-  interface:
-    gui:
-      build:
-        value: '?'
-      run:
-        value: '?'
-      analyse:
-        value: '?'
-    api:
-      build:
-        value: '?'
-      run:
-        value: '?'
-      analyse:
-        value: '?'
-    cli:
-      build:
-        value: '?'
-      run:
-        value: '?'
-      analyse:
-        value: '?'
-    solver_configuration:
-      value: '?'
-    remote_execution:
-      value: '?'
-    visualisation:
-      charts:
-        value: '?'
-      network_maps:
-        value: '?'
-      report_templates:
-        value: '?'
   traceability:
+    run_logs:
+      value: '?'
+    infeasibility_diagnosis:
+      value: '?'
     metadata:
       provenance:
         value: '?'
@@ -528,9 +536,5 @@ features:
         value: '?'
       propagation:
         value: '?'
-    run_logs:
-      value: '?'
     intermediate_access:
-      value: '?'
-    infeasibility_diagnosis:
       value: '?'

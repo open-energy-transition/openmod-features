@@ -1,52 +1,57 @@
-
 # SPDX-FileCopyrightText: use-cases/policy_target_setting/features.yaml CODEOWNERS
 # SPDX-FileCopyrightText: openmod-features contributors
 #
 # SPDX-License-Identifier: CC-BY-4.0
 
-# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/v0.3.0/schema/use-case-schema.yaml
+# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/0cd1a85/schema/use-case-schema.yaml
 
 assumptions:
 - >-
-  The optimisation is run with perfect foresight over the full horizon,
-  which spans multiple decades at 5-year resolution, starting from the existing asset stock.
+  The optimization will be run with perfect foresight over the full model horizon, which spans multiple decades at 5 year resolution.
 - >-
-  The spatial scope is national and single-node.
-  It could be multi-node at national resolution for a multinational study, but that is not chosen here.
-  Imports and exports are exchanges across the system boundary.
+  Spatial scope is national and single node.
+  Could be multinode at national resolution if multinational but not chosen here.
 - >-
-  Each year is represented by representative time slices (e.g. season x day/night/peak).
-  Automated clustering into representative periods would also work but is not chosen here.
+  Year is represented by representative time slices (heuristics: day/night/peak/season).
+  Could also be representative periods based on automated timeseries clustering, but not chosen here.
 - >-
-  Storage is aggregated, and its level is linked across time slices.
-- >-
-  The system is multi-carrier, including electricity, hydrogen, natural gas, heat, and oil products, with conversion between them (e.g. CHP, refineries).
-- >-
-  Demands are end-use services (e.g. "vehicle km" for transport) met by conversion technologies, and they respond to price through elastic demand curves.
-- >-
-  Extraction of domestic fossil resources is represented by assets, competing with imports, and is bounded by resource potentials.
+  Storage aggregated.
+  Need mathematical representation to handle inter-slice storage.
 - >-
   Assets are always grouped.
-  They are sub-grouped by cost and resource class in preprocessing and grouped back up in postprocessing.
 - >-
-  Complex asset operating characteristics (unit commitment, ramping) are not represented.
-  Assets have availability factors, and outages are covered by a reserve margin of de-rated dispatchable capacity.
+  Sub-group assets by their costs/resource (pre-processed).
+  Includes e.g. wind techs, sources of fuels etc. Group assets back up in postprocessing.
 - >-
-  Deployment is bounded by technology availability dates, technical lifetimes, per-period and relative growth limits, and technical potentials.
-  Early retirement of fossil assets is a decision.
+  User constraints/variables are necessary to limit total emissions etc. for subsets of the system being defined.
 - >-
-  Emission caps per period, a cumulative carbon budget, and sector- or technology-specific targets are set by user-defined constraints on subsets of the system.
+  No representation of complex asset characteristics.
 - >-
-  Endogenous learning is not used, as it distorts the model.
-  Cost trajectories are exogenous.
+  Flexible demand is necessary.
 - >-
-  Technology-specific discount rates (hurdle rates) represent consumer preferences on payback periods.
+  Endogenous learning (piecewise investment cost) not used as it distorts the model.
 - >-
-  Marginal prices and shadow prices of targets (e.g. marginal abatement cost of CO2) are required to compare scenarios.
+  Grid-transfer capacities used for multi-node models.
 - >-
-  Sensitivity scenarios are run, but detailed sensitivity analysis and stochastic optimisation are beyond the scope of this study.
+  Multi-carrier, including electricity, hydrogen, natural gas, heat, etc.
 - >-
-  A GUI is necessary, particularly for outputs.
+  Demands are end-use services (e.g. "vehicle kms" for transport demands).
+- >-
+  Extraction of fossils are represented as assets, competing with e.g. imports.
+- >-
+  Sensitivity scenarios will be conducted but detailed sensitivity analysis/stochastic optimisation is beyond the scope of this study.
+- >-
+  Outages represented by a reserve margin of dispatchable capacity.
+  Assets also have an availability factor.
+- >-
+  GUI is necessary, particularly for outputs.
+- >-
+  Marginal/shadow prices required to compare market prices between scenarios.
+- >-
+  Technology-specific discount rates are used to represent consumer preferences on payback periods (a.k.a. hurdle rates).
+- >-
+  Demand elasticity is represented in loads.
+
 features:
   processes:
     boundary_exchange:
@@ -61,7 +66,7 @@ features:
     temporal_transfer:
       value: y
     spatial_transfer:
-      value: n
+      value: y
     delayed_transfer:
       value: n
     buffered_transfer:
@@ -74,8 +79,6 @@ features:
       inelastic:
         value: y
       price_responsive:
-        # Elastic service demands, typically as stepwise-linearised demand curves, so `objective.quadratic` is not
-        # required.
         value: y
       mobile_storage:
         value: n
@@ -85,8 +88,6 @@ features:
         dc_opf:
           value: n
         ac_opf:
-          value: n
-        unbalanced_flows:
           value: n
       sensitivity_limits:
         ptdf:
@@ -100,8 +101,6 @@ features:
           value: n
         phase_angle:
           value: n
-      losses:
-        value: n
       network_devices:
         transformers:
           value: n
@@ -109,6 +108,8 @@ features:
           value: n
         hvdc_converters:
           value: n
+      unbalanced_flows:
+        value: n
     hydraulic_flow:
       linearised_flow:
         value: n
@@ -124,12 +125,9 @@ features:
         value: n
       integer_investment_continuous_capacity:
         value: n
-      multi_period:
-        value: y
       retrofit:
         value: n
-      endogenous_retirement:
-        # Early retirement of fossil assets (stranded assets) is part of the pathway.
+      multi_period:
         value: y
     operation:
       unit_commitment:
@@ -141,7 +139,12 @@ features:
       temporal:
         pointwise:
           investment:
-            value: y
+            size_bounds:
+              value: y
+            discrete_increments:
+              value: n
+            unit_purchase:
+              value: n
           operation:
             availability_derating:
               value: y
@@ -153,12 +156,12 @@ features:
               value: n
         sequential:
           investment:
+            build_rate:
+              value: y
+            retirement:
+              value: y
             availability_window:
-              value: y
-            relative_build_rate:
-              value: y
-            technical_lifetime:
-              value: y
+              value: n
           operation:
             ramping:
               value: n
@@ -182,7 +185,6 @@ features:
             flow_volume:
               value: y
             impact_budget:
-              # Covers both per-period emission caps and a cumulative carbon budget over the horizon.
               value: y
             event_count:
               value: n
@@ -194,12 +196,7 @@ features:
           investment:
             value: y
           operation:
-            value: n
-      spatial:
-        investment:
-          value: n
-        operation:
-          value: n
+            value: y
       assets:
         spanning:
           investment:
@@ -207,8 +204,11 @@ features:
           operation:
             value: y
         dedicated_flow_routing:
-          # Changed from the 0.2.0 list: fuel supply chains run through commodities at the single node, not
-          # dedicated routing.
+          value: y
+      spatial:
+        investment:
+          value: n
+        operation:
           value: n
     functional_form:
       linear_multi_variable:
@@ -226,10 +226,9 @@ features:
           value: n
         operation:
           value: n
+    soft_constraints:
+      value: n
     reliability:
-      unserved_demand:
-        # Tenuous: retained from the 0.2.0 list as a feasibility backstop when targets are tight.
-        value: y
       operating_reserve:
         online_headroom:
           value: n
@@ -237,15 +236,15 @@ features:
           value: n
         inertia:
           value: n
-      contingency_constrained:
-        value: n
       probabilistic_reliability_limit:
         loss_of_load:
           value: n
         unserved_energy:
           value: n
-    soft_constraints:
-      value: n
+      unserved_demand:
+        value: y
+      contingency_constrained:
+        value: n
   cost:
     scope:
       temporal:
@@ -253,11 +252,11 @@ features:
           investment:
             value: n
           operation:
-            ramping:
-              value: n
             start_up:
               value: n
             shut_down:
+              value: n
+            ramping:
               value: n
             start_state_dependent:
               value: n
@@ -266,12 +265,12 @@ features:
             value: n
           operation:
             value: n
-      spatial:
+      assets:
         investment:
           value: n
         operation:
           value: n
-      assets:
+      spatial:
         investment:
           value: n
         operation:
@@ -286,70 +285,32 @@ features:
         investment:
           value: n
         operation:
-          value: n
+          flow_dependent:
+            value: n
+          bid_bands:
+            value: n
       threshold_deviation:
         investment:
           value: n
         operation:
           value: n
-    time_value:
-      annuitisation:
-        # Technology-specific discount rates (hurdle rates) are needed.
+    annuitisation:
+      discounting:
         value: y
       fiscal_treatment:
         value: n
-      period_discounting:
-        value: y
-  objective:
-    quadratic:
-      value: n
-    multi_objective_weighted:
-      value: n
-    multi_objective_pareto:
-      value: n
-    tie_breaking:
-      value: n
-  edge_effects:
-    time_operational:
-      value: n
-    time_financial:
-      value: y
-    energy_balance:
-      # Tenuous: retained from the 0.2.0 list; matters mostly where aggregated storage could dump surplus energy in
-      # some time slices.
-      value: y
-  actors:
-    portfolio:
-      value: n
-    heuristic_markup:
-      value: n
-    distributed_objectives:
-      value: n
-    equilibrium:
-      value: n
-  uncertainty:
-    two_stage_stochastic:
-      value: n
-    multi_stage_stochastic:
-      value: n
-    risk_aversion:
-      value: n
-    robust_optimisation:
-      value: n
-    near_optimal:
-      value: n
   model_definition:
-    configurable_dimensions:
-      value: y
-    extensible_dimensions:
-      value: n
     dimension_groups:
       value: y
     component_templating:
       value: n
+    configurable_dimensions:
+      value: y
+    extensible_dimensions:
+      value: y
   math:
     formulation_transparency:
-      value: y
+      value: n
     problem_file_export:
       value: n
     dual_extraction:
@@ -358,188 +319,6 @@ features:
       value: n
     user_defined_math:
       value: y
-  tractability:
-    dimension_reduction:
-      adjacency_aggregation:
-        temporal:
-          value: n
-        spatial:
-          value: n
-      similarity_aggregation:
-        temporal:
-          # Heuristic time slices (season × day/night/peak).
-          value: y
-        spatial:
-          value: n
-        assets:
-          # Asset grouping by cost/resource class is done in preprocessing, outside the tool.
-          value: n
-        scenarios:
-          value: n
-      non_contiguity_handling:
-        temporal:
-          # Aggregated storage levels need linking across time slices.
-          value: y
-        spatial:
-          value: n
-      equivalencing:
-        spatial:
-          value: n
-        assets:
-          value: n
-      filtering:
-        temporal:
-          value: n
-        spatial:
-          value: n
-        assets:
-          value: n
-        scenarios:
-          value: n
-    variable_fidelity:
-      formulation:
-        value: n
-      resolution:
-        temporal:
-          value: n
-        spatial:
-          value: n
-        assets:
-          value: n
-        scenarios:
-          value: n
-    reformulation:
-      linearised_unit_commitment:
-        value: n
-      nonlinear_handling:
-        convex_relaxation:
-          value: n
-        function_conversion:
-          value: n
-      constraint_screening:
-        value: n
-      decomposition:
-        value: n
-      numeric_scaling:
-        value: n
-  orchestration:
-    scenario_runs:
-      value: y
-    sampled_runs:
-      value: n
-    coupled_models:
-      limited_foresight:
-        investment:
-          value: n
-        operation:
-          value: n
-      fidelity_sequence:
-        value: n
-      market_sequence:
-        value: n
-      convergence_iteration:
-        value: n
-  io:
-    plain_text:
-      input:
-        value: n
-      output:
-        value: n
-    binary:
-      input:
-        value: y
-      output:
-        value: y
-    database:
-      input:
-        value: n
-      output:
-        value: n
-    remote_storage:
-      input:
-        value: n
-      output:
-        value: n
-    lazy_loading:
-      input:
-        value: n
-      output:
-        value: n
-    standardised:
-      input:
-        value: n
-      output:
-        value: n
-  preprocessing:
-    download:
-      value: n
-    model_catalogue:
-      value: n
-    resource_conversion:
-      value: n
-    forecasting:
-      value: y
-    spatial_distribution:
-      demand:
-        value: n
-      network_geometry:
-        value: n
-    scenario_generation:
-      value: n
-    input_validation:
-      value: n
-  postprocessing:
-    metrics:
-      operational:
-        capacity_factor:
-          value: n
-        operating_hours:
-          value: n
-        binding_hours:
-          value: n
-        curtailment:
-          value: n
-      financial:
-        marginal_price:
-          value: y
-        price_formation:
-          value: n
-        water_value:
-          value: n
-        asset_accounts:
-          value: n
-        contract_settlement:
-          value: n
-        levelised_cost:
-          value: y
-        net_present_value:
-          value: y
-      impact_assessment:
-        emissions:
-          value: y
-        resource_use:
-          value: n
-        socioeconomic:
-          value: n
-      network_transfer_metrics:
-        transfer_capacity:
-          value: n
-        flow_sensitivity:
-          value: n
-      probabilistic_reliability_assessment:
-        loss_of_load:
-          value: n
-        unserved_energy:
-          value: n
-        capacity_credit:
-          value: n
-    transformation:
-      aggregation:
-        value: y
-      disaggregation:
-        value: n
-      scenario_comparison:
-        value: y
   interface:
     gui:
       build:
@@ -562,18 +341,239 @@ features:
         value: n
       analyse:
         value: n
-    solver_configuration:
-      value: n
     remote_execution:
       value: n
+    solver_configuration:
+      value: y
+    analysis_templates:
+      value: y
     visualisation:
       charts:
         value: y
       network_maps:
         value: n
-      report_templates:
+  io:
+    plain_text:
+      input:
+        value: n
+      output:
+        value: y
+    binary:
+      input:
+        value: n
+      output:
+        value: n
+    database:
+      input:
+        value: n
+      output:
+        value: n
+    remote_storage:
+      input:
+        value: n
+      output:
+        value: n
+    lazy_loading:
+      input:
+        value: n
+      output:
+        value: n
+    standardised:
+      input:
+        value: n
+      output:
+        value: n
+  edge_effects:
+    time_operational:
+      value: n
+    time_financial:
+      value: y
+    energy_balance:
+      value: y
+  actors:
+    portfolio:
+      value: n
+    distributed_objectives:
+      value: n
+    equilibrium:
+      value: n
+    heuristic_markup:
+      value: n
+  objective:
+    multi_objective_weighted:
+      value: n
+    multi_objective_pareto:
+      value: n
+    quadratic:
+      value: n
+    tie_breaking:
+      value: n
+  uncertainty:
+    two_stage_stochastic:
+      value: n
+    multi_stage_stochastic:
+      value: n
+    risk_aversion:
+      value: n
+    near_optimal:
+      value: n
+    robust_optimisation:
+      value: n
+  tractability:
+    dimension_reduction:
+      adjacency_aggregation:
+        temporal:
+          value: y
+        spatial:
+          value: n
+      similarity_aggregation:
+        temporal:
+          value: y
+        spatial:
+          value: n
+        assets:
+          value: y
+        scenarios:
+          value: n
+      equivalencing:
+        spatial:
+          value: n
+        assets:
+          value: n
+      filtering:
+        temporal:
+          value: n
+        spatial:
+          value: n
+        assets:
+          value: n
+        scenarios:
+          value: n
+      non_contiguity_handling:
+        temporal:
+          value: y
+        spatial:
+          value: n
+    variable_fidelity:
+      formulation:
+        value: n
+      resolution:
+        temporal:
+          value: n
+        spatial:
+          value: n
+        assets:
+          value: n
+        scenarios:
+          value: n
+    reformulation:
+      constraint_screening:
+        value: n
+      linearised_unit_commitment:
+        value: n
+      nonlinear_handling:
+        convex_relaxation:
+          value: n
+        function_conversion:
+          value: n
+      decomposition:
+        value: n
+      approximation:
+        value: n
+      numeric_scaling:
+        value: n
+  orchestration:
+    coupled_models:
+      limited_foresight:
+        investment:
+          value: n
+        operation:
+          value: n
+      fidelity_sequence:
+        value: n
+      market_sequence:
+        value: n
+      convergence_iteration:
+        value: n
+    scenario_runs:
+      value: y
+    sampled_runs:
+      value: n
+  preprocessing:
+    forecasting:
+      value: y
+    resource_conversion:
+      value: n
+    spatial_distribution:
+      demand:
+        value: n
+      network_geometry:
+        value: n
+      slack:
+        value: n
+    download:
+      value: y
+    model_catalogue:
+      value: n
+    scenario_generation:
+      value: y
+    input_validation:
+      value: n
+  postprocessing:
+    metrics:
+      impact_assessment:
+        emissions:
+          value: y
+        resource_use:
+          value: n
+        socioeconomic:
+          value: n
+      operational:
+        curtailment:
+          value: n
+        capacity_factor:
+          value: n
+        full_load_hours:
+          value: n
+      financial:
+        levelised_cost:
+          value: y
+        net_present_value:
+          value: n
+        asset_accounts:
+          value: n
+        marginal_price:
+          value: y
+        price_formation:
+          value: n
+        water_value:
+          value: n
+        contract_settlement:
+          value: n
+      network_transfer_metrics:
+        transfer_capacity:
+          value: n
+        flow_sensitivity:
+          value: n
+      probabilistic_reliability_assessment:
+        loss_of_load:
+          value: n
+        unserved_energy:
+          value: n
+        capacity_credit:
+          value: n
+    transformation:
+      aggregation:
+        value: y
+      disaggregation:
+        value: n
+      scenario_comparison:
         value: y
   traceability:
+    run_logs:
+      value: y
+    infeasibility_diagnosis:
+      value: n
     metadata:
       provenance:
         value: n
@@ -581,9 +581,5 @@ features:
         value: n
       propagation:
         value: n
-    run_logs:
-      value: y
     intermediate_access:
-      value: n
-    infeasibility_diagnosis:
       value: n

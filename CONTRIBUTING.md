@@ -32,11 +32,11 @@ Ultimately, this can be used to identify tool **feature gaps**.
    Features in development could be linked to e.g., Pull Requests or academic publications.
 
    >[!NOTE]
-   >Features are **nested** to whatever depth the taxonomy needs (e.g. `constraints.scope.temporal.sequential.operation.ramping`, `interface.gui.build`).
+   >Features are **nested** to whatever depth the taxonomy needs (e.g. `constraints.scope.temporal.pointwise.investment.size_bounds`, `interface.gui.build`).
    >`value` and `source` appear together on the **leaves** of that tree and nowhere else.
    >A leaf always has a plain scalar `value` and a plain list of URLs as its `source`.
-   >Leaves and further nesting can sit side by side: under `cost.scope.temporal.sequential`,
-   >`operation` splits further into `start_up` / `shut_down` / `ramping` / `start_state_dependent`,
+   >Leaves and further nesting can sit side by side: under `cost.functional_form.nonlinear`,
+   >`operation` splits further into `flow_dependent` / `bid_bands`,
    >while its sibling `investment` is a leaf in its own right.
    >Every leaf comes pre-filled with `?`, so you only need to change the values you know.
    >Where a single source evidences several sibling leaves, repeat the URL on each of them.
@@ -90,7 +90,7 @@ If you are not the entry maintainer:
 
 ### Proposing Taxonomy Changes
 
-The [feature list taxonomy](./features.yaml) is a living document that we aim to improve upon with community contributions.
+The [feature list taxonomy](./schema/features.yaml) is a living document that we aim to improve upon with community contributions.
 However, each change will affect all tool and use-case lists and so requires discussion before being implemented.
 Therefore, all taxonomy change proposals should begin as an Issue:
 
@@ -99,24 +99,6 @@ Therefore, all taxonomy change proposals should begin as an Issue:
 1. **Implementation**: [Fork and clone the repository](#fork-and-clone-repositories) and make your change.
    Then open a Pull Request, referencing the discussion Issue.
 1. **Entry Updates**: Entry maintainers will be notified at the next release round to update their lists to the new taxonomy
-
-When adding to or moving within the taxonomy, keep its ordering conventions.
-The order in `features.yaml` is the order shown on the dashboard and in generated templates.
-
-- **Top level** follows the reader from the modelled system to the tooling around it:
-  - the physical system (`processes`, `network`);
-  - the optimisation problem (`decisions`, `constraints`, `cost`, `objective`), then its refinements (`edge_effects`, `actors`, `uncertainty`);
-  - shaping and extending the model (`model_definition`, `math`);
-  - solving and running it (`tractability`, `orchestration`);
-  - the data pipeline (`io`, `preprocessing`, `postprocessing`);
-  - access and diagnostics (`interface`, `traceability`).
-- **Within a branch**, members follow a natural sequence where one exists, otherwise they run from the baseline or most common capability to the most specialised. Examples of a natural sequence: carrier flow from system entry to consumption, an asset's lifecycle, pipeline stage, increasing temporal span. Generic mechanisms that apply across the branch's other members come last (e.g. `constraints.soft_constraints`).
-- **Shared axes** always appear in canonical order, which a test enforces:
-  - `investment` → `operation`;
-  - `input` → `output`;
-  - `build` → `run` → `analyse`;
-  - `temporal` → `spatial` → `assets` → `scenarios`.
-- **Mirrored branches** keep matching members in the same relative order (e.g. `constraints.scope` / `cost.scope`, `constraints.reliability.probabilistic_reliability_limit` / `postprocessing.metrics.probabilistic_reliability_assessment`).
 
 ### General contributions
 
@@ -162,7 +144,7 @@ To set up your environment, perform the following actions:
 ## Best practices
 
 Our project uses [PEP 8 style guide](https://peps.python.org/pep-0008/) as our guide for best practice for all Python scripts.
-We use the [Google Markdown style guide](https://chromium.googlesource.com/external/github.com/google/styleguide) for our documentation pages.
+We use the [Google Markdown style guide](https://google.github.io/styleguide/docguide/style.html) for our documentation pages.
 Reference the guides to familiarize yourself with the best practices we want contributors to follow.
 We have embedded PEP 8 style adherence, and a number of other best practices in our [pre-commit configuration file](./.pre-commit-config.yaml).
 

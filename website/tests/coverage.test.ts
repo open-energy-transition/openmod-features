@@ -14,6 +14,22 @@ import {
   encodeCustomUseCase,
 } from '../src/data/custom-use-case'
 import type { DashboardData, TaxonomyCategory, ToolRecord, UseCaseRecord } from '../src/data/types'
+import { filterTaxonomy } from '../src/lib/dashboard-utils'
+
+function feature(id: string, label: string) {
+  return {
+    id,
+    key: id,
+    categoryId: 'category',
+    label,
+    displayName: label,
+    description: '',
+    baseline: 'n' as const,
+    pathIds: ['category', id],
+    pathLabels: ['Category', label],
+    depth: 2,
+  }
+}
 
 const taxonomy: TaxonomyCategory[] = [
   {
@@ -21,10 +37,10 @@ const taxonomy: TaxonomyCategory[] = [
     label: 'Category',
     description: '',
     members: [
-      { id: 'sourced', label: 'Sourced', description: '', baseline: 'n' },
-      { id: 'unsourced', label: 'Unsourced', description: '', baseline: 'n' },
-      { id: 'dev', label: 'Dev', description: '', baseline: 'n' },
-      { id: 'missing', label: 'Missing', description: '', baseline: 'n' },
+      feature('sourced', 'Sourced'),
+      feature('unsourced', 'Unsourced'),
+      feature('dev', 'Dev'),
+      feature('missing', 'Missing'),
     ],
   },
 ]
@@ -96,6 +112,7 @@ describe('generated dashboard data', () => {
   it('contains current repository tools and use cases', async () => {
     const data = (await import('../public/data/features.json')) as DashboardData
 
+    expect(data.taxonomyVersion).toBe('v0.3.0')
     expect(data.tools.map((item) => item.id).sort()).toEqual([
       'GenX',
       'OSeMOSYS',
@@ -105,6 +122,39 @@ describe('generated dashboard data', () => {
     ])
     expect(data.useCases).toHaveLength(5)
     expect(data.taxonomy.reduce((total, category) => total + category.members.length, 0)).toBeGreaterThan(0)
+  })
+})
+
+describe('taxonomy display order', () => {
+  it('preserves source taxonomy order when filtering', () => {
+    const orderedTaxonomy: TaxonomyCategory[] = [
+      {
+        id: 'z-category',
+        label: 'Z Category',
+        description: '',
+        members: [
+          feature('z-last', 'Z Last'),
+          feature('a-first', 'A First'),
+        ],
+      },
+      {
+        id: 'a-category',
+        label: 'A Category',
+        description: '',
+        members: [feature('a-feature', 'A Feature')],
+      },
+    ]
+
+    const filtered = filterTaxonomy(orderedTaxonomy, 'category')
+
+    expect(filtered.map((category) => category.id)).toEqual([
+      'z-category',
+      'a-category',
+    ])
+    expect(filtered[0]?.members.map((item) => item.id)).toEqual([
+      'z-last',
+      'a-first',
+    ])
   })
 })
 

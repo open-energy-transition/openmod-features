@@ -10,6 +10,7 @@ import YAML from 'yaml'
 const scriptDir = path.dirname(fileURLToPath(import.meta.url))
 const websiteRoot = path.resolve(scriptDir, '..')
 const repoRoot = path.resolve(websiteRoot, '..')
+const taxonomyVersion = 'v0.3.0'
 
 function formatLabel(value) {
   return value.replaceAll('__', ' > ').replaceAll('_', ' ')
@@ -36,6 +37,10 @@ function normalizeValue(value, fallback) {
     : fallback
 }
 
+function isRecord(value) {
+  return Boolean(value) && typeof value === 'object' && !Array.isArray(value)
+}
+
 async function readYaml(filePath) {
   return YAML.parse(await readFile(filePath, 'utf8'))
 }
@@ -48,34 +53,68 @@ async function readDirectories(parent) {
     .sort((left, right) => left.localeCompare(right))
 }
 
+function makeFeatureKey(pathIds) {
+  return pathIds.join('/')
+}
+
 function normalizeToolFeatures(raw) {
   const features = {}
 
-  for (const [categoryId, members] of Object.entries(raw ?? {})) {
-    features[categoryId] = {}
-    for (const [featureId, feature] of Object.entries(members ?? {})) {
-      features[categoryId][featureId] = {
-        value: normalizeValue(feature?.value, '?'),
-        sources: asList(feature?.source),
+  function visit(node, pathIds) {
+    if (!isRecord(node)) {
+      return
+    }
+
+    if ('value' in node) {
+      const [categoryId] = pathIds
+      if (!categoryId) {
+        return
       }
+
+      features[categoryId] ??= {}
+      features[categoryId][makeFeatureKey(pathIds)] = {
+        value: normalizeValue(node.value, '?'),
+        sources: asList(node.source),
+      }
+      return
+    }
+
+    for (const [memberId, member] of Object.entries(node)) {
+      visit(member, [...pathIds, memberId])
     }
   }
 
+  visit(raw ?? {}, [])
   return features
 }
 
 function normalizeUseCaseFeatures(raw) {
   const features = {}
 
-  for (const [categoryId, members] of Object.entries(raw ?? {})) {
-    features[categoryId] = {}
-    for (const [featureId, feature] of Object.entries(members ?? {})) {
-      features[categoryId][featureId] = {
-        value: normalizeValue(feature?.value, 'n'),
+  function visit(node, pathIds) {
+    if (!isRecord(node)) {
+      return
+    }
+
+    if ('value' in node) {
+      const [categoryId] = pathIds
+      if (!categoryId) {
+        return
       }
+
+      features[categoryId] ??= {}
+      features[categoryId][makeFeatureKey(pathIds)] = {
+        value: normalizeValue(node.value, 'n'),
+      }
+      return
+    }
+
+    for (const [memberId, member] of Object.entries(node)) {
+      visit(member, [...pathIds, memberId])
     }
   }
 
+  visit(raw ?? {}, [])
   return features
 }
 
@@ -97,6 +136,7 @@ async function loadTools() {
         shortname: String(metadata.shortname ?? id),
         docs: metadata.docs ? String(metadata.docs) : undefined,
         source: metadata.source ? String(metadata.source) : undefined,
+        version: data.version ? String(data.version) : undefined,
         maintainers: asList(metadata.maintainers),
         features: normalizeToolFeatures(data.features),
       }
@@ -129,51 +169,119 @@ async function loadUseCases() {
   )
 }
 
-function collectFeatureIds(records) {
-  const categories = new Map()
-
-  for (const record of records) {
-    for (const [categoryId, members] of Object.entries(record.features)) {
-      if (!categories.has(categoryId)) {
-        categories.set(categoryId, new Set())
-      }
-
-      for (const featureId of Object.keys(members)) {
-        categories.get(categoryId)?.add(featureId)
-      }
-    }
+function schemaDescription(node) {
+  if (typeof node === 'string') {
+    return node
   }
 
-  return categories
+  if (isRecord(node)) {
+    return String(node.description ?? '')
+  }
+
+  return ''
 }
 
-function buildTaxonomy(schema, tools, useCases) {
-  const observed = collectFeatureIds([...tools, ...useCases])
-  const orderedCategoryIds = [
-    ...Object.keys(schema),
-    ...[...observed.keys()].filter((categoryId) => !(categoryId in schema)).sort(),
-  ]
+function schemaMembers(node) {
+  return isRecord(node) && isRecord(node.members) ? node.members : null
+}
 
-  return orderedCategoryIds
-    .map((categoryId) => {
-      const schemaCategory = schema[categoryId] ?? {}
-      const schemaMembers = schemaCategory.members ?? {}
-      const observedMembers = observed.get(categoryId) ?? new Set()
-      const memberIds = [
-        ...Object.keys(schemaMembers),
-        ...[...observedMembers].filter((featureId) => !(featureId in schemaMembers)).sort(),
-      ]
+function collectSchemaLeaves(node, pathIds, pathLabels, categoryId, leaves, groups) {
+  const members = schemaMembers(node)
+
+  if (!members) {
+    leaves.push({
+      id: makeFeatureKey(pathIds),
+      key: makeFeatureKey(pathIds),
+      categoryId,
+      label: formatLabel(pathIds.at(-1) ?? ''),
+      displayName: featureDisplayName(pathLabels),
+      description: schemaDescription(node),
+      baseline: '?',
+      pathIds,
+      pathLabels,
+      depth: pathIds.length,
+    })
+    return
+  }
+
+  if (pathIds.length > 1) {
+    const groupKey = makeFeatureKey(pathIds)
+    const descendantKeys = []
+    groups.push({
+      id: groupKey,
+      key: groupKey,
+      label: formatLabel(pathIds.at(-1) ?? ''),
+      displayName: groupDisplayName(pathLabels),
+      description: schemaDescription(node),
+      pathIds,
+      pathLabels,
+      depth: pathIds.length,
+      memberIds: descendantKeys,
+    })
+
+    const before = leaves.length
+    for (const [memberId, member] of Object.entries(members)) {
+      collectSchemaLeaves(
+        member,
+        [...pathIds, memberId],
+        [...pathLabels, formatLabel(memberId)],
+        categoryId,
+        leaves,
+        groups,
+      )
+    }
+    descendantKeys.push(...leaves.slice(before).map((feature) => feature.id))
+    return
+  }
+
+  for (const [memberId, member] of Object.entries(members)) {
+    collectSchemaLeaves(
+      member,
+      [...pathIds, memberId],
+      [...pathLabels, formatLabel(memberId)],
+      categoryId,
+      leaves,
+      groups,
+    )
+  }
+}
+
+function featureDisplayName(pathLabels) {
+  if (pathLabels.length <= 3) {
+    return pathLabels.at(-1) ?? ''
+  }
+
+  return pathLabels.slice(2).join(' > ')
+}
+
+function groupDisplayName(pathLabels) {
+  if (pathLabels.length <= 2) {
+    return pathLabels.at(-1) ?? ''
+  }
+
+  return pathLabels.slice(1).join(' > ')
+}
+
+function buildTaxonomy(schema) {
+  return Object.entries(schema ?? {})
+    .map(([categoryId, categoryNode]) => {
+      const members = []
+      const groups = []
+      collectSchemaLeaves(
+        categoryNode,
+        [categoryId],
+        [formatLabel(categoryId)],
+        categoryId,
+        members,
+        groups,
+      )
 
       return {
         id: categoryId,
         label: formatLabel(categoryId),
-        description: String(schemaCategory.description ?? ''),
-        members: memberIds.map((featureId) => ({
-          id: featureId,
-          label: formatLabel(featureId),
-          description: String(schemaMembers[featureId]?.description ?? ''),
-          baseline: normalizeValue(schemaMembers[featureId]?.baseline, '?'),
-        })),
+        description: schemaDescription(categoryNode),
+        members,
+        groups: groups.filter((group) => group.depth <= 2),
       }
     })
     .filter((category) => category.members.length > 0)
@@ -181,14 +289,15 @@ function buildTaxonomy(schema, tools, useCases) {
 
 async function main() {
   const [schema, tools, useCases] = await Promise.all([
-    readYaml(path.join(repoRoot, 'features.yaml')),
+    readYaml(path.join(repoRoot, 'schema', 'features.yaml')),
     loadTools(),
     loadUseCases(),
   ])
 
   const output = {
     generatedAt: new Date().toISOString(),
-    taxonomy: buildTaxonomy(schema, tools, useCases),
+    taxonomyVersion,
+    taxonomy: buildTaxonomy(schema),
     tools,
     useCases,
   }

@@ -9,9 +9,7 @@ on:
     branches:
       - "main"
     paths:
-      - features.yaml
       - schema/**
-      - scripts/**
       - template/**
       - tests/**
       - copier.yml
