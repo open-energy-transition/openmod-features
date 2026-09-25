@@ -14,5 +14,5 @@ docs: https://iea-etsap.org/index.php/documentation
 list_type: tool
 maintainers: gianvicolux, willu47
 name: The Integrated MARKAL-EFOM System
-shortname: times
+shortname: TIMES
 source: https://github.com/etsap-TIMES/TIMES_model

@@ -19,5 +19,5 @@ docs: https://docs.pypsa.org/latest/
 list_type: tool
 maintainers: euronion,SermishaNarayana
 name: Python for Power System Analysis
-shortname: pypsa
+shortname: PyPSA
 source: https://github.com/PyPSA/pypsa

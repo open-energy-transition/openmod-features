@@ -240,12 +240,22 @@ export function ToolName({
 }) {
   return (
     <div className={compact ? 'grid justify-items-center gap-1' : 'grid gap-1'}>
-      <span className="font-medium text-[var(--atlas-ink)]">
+      <span
+        className="font-medium text-[var(--atlas-ink)]"
+        title={compact && tool.name !== tool.shortname ? tool.name : undefined}
+      >
         {compact ? tool.shortname : tool.name}
       </span>
-      <span className="atlas-caption max-w-44 truncate text-xs">
-        {compact ? tool.name : tool.shortname}
-      </span>
+      {compact ? null : (
+        <span className="atlas-caption max-w-44 truncate text-xs">
+          {tool.shortname}
+        </span>
+      )}
+      {tool.version ? (
+        <span className="atlas-caption max-w-44 truncate text-[11px]">
+          {tool.version}
+        </span>
+      ) : null}
       {(tool.docs || tool.source) && compact ? (
         <div className="flex gap-2">
           {tool.docs ? <ExternalLink href={tool.docs} label="Docs" /> : null}
@@ -266,7 +276,7 @@ export function CoverageControls({
   return (
     <section
       aria-labelledby="coverage-options"
-      className="atlas-rule-switcher flex max-w-full flex-wrap items-center gap-2 p-1.5"
+      className="atlas-rule-switcher flex min-w-0 max-w-full flex-wrap items-center gap-2 p-1.5"
     >
       <h2
         id="coverage-options"
