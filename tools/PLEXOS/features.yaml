@@ -1,0 +1,1709 @@
+
+# SPDX-FileCopyrightText: tools/PLEXOS/features.yaml CODEOWNERS
+# SPDX-FileCopyrightText: openmod-features contributors
+#
+# SPDX-License-Identifier: CC-BY-4.0
+
+# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/v0.3.0/schema/tool-schema.yaml
+
+# NOTE: This feature list was collated by openmod-features contributors with the assistance of
+# Claude Opus 5.5 (Anthropic), based on publicly available PLEXOS® documentation
+# (see `docs` in .metadata.yml). It reflects our understanding to the best of our knowledge
+# at the time of writing and is provided for informational purposes only, without warranty
+# of accuracy or completeness. It has not been reviewed or endorsed by Energy Exemplar.
+# PLEXOS® is a registered trademark of Energy Exemplar; no affiliation is implied.
+# Corrections are welcome via an issue or pull request.
+
+version: '11.0'
+features:
+  processes:
+    boundary_exchange:
+      value: y
+      source:
+      # Market: source and/or sink for a commodity, with Price or multi-band price/quantity supply/demand curves and Max Purchases/Max Sales limits.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Market.html
+      # Gas Field: main source of gas into the system, with Max Production limits and a Production Cost curve.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.GasField.html
+      # Fuel Contract: fuel availability (Quantity limits), Price and take-or-pay commitments.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.FuelContract.html
+    conversion:
+      one_to_one:
+        value: y
+        source:
+        # Process Efficiency: ratio of primary output production to primary input consumption.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Process.Efficiency.html
+        # Heat Rate Modelling: generator fuel offtake as a function of electrical generation.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.HeatRateModelling.html
+        # Power2X: input electricity converted to output product (e.g. hydrogen) at the defined Efficiency.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.Power2XModelling.html
+      multi_carrier_io:
+        value: y
+        source:
+        # Process: transforms one or more input commodities to one or more outputs; secondary inputs/outputs are fixed ratios of the primary process.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Process.html
+        # Process Secondary Outputs Ratio: secondary output production as a proportion of primary output production.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/ProcessSecondaryOutputs.Ratio.html
+        # Power2X Fuels Ratio: proportion of Power2X output going to each product.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Power2XFuels.Ratio.html
+      flexible_ratio:
+        value: y
+        source:
+        # CHP feasible operational region: heat and power output chosen within a piecewise quadrilateral operating area.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.CHP.html#3.2.
+        # CHP power-to-heat ratio model: unit mixes condense mode and CHP mode, so heat/power split is a decision.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.CHP.html#3.1.
+        # Heat Plant Fuels Max Ratio: upper bound on the share of any one fuel in an optimised multi-fuel mix.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/HeatPlantFuels.MaxRatio.html
+    temporal_transfer:
+      value: y
+      source:
+      # Battery: generator-like object with built-in energy storage (Capacity, Max Power, Max Load).
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Battery.html
+      # Storage: hydro reservoirs whose volumes link periods, incl. pumped, short- and long-term storage.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Storage.html
+      # Heat Storage: thermal storage with Max/Min Heat, Heat Loss and injection/withdrawal efficiencies.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.HeatStorage.html
+      # Flow Storage: locational storage of any Commodity in a Flow Network with Max Inventory.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.FlowStorage.html
+    spatial_transfer:
+      value: y
+      source:
+      # Transmission Detail = Regional/Zonal: only links between regions/zones modelled, flows computed by a transportation algorithm.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Transmission.Detail.html
+      # Flow Path: link between Flow Nodes with Max/Min Flow and Efficiency losses for any commodity.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.FlowPath.html
+      # Gas Pipeline: connects two parts of the gas network (Gas Node From/To).
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.GasPipeline.html
+    delayed_transfer:
+      value: y
+      source:
+      # Waterway Traversal Time: hours taken for water to flow down the waterway; non-zero value delays flows.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Waterway.TraversalTime.html
+    buffered_transfer:
+      value: y
+      source:
+      # Gas Modelling storage: Gas Pipeline models line pack as gas stored in the pipelines, bounded by Min/Max Volume.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.GasModelling.html#2.3.
+      # Gas Pipeline Max Volume: upper limit on the volume of gas stored in the pipeline.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/GasPipeline.MaxVolume.html
+    discrete_transport:
+      value: y
+      source:
+      # Gas Transport: LNG shipments, incl. spot-market optimisation of timing and load of shipping (Max Volume, Max Shipments).
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.GasTransport.html
+      # Universal Transport Modeling: Transport vehicles pick up and deliver commodities between Transport Hubs along Transport Paths.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.UniversalTransportModeling.html#1
+    state_changing_transfer:
+      # No compressors, pressure-level conversion or heat-network temperature levels documented; Gas Pipeline Pressure is only a linepack state.
+      value: n
+      source: []
+    explicit_demand:
+      inelastic:
+        value: y
+        source:
+        # Purchaser Fixed Load: exact MW load that must be met regardless of bid prices.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Purchaser.FixedLoad.html
+        # Purchaser Constraints Load Coefficient: purchaser load can enter user-defined constraints.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/PurchaserConstraints.LoadCoefficient.html
+        # Gas Demand: explicit gas demand object connected to Gas Nodes, with Demand input or weather-driven demand.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.GasDemand.html
+      price_responsive:
+        value: y
+        source:
+        # Purchaser: dispatchable load bids as multi-band Bid Quantity/Bid Price pairs, cleared highest price first.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Purchaser.html
+        # Purchaser Bid Price: price part of the demand bid (demand step function).
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Purchaser.BidPrice.html
+        # Gas Demand Bid Price: value of gas in each band of an interruptible gas demand step function.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/GasDemand.BidPrice.html
+      mobile_storage:
+        value: y
+        source:
+        # Vehicle: EVs move between Charging Stations; detailed model tracks travel demand and battery state-of-charge, with V1G/V2G.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Vehicle.html
+        # Vehicle Charging Stations Share: probability/percentage of the vehicle being connected at each charging station.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/VehicleChargingStations.Share.html
+        # Charging Station: charging infrastructure connecting vehicles to the grid via the Charging Station Node membership.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.ChargingStation.html
+  network:
+    power_flow:
+      optimal_power_flow:
+        dc_opf:
+          value: y
+          source:
+          # OPF Methods: PLEXOS models power flows using a linearised DC-OPF (Fixed or Variable Shift Factor formulations).
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.OPF1.html#3
+          # Linearized DC-OPF formulation: line flow = susceptance x phase-angle difference.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.OPF2.html#3
+          # Transmission OPF Method: Variable Shift Factor or Fixed Shift Factor linearised DC OPF.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Transmission.OPFMethod.html
+        ac_opf:
+          # FLAG: absence judged from OPF articles; DC-OPF can include losses, but no reactive power/voltage-magnitude variables in the optimisation.
+          # Only linearised DC-OPF; AC power flow used only as a post-dispatch feasibility check (Node AC Mismatch); AC issues via generic constraints.
+          value: n
+          source:
+          # OPF Methods: "PLEXOS models power flows using a linearized DC-OPF"; generic linear constraints represent voltage and other AC-OPF issues.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.OPF1.html#3
+          # Node AC Mismatch: MVA mismatch from initialising AC power flow equations with the PLEXOS dispatch (diagnostic output only).
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Node.ACMismatch.html
+        unbalanced_flows:
+          # No unbalanced/multi-phase (e.g. DistFlow) power flow documented; OPF is a balanced single-phase DC approximation.
+          value: n
+          source: []
+      sensitivity_limits:
+        ptdf:
+          value: y
+          source:
+          # Global PTDF File: user-defined PTDF (shift factor) CSV files read in instead of PLEXOS computing them.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Global.PTDFFile.html
+          # Fixed Shift Factor OPF formulation: line flows constrained via precomputed shift factors.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.OPF3.html#1.2.
+          # Transmission PTDF Method: single slack bus or distributed load/generation slack for shift factors.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Transmission.PTDFMethod.html
+        outage_factors:
+          # FLAG: PLEXOS computes LODFs internally from line data for SCUC contingencies; no documented input for user-supplied LODF/BODF values.
+          value: y
+          source:
+          # Contingency: line/generator N-x contingencies; post-contingency flows kept within (Overload) ratings in the SCOPF.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Contingency.html
+          # SCUC calculation: line outage modelled via injections to derive contingency shift factors.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.OPF8.html#2
+          # Transmission LODF Threshold: minimum absolute LODF used in contingency flow constraints.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Transmission.LODFThreshold.html
+        generic_constraints:
+          value: y
+          source:
+          # Interface: collection of AC/DC lines with limits on combined flow (Max/Min Flow).
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Interface.html
+          # Interface Lines Flow Coefficient: user-set contribution of each line flow to the interface flow.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/InterfaceLines.FlowCoefficient.html
+      network_limits:
+        thermal:
+          value: y
+          source:
+          # Line Max Flow: maximum allowable flow on the line (thermal limit).
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Line.MaxFlow.html
+          # Line Max Rating: time-varying de-rating of line flow limits.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Line.MaxRating.html
+        phase_angle:
+          # FLAG: built-in bound is on absolute Node Phase Angle, not on the difference between connected buses; difference limits need a generic Constraint on Phase Angle (VS-OPF only).
+          value: y
+          source:
+          # Bound Node Phase Angles: node phase angles bounded by Max Absolute Phase Angle in both OPF methods.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Transmission.BoundNodePhaseAngles.html
+          # Max Absolute Phase Angle: maximum positive/negative node phase angle in radians.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Transmission.MaxAbsolutePhaseAngle.html
+      losses:
+        value: y
+        source:
+        # Loss Models: quadratic, piecewise linear, SLP on marginal loss factors, or single-pass GPF losses in FS-/VS-OPF.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.OPF7.html#4
+        # Transmission Loss Method: selects piecewise-linear, quadratic, SLP or single-pass GPF loss formulation.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Transmission.LossMethod.html
+        # Line Loss Incr2: quadratic term of the line loss function of flow.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Line.LossIncr2.html
+      network_devices:
+        transformers:
+          # FLAG: Transformer is a line-like branch (Reactance, Rating) in the DC-OPF; AC Tap Ratio/Fixed Shift Angle documented as inputs to the AC mismatch check; no shunt elements found.
+          value: y
+          source:
+          # Transformer: represented like lines with Rating, Reactance, Fixed Loss and Loss Allocation.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Transformer.html
+          # Transformer AC Tap Ratio: turns ratio of primary to secondary winding.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Transformer.ACTapRatio.html
+          # Transformer AC Fixed Shift Angle: fixed phase shift angle across the transformer winding.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Transformer.ACFixedShiftAngle.html
+        facts_devices:
+          value: y
+          source:
+          # Flow Control: dispatchable FACTS devices modifying phase angle along a line, optimised as an equivalent parallel DC line.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.FlowControl.html
+          # Flow Control Max Angle: maximum allowable angle on the flow control.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/FlowControl.MaxAngle.html
+        hvdc_converters:
+          # DC lines are Line objects without reactance (flow optimised directly); no rectifier/inverter/converter-station objects documented.
+          value: n
+          source:
+          # Line: DC lines modelled by omitting reactance, making them controllable lines.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Line.html
+    hydraulic_flow:
+      linearised_flow:
+        # FLAG: Gas Pipeline has Pressure/Max Pressure/Min Pressure Percent, but as a pipeline linepack state, not nodal pressure coupling flows via pressure drop; no Weymouth/compressor found.
+        # No nodal pressure decision variable or pressure-drop flow relationship documented.
+        value: n
+        source:
+        # Gas Pipeline Max Pressure: maximum pressure of gas stored in the pipeline (linepack), not a nodal pressure.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/GasPipeline.MaxPressure.html
+        # Gas Modelling storage: pipelines model line pack bounded by Min/Max Volume.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.GasModelling.html#2.3.
+      composition_tracking:
+        # FLAG: tracks blended gas quality as Energy Content plus source blend-percent limits, rather than explicit per-constituent balances.
+        value: y
+        source:
+        # Energy Content: gas quality at gas nodes/storages, with incoming gas blended many times en route.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.EnergyContent.html
+        # Gas Node Virtual Energy Contents Max Energy Content: upper bound on blended energy content at a gas node.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/GasNodeVirtualEnergyContents.MaxEnergyContent.html
+        # Power2X Gas Nodes Max Blend Percent: maximum share of Power2X gas (e.g. hydrogen) in the gas node blend.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Power2XGasNodes.MaxBlendPercent.html
+  decisions:
+    investment:
+      exogenous_capacity:
+        value: y
+        source:
+        # Generator Units: number of installed units (each of fixed Max Capacity), changeable by date via input.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.Units.html
+        # Generator Max Capacity: fixed nominal rating of each unit in MW.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.MaxCapacity.html
+      continuous_capacity:
+        # FLAG: Generator/Line/Battery builds are counts of fixed-size units; continuous capacity comes from the Linear relaxation of Units Built, or natively only for Interface expansion (continuous MW).
+        value: y
+        source:
+        # LT Plan Optimality = Linear: only the linear relaxation is solved, allowing partial build/retire decisions.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/LTPlan.Optimality.html
+        # Generator Expansion Optimality = Linear: build decisions may be fractional (partial units).
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.ExpansionOptimality.html
+        # LT Plan Interface Expansion: expansion is done in continuous units of megawatts, bounded by Max Expansion.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.LTPlan4.html#6.2
+      integer_investment_exogenous_capacity:
+        value: y
+        source:
+        # LT Plan Expansion Candidates: candidates defined by per-unit Max Capacity and Max Units Built.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.LTPlan4.html#1
+        # LT Plan Optimality = Integer Optimal: build and retire decisions take integer values.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/LTPlan.Optimality.html
+        # Generator Expansion Optimality = Integer: only whole units can be built.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.ExpansionOptimality.html
+      integer_investment_continuous_capacity:
+        # FLAG: No built-in "binary invest + continuous size" candidate; achievable by combining linear Units Built with the binary "Built" variable in a Constraint, or a semi-continuous Decision Variable.
+        value: y
+        source:
+        # Generator Constraints Built Coefficient: LHS coefficient on the binary (0,1) variable indicating if any capacity is built to date.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/GeneratorConstraints.BuiltCoefficient.html
+        # Generator Expansion Optimality = Linear: Units Built may be fractional, i.e. continuous capacity.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.ExpansionOptimality.html
+        # Decision Variable Type: Binary, Integer or Semi-continuous (zero or within bounds) user-defined variables.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/DecisionVariable.Type.html
+      multi_period:
+        value: y
+        source:
+        # LT Plan formulation: GenBuild(g,y) is the number of units built in each year y of the planning horizon.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.LTPlan1.html
+        # LT Plan Steps and Chronology: by default the whole multi-year planning horizon is solved in a single optimisation step.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.LTPlan2.html#2
+        # Generator Max Units Built in Year: bounds builds in each individual year of the planning horizon.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.MaxUnitsBuiltinYear.html
+      retrofit:
+        # FLAG: No dedicated retrofit object; modelled as a separate "stage" Generator whose build forces retirement of the original via Constraint (e.g. OCGT upgraded to CCGT). Abatement objects (FGD etc.) are operational, not LT Plan build decisions.
+        value: y
+        source:
+        # LT Plan Multi-Stage Plant: open-cycle plant with later upgrade to combined cycle, one Generator per stage with own parameters.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.LTPlan5.html#2
+        # LT Plan Project Staging: Constraint GenBuild(i,y) - GenRetire(j,y) <= 0 links the upgrade build to the original's retirement.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.LTPlan5.html#4
+      endogenous_retirement:
+        value: y
+        source:
+        # LT Plan Economic Retirements: LT Plan optimises retirement timing within a Min/Max Units Retired window.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.LTPlan4.html#5.2
+        # Generator Max Units Retired: maximum number of units LT Plan may retire over the horizon.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.MaxUnitsRetired.html
+        # Generator Retirement Cost: one-time cost of retiring a unit in LT Plan.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.RetirementCost.html
+    operation:
+      unit_commitment:
+        value: y
+        source:
+        # Production Unit Commitment Optimality = Integer Optimal: unit on/off decisions solved as a MIP.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Production.UnitCommitmentOptimality.html
+        # Generator Unit Commitment Optimality: per-generator override (linear, rounded relaxation, integer, dynamic program).
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.UnitCommitmentOptimality.html
+      maintenance_scheduling:
+        value: y
+        source:
+        # Maintenance class: events optimally placed in time, with quantity and positioning of maintenance windows fully co-optimised.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Maintenance.html
+  constraints:
+    scope:
+      temporal:
+        pointwise:
+          investment:
+            value: y
+            source:
+            # Generator Max Units Built in Year: upper limit on units LT Plan may build in any single year.
+            - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.MaxUnitsBuiltinYear.html
+            # Generator Min Units Built in Year: lower bound on units built in a given year.
+            - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.MinUnitsBuiltinYear.html
+            # Generator Max Units Retired in Year: upper limit on units retired in any single year.
+            - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.MaxUnitsRetiredinYear.html
+          operation:
+            availability_derating:
+              value: y
+              source:
+              # Generator Rating: periodic (pattern/data-file) override of Max Capacity without changing installed capacity.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.Rating.html
+              # Generator Rating Factor: unit rating as a percentage of Max Capacity.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.RatingFactor.html
+              # Battery Max SoC: maximum state of charge as a percentage of commissioned Capacity.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Battery.MaxSoC.html
+              # Battery Min SoC: minimum state of charge as a percentage of commissioned Capacity.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Battery.MinSoC.html
+            minimum_stable_level:
+              value: y
+              source:
+              # Generator Min Stable Level: Generation >= Units Generating x Min Stable Level when a unit is on.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.MinStableLevel.html
+            forced_offline:
+              value: y
+              source:
+              # Generator Units Out: planned outage events removing units over Date From/To periods.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.UnitsOut.html
+              # Generator Commit: hard-wires the number of committed units in selected periods (0 forces off).
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.Commit.html
+            forced_online:
+              value: y
+              source:
+              # Generator Must Run Units: lower bound on Units Generating (units that must be committed).
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.MustRunUnits.html
+              # Generator Commit: fixes the number of committed units in all or selected periods.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.Commit.html
+        sequential:
+          investment:
+            availability_window:
+              value: y
+              source:
+              # Generator Project Start Date: earliest date at which LT Plan can build units.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.ProjectStartDate.html
+              # LT Plan Timing and Staging: dated Max Units Built entries phase when units become buildable.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.LTPlan5.html#1
+              # LT Plan Economic Retirements: dated Max/Min Units Retired define the window in which retirement may occur.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.LTPlan4.html#5.2
+            relative_build_rate:
+              # FLAG: No dedicated growth-rate property; only via a user Constraint (RHS Year) combining Units Built in Year Coefficient with Units Built (to date) or Installed Capacity Coefficient.
+              value: y
+              source:
+              # Generator Constraints Units Built in Year Coefficient: LHS coefficient on units built in the year.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/GeneratorConstraints.UnitsBuiltinYearCoefficient.html
+              # Generator Constraints Units Built Coefficient: LHS coefficient on cumulative Units Built from horizon start to current period.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/GeneratorConstraints.UnitsBuiltCoefficient.html
+              # Generator Constraints Installed Capacity Coefficient: LHS coefficient on Installed Capacity.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/GeneratorConstraints.InstalledCapacityCoefficient.html
+            technical_lifetime:
+              value: y
+              source:
+              # Generator Technical Life: forces retirement of LT Plan-built units once they reach this age.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.TechnicalLife.html
+          operation:
+            ramping:
+              value: y
+              source:
+              # Generator Max Ramp Up: limit on generation increase per interval (MW/min), multi-band by load point.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.MaxRampUp.html
+              # Generator Max Ramp Down: limit on generation decrease per interval.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.MaxRampDown.html
+              # Battery Max Ramp Up: ramp limit on battery generation.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Battery.MaxRampUp.html
+            start_shut_trajectory:
+              value: y
+              source:
+              # Generator Run Up Rate: ramp rate while running up from zero to Min Stable Level, separate from Max Ramp Up.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.RunUpRate.html
+              # Generator Run Down Rate: ramp rate while running down from Min Stable Level to zero.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.RunDownRate.html
+              # Generator Start Profile: MW steps a unit passes through while starting, varying by cooling state.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.StartProfile.html
+            commitment_duration:
+              value: y
+              source:
+              # Generator Min Up Time: minimum hours a unit must stay on after starting.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.MinUpTime.html
+              # Generator Min Down Time: minimum hours a unit must stay off after shutting down.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.MinDownTime.html
+              # Generator Max Up Time: maximum hours a unit can run after being started.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.MaxUpTime.html
+            start_consumption:
+              value: y
+              source:
+              # Generator Start Fuels Offtake at Start: fuel used per unit start-up (bands by cooling state).
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/GeneratorStartFuels.OfftakeatStart.html
+              # Generator Start Fuels Offtake: start fuel consumption = Offtake at Start x Units Started.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/GeneratorStartFuels.Offtake.html
+        cumulative:
+          investment:
+            capacity_target:
+              value: y
+              source:
+              # Generator Max Units Built: upper limit on new units built in total across the planning horizon.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.MaxUnitsBuilt.html
+              # Generator Min Units Built: requires a number of units to be built over the horizon.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.MinUnitsBuilt.html
+              # Region Min Capacity Reserve Margin: lower bound on regional capacity reserve margin in LT Plan.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Region.MinCapacityReserveMargin.html
+              # Generator Firm Capacity: de-rated contribution of each unit to capacity reserve requirements.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.FirmCapacity.html
+            expansion_budget:
+              # FLAG: Via a user Constraint on Build Cost Coefficient (nominal lump-sum build cost to date), not a dedicated budget property.
+              value: y
+              source:
+              # Battery Constraints Build Cost Coefficient: LHS coefficient on total build cost (same coefficient exists for Generators, Lines, etc.).
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/BatteryConstraints.BuildCostCoefficient.html
+            event_count:
+              value: y
+              source:
+              # Generator Max Build Events: maximum number of distinct build events (years with builds) over the horizon.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.MaxBuildEvents.html
+            path_dependent:
+              # FLAG: No learning-curve or endogenously evolving build bound found; closest is a linear Constraint on cumulative Units Built (see relative_build_rate). Absence uncertain.
+              # No investment limit whose bound evolves endogenously with earlier investment (e.g. learning curves).
+              value: n
+              source: []
+          operation:
+            flow_volume:
+              value: y
+              source:
+              # Generator Max Energy Year: maximum generation energy in a year.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.MaxEnergyYear.html
+              # Generator Max Capacity Factor Year: maximum annual capacity factor.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.MaxCapacityFactorYear.html
+              # Generator Min Capacity Factor Year: minimum annual capacity factor.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.MinCapacityFactorYear.html
+            impact_budget:
+              value: y
+              source:
+              # Emission Max Production Year: maximum emission production in each year.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Emission.MaxProductionYear.html
+              # Emission class: any number of user-defined emissions can be produced, constrained and penalised.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Emission.html
+            event_count:
+              value: y
+              source:
+              # Generator Max Starts Year: maximum number of starts allowed in any year.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.MaxStartsYear.html
+              # Generator Max Starts: upper bound on Units Started, with hour/day/week/month/year variants.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.MaxStarts.html
+            state_duration:
+              # FLAG: No dedicated max operating-hours property found on Generator; achieved via a user Constraint (e.g. RHS Year) on Operating Hours Coefficient.
+              value: y
+              source:
+              # Generator Constraints Operating Hours Coefficient: coefficient on hours of operation, used to limit hours of operation of a facility.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/GeneratorConstraints.OperatingHoursCoefficient.html
+              # Constraint class Multi-annual, seasonal and Special Constraints: RHS Year/RHS Custom set the period a constraint spans.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Constraint.html#1.5
+            path_dependent:
+              # FLAG: Battery degradation depends on cycles accumulated in earlier simulation steps, but is applied between steps rather than endogenously within one optimisation; Generator Power Degradation depends on age, not operation.
+              value: y
+              source:
+              # Battery Capacity Degradation: capacity degrades with accumulated cycles; cycles in each step degrade following steps.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Battery.CapacityDegradation.html
+              # Battery Power Degradation: power capability degrades with accumulated cycles.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Battery.PowerDegradation.html
+        boundary_conditions:
+          investment:
+            # FLAG: Existing stock is supported (incumbent Units); an end-state target is only achievable indirectly via dated Min Units Built / Min Units Retired.
+            value: y
+            source:
+            # LT Plan Expansion Candidates: incumbent Units exist in addition to units LT Plan may build.
+            - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.LTPlan4.html#1
+            # Generator Min Units Built: forces a number of units to be in service by the end of the horizon.
+            - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.MinUnitsBuilt.html
+          operation:
+            value: y
+            source:
+            # Storage Initial Volume: volume at the start of the first period of the horizon.
+            - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Storage.InitialVolume.html
+            # Storage End Effects Method = Recycle: End Volume constrained equal to Initial Volume.
+            - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Storage.EndEffectsMethod.html
+            # Storage Target: end-of-interval target for End Volume.
+            - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Storage.Target.html
+            # Battery Initial SoC: state of charge at the start of the first period of the horizon.
+            - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Battery.InitialSoC.html
+      spatial:
+        investment:
+          value: y
+          source:
+          # Region Constraints Generation Capacity Built Coefficient: LHS coefficient on a Region's total generation Capacity Built; several Regions can join one Constraint.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/RegionConstraints.GenerationCapacityBuiltCoefficient.html
+          # Generator Constraints Capacity Built Coefficient: LHS coefficient on Capacity Built of any Generator, wherever located.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/GeneratorConstraints.CapacityBuiltCoefficient.html
+        operation:
+          value: y
+          source:
+          # Constraint class example: a single generic Constraint combining Line flows, Region loads and Generator generation across regions.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Constraint.html#1.3
+          # Emission class: emissions constrained on the total across all or any subset of generators and fuels.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Emission.html
+      assets:
+        spanning:
+          investment:
+            value: y
+            source:
+            # LT Plan Mutually Exclusive Projects: one Constraint sums Units Built Coefficient across two Generators (<= 1).
+            - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.LTPlan5.html#3
+            # Generator Constraints Units Built Coefficient: LHS coefficient on cumulative Units Built for each member Generator.
+            - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/GeneratorConstraints.UnitsBuiltCoefficient.html
+          operation:
+            value: y
+            source:
+            # Generator Constraints Generation Coefficient: LHS coefficient on Generation, so one Constraint can sum several Generators.
+            - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/GeneratorConstraints.GenerationCoefficient.html
+            # Emission class: limits on total emissions across any subset of generators.
+            - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Emission.html
+        dedicated_flow_routing:
+          value: y
+          source:
+          # Waterway class: connects specific Storage From/To objects; Storage, Waterway and Generator objects form cascading hydro networks.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Waterway.html
+          # Cascading Hydro Networks: hydro cascades built from linked storages, waterways and generators.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.CascadingHydroNetworks.html
+          # Fuel class Stockpiles: Fuel inventory from which Offtake by the Fuel's linked generators is withdrawn.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Fuel.html
+    functional_form:
+      linear_multi_variable:
+        investment:
+          value: y
+          source:
+          # Constraint class: generic linear constraints A x {<=,>=,=} b with LHS coefficients on any combination of object variables.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Constraint.html
+          # Generator Constraints Capacity Built Coefficient: puts Generator Capacity Built on the LHS of a generic Constraint.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/GeneratorConstraints.CapacityBuiltCoefficient.html
+          # Battery Constraints Capacity Built Coefficient: puts Battery Capacity Built on the LHS of a generic Constraint.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/BatteryConstraints.CapacityBuiltCoefficient.html
+        operation:
+          value: y
+          source:
+          # Constraint class: example linking Line Flow, Region Load and Generator Generation in one linear constraint per interval.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Constraint.html#1.3
+          # CHP: built-in feasible heat-power operating region, plus a generic Constraint sharing heat load between two CHP units.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.CHP.html#7.2.
+      quadratic:
+        investment:
+          # FLAG: Inferred. Decision Variable Value Squared Coefficient gives a native (cone-shaped) quadratic constraint on Decision Variables; linking it to Capacity Built needs a separate equality Constraint. No doc example involves an investment variable.
+          value: y
+          source:
+          # Decision Variable Constraints Value Squared Coefficient: coefficient on the square of a Decision Variable in a Constraint.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/DecisionVariableConstraints.ValueSquaredCoefficient.html
+          # Decision Variables can be defined by Constraints over intrinsic variables (e.g. Capacity Built).
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.DecisionVariable.html#5
+        operation:
+          value: y
+          source:
+          # Loss Method = Quadratic: losses modelled endogenously as quadratic functions; needs a conic solver.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Transmission.LossMethod.html
+          # FS-OPF quadratic loss model: loss equations formulated directly as quadratic (conic) constraints.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.OPF7.html#5
+          # VS-OPF quadratic loss model: a quadratic constraint per line; quadratically-constrained integer programming where the solver supports it.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.OPF7.html#6
+      nonlinear:
+        investment:
+          # FLAG: inferred; the documented pattern ties each Decision Variable to an optimisation variable via an equality Constraint, but no example uses a build variable (e.g. Capacity Built).
+          value: y
+          source:
+          # Nonlinear Constraint: user-defined polynomial Y = f(X) between two Decision Variables, each linked to an optimisation variable by an equality Constraint; piecewise-linearised automatically.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.NonlinearConstraint.html
+          # Decision Variables can be defined by Constraints over intrinsic variables.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.DecisionVariable.html#5
+          # Generator Constraints Capacity Built Coefficient: puts Generator Capacity Built on the LHS of a generic Constraint.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/GeneratorConstraints.CapacityBuiltCoefficient.html
+        operation:
+          value: y
+          source:
+          # Nonlinear Constraint: user-defined polynomial between two Decision Variables, linearised automatically in tranches.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.NonlinearConstraint.html
+          # Head Effects Method = Dynamic: head-efficiency relationship formulated with binary band variables (MILP).
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.HydroGeneratorEfficiencyandHeadEffects.html#3
+          # Polynomial heat input functions: PLEXOS builds a piecewise-linear approximation (MIP if non-convex).
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.HeatRateModelling.html#5.3.
+    reliability:
+      unserved_demand:
+        value: y
+        source:
+        # Region VoLL: value of lost load / shortage cost applied to Region Unserved Energy.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Region.VoLL.html
+        # Transmission Internal VoLL: the VoLL penalty used inside the optimisation when unserved energy is allowed.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Transmission.InternalVoLL.html
+      operating_reserve:
+        online_headroom:
+          value: y
+          source:
+          # Reserve Type: Raise/Lower (spin up/down from spare capacity) and Regulation services.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Reserve.Type.html
+          # Reserve class: reserve constraints integrated into dispatch as a co-optimisation of energy and reserves.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Reserve.html
+        standby_capability:
+          # FLAG: Replacement reserve comes from off-line capacity capped by Max Replacement; the docs give no explicit start-within-response-time rule for off-line units.
+          value: y
+          source:
+          # Reserve Type = Replacement: non-spinning reserve service provided by off-line generators.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Reserve.Type.html
+          # Reserve Generators Max Replacement: maximum response a unit can give to replacement reserve (default: its whole off-line capacity).
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/ReserveGenerators.MaxReplacement.html
+          # Reserve Generators Non-spinning Reserve Provision: reserve provision by off-line units.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/ReserveGenerators.NonspinningReserveProvision.html
+        inertia:
+          value: y
+          source:
+          # Reserve Type = Inertia: requirement to keep a minimum level of system inertia.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Reserve.Type.html
+          # Generator Inertia Constant: stored rotational energy per unit capacity, used to supply Inertia-type Reserves.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.InertiaConstant.html
+      contingency_constrained:
+        value: y
+        source:
+        # Contingency class: N-x generator/line outages; SCOPF keeps post-contingency flows within limits (SCUC).
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Contingency.html
+        # Transmission SCUC Enabled: switches on security-constrained OPF.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Transmission.SCUCEnabled.html
+        # Security Constrained Unit Commitment and Dispatch article: contingency shift factors and N-x analysis.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.OPF8.html
+      probabilistic_reliability_limit:
+        loss_of_load:
+          # FLAG: Only in LT Plan, applied per period (LDC block), and met only statistically (COPT-based).
+          value: y
+          source:
+          # Region LOLP Target: upper bound on Loss of Load Probability, met in LT Plan by new builds or held-back retirements.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Region.LOLPTarget.html
+        unserved_energy:
+          # EENS is reported (output only), not constrained; only LOLP Target is applied in the optimisation.
+          value: n
+          source:
+          # Region EENS: output only, computed by LT Plan/PASA when reliability indices are on.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Region.EENS.html
+    soft_constraints:
+      # FLAG: Generic Constraints get a common Penalty Price/Quantity mechanism, but built-in constraints are softened one by one through their own penalty properties (e.g. Max Ramp Up Penalty, Line Limit Penalty). Not every built-in constraint has one.
+      value: y
+      source:
+      # Constraint Penalty Price: turns any generic Constraint into a soft constraint, with optional banded Penalty Quantity.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Constraint.PenaltyPrice.html
+      # Generator Max Ramp Up Penalty: penalty for breaking the built-in Max Ramp Up constraint (-1 = hard).
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.MaxRampUpPenalty.html
+      # Line Limit Penalty: makes the line thermal limit a soft constraint.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Line.LimitPenalty.html
+      # Emission Max Production Penalty: penalty for breaking Emission Max Production limits (-1 = hard).
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Emission.MaxProductionPenalty.html
+  cost:
+    scope:
+      temporal:
+        sequential:
+          investment:
+            # FLAG: Retirement Cost is charged on the Units Retired decision (a drop in installed units), not on a difference between two periods' capacity.
+            value: y
+            source:
+            # Generator Retirement Cost: one-time cost per unit retired in LT Plan.
+            - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.RetirementCost.html
+          operation:
+            ramping:
+              value: y
+              source:
+              # Generator Ramp Up Charge: charge on upward ramp (wear-and-tear), also covers run-up from zero to Min Stable Level.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.RampUpCharge.html
+              # Generator Ramp Down Charge: matching charge on downward ramp.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.RampDownCharge.html
+            start_up:
+              value: y
+              source:
+              # Generator Start Cost: O&M cost per unit start, plus start fuel offtake at Fuel Price.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.StartCost.html
+            shut_down:
+              value: y
+              source:
+              # Generator Shutdown Cost: cost of shutting down a unit.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.ShutdownCost.html
+            start_state_dependent:
+              value: y
+              source:
+              # Generator Start Cost: multi-band Start Cost with Start Cost Time gives hot/warm/cold starts, interpolated linearly between states.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.StartCost.html
+              # Generator Start Cost Time: incremental cooling time over which each Start Cost band applies.
+              - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.StartCostTime.html
+        cumulative:
+          investment:
+            # No endogenous learning curve found. Expansion Economy Cost depends on units built in a single period only, not on cumulative deployment.
+            value: n
+            source:
+            # Expansion Economies: lower per-unit costs apply only when builds fall in the same capacity optimisation period.
+            - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.ExpansionEconomies.html#2
+          operation:
+            # FLAG: No cost coefficient that rises with cumulative running found. Age-based degradation lowers capacity (Battery cycles, Generator age) rather than raising a cost coefficient.
+            # No operating cost coefficient depends on cumulative prior operation.
+            value: n
+            source: []
+      spatial:
+        investment:
+          value: y
+          source:
+          # Interface Expansion Cost: overnight cost per MW of expanding the combined limit of a set of lines between areas.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Interface.ExpansionCost.html
+          # Interface class: a collection of AC/DC lines delivering power from one area to another.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Interface.html
+        operation:
+          # FLAG: No built-in charge on a region's aggregate; needs a user-built Decision Variable defined over Region Imports/Exports with an Objective Function Coefficient.
+          value: y
+          source:
+          # Decision Variable: generic variable to associate a cost with a complex set of conditions, used in Constraints.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.DecisionVariable.html#1
+          # Decision Variable Objective Function Coefficient: cost of the Decision Variable in the objective.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/DecisionVariable.ObjectiveFunctionCoefficient.html
+          # Region Constraints Imports Coefficient: region imports can enter the Constraint defining the Decision Variable.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/RegionConstraints.ImportsCoefficient.html
+      assets:
+        investment:
+          # FLAG: Interface expansion is one cost across several lines. A shared site/connection charge otherwise needs an integer Decision Variable linked to each asset's binary Built variable.
+          value: y
+          source:
+          # Interface Expansion Cost: one expansion cost raising the joint limit of all lines in the Interface.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Interface.ExpansionCost.html
+          # Generator Constraints Built Coefficient: binary 'any capacity built' variable usable in Constraints (e.g. to trigger a shared Decision Variable cost).
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/GeneratorConstraints.BuiltCoefficient.html
+          # Decision Variable Objective Function Coefficient: cost of the Decision Variable in the objective.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/DecisionVariable.ObjectiveFunctionCoefficient.html
+        operation:
+          value: y
+          source:
+          # Fuel Contract: price and take-or-pay on total fuel offtake by all users of the Fuel, converted internally to Constraints.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.FuelContract.html
+          # Fuel Contract Take-or-Pay Price: price paid for breaching the take-or-pay commitment.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/FuelContract.TakeorPayPrice.html
+    functional_form:
+      fixed_charge:
+        investment:
+          value: y
+          source:
+          # Line Build Cost: total overnight cost ($000) of building the line, one lump sum per line built.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Line.BuildCost.html
+          # Generator Build Cost: overnight cost per unit built (lump sum or annuity); units are integer build decisions.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.BuildCost.html
+        operation:
+          value: y
+          source:
+          # Generator Running Cost: cost per hour a unit is on-line, whatever its output (semi-fixed cost).
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.RunningCost.html
+      nonlinear:
+        investment:
+          value: y
+          source:
+          # Expansion Economies: per-unit Build Cost changes with the number of units built (economies or diseconomies of scale).
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.ExpansionEconomies.html
+          # Generator Expansion Economy Cost: alternative per-unit build costs for larger expansions.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.ExpansionEconomyCost.html
+        operation:
+          value: y
+          source:
+          # Generator Offer Price: multi-band price paired with Offer Quantity to form a stepwise offer curve.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.OfferPrice.html
+          # Polynomial heat input functions (Heat Rate Incr2/Incr3) turned into piecewise-linear marginal heat rate tranches.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.HeatRateModelling.html#5.3.
+      threshold_deviation:
+        investment:
+          # FLAG: Penalises capacity reserves outside a min/max margin (a soft-constraint penalty), not a payment against a contracted investment level.
+          value: y
+          source:
+          # Region Capacity Shortage Price: LT Plan penalty for shortfall below Min Capacity Reserves / Reserve Margin.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Region.CapacityShortagePrice.html
+          # Region Capacity Excess Price: LT Plan penalty for capacity reserves above the maximum.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Region.CapacityExcessPrice.html
+        operation:
+          value: y
+          source:
+          # Balancing Markets: Offer Price/Quantity bands read as incr/decr offers around the day-ahead Offer Base.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.BalancingMarkets.html#balancingGen
+          # Generator Offer Base: day-ahead dispatch level around which offers are defined.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.OfferBase.html
+          # Fuel Contract Take-or-Pay Price: cost of offtake falling below the take-or-pay level.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/FuelContract.TakeorPayPrice.html
+    time_value:
+      annuitisation:
+        value: y
+        source:
+        # Generator WACC: used with Economic Life in LT Plan to turn Build Cost into an annuity stream.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.WACC.html
+        # Generator Economic Life: number of years over which Build Cost is annualised.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.EconomicLife.html
+      fiscal_treatment:
+        value: y
+        source:
+        # LT Plan Depreciation Method: straight-line or declining balance, used with Tax Rate to modify annuities.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/LTPlan.DepreciationMethod.html
+        # LT Plan Tax Rate: tax rate for depreciation and tax benefits of expansion projects.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/LTPlan.TaxRate.html
+        # Generator Investment Tax Credit: share of annualised build cost credited back.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.InvestmentTaxCredit.html
+      period_discounting:
+        value: y
+        source:
+        # LT Plan Discount Rate: objective minimises NPV, discounting future years' costs to present value.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/LTPlan.DiscountRate.html
+  objective:
+    quadratic:
+      # FLAG: QP objectives are only used in specific algorithms (PASA reserve equalisation, Nash-Cournot with quadratic benefit); main LT/MT/ST cost terms (e.g. quadratic heat rates) are piecewise-linearised.
+      value: y
+      source:
+      # PASA: equalising area capacity reserves is formulated as a QP (least-squares), solved natively if the solver supports QP.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.PASA.html
+      # Purchaser Benefit Function Shape: selects linear (LP) or quadratic (QP) demand benefit function in Nash-Cournot optimisation.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Purchaser.BenefitFunctionShape.html
+    multi_objective_weighted:
+      value: y
+      source:
+      # Objective Weight: weight of an objective in blended multi-objective optimisation (w1*o1 + w2*o2).
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Objective.Weight.html
+      # Multi-Objective Modelling: blended (weighted sum) and lexicographic (Priority) objectives via the Objective class.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.MultiObjectiveModelling.html#2
+    multi_objective_pareto:
+      # No built-in Pareto set generation; user must run a series of models with varying Objective Weights and plot the front outside PLEXOS.
+      # FLAG: a Pareto front is achievable by manual weight sweeps, so this is a judgement call between n and y.
+      value: n
+      source:
+      # Pareto-Optimal Front: solve a series of models with complementary weights; visualisation happens outside PLEXOS.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.MultiObjectiveModelling.html#3
+    tie_breaking:
+      # FLAG: the only documented rule is the Increment and Decrement option preventing degenerate clearing of incr/decr bands.
+      value: y
+      source:
+      # Increment and Decrement: option to prevent degenerate clearing of increment/decrement offer and bid bands.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Production.IncrementandDecrement.html
+  edge_effects:
+    time_operational:
+      value: y
+      source:
+      # Storage End Effects Method: end volume of each step set Free or Recycled (constrained equal to Initial Volume).
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Storage.EndEffectsMethod.html
+      # Storage Water Value: price of water at end of each simulation step, an alternative to End Effects Method.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Storage.WaterValue.html
+      # Battery End Effects Method: end-of-step battery energy set Free or Recycled to Initial SoC.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Battery.EndEffectsMethod.html
+    time_financial:
+      value: y
+      source:
+      # LT Plan End Effects Method = Perpetuity: last year assumed to repeat infinitely in the LT Plan objective.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/LTPlan.EndEffectsMethod.html
+      # LT Plan Expansion Candidates: build cost annuitised when a project's life extends past the horizon, last year in perpetuity.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.LTPlan4.html#1
+    energy_balance:
+      # FLAG: prevention relies on integer constraints; with linear or rounded-relaxation Unit Commitment Optimality simultaneous charge/discharge can still occur.
+      value: y
+      source:
+      # Production Pump and Generate = False: prevents simultaneous pumping/charging and generating/discharging.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Production.PumpandGenerate.html
+      # Battery Simultaneous Charge and Discharge: per-battery override to prevent simultaneous charge and discharge.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Battery.SimultaneousChargeandDischarge.html
+  actors:
+    portfolio:
+      value: y
+      source:
+      # Company class: ownership entity with shares in generators, lines, fuels, contracts etc.; used as competitive entity in gaming models.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Company.html
+      # Company Constraints: set of user Constraints involving the company.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Company.Constraints.html
+      # Company Formulate Risk: constraint bounding company Net Profit risk in risk-constrained simulations.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Company.FormulateRisk.html
+    heuristic_markup:
+      value: y
+      source:
+      # Competition class: static (No Load Cost Mark-up) and dynamic mark-up methods (Shadow Pricing, RSI, Nash-Cournot, LRMC Recovery).
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Competition.html
+      # RSI class: regression of Price-cost Mark-up on Residual Supply Index, used to predict and apply generator Bid-cost Mark-ups.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.RSI.html
+      # Bertrand Competition: heuristic shadow pricing scheme in which generators mark up offer prices.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.ShadowPricing.html#1
+      # LRMC Recovery Cost Recovery Method: price-modification heuristic adding premiums so each company recovers its fixed costs.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.LRMCRecovery.html#6
+    distributed_objectives:
+      # FLAG: no per-actor objectives embedded in a system-level optimisation; Profit Maximization replaces the system cost objective with a single price-taking portfolio's profit, and per-company profit maximisation is only via Nash-Cournot (see equilibrium).
+      value: n
+      source:
+      # Profit Maximization: with known/stochastic prices the whole objective switches from system cost minimisation to profit maximisation.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.ProfitMaximization.html#1
+    equilibrium:
+      value: y
+      source:
+      # Nash-Cournot Competition: players adjust supply quantities to find an equilibrium against a price-responsive demand function.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.NashCournot.html#1
+      # Competition Equilibrium Model: selects Perfect Competition, LRMC Recovery or Nash-Cournot game for strategic portfolios in MT Schedule.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Competition.EquilibriumModel.html
+  uncertainty:
+    two_stage_stochastic:
+      value: y
+      source:
+      # LT Plan Stochastic Method = Stochastic: without a scenario tree, a two-stage stochastic optimisation yields one expansion plan and S production solutions.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/LTPlan.StochasticMethod.html
+      # ST Schedule Stochastic Method = Stochastic: two-stage optimisation with one set of unit commitment decisions and S dispatch solutions.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/STSchedule.StochasticMethod.html
+      # Stochastic Hydro Optimization: two-stage stochastic problem formulation on a scenario tree.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.StochasticHydroOptimization.html#5.1.1.
+    multi_stage_stochastic:
+      value: y
+      source:
+      # LT Plan Stochastic Method = Stochastic: with a scenario tree defined via Global, a multi-stage stochastic optimisation is performed.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/LTPlan.StochasticMethod.html
+      # MT Schedule Stochastic Algorithm: Rolling Horizon or SDDP solution of stochastic optimisation with a scenario tree.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/MTSchedule.StochasticAlgorithm.html
+      # Stochastic Hydro Optimization: multi-stage stochastic problem with decisions over r stages.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.StochasticHydroOptimization.html#5.1.2.
+    risk_aversion:
+      # FLAG: CVaR is applied as a constraint on entity/company Net Profit in stochastic portfolio (profit-maximisation) optimisation, not as a risk term on system cost.
+      value: y
+      source:
+      # Entity Formulate Risk: constraints bounding the CVaR of Net Profit in stochastic portfolio optimisation.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Entity.FormulateRisk.html
+      # Entity Acceptable Risk: acceptable risk around target net profit.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Entity.AcceptableRisk.html
+      # Company Formulate Risk: same CVaR net profit bound applied to a Company.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Company.FormulateRisk.html
+    robust_optimisation:
+      # No worst-case / uncertainty-set optimisation found; robust optimisation is only mentioned as a concept in the stochastic programming background.
+      value: n
+      source: []
+    near_optimal:
+      # No near-optimal alternative generation (e.g. MGA) found in the docs.
+      value: n
+      source: []
+  model_definition:
+    configurable_dimensions:
+      value: y
+      source:
+      # User Interface Guide, Properties: dynamic data rows add Data File, Date From/To, Timeslice, Band and Scenario fields to any property.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.PLEXOS7UserInterfaceGuideChapter5.html#6
+      # Data File class: attaches period-by-period time series to properties.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.DataFile.html
+      # Timeslice class: user-defined time patterns applied to input data and used for summary reporting.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Timeslice.html
+    extensible_dimensions:
+      # FLAG: dimensions (time, band, sample, scenario, timeslice) are tool-defined; bands and timeslices are user-configurable but no new index axis (e.g. cohort) can be introduced and used in the math. Absence inferred from lack of docs.
+      value: n
+      source: []
+    dimension_groups:
+      # FLAG: Categories and Lists group objects for navigation, reporting filters and aggregate queries only; categories explicitly do not affect the formulation, so they cannot be used directly in constraints.
+      value: y
+      source:
+      # User Interface Guide, Categories: categorisation is purely organisational and does not affect the formulation.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.PLEXOS7UserInterfaceGuideChapter5.html#2
+      # User Interface Guide, Lists: generic collection of objects across classes and categories, used to filter.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.PLEXOS7UserInterfaceGuideChapter5.html#4
+      # Report Lists: List objects attached to a Report to filter/aggregate reporting.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Report.Lists.html
+    component_templating:
+      # FLAG: inheritance via Template memberships is explicit; programmatic generation is limited to Wildcard Expansion Candidates, which auto-create per-band expansion candidates only for Power2X Efficiency Degradation.
+      value: y
+      source:
+      # User Interface Guide, Templates: child object inherits property values and memberships of a template parent, with overrides.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.PLEXOS7UserInterfaceGuideChapter5.html#5
+      # Generator Template: template the Generator inherits from (same collection exists on other classes).
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.Template.html
+      # Wildcard Expansion Candidates: multiple bands of a triggering property create alternative candidate realisations of an object in LT Plan.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.WildcardExpansionCandidates.html
+  math:
+    formulation_transparency:
+      # FLAG: Published equations are explicitly "illustrative only" (core formulation, not the full built problem); traceability to the built problem relies on LP files with object names.
+      value: y
+      source:
+      # LT Plan - The Formulation: variables, parameters, objective and constraints of the LT Plan MIP written out as equations.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.LTPlan1.html
+      # Fixed Shift OPF formulation section: DC-OPF equations as implemented.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.OPF3.html#1.2.
+      # Diagnostic Generic Names = No: LP/MPS files use proper names of objects from the dataset, so the built problem is inspectable.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Diagnostic.GenericNames.html
+    problem_file_export:
+      value: y
+      source:
+      # Diagnostic LP Files: writes each mathematical programming problem solved to disk in LP text format.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Diagnostic.LPFiles.html
+      # Diagnostic MPS Files: same, in MPS format.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Diagnostic.MPSFiles.html
+    dual_extraction:
+      value: y
+      source:
+      # Constraint Price: constraint dual variable value at the optimal solution.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Constraint.Price.html
+      # Region Shadow Price: regional energy price before uplift or mark-ups.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Region.ShadowPrice.html
+      # Decision Variable Reduced Cost: reduced cost of a generic decision variable at the optimal solution.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/DecisionVariable.ReducedCost.html
+    piecewise_formulation:
+      # FLAG: No dedicated piecewise/SOS2 construct is documented; users build piecewise or non-convex functions themselves from integer/binary/semi-continuous Decision Variables and Constraints.
+      value: y
+      source:
+      # Decision Variable class: uses include "modelling piecewise or general non-convex or discontinuous functions".
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.DecisionVariable.html#1
+      # Decision Variable Type: continuous, integer, binary, semi-continuous or semi-integer.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/DecisionVariable.Type.html
+    user_defined_math:
+      value: y
+      source:
+      # Constraint class: user-defined A x (<=,>=,=) b constraints over simulation variables.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Constraint.html#1.2
+      # Decision Variable class: generic decision variables (one column per period) usable in Constraints and the objective.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.DecisionVariable.html
+      # Objective class: user-defined objective functions added to or replacing the default objective.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Objective.html
+  tractability:
+    dimension_reduction:
+      adjacency_aggregation:
+        temporal:
+          value: y
+          source:
+          # Horizon Periods per Day: interval length can be coarsened (e.g. 24h, 12h, 8h ... 1h), with input data rescaled automatically.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Horizon.PeriodsperDay.html
+          # Horizon Compression Factor: simulate at a lower resolution while still reporting at the original interval length.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Horizon.CompressionFactor.html
+          # MT Schedule Chronology = Fitted: series fitted with a step function of Block Count contiguous blocks, preserving chronology.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/MTSchedule.Chronology.html
+        spatial:
+          value: y
+          source:
+          # Transmission Detail = Regional/Zonal: all resources inside a Region/Zone connected to a single notional node; only inter-region/zone links modelled.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Transmission.Detail.html
+          # Region Aggregate Transmission: Nodes, Lines and Transformers inside the Region discarded and its resources attached to one reference node.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Region.AggregateTransmission.html
+      similarity_aggregation:
+        temporal:
+          value: y
+          source:
+          # LT Plan Chronology: Partial (load/price duration curves per day/week/month/year) or Sampled (statistically representative days/weeks/months).
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/LTPlan.Chronology.html
+        spatial:
+          # FLAG: Clustering groups injection points by likeness of their PTDF vectors within a Region/Zone; PLEXOS calls it clustering or 'equivalencing'.
+          value: y
+          source:
+          # Region Transmission Clustering Level: nodes clustered by PTDF-vector likeness until this number of equivalent nodes remain.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Region.TransmissionClusteringLevel.html
+        assets:
+          value: y
+          source:
+          # Power Station class: Generators combined into a multi-unit generator with weighted-average properties, mainly to reduce run time.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.PowerStation.html
+          # Production Power Station Aggregation Mode: Power Stations created automatically by grouping Generators by name or location.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Production.PowerStationAggregationMode.html
+          # Generator Unit Commitment Aggregation: a multi-unit generator treated as one equivalent unit for unit commitment.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.UnitCommitmentAggregation.html
+        scenarios:
+          value: y
+          source:
+          # Sample Reduction: stochastic samples reduced to a smaller weighted set by combining similar or low-probability samples.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Variable.html#4.5.1
+          # Stochastic Reduced Sample Count: reduce samples before simulation; the remaining samples get non-uniform weights.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Stochastic.ReducedSampleCount.html
+      non_contiguity_handling:
+        temporal:
+          value: y
+          source:
+          # LT Plan Sampled Shallow Storage Treatment = Full: storage/battery energy levels co-optimised between sample windows.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/LTPlan.SampledShallowStorageTreatment.html
+          # MT Schedule Chronology: under Partial, Storage limits are tracked between successive duration curves.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/MTSchedule.Chronology.html
+        spatial:
+          # FLAG: No documented mechanism for linking features across discontiguous zones; absence is uncertain.
+          value: n
+          source: []
+      equivalencing:
+        spatial:
+          value: y
+          source:
+          # Region Include in Kron Reduction: regions outside the selection replaced by Kron-reduced virtual lines and virtual generators/loads at the boundary.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Region.IncludeinKronReduction.html
+          # Transmission Kron-reduced Model Input: writes out the Kron-reduced network (factor matrix, external injections, virtual markets).
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Transmission.KronreducedModelInput.html
+        assets:
+          # FLAG: No documented feature for collapsing a chain of interconnected assets (e.g. a hydro cascade) into one component; absence is uncertain.
+          value: n
+          source: []
+      filtering:
+        temporal:
+          value: y
+          source:
+          # Horizon Chrono Period From: start interval of the chronological (ST Schedule) study window.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Horizon.ChronoPeriodFrom.html
+          # Horizon Chrono Period To: end interval of the chronological study window.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Horizon.ChronoPeriodTo.html
+        spatial:
+          # FLAG: Spatial units are excluded by per-Region/Node flags (optionally by Scenario), not by an automatic criterion such as voltage level.
+          value: y
+          source:
+          # Region Units: zero excludes the Region, all its Nodes and objects exclusively related to them from the simulation.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Region.Units.html
+          # Node Units: bus in/out of service; can be switched for a whole simulation using Scenarios.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Node.Units.html
+        assets:
+          value: y
+          source:
+          # Scenario class: properties (including key properties) tagged with a Scenario are switched in/out of a Model.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Scenario.html
+          # Generator Units: 0 indicates the generator does not exist.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.Units.html
+          # Region Units: objects exclusively attached to excluded Regions/Nodes are excluded too.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Region.Units.html
+        scenarios:
+          # FLAG: Named data Scenarios are selected per Model via its Scenarios collection; no documented filter for dropping members of a stochastic sample set.
+          value: y
+          source:
+          # Scenario class: only Scenarios added to a Model's Scenarios collection are applied.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Scenario.html
+          # Model class: a Model optionally links to data Scenarios so data can be switched in/out.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Model.html
+    variable_fidelity:
+      formulation:
+        value: y
+        source:
+        # LT Plan Integerization Horizon: build decisions integer over the first N years only, linear beyond.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/LTPlan.IntegerizationHorizon.html
+        # Production Integers in Look-ahead: ST Schedule look-ahead can omit the unit-commitment integers used in the main step.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Production.IntegersinLookahead.html
+        # Generator Unit Commitment Optimality: per-generator override (linear, rounded relaxation, integer, dynamic program) of the global setting.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.UnitCommitmentOptimality.html
+      resolution:
+        temporal:
+          # FLAG: Resolution varies across assets only for commitment decisions (per Generator), and across the horizon itself (Last Block Count, look-ahead resolution); no per-region temporal resolution.
+          value: y
+          source:
+          # Generator Unit Commitment Period: per-generator resolution of on/off decisions, e.g. hourly commitment with 5-minute dispatch.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.UnitCommitmentPeriod.html
+          # LT Plan Last Block Count: fewer duration-curve/fitted blocks further out in the horizon.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/LTPlan.LastBlockCount.html
+          # Horizon Look-ahead Periods per Day: ST Schedule look-ahead can run at a coarser resolution than the main step.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Horizon.LookaheadPeriodsperDay.html
+        spatial:
+          value: y
+          source:
+          # Region Aggregate Transmission: selected Regions collapsed to a single reference node while others stay nodal.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Region.AggregateTransmission.html
+          # Region Transmission Clustering Level: per-Region node clustering, for studies focused on particular regions with others equivalenced.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Region.TransmissionClusteringLevel.html
+          # Region Include in Kron Reduction: selected Regions simulated in full nodal detail, the rest Kron-reduced.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Region.IncludeinKronReduction.html
+        assets:
+          # FLAG: Aggregation is switched on per Generator/Power Station by the user, so individual and grouped assets can coexist; not driven automatically by another dimension.
+          value: y
+          source:
+          # Generator Unit Commitment Aggregation: per-generator flag to treat a multi-unit generator as one equivalent unit.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.UnitCommitmentAggregation.html
+          # Power Station class: only Generators with a Power Station membership are aggregated; the rest are modelled individually.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.PowerStation.html
+        scenarios:
+          value: y
+          source:
+          # Sample Tree Construction: multi-stage scenario tree with the number of samples (leaves) set per stage.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Variable.html#4.5.2
+          # Global Tree Stages Leaves: number of leaves in each stage of the scenario tree.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Global.TreeStagesLeaves.html
+    reformulation:
+      linearised_unit_commitment:
+        value: y
+        source:
+        # Production Unit Commitment Optimality = Linear Relaxation: integer restriction on commitment relaxed to non-integer values.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Production.UnitCommitmentOptimality.html
+        # Generator Unit Commitment Optimality: the same relaxation can be set per generator.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.UnitCommitmentOptimality.html
+      nonlinear_handling:
+        convex_relaxation:
+          # FLAG: Convexification applies to non-convex marginal heat-rate curves (user data within PLEXOS's fuel-use formulation), not to network physics such as AC power flow.
+          value: y
+          source:
+          # Production Heat Rate Error Method: detected non-convex heat-rate curves adjusted internally to be convex for the optimisation.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Production.HeatRateErrorMethod.html
+          # Generator Formulate Non-convex = Never: integer convexity constraints left out, keeping the LP form.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.FormulateNonconvex.html
+        function_conversion:
+          value: y
+          source:
+          # Nonlinear Constraint: user-supplied polynomial automatically converted into piecewise-linear tranches (Max Tranches).
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.NonlinearConstraint.html
+          # Heat Input Function Polynomial: any heat-rate input converted to a cubic fit, then to piecewise marginal heat-rate tranches.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.HeatRateModelling.html#3
+          # Hydro Efficiency: piecewise-linear approximation of the generator efficiency function built automatically.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.HydroGeneratorEfficiencyandHeadEffects.html#1
+      constraint_screening:
+        value: y
+        source:
+        # Transmission Formulate Upfront = No: line/transformer/interface limits added on demand in iterations.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Transmission.FormulateUpfront.html
+        # Transmission Filter Limits: redundant transmission limits removed from ST Schedule using extreme MT Schedule flows.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Transmission.FilterLimits.html
+        # Constraint Formulate Upfront: generic constraints on transmission elements added only as needed unless set upfront.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Constraint.FormulateUpfront.html
+      decomposition:
+        value: y
+        source:
+        # MT Schedule Stochastic Algorithm: SDDP with forward/backward passes and Benders cuts per stage, or Rolling Horizon.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/MTSchedule.StochasticAlgorithm.html
+        # Stochastic Hydro Optimization: SDDP algorithm description.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.StochasticHydroOptimization.html#6.2.
+        # LT Plan Decomposition: two-pass temporal decomposition, low-resolution pass seeding the full-resolution pass.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/LTPlan.Decomposition.html
+      numeric_scaling:
+        value: y
+        source:
+        # Performance Scaling: toggles solver problem scaling for numerical robustness.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Performance.Scaling.html
+        # Performance Objective Scalar: objective scaled internally and unscaled for reporting.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Performance.ObjectiveScalar.html
+        # Constraint Scalar: divides constraint LHS and RHS by a factor to bring coefficients to 1e-3 to 1e+3.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Constraint.Scalar.html
+        # Numerical Stability: conditioning guidance, including unit choices and scalar properties.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.NumericalStability.html
+  orchestration:
+    scenario_runs:
+      value: y
+      source:
+      # Model class: multiple Models (each with its own Scenarios) executed in a batch, in sequence or in parallel.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Model.html
+      # Project class: Models solved in sequence with all solutions saved to a single output database for comparison.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Project.html
+      # Scenario class: named Scenarios switch tagged data in/out of a Model.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Scenario.html
+    sampled_runs:
+      value: y
+      source:
+      # ST Schedule Stochastic Method = Sequential/Parallel Monte Carlo: one complete run per sample, yielding S solutions.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/STSchedule.StochasticMethod.html
+      # LT Plan Stochastic Method: same Monte Carlo options for capacity expansion.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/LTPlan.StochasticMethod.html
+      # Reliability Modelling With Monte Carlo Simulation: sampled outage patterns and required sample size.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.MonteCarlo.html
+    coupled_models:
+      limited_foresight:
+        investment:
+          value: y
+          source:
+          # LT Plan Step Size (At a Time): horizon split into multi-year steps or solved by Rolling Horizon.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/LTPlan.AtaTime.html
+          # LT Plan Overlap: years of overlap between steps; -1 invokes Rolling Horizon; notes loss of optimality from lack of look-ahead.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/LTPlan.Overlap.html
+        operation:
+          value: y
+          source:
+          # Step Link Mode: ST Schedule steps executed in sequence, each linked to the previous for initial conditions.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.STSchedule.html#3
+          # Horizon Look-ahead Indicator: ST Schedule steps solved chronologically with an additional look-ahead period.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Horizon.LookaheadIndicator.html
+      fidelity_sequence:
+        value: y
+        source:
+        # Model class: LT Plan, PASA, MT Schedule and ST Schedule run in order, passing expansion and maintenance plans down.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Model.html
+        # MT -> ST Schedule Bridge: MT Schedule constraints and storage trajectories decomposed for ST Schedule.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.MTSchedule.html#4
+        # Storage Decomposition Method: LT/MT storage trajectory passed to ST as targets or shadow prices.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Storage.DecompositionMethod.html
+      market_sequence:
+        value: y
+        source:
+        # Interleaved Run Mode: day-ahead and real-time Models run in step with solution data passed both ways.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Model.html
+        # Model Interleaved: specifies the Model run interleaved with this Model.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Model.Interleaved.html
+        # Balancing Markets: day-ahead/real-time coupling and interleaved runs.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.BalancingMarkets.html
+      convergence_iteration:
+        # FLAG: Only the EFC loop re-runs a whole phase (ST Schedule); loss and revenue-targeting iterations are repeated solves within a phase.
+        value: y
+        source:
+        # Reliability class: ST Schedule re-run in loops, replacing generators with firm capacity until unserved energy converges (EFC).
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Reliability.html#1
+        # Reliability Max EFC Iterations: cap on ST Schedule iterations for EFC evaluation.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Reliability.MaxEFCIterations.html
+        # Competition Revenue Targeting Iterations: bidding rounds iterated to meet LRMC Recovery or Nash-Cournot revenue targets.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Competition.RevenueTargetingIterations.html
+        # Transmission Max Loss Iterations: iterations to converge losses in the quadratic loss model.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Transmission.MaxLossIterations.html
+  io:
+    plain_text:
+      input:
+        value: y
+        source:
+        # Text File Formats: CSV/tab-delimited time-series layouts read via Data File objects.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.TextFileFormats.html
+        # Import and Export: input databases can be imported from XML files, validated against a schema.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.ImportExport.html#2
+      output:
+        value: y
+        source:
+        # Report Write Flat Files: writes solution data to CSV files, one per object and property.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Report.WriteFlatFiles.html
+    binary:
+      input:
+        value: y
+        source:
+        # Import and Export, Excel Format: databases can be imported from Excel workbooks (objects, memberships, properties sheets).
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.ImportExport.html#3
+      output:
+        value: y
+        source:
+        # Report Write XML Files: default solution format is a .ZIP holding XML tables plus binary value files.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Report.WriteXMLFiles.html
+        # Import and Export: input databases can also be exported to Excel workbooks.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.ImportExport.html#3
+    database:
+      input:
+        # FLAG: the PLEXOS input "database" is a relational schema stored as an XML or Access .MDB file; no documented reading from a database server.
+        value: y
+        source:
+        # Database Schema: input database schema implemented in both XML and Microsoft Access .MDB formats.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.DatabaseSchema.html
+      output:
+        # FLAG: database output is via the separate DatasetToSQL tool run from a Post-simulation.bat script, not a native Report option.
+        value: y
+        source:
+        # Creating an MDB solution file: DatasetToSQL converts the solution to an Access (.accdb) database.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.Automation.html#createmdb
+        # Including User Scripts: example Post-simulation.bat loads the solution into a SQL Server database.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.Automation.html#include
+    remote_storage:
+      input:
+        # FLAG: remote storage is via the PLEXOS Cloud / PLEXOS Connect services (study sync, S3-backed datasets), not direct object-store paths in a model.
+        value: y
+        source:
+        # PLEXOS Connect on AWS: Connect Server can use S3 for bulk storage, with uploads/downloads via pre-signed URLs.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.PC3UsingCloud.html#3
+      output:
+        # FLAG: only via PLEXOS Connect server storage (S3 option), not a model-level output setting.
+        value: y
+        source:
+        # PLEXOS Connect on AWS: Connect Server stores its data (datasets, solutions) in S3 storage.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.PC3UsingCloud.html#3
+    lazy_loading:
+      input:
+        # FLAG: no documented out-of-core loading of input data; absence is uncertain.
+        value: n
+        source: []
+      output:
+        # FLAG: no documented streaming of solution output directly with PLEXOS, but open-source option exists.
+        value: y
+        source:
+          - https://github.com/NatLabRockies/plexosdb
+    standardised:
+      input:
+        # FLAG: the PSSE Import feature is only mentioned in the Automation article; no dedicated page documents it.
+        value: y
+        source:
+        # Updating a PSSE Raw file: requires a PLEXOS model created from the PSSE Raw file with the PSSE Import feature.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.Automation.html#update
+      output:
+        value: y
+        source:
+        # UpdatePSSERawFromSolution: writes Node Load, Generator Generation and Line limits from a solution into a PSSE Raw file.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.Automation.html#update
+  preprocessing:
+    download:
+      # No in-tool download of external datasets; input data (e.g. irradiance from Renewables Ninja) is sourced by the user.
+      value: y
+      source:
+        - https://www.energyexemplar.com/datasets
+    model_catalogue:
+      # FLAG: the Welcome Window offers only empty library templates (Electric, Gas, Universal, Water) and Cloud Study cloning, not a catalogue of pre-built models.
+      value: n
+      source: []
+    resource_conversion:
+      # FLAG: conversion uses user-supplied lookup tables (Variable Lookup x/y) or linear weather-demand formulas, not built-in physical response models.
+      value: y
+      source:
+      # Variable Lookup x: lookup table translating raw sample values to the final values used in the simulation (paired with Lookup y).
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Variable.Lookupx.html
+      # Weather Station: Gas Demand computed from Temperature or Heating Degree Days via a demand formula.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.WeatherStation.html
+    forecasting:
+      value: y
+      source:
+      # Load Forecasting: Data File grows a base-year profile to forecast Energy, Maximum and Minimum targets.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.LoadForecasting.html
+      # Building Forecasts: invoking the build algorithm to create the forecast profile.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.LoadForecasting.html#3
+    spatial_distribution:
+      demand:
+        value: y
+        source:
+        # Node Load Participation Factor: proportion of Region/Zone load that occurs at each node.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Node.LoadParticipationFactor.html
+      network_geometry:
+        # No derivation of Line lengths or routes from node coordinates; no Line length property found.
+        value: n
+        source: []
+    scenario_generation:
+      value: y
+      source:
+      # Stochastic Variables: samples generated by random sampling, historical sampling and selective sampling.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Variable.html#4
+      # Endogenous Sampling: samples generated from autocorrelation, mean-reversion and ARMA/ARIMA models.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Variable.html#4.3
+    input_validation:
+      value: y
+      source:
+      # Execution Settings, Data Validation: checks missing files, membership counts and property validation rules before execution.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.PLEXOS7UserInterfaceGuideChapter9.html#2
+  postprocessing:
+    metrics:
+      operational:
+        capacity_factor:
+          value: y
+          source:
+          # Generator Capacity Factor: proportion of installed or rated capacity generating.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.CapacityFactor.html
+          # Facility Capacity Factor: definition of capacity factor as a utilisation measure.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Facility.CapacityFactor.html
+        operating_hours:
+          value: y
+          source:
+          # Generator Operating Hours: number of hours any unit is running (Units Generating > 0).
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.OperatingHours.html
+        binding_hours:
+          value: y
+          source:
+          # Line Hours Congested: number of hours Line Flow is at or beyond Max Flow / Min Flow.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Line.HoursCongested.html
+          # Interface Hours Congested: number of hours the interface is congested.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Interface.HoursCongested.html
+        curtailment:
+          value: y
+          source:
+          # Generator Capacity Curtailed: MAX(0, No Cost Capacity - Generation).
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.CapacityCurtailed.html
+          # Generator Curtailment Factor: proportion of non-positive-priced generation curtailed.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.CurtailmentFactor.html
+      financial:
+        marginal_price:
+          value: y
+          source:
+          # Node Price: locational marginal price.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Node.Price.html
+          # Node Congestion Charge: congestion component of the LMP.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Node.CongestionCharge.html
+          # Node Marginal Loss Charge: marginal loss component of the LMP.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Node.MarginalLossCharge.html
+        price_formation:
+          value: y
+          source:
+          # Uplift: ex-post adder to marginal-cost prices so no generator makes a loss on start/no-load costs.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.Uplift.html
+          # Uniform Pricing: single market price computed by re-solving with transmission limits and losses relaxed.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.UniformPricing.html
+        water_value:
+          value: y
+          source:
+          # Diagnostic Future Cost Function: writes the water value surface (cuts) from MT Schedule, readable as a Data File.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Diagnostic.FutureCostFunction.html
+        asset_accounts:
+          value: y
+          source:
+          # Generator Net Profit: net revenue minus fixed costs per generator.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.NetProfit.html
+        contract_settlement:
+          value: y
+          source:
+          # Financial Contract: CfDs, forwards; key outcome is the Settlement flowing back to companies.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.FinancialContract.html
+          # Transmission Right: FTRs as financial contracts on nodal price differentials.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.TransmissionRight.html
+        levelised_cost:
+          value: y
+          source:
+          # Generator Levelized Cost: average net present cost of generation over the facility lifetime.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.LevelizedCost.html
+        net_present_value:
+          value: y
+          source:
+          # Diagnostic NPV: writes LT Plan optimal solution costs in NPV terms.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Diagnostic.NPV.html
+      impact_assessment:
+        emissions:
+          value: y
+          source:
+          # Emission Production: production of the emission from modelled activity.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Emission.Production.html
+        resource_use:
+          value: y
+          source:
+          # Generator Water Consumption: water consumed by the generator (e.g. evaporative cooling losses).
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.WaterConsumption.html
+          # Generator Water Offtake: water recycled through the generator (e.g. for cooling).
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Generator.WaterOfftake.html
+        socioeconomic:
+          # No socioeconomic (e.g. employment) output properties found.
+          value: n
+          source: []
+      network_transfer_metrics:
+        transfer_capacity:
+          value: y
+          source:
+          # Interface Available Transfer Capability: remaining transfer capability on the interface.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Interface.AvailableTransferCapability.html
+          # Diagnostic ATC Reports: writes ATC min/max and most limiting elements.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Diagnostic.ATCReports.html
+        flow_sensitivity:
+          value: y
+          source:
+          # Diagnostic Shift Factors: writes all computed shift factors (PTDF) to text files.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Diagnostic.ShiftFactors.html
+      probabilistic_reliability_assessment:
+        loss_of_load:
+          value: y
+          source:
+          # Region LOLP: loss of load probability.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Region.LOLP.html
+          # LOLP Statistics, Reliability Indices: LOLP, LOLE and related indices.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.LOLP.html#2
+        unserved_energy:
+          value: y
+          source:
+          # Region EENS: expected energy not served.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Region.EENS.html
+        capacity_credit:
+          # FLAG: PLEXOS computes Effective Firm Capacity (EFC), an ELCC-equivalent measured on unserved energy or hours, via repeated full simulations.
+          value: y
+          source:
+          # Reliability class: EFC is firm capacity that maintains the same level of unserved energy.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Reliability.html
+          # Reliability Firm Capacity Contribution: EFC result output.
+          - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Reliability.FirmCapacityContribution.html
+    transformation:
+      aggregation:
+        value: y
+        source:
+        # User Interface Guide, Categories: categories are used in the Solution Viewer when running aggregate queries.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.PLEXOS7UserInterfaceGuideChapter5.html#2
+        # Report, Period Types: results automatically summarised by hour/day/week/month/quarter/year.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.PLEXOS7UserInterfaceGuideChapter10.html#4
+      disaggregation:
+        # FLAG: LDC block results are reported per interval by default and MT block results mapped back to hours; documented only indirectly.
+        value: y
+        source:
+        # Storage Optimization, MT and ST Schedule: LDC block-by-block results mapped back to hours to synthesize chronology.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.StorageOptimization.html#3.1.
+        # View LDC Block Data: 'Block' period shows one interval per block instead of all intervals (normal view).
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.PLEXOS7UserInterfaceGuideChapter12.html#3
+      scenario_comparison:
+        value: y
+        source:
+        # Project: runs two or more Models together to compare solutions, saved to a single output database.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Project.html
+        # Solution Comparison: two queries on the same or different solutions compared side by side.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.PLEXOS7UserInterfaceGuideChapter12.html#29
+  interface:
+    gui:
+      build:
+        value: y
+        source:
+        # UI Guide Chapter 5, Objects: objects, memberships and properties defined in the desktop GUI.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.PLEXOS7UserInterfaceGuideChapter5.html#1
+      run:
+        value: y
+        source:
+        # UI Guide Chapter 10, Execution: executing Models/Projects from the GUI, with the Execution Manager.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.PLEXOS7UserInterfaceGuideChapter10.html#5
+      analyse:
+        value: y
+        source:
+        # UI Guide Chapter 12: Solution Viewer for querying, charting and comparing results.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.PLEXOS7UserInterfaceGuideChapter12.html
+    api:
+      build:
+        value: y
+        source:
+        # Automation, Creating a New PLEXOS Database: .NET/COM/Python API creates databases.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.Automation.html#create
+        # Automation, Modifying a PLEXOS Database: adding objects, memberships and properties.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.Automation.html#modify
+      run:
+        value: y
+        source:
+        # Automation, Executing a PLEXOS Model: running models via the API.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.Automation.html#exmod
+        # Automation, Executing in PLEXOS Connect: models submitted for remote execution via the APIs.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.Automation.html#excon
+      analyse:
+        value: y
+        source:
+        # Automation, Querying Solution Values: Solution.Query()/QueryToList() retrieve result data.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.Automation.html#query
+    cli:
+      build:
+        # FLAG: CLI can build Data Files (\b), upgrade (\u) and write a compiled dataset (\w), but cannot define model objects.
+        value: y
+        source:
+        # Command Line Options: \b Build selected Data Files, \u Upgrade the dataset, \w write compiled input file.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.CommandLineOptions.html
+      run:
+        value: y
+        source:
+        # Command Line Options: PLEXOS64.exe \m/\p executes Models/Projects without the GUI.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.CommandLineOptions.html
+      analyse:
+        # FLAG: CLI analysis is limited to \l results summary file and solution merging; no report generation beyond these.
+        value: y
+        source:
+        # Command Line Options: \l writes a results summary file; merge mode combines solution databases.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.CommandLineOptions.html
+    solver_configuration:
+      value: y
+      source:
+      # Performance class: optimiser settings (solver choice, tolerances, threads, optimiser methods).
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Performance.html
+      # Performance SOLVER: choice of solver engine.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Performance.SOLVER.html
+      # Performance MIP Relative Gap: MIP optimality gap tolerance.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Performance.MIPRelativeGap.html
+      # Performance MIP Start Solution: warm start MIP from previous solutions.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Performance.MIPStartSolution.html
+    remote_execution:
+      value: y
+      source:
+      # PLEXOS Connect Concepts: jobs dispatched to the Connect Server are queued as runs on Connect Clients.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.PC3Concepts.html
+      # Automation, Executing in PLEXOS Connect: submitting models to Connect via the APIs.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.Automation.html#excon
+    visualisation:
+      charts:
+        value: y
+        source:
+        # Solution Viewer Charting: any query can be viewed as a chart, with several chart types.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.PLEXOS7UserInterfaceGuideChapter12.html#16
+      network_maps:
+        value: y
+        source:
+        # Map Visualization: input map layout of objects on a Bing map.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.MapVisualization.html
+        # Graph Layout: schematic graph of objects and memberships.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.GraphLayout.html
+      report_templates:
+        value: y
+        source:
+        # Saving a Solution View: saved sets of result grids and charts reloaded with other solution files.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.PLEXOS7UserInterfaceGuideChapter12.html#27
+        # Report class: reusable selections of output properties and object filters.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Main.Report.html
+  traceability:
+    metadata:
+      provenance:
+        # FLAG: no dedicated fields for input data sources or licences; PLEXOS Cloud Version History records Study versions and changes by user, which is only partial.
+        value: n
+        source: []
+      units:
+        # FLAG: every property has a fixed unit and a global unit system (Metric/Imperial) applies, but unit labels are not interpreted or checked for consistency.
+        value: y
+        source:
+        # Settings, Unit systems for entering Data: Metric/Imperial US systems and configurable load/energy units.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.GUISettings.html#2
+        # Database Schema: t_unit table holds the unit label of each property.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.DatabaseSchema.html
+      propagation:
+        value: y
+        source:
+        # Model Write Input: writes a zipped compiled copy of the input database and data files to the solution folder.
+        - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Model.WriteInput.html
+    run_logs:
+      value: y
+      source:
+      # Solution Viewer, Log File: Log tab shows the execution log file for the run.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Article.PLEXOS7UserInterfaceGuideChapter12.html#4
+    intermediate_access:
+      # FLAG: intermediate artefacts (LP/MPS files, solver solutions) are only written to disk as Diagnostic files; no in-memory access via the API found.
+      value: n
+      source:
+      # Diagnostic LP Files: writes math programs to disk in LP text format.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Diagnostic.LPFiles.html
+    infeasibility_diagnosis:
+      value: y
+      source:
+      # Diagnostic IIS: computes the irreducibly inconsistent set for each infeasibility and writes it to disk.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Diagnostic.IIS.html
+      # Diagnostic Infeasibility LP Files: writes infeasible and repaired math programs to disk.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Diagnostic.InfeasibilityLPFiles.html
+      # Constraint Feasibility Repair Weight: weight on relaxing the constraint during feasibility repair.
+      - https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/Constraint.FeasibilityRepairWeight.html
