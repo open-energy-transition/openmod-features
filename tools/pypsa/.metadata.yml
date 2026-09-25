@@ -5,9 +5,18 @@
 
 # Changes here will be overwritten by Copier
 # DO NOT MANUALLY MODIFY THIS FILE
-_commit: 000bf8a
+_commit: v0.3.0
 _src_path: gh:open-energy-transition/openmod-features
+description: PyPSA is an open-source Python framework for optimising and simulating
+    modern power and energy systems that include features such as conventional generators
+    with unit commitment, variable wind and solar generation, hydro-electricity, inter-temporal
+    storage, coupling to other energy sectors, elastic demands, and linearised power
+    flow with loss approximations in DC and AC networks. PyPSA is designed to scale
+    well with large networks and long time series. It is made for researchers, planners
+    and utilities with basic coding aptitude who need a fast, easy-to-use and transparent
+    tool for power and energy system analysis.
 docs: https://docs.pypsa.org/latest/
+list_type: tool
 maintainers: euronion,SermishaNarayana
 name: Python for Power System Analysis
 shortname: pypsa
