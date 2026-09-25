@@ -201,9 +201,8 @@ features:
           - https://calliope.readthedocs.io/en/v0.7.0/math/built_in/milp/#flow_out_max_milp
           - https://calliope.readthedocs.io/en/v0.7.0/troubleshooting/#complex-technologies
       maintenance_scheduling:
-        # Tenuous: only as a gallery math example, which lets a unit-committed tech choose a
-        # number of offline timesteps; the downtime cannot be forced to be consecutive.
-        value: y
+        # Can set uptime/downtime limits but the downtime cannot be forced to be consecutive.
+        value: n
         source:
           - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/examples/uptime_downtime_limits/
   constraints:
@@ -239,8 +238,7 @@ features:
                 - https://calliope.readthedocs.io/en/v0.7.0/examples/milp/#purchased-units
                 - https://calliope.readthedocs.io/en/v0.7.0/math/built_in/milp/#flow_out_min_milp
             forced_offline:
-              # Tenuous: via the gallery `downtime_period` constraint (outflow forced to zero in
-              # user-flagged timesteps), not built-in math.
+              # Via the gallery `downtime_period` constraint (outflow forced to zero in user-flagged timesteps), not built-in math.
               value: y
               source:
                 - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/examples/uptime_downtime_limits/
@@ -251,7 +249,6 @@ features:
               source:
                 - https://calliope.readthedocs.io/en/v0.7.0/math/base/#flow_out_min
                 - https://calliope.readthedocs.io/en/v0.7.0/math/base/#flow_out_min_relative
-                - https://calliope.readthedocs.io/en/v0.7.0/migrating/#indexing-parameters-over-arbitrary-dimensions
         sequential:
           investment:
             availability_window:
@@ -290,11 +287,10 @@ features:
               value: n
               source: []
             commitment_duration:
-              value: n
+              value: y
               source:
-                # Not in built-in or gallery math; a user-defined minimum up/down time formulation
-                # is blocked by `sum_next_n`/`roll` not accepting parameter offsets.
-                - https://github.com/calliope-project/calliope/issues/827
+                # Down/uptime limits given in math gallery
+                - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/examples/uptime_downtime_limits
             start_consumption:
               value: n
               source: []
@@ -435,12 +431,10 @@ features:
       nonlinear:
         investment:
           value: n
-          source:
-            - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/
+          source: []
         operation:
           value: n
-          source:
-            - https://calliope.readthedocs.io/en/v0.7.0/user_defined_math/
+          source: []
     reliability:
       unserved_demand:
         value: y
@@ -1159,8 +1153,10 @@ features:
   traceability:
     metadata:
       provenance:
-        value: n
-        source: []
+        # All provenance can be recorded as YAML comments
+        value: y
+        source:
+          - https://calliope.readthedocs.io/en/v0.7.0/reference/yaml/#comments
       units:
         value: n
         source:
