@@ -5,7 +5,7 @@
 
 # Changes here will be overwritten by Copier
 # DO NOT MANUALLY MODIFY THIS FILE
-_commit: c87f4ce
+_commit: v0.3.0
 _src_path: gh:open-energy-transition/openmod-features
 description: Calliope is a free and open-source tool that makes it easy to build energy
     system models at scales ranging from urban districts to entire continents.
