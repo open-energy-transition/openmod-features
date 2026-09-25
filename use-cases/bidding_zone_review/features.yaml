@@ -8,37 +8,36 @@
 
 assumptions:
 - >-
-  A single target year is modelled. Generation, storage, and transmission capacities are fixed by the integrated
-  resource plan (IRP) and network development plan (NDP); no investment decisions are made.
+  A single target year is modelled.
+  Generation, storage, and transmission capacities are fixed by the integrated resource plan (IRP) and network development plan (NDP);
+  no investment decisions are made.
 - >-
-  Several candidate bidding-zone configurations are compared, each formed by grouping the nodes of a detailed
-  transmission grid model into zones.
+  Several candidate bidding-zone configurations are compared,
+  each formed by grouping the nodes of a detailed transmission grid model into zones.
 - >-
-  For each configuration, the day-ahead market is cleared zonally using flow-based market coupling, with zone-to-line
-  power transfer distribution factors (PTDFs) and critical network elements and contingencies (CNECs) supplied as
+  For each configuration, the day-ahead market is cleared zonally using flow-based market coupling.
+  Zone-to-line power transfer distribution factors (PTDFs) and critical network elements and contingencies (CNECs) are supplied as
   inputs.
 - >-
-  The market schedule is then redispatched on the nodal grid model (DC power flow, N-1 security), with deviations from
-  the schedule priced at redispatch offers, giving congestion and redispatch costs per configuration.
+  The market schedule is redispatched on the nodal grid model (DC power flow, N-1 security).
+  Deviations from the schedule is priced at redispatch offers, giving congestion and redispatch costs per configuration.
 - >-
-  Thermal and hydro units are resolved individually, with unit commitment (minimum stable level, ramping, minimum
-  up/down times, start-up and no-load costs) and stepwise bid curves, to represent day-ahead scheduling realistically.
+  Thermal and hydro units are resolved individually, with unit commitment and stepwise bid curves, to represent day-ahead scheduling realistically.
 - >-
-  The year is optimised in rolling windows of days to weeks (myopic foresight within the year), handing storage levels
-  over between windows. Seasonal hydro storage is valued with water values from a longer-horizon run.
+  The year is optimised in rolling windows of days to weeks (myopic foresight within the year), handing storage levels over between windows.
+  Seasonal hydro storage is valued with water values from a longer-horizon run.
 - >-
-  Only the power system is modelled. Other sectors enter as exogenous demand profiles and price-responsive demand
-  bids.
+  Only the power system is modelled.
+  Other sectors enter as exogenous demand profiles and price-responsive demand bids.
 - >-
-  Weather uncertainty is covered by running several historical climate years as separate deterministic scenarios
-  rather than by stochastic optimisation.
+  Weather uncertainty is covered by running several historical climate years as separate deterministic scenarios rather than by stochastic optimisation.
 - >-
-  Load shedding is allowed at the value of lost load (VOLL). Adequacy is not a decision criterion, so no probabilistic
-  reliability limits are applied.
+  Load shedding is allowed at the value of lost load (VOLL).
+  Adequacy is not a decision criterion, so no probabilistic reliability limits are applied.
 - >-
-  Configurations are assessed on socio-economic welfare, zonal price differences, cross-zonal capacities, congestion
-  rents, redispatch volumes and costs, generator revenues (including support schemes such as contracts-for-difference
-  and feed-in tariffs), and CO2 emissions.
+  Configurations are assessed on socio-economic welfare,
+  zonal price differences, cross-zonal capacities, congestion rents,
+  redispatch volumes and costs, generator revenues, and CO2 emissions.
 - >-
   Users require a GUI to navigate model preparation, optimisation, and analysis.
 features:
@@ -101,8 +100,7 @@ features:
         transformers:
           value: y
         facts_devices:
-          # Tenuous: optimised phase-shifter set-points are a common remedial action in redispatch, but fixed
-          # settings may suffice.
+          # Tenuous: optimised phase-shifter set-points are a common remedial action in redispatch, but fixed settings may suffice.
           value: y
         hvdc_converters:
           value: y
@@ -233,8 +231,7 @@ features:
         value: y
       probabilistic_reliability_limit:
         loss_of_load:
-          # Changed from the 0.2.0 list: adequacy is not a bidding-zone criterion; load shedding is priced at VOLL
-          # instead.
+          # Changed from the 0.2.0 list: adequacy is not a bidding-zone criterion; load shedding is priced at VOLL instead.
           value: n
         unserved_energy:
           # Changed from the 0.2.0 list: see `loss_of_load`.
@@ -365,8 +362,7 @@ features:
           value: y
       similarity_aggregation:
         temporal:
-          # Changed from the 0.2.0 list (typical periods): rolling-horizon market simulation needs a chronological
-          # year.
+          # Changed from the 0.2.0 list (typical periods): rolling-horizon market simulation needs a chronological year.
           value: n
         spatial:
           # Candidate zone configurations can be proposed by clustering nodes on nodal price or PTDF similarity.

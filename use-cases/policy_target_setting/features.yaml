@@ -8,47 +8,43 @@
 
 assumptions:
 - >-
-  The optimisation is run with perfect foresight over the full horizon, which spans multiple decades at 5-year
-  resolution, starting from the existing asset stock.
+  The optimisation is run with perfect foresight over the full horizon,
+  which spans multiple decades at 5-year resolution, starting from the existing asset stock.
 - >-
-  The spatial scope is national and single-node. It could be multi-node at national resolution for a multinational
-  study, but that is not chosen here. Imports and exports are exchanges across the system boundary.
+  The spatial scope is national and single-node.
+  It could be multi-node at national resolution for a multinational study, but that is not chosen here.
+  Imports and exports are exchanges across the system boundary.
 - >-
-  Each year is represented by representative time slices (e.g. season × day/night/peak). Automated clustering into
-  representative periods would also work but is not chosen here.
+  Each year is represented by representative time slices (e.g. season x day/night/peak).
+  Automated clustering into representative periods would also work but is not chosen here.
 - >-
   Storage is aggregated, and its level is linked across time slices.
 - >-
-  The system is multi-carrier, including electricity, hydrogen, natural gas, heat, and oil products, with conversion
-  between them (e.g. CHP, refineries).
+  The system is multi-carrier, including electricity, hydrogen, natural gas, heat, and oil products, with conversion between them (e.g. CHP, refineries).
 - >-
-  Demands are end-use services (e.g. "vehicle km" for transport) met by conversion technologies, and they respond to
-  price through elastic demand curves.
+  Demands are end-use services (e.g. "vehicle km" for transport) met by conversion technologies, and they respond to price through elastic demand curves.
 - >-
-  Extraction of domestic fossil resources is represented by assets, competing with imports, and is bounded by resource
-  potentials.
+  Extraction of domestic fossil resources is represented by assets, competing with imports, and is bounded by resource potentials.
 - >-
-  Assets are always grouped. They are sub-grouped by cost and resource class in preprocessing and grouped back up in
-  postprocessing.
+  Assets are always grouped.
+  They are sub-grouped by cost and resource class in preprocessing and grouped back up in postprocessing.
 - >-
-  Complex asset operating characteristics (unit commitment, ramping) are not represented. Assets have availability
-  factors, and outages are covered by a reserve margin of de-rated dispatchable capacity.
+  Complex asset operating characteristics (unit commitment, ramping) are not represented.
+  Assets have availability factors, and outages are covered by a reserve margin of de-rated dispatchable capacity.
 - >-
-  Deployment is bounded by technology availability dates, technical lifetimes, per-period and relative growth limits,
-  and technical potentials. Early retirement of fossil assets is a decision.
+  Deployment is bounded by technology availability dates, technical lifetimes, per-period and relative growth limits, and technical potentials.
+  Early retirement of fossil assets is a decision.
 - >-
-  Emission caps per period, a cumulative carbon budget, and sector- or technology-specific targets are set by user-
-  defined constraints on subsets of the system.
+  Emission caps per period, a cumulative carbon budget, and sector- or technology-specific targets are set by user-defined constraints on subsets of the system.
 - >-
-  Endogenous learning is not used, as it distorts the model. Cost trajectories are exogenous.
+  Endogenous learning is not used, as it distorts the model.
+  Cost trajectories are exogenous.
 - >-
   Technology-specific discount rates (hurdle rates) represent consumer preferences on payback periods.
 - >-
-  Marginal prices and shadow prices of targets (e.g. marginal abatement cost of CO2) are required to compare
-  scenarios.
+  Marginal prices and shadow prices of targets (e.g. marginal abatement cost of CO2) are required to compare scenarios.
 - >-
-  Sensitivity scenarios are run, but detailed sensitivity analysis and stochastic optimisation are beyond the scope of
-  this study.
+  Sensitivity scenarios are run, but detailed sensitivity analysis and stochastic optimisation are beyond the scope of this study.
 - >-
   A GUI is necessary, particularly for outputs.
 features:

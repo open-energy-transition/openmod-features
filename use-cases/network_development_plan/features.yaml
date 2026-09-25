@@ -12,41 +12,39 @@ assumptions:
 - >-
   Generation capacities are fixed by the integrated resource plan (IRP) in each investment year.
 - >-
-  Candidate projects include new AC circuits (discrete units), HVDC corridors (continuous size), and upgrades of
-  existing circuits, each with an earliest commissioning date.
+  Candidate projects include new AC circuits (discrete units), HVDC corridors (continuous size),
+  and upgrades of existing circuits, each with an earliest commissioning date.
 - >-
-  The grid is represented nodally with DC power flow, including thermal limits, transformers and phase-shifters, HVDC
-  links and converters, flow-dependent losses, and N-1 security.
+  The grid is represented nodally with DC power flow, including thermal limits, transformers and phase-shifters,
+  HVDC links and converters, flow-dependent losses, and N-1 security.
 - >-
-  Voltage and reactive-power adequacy of the chosen plan is checked in separate AC load-flow studies, outside this
-  optimisation.
+  Voltage and reactive-power adequacy of the chosen plan is checked in separate AC load-flow studies, outside this optimisation.
 - >-
-  Line impedances change with expansion, so the optimisation is iterated until flows and the chosen build are
-  consistent.
+  Line impedances change with expansion, so the optimisation is iterated until flows and the chosen build are consistent.
 - >-
-  For tractability, grids outside the study area and lower voltage levels are reduced or filtered out, and only
-  contingencies likely to bind are included.
+  For tractability, grids outside the study area and lower voltage levels are reduced or filtered out,
+  and only contingencies likely to bind are included.
 - >-
   Assets are grouped, and only their dispatch is represented, not their unit commitment.
 - >-
   Contracted operating arrangements and regulated limits (e.g. on emissions) defined in the IRP are applied.
 - >-
-  Each investment year is represented by an hourly (or resampled) timeseries. Different weather and demand years are
-  used to stress-test the plan, but not as a formal Monte Carlo analysis.
+  Each investment year is represented by an hourly (or resampled) timeseries.
+  Different weather and demand years are used to stress-test the plan, but not as a formal Monte Carlo analysis.
 - >-
-  Load shedding is allowed at the value of lost load (VOLL). Adequacy (LOLE, EENS) is a cost-benefit indicator
-  computed post hoc, not a constraint.
+  Load shedding is allowed at the value of lost load (VOLL).
+  Adequacy (LOLE, EENS) is a cost-benefit indicator computed post hoc, not a constraint.
 - >-
   Candidate projects are assessed with cost-benefit indicators, including socio-economic welfare, congestion rents,
   losses, CO2 emissions, curtailment, adequacy, transfer capacities, congestion hours, and project net present value.
 - >-
-  Investment and storage horizon edge effects are ignored in the optimisation. Residual value is handled in the post-
-  hoc project assessment.
+  Investment and storage horizon edge effects are ignored in the optimisation.
+  Residual value is handled in the post- hoc project assessment.
 - >-
   User-defined constraints and decision variables may be required to represent one-off transmission system quirks.
 - >-
-  Network data are taken from transmission system operator (TSO) grid models in standard formats, and outputs must be
-  formatted and traceable for regulatory approval.
+  Network data are taken from transmission system operator (TSO) grid models in standard formats.
+  Outputs must be formatted and traceable for regulatory approval.
 - >-
   Users require a GUI to navigate model preparation, optimisation, and analysis.
 features:

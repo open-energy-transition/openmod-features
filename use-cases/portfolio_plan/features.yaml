@@ -8,51 +8,48 @@
 
 assumptions:
 - >-
-  The utility's investment plan covers a 10–15 year horizon in annual or multi-year investment periods with perfect
-  foresight.
+  The utility's investment plan covers a 10-15 year horizon in annual or multi-year investment periods with perfect foresight.
 - >-
-  Candidate projects (new build, repowering and upgrades, early retirement or divestment) are discrete decisions with
-  project-specific sizes, a minimum viable size, and earliest commissioning dates.
+  Candidate projects are discrete decisions with project-specific sizes, a minimum viable size, and earliest commissioning dates.
 - >-
-  The operating revenue of candidate portfolios is analysed with rolling-horizon market simulation over days to weeks
-  (myopic foresight within the year), interleaving day-ahead and intra-day market stages.
+  The operating revenue of candidate portfolios is analysed with rolling-horizon market simulation over days to weeks (myopic foresight within the year),
+  interleaving day-ahead and intra-day market stages.
 - >-
   Portfolio assets are resolved individually with unit commitment characteristics, including minimum stable level,
   ramp rates, start-up and shut-down trajectories, minimum up/down times, and start-up fuel.
 - >-
-  Cost detail for portfolio assets includes hot/warm/cold start-up costs, no-load costs, and heat-rate curves, with
-  non-linear operating and financial relationships piecewise linearised.
+  Cost detail for portfolio assets includes hot/warm/cold start-up costs, no-load costs, and heat-rate curves,
+  with non-linear operating and financial relationships piecewise linearised.
 - >-
-  Maintenance windows are co-optimised with operation. Start and operating-hour limits from long-term service
-  agreements are respected.
+  Maintenance windows are co-optimised with operation.
+  Start and operating-hour limits from long-term service agreements are respected.
 - >-
-  Hydro cascades are represented, including water travel times. So are multi-configuration plants (e.g. CCGT/CHP) with
-  flexible operating regions.
+  Hydro cascades are represented, including water travel times.
+  So are multi-configuration plants (e.g. CCGT/CHP) with flexible operating regions.
 - >-
   Battery degradation is represented, as storage revenue over the horizon depends on it.
 - >-
-  The rest of the system develops according to the scenarios in the integrated resource plan (IRP) and network
-  development plan (NDP). It is resolved coarsely (zonal, grouped assets, linear dispatch), and competitors' bidding
-  is approximated by heuristic markups.
+  The rest of the system develops according to the scenarios in the integrated resource plan (IRP) and network development plan (NDP).
+  It is resolved coarsely (zonal, grouped assets, linear dispatch), and competitors' bidding is approximated by heuristic markups.
 - >-
   Grid-connection limits for portfolio assets are imposed through PTDFs supplied by the transmission system operator.
   Nodal network physics is not represented.
 - >-
-  A capital budget limits total investment across the portfolio. Company-level emission and renewable-capacity targets
-  may apply.
+  A capital budget limits total investment across the portfolio.
+  Company-level emission and renewable-capacity targets may apply.
 - >-
-  Financial assessment uses the company's WACC, tax and depreciation, and asset-level revenue accounts. It includes
-  settlement of PPAs, contracts-for-difference, and capacity obligations, as well as ancillary-service revenues.
+  Financial assessment uses the company's WACC, tax and depreciation, and asset-level revenue accounts.
+  It includes settlement of PPAs, contracts-for-difference, and capacity obligations, as well as ancillary-service revenues.
 - >-
   Financial and operational horizon edge effects must be considered, as the portfolio includes storage.
 - >-
-  Weather and market uncertainty are handled by two-stage stochastic optimisation (investment in the first stage) with
-  a CVaR risk measure. It runs over a reduced set of sampled scenarios and may require decomposition.
+  Weather and market uncertainty are handled by two-stage stochastic optimisation (investment in the first stage) with a CVaR risk measure.
+  It runs over a reduced set of sampled scenarios and may require decomposition.
 - >-
   Near-optimal alternative portfolios are generated to inform decision makers.
 - >-
   Externalities (loads, fuel and carbon prices, changes to asset capacities beyond the current portfolio) must be
-  forecast over the next 10–15 years.
+  forecast over the next 10-15 years.
 - >-
   Users require a GUI to navigate model preparation, optimisation, and analysis.
 features:

@@ -8,25 +8,26 @@
 
 assumptions:
 - >-
-  Capacity expansion is optimised with perfect foresight over the full horizon (e.g. to 2050), with investment
-  decisions every N (> 1) years and the existing fleet as the starting point.
+  Capacity expansion is optimised with perfect foresight over the full horizon (e.g. to 2050),
+  with investment decisions every N (> 1) years and the existing fleet as the starting point.
 - >-
   Each investment period is represented by a contiguous timeseries that may be resampled (e.g. to 3-hourly).
 - >-
-  The energy system is fully sector-coupled. Electricity, heat, transport, hydrogen, and gas demands, and conversion
-  between these carriers, are represented, and GHG emissions are accounted for across all sectors.
+  The energy system is fully sector-coupled.
+  Electricity, heat, transport, hydrogen, and gas demands, and conversion between these carriers, are represented, and GHG emissions are accounted for across all sectors.
 - >-
-  The system is divided into a handful of regions (e.g. provinces) linked by transfer capacities for electricity and
-  gas, without network physics.
+  The system is divided into a handful of regions (e.g. provinces or market zones)
+  linked by transfer capacities for electricity and gas, without network physics.
 - >-
-  Large units (e.g. nuclear, large hydro, thermal power plants) are built in discrete unit sizes. Distributed assets
-  (e.g. wind, solar, rooftop PV) are grouped per region and resource class.
+  Large units (e.g. nuclear, large hydro, thermal power plants) are built in discrete unit sizes.
+  Distributed assets (e.g. wind, solar, rooftop PV) are grouped per region and resource class.
 - >-
-  The thermal fleet is operated with linearised unit commitment (minimum stable level, ramping, minimum up/down times,
-  start-up costs). This captures flexibility needs without integer commitment variables.
+  The thermal fleet is operated with linearised unit commitment
+  (minimum stable level, ramping, minimum up/down times, start-up costs).
+  This captures flexibility needs without integer commitment variables.
 - >-
-  Existing plants retire at the end of their technical lifetime or earlier if uneconomic. New technologies are only
-  available from given commissioning dates and are subject to per-period and relative build-rate limits.
+  Existing plants retire at the end of their technical lifetime or earlier if uneconomic.
+  New technologies are only available from given commissioning dates and are subject to per-period and relative build-rate limits.
 - >-
   Policy targets (e.g. economy-wide CO2 caps, renewable shares, technology-specific targets) are set as user-defined
   constraints that may span regions and subsets of technologies.
@@ -34,26 +35,25 @@ assumptions:
   Generator contract arrangements (e.g. minimum/maximum annual dispatch obligations) are represented as annual volume
   limits.
 - >-
-  A planning reserve margin on de-rated firm capacity and an operating reserve requirement are enforced. Load shedding
-  is allowed at the value of lost load (VOLL).
+  A planning reserve margin on de-rated firm capacity and an operating reserve requirement are enforced.
+  Load shedding is allowed at the value of lost load (VOLL).
 - >-
   Resource adequacy (LOLE, EENS, capacity credit of variable renewables) is assessed post hoc rather than constrained.
 - >-
-  The preferred plans are validated in a chronological, hourly production-cost run with fixed capacities and full unit
-  commitment.
+  The preferred plans are validated in a chronological, hourly production-cost run with fixed capacities and full unit commitment.
 - >-
   Demand-side flexibility is represented by time-shiftable loads and smart charging of electric vehicles.
 - >-
-  Hydro and other storage levels are cyclic within each period. The residual value of assets outliving the horizon is
-  accounted for.
+  Hydro and other storage levels are cyclic within each period.
+  The residual value of assets outliving the horizon is accounted for.
 - >-
   Hydro cascading and technology chaining internal to power plants is not represented.
 - >-
-  Transmission and storage losses are fixed efficiencies, and there is no incentive to dump energy, so "unphysical"
-  energy destruction does not need to be mitigated against.
+  Transmission and storage losses are fixed efficiencies, and there is no incentive to dump energy.
+  So, "unphysical" energy destruction does not need to be mitigated against.
 - >-
-  Sensitivity analysis is limited to a small set of named scenarios. Stochastic optimisation, Monte Carlo sampling,
-  and near-optimal (MGA) analysis are not employed.
+  Sensitivity analysis is limited to a small set of named scenarios.
+  Stochastic optimisation, Monte Carlo sampling, and near-optimal (MGA) analysis are not employed.
 - >-
   There is sufficient computational capacity to run the model at the defined spatio-temporal scope and resolution
   without decomposition.
