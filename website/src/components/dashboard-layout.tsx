@@ -36,6 +36,7 @@ export type DashboardOutletContext = {
 }
 
 const DashboardContext = createContext<DashboardOutletContext | null>(null)
+const CURRENT_TAXONOMY_VERSION = 'v0.3.0'
 
 export function useDashboardContext() {
   const context = useContext(DashboardContext)
@@ -198,7 +199,7 @@ function HomeIntro({ data }: { data: DashboardData }) {
         />
         <ProvenanceItem
           label="Taxonomy"
-          value={data.taxonomyVersion}
+          value={data.taxonomyVersion || CURRENT_TAXONOMY_VERSION}
         />
       </dl>
     </section>
