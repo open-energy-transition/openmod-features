@@ -4,421 +4,1298 @@
 #
 # SPDX-License-Identifier: CC-BY-4.0
 
-# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/c87f4ce/schema/tool-schema.yaml
+# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/v0.3.0/schema/tool-schema.yaml
 
+# Assessed against the OSeMOSYS GNU MathProg reference implementation v1.0.1 (released 21st May 2021)
+# and the official OSeMOSYS documentation (https://osemosys.readthedocs.io, only `latest` is published).
+# v1.0.1 is the release GitHub marks as latest and the newest model code: the later-dated v0.8.1 tag
+# (25th August 2021) is a Zenodo re-release of the 2019 code line, and the default branch has only
+# unreleased fixes to the short/fast model variants since v1.0.1 (src/osemosys.txt is unchanged).
+# The entry covers the OSeMOSYS ecosystem: the reference model plus companion tools built specifically
+# for OSeMOSYS with documented OSeMOSYS examples. These are otoole (data CLI / Python API), MUIO (GUI),
+# clicSAND (Excel front-end), OSeMOSYS Cloud (web solver), OSeMOSYS Global (model generator, v2.0.0a),
+# OSeMOSYS_PuLP (Python implementation with Monte Carlo runs), OSeMOSYS_step (myopic runs), esom_gsa
+# (sensitivity analysis), osemosys-rdm (robust decision making ensembles), osemosys2iamc (IAMC
+# reporting), the OSeMOSYS-FlexTool workflow, clewsy and GEOSeMOSYS. Each is named in the comments of the leaves it supports. Features that exist only in a
+# companion tool's own copy of the model file (MUIO, OSeMOSYS Global) are marked Tenuous. The GAMS /
+# Pyomo / linopy implementations and single-study repositories are not credited.
+# The community extensions listed under Advanced functionalities are credited as `y` where they
+# publish code that can be added to the reference model file (cascaded hydro), and as `dev` where
+# they are only described in publications or code snippets written for older code versions.
+# Other `dev` entries link to open pull requests.
+
+version: 'v1.0.1'
 features:
-  asset__candidates:
-    converters:
+  processes:
+    boundary_exchange:
+      value: y
       source:
+        # Every supply chain starts with a technology that has no input fuel (e.g. an import or
+        # extraction technology), costed via VariableCost and bounded by activity/capacity limits.
+        - https://osemosys.readthedocs.io/en/latest/manual/Debugging%20a%20model.html#starting-the-chain-with-a-technology
         - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#sets
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#activity-constraints
+    conversion:
+      one_to_one:
+        value: y
+        source:
+          # InputActivityRatio / OutputActivityRatio relate each technology's activity to its fuel
+          # use and production.
+          - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#performance
+          - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#energy-balance-a
+      multi_carrier_io:
+        value: y
+        source:
+          # Several fuels can carry non-zero Input/OutputActivityRatio for the same technology and
+          # mode.
+          - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#performance
+          - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#energy-balance-a
+      flexible_ratio:
+        value: y
+        source:
+          # MODE_OF_OPERATION: a technology can choose any linear combination of modes with
+          # different input/output mixes (e.g. a CHP plant producing heat in one mode and
+          # electricity in another).
+          - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#sets
+          - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#performance
+    temporal_transfer:
       value: y
-    electricity_transmission:
-      source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#sets
-      value: y
-    endogenous:
-      source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capacity-variables
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capacity-adequacy-a
-      value: y
-    exogenous:
-      source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#performance
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capacity-adequacy-a
-      value: y
-    fluid_or_gas_distribution:
-      source: []
-      value: n
-    generators:
-      source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#accounting-technology-production-use
-      value: y
-    loads:
-      source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#demands
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#demands-1
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#rate-of-demand
-      value: y
-    storage:
       source:
         - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#storage
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#storage-1
         - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#storage-equations
         - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#storage-constraints
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#storage-investments
+    spatial_transfer:
       value: y
-  asset__capacity_representation:
-    grouped:
       source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capacity-adequacy-a
-      value: y
-    partial_grouped:
-      source: []
+        # `Trade` between REGIONs enabled by TradeRoute (no capacity limit on the trade link itself,
+        # see issue #62); capacity-limited transfer is modelled as a transmission technology
+        # converting one region-specific fuel into another.
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#sets
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#global-parameters
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#energy-balance-a
+        - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/issues/62
+    delayed_transfer:
       value: n
-    units:
-      source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capacity-adequacy-a
-      value: y
-  asset__chaining:
-    asset_linking:
-      source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#cascaded-water-storage
-        - https://doi.org/10.1088/2515-7620/ad8ca4
-      value: y
-    stockpiling:
       source: []
+    buffered_transfer:
       value: n
-  asset__cost__investment:
-    annuitisation:
-      source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capital-costs
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#total-discounted-costs
-      value: y
-    linear:
-      source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#technology-costs
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capital-costs
-      value: y
-    piecewise:
       source: []
+    discrete_transport:
       value: n
-    subsidy/penalty:
       source: []
+    state_changing_transfer:
       value: n
-    unit:
       source: []
+    explicit_demand:
+      inelastic:
+        # Tenuous: demands themselves (SpecifiedAnnualDemand / AccumulatedAnnualDemand) are
+        # exogenous; a constrainable demand process is built from an end-use technology with fixed
+        # activity.
+        value: y
+        source:
+          # End-use technologies consuming a final fuel are ordinary technologies; their annual
+          # activity can be fixed with TotalTechnologyAnnualActivityLower/UpperLimit.
+          - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#sets
+          - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#annual-activity-constraints
+          - https://osemosys.readthedocs.io/en/latest/manual/Create%20a%20model%20in%20OSeMOSYS.html#the-atlantis-case-study
+      price_responsive:
+        value: dev
+        source:
+          # No elastic demand in the reference model. Load shedding of prioritised demand types at
+          # user-defined costs is a community extension of the 2011 code, published only as a
+          # paper appendix.
+          - https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#demand-flexibility
+      mobile_storage:
+        value: n
+        source: []
+  network:
+    power_flow:
+      optimal_power_flow:
+        dc_opf:
+          value: n
+          source:
+            # Transport model only: energy balance per region/timeslice with no network physics.
+            - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#energy-balance-a
+        ac_opf:
+          value: n
+          source: []
+        unbalanced_flows:
+          value: n
+          source: []
+      sensitivity_limits:
+        ptdf:
+          value: n
+          source: []
+        outage_factors:
+          value: n
+          source: []
+        generic_constraints:
+          value: n
+          source: []
+      network_limits:
+        thermal:
+          value: n
+          source: []
+        phase_angle:
+          value: n
+          source: []
+      losses:
+        # Transmission losses are only a fixed Input/OutputActivityRatio efficiency on a
+        # transmission technology.
+        value: n
+        source: []
+      network_devices:
+        transformers:
+          value: n
+          source: []
+        facts_devices:
+          value: n
+          source: []
+        hvdc_converters:
+          value: n
+          source: []
+    hydraulic_flow:
+      linearised_flow:
+        value: n
+        source: []
+      composition_tracking:
+        value: n
+        source: []
+  decisions:
+    investment:
+      exogenous_capacity:
+        value: y
+        source:
+          # ResidualCapacity; capacity can be fixed by setting TotalAnnualMaxCapacity equal to it.
+          - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#performance
+          - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capacity-constraints
+      continuous_capacity:
+        value: y
+        source:
+          - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capacity-variables
+          - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capacity-constraints
+          - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#total-capacity-constraints
+      integer_investment_exogenous_capacity:
+        value: y
+        source:
+          # CapacityOfOneTechnologyUnit with the integer variable NumberOfNewTechnologyUnits turns
+          # the problem into a MILP.
+          - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capacity-constraints
+          - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capacity-adequacy-a
+          - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/blob/v1.0.1/src/osemosys.txt#L396
+      integer_investment_continuous_capacity:
+        value: n
+        source: []
+      multi_period:
+        value: y
+        source:
+          # NewCapacity[r,t,y] is decided for every year in the YEAR set within one perfect-
+          # foresight run.
+          - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#sets
+          - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capacity-variables
+          - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#objective-function
+      retrofit:
+        value: dev
+        source:
+          # Refurbishing existing units is a community extension described in a thesis; its
+          # retrofitting equations are pasted in an issue but not integrated.
+          - https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#short-term-operational-constraints-of-power-plants
+          - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/issues/103
+      endogenous_retirement:
+        value: n
+        source:
+          # Capacity leaves only at the end of OperationalLife (CAa1); there is no early-retirement
+          # variable.
+          - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capacity-adequacy-a
+    operation:
+      unit_commitment:
+        value: n
+        source:
+          # Unit-commitment-style operating constraints exist only as published community
+          # extensions, not in the reference code.
+          - https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#short-term-operational-constraints-of-power-plants
+      maintenance_scheduling:
+        value: n
+        source:
+          # AvailabilityFactor is an exogenous annual limit representing planned outages; outage
+          # timing is not decided.
+          - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#performance
+          - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capacity-adequacy-b
+  constraints:
+    scope:
+      temporal:
+        pointwise:
+          investment:
+            value: y
+            source:
+              # TotalAnnualMax/MinCapacityInvestment bound NewCapacity in each year.
+              - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capacity-constraints
+              - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#new-capacity-constraints
+          operation:
+            availability_derating:
+              value: y
+              source:
+                # CapacityFactor[r,t,l,y] bounds activity per timeslice; MinStorageCharge bounds the
+                # stored level.
+                - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#performance
+                - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capacity-adequacy-a
+                - https://osemosys.readthedocs.io/en/latest/manual/Debugging%20a%20model.html#capacity-factors
+                - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#storage
+            minimum_stable_level:
+              value: dev
+              source:
+                # Minimum duty is only described in a community extension, with no published code.
+                - https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#short-term-operational-constraints-of-power-plants
+            forced_offline:
+              # Tenuous: no commitment state, but setting CapacityFactor to 0 in given timeslices
+              # forces the technology's activity to zero there.
+              value: y
+              source:
+                - https://osemosys.readthedocs.io/en/latest/manual/Debugging%20a%20model.html#capacity-factors
+                - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capacity-adequacy-a
+            forced_online:
+              value: n
+              source:
+                # No per-timeslice lower bound on activity; activity lower limits are annual or
+                # model-period only. Mode-level activity limits are an open enhancement proposal.
+                - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#activity-constraints
+                - https://github.com/OSeMOSYS/OSeMOSYS/issues/124
+        sequential:
+          investment:
+            availability_window:
+              value: y
+              source:
+                # Year-indexed TotalAnnualMaxCapacityInvestment (set to 0 before a commissioning
+                # date) restricts the years in which a technology may be built.
+                - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capacity-constraints
+                - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#new-capacity-constraints
+            relative_build_rate:
+              value: n
+              source:
+                # Requested: growth constraint relative to previous periods.
+                - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/issues/88
+            technical_lifetime:
+              value: y
+              source:
+                # OperationalLife removes new capacity from AccumulatedNewCapacity after its
+                # lifetime.
+                - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#performance
+                - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capacity-adequacy-a
+          operation:
+            ramping:
+              value: dev
+              source:
+                # Ramping constraints are only described in the community short-term extensions,
+                # with no published code.
+                - https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#short-term-planning
+                - https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#short-term-operational-constraints-of-power-plants
+            start_shut_trajectory:
+              value: n
+              source: []
+            commitment_duration:
+              value: n
+              source: []
+            start_consumption:
+              value: n
+              source: []
+        cumulative:
+          investment:
+            capacity_target:
+              value: y
+              source:
+                # TotalAnnualMax/MinCapacity bound installed capacity; ReserveMargin requires
+                # capacity counted at the ReserveMarginTagTechnology fraction (0-1) to exceed tagged
+                # demand.
+                - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capacity-constraints
+                - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#total-capacity-constraints
+                - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#reserve-margin
+                - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#reserve-margin-constraints
+            expansion_budget:
+              value: n
+              source: []
+            event_count:
+              value: n
+              source: []
+            path_dependent:
+              value: n
+              source: []
+          operation:
+            flow_volume:
+              value: y
+              source:
+                # Annual and model-period activity limits per technology; minimum renewable
+                # production share (REMinProductionTarget).
+                - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#activity-constraints
+                - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#annual-activity-constraints
+                - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#total-activity-constraints
+                - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#re-production-target
+            impact_budget:
+              value: y
+              source:
+                # AnnualEmissionLimit / ModelPeriodEmissionLimit on any user-defined EMISSION (used
+                # for water, land etc. in CLEWs-type models).
+                - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#emissions
+                - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#emissions-accounting
+            event_count:
+              value: n
+              source: []
+            state_duration:
+              value: n
+              source: []
+            path_dependent:
+              value: n
+              source: []
+        boundary_conditions:
+          investment:
+            value: y
+            source:
+              # ResidualCapacity / ResidualStorageCapacity define the existing stock.
+              - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#performance
+              - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#storage
+          operation:
+            value: y
+            source:
+              # StorageLevelStart sets the initial storage level; no end-state condition.
+              - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#storage
+              - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#storage-equations
+              # Limits on the change in activity between years are an enhancement proposal for the
+              # reference model; MUIO's model file limits year-on-year activity change per mode.
+              - https://github.com/OSeMOSYS/OSeMOSYS/issues/106
+              - https://github.com/OSeMOSYS/MUIO/blob/v5.6/WebAPP/SOLVERs/model.v.5.4.txt#L238-L241
+      spatial:
+        investment:
+          # Tenuous: all limits are indexed by REGION, so they do not span several REGIONs. Nodes
+          # can instead be encoded in fuel and technology names within one REGION, as OSeMOSYS
+          # Global does systematically.
+          value: y
+          source:
+            # The REGION set description suggests modelling several countries within one REGION through ad hoc fuels and technologies.
+            - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#sets
+            - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#reserve-margin-constraints
+            - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/issues/85
+            # OSeMOSYS Global applies one reserve margin across all its nodes.
+            - https://github.com/OSeMOSYS/osemosys_global/blob/v2.0.0a/workflow/scripts/osemosys_global/reserves/reserve_margin_tag_fuel.py#L7-L21
+            - https://osemosys-global.readthedocs.io/en/latest/examples.html#example-4
+            # Generic capacity targets across technologies (and so across such nodes) are an open PR.
+            - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/pull/75
+        operation:
+          # Tenuous: as for `investment`: emission limits and the RE target span all nodes encoded
+          # within one REGION, but never several REGIONs.
+          value: y
+          source:
+            - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#sets
+            - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#emissions-accounting
+            - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#re-production-target
+            - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/issues/85
+            # OSeMOSYS Global sets country emission caps and national / system RE shares over nodes.
+            - https://github.com/OSeMOSYS/osemosys_global/blob/v2.0.0a/workflow/scripts/osemosys_global/powerplant/renewable_targets.py#L7-L151
+            - https://osemosys-global.readthedocs.io/en/latest/examples.html#example-4
+      assets:
+        spanning:
+          investment:
+            # Tenuous: the reserve margin (one per REGION, relative to tagged production) is the
+            # only capacity limit spanning several technologies in the reference model.
+            value: y
+            source:
+              # The reserve margin sums the capacity of all tagged technologies.
+              - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#reserve-margin-constraints
+              # Combined capacity targets are an enhancement proposal and an open PR (UDCs) for the
+              # reference model; MUIO's model file ships UDCs.
+              - https://github.com/OSeMOSYS/OSeMOSYS/issues/107
+              - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/pull/75
+              - https://github.com/OSeMOSYS/MUIO/blob/v5.6/WebAPP/SOLVERs/model.v.5.4.txt#L343-L351
+          operation:
+            value: y
+            source:
+              # Emission limits sum over all emitting technologies; the RE target sums production of
+              # tagged technologies.
+              - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#emissions-accounting
+              - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#re-production-target
+              # The RE target applies jointly to all RE-tagged fuels, not per fuel.
+              - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/issues/32
+        dedicated_flow_routing:
+          # Tenuous: no dedicated mechanism in the reference model; achieved through the
+          # fuel/technology graph and storage links.
+          value: y
+          source:
+            # TechnologyToStorage / TechnologyFromStorage link named technologies to a storage; an
+            # intermediate FUEL produced and used by named technologies only routes flow between
+            # them.
+            - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#storage
+            - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#sets
+            # The community cascaded hydro code routes reservoir discharge into named downstream
+            # reservoirs (DownstreamReservoirTag).
+            - https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#cascaded-water-storage
+            - https://github.com/tniet/OSeMOSYS/blob/b78ae92bdb0877aa750bbf77b0540642b9271817/OSeMOSYS_GNU_MathProg/osemosys_short.txt#L457-L489
+    functional_form:
+      linear_multi_variable:
+        investment:
+          # Tenuous: only in MUIO's own model file; an open PR for the reference model.
+          value: y
+          source:
+            # User-defined constraints (UDCs) with multipliers on NewCapacity / TotalCapacityAnnual
+            # / annual activity.
+            - https://github.com/OSeMOSYS/MUIO/blob/v5.6/WebAPP/SOLVERs/model.v.5.4.txt#L343-L351
+            - https://github.com/OSeMOSYS/MUIO/blob/v5.6/docs/source/structure-osemosys/parameters.rst
+            - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/pull/75
+        operation:
+          value: y
+          source:
+            # Modes of operation define a convex operating region between several flows of one
+            # technology; the RE target links production across technologies.
+            - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#sets
+            - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#re-production-target
+            # Generic user-defined linear constraints on annual activity are in MUIO's model file
+            # and an open PR for the reference model.
+            - https://github.com/OSeMOSYS/MUIO/blob/v5.6/WebAPP/SOLVERs/model.v.5.4.txt#L343-L351
+            - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/pull/75
+      quadratic:
+        investment:
+          # Formulated as an LP / MILP for GLPK and other LP solvers.
+          value: n
+          source: []
+        operation:
+          value: n
+          source: []
+      nonlinear:
+        investment:
+          value: n
+          source: []
+        operation:
+          value: n
+          source:
+            # Part-load efficiency code offered but not integrated.
+            - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/issues/103
+    reliability:
+      unserved_demand:
+        # Tenuous: no built-in VOLL; the documented approach is a dummy supply technology with a
+        # very high variable cost.
+        value: y
+        source:
+          - https://osemosys.readthedocs.io/en/latest/manual/Debugging%20a%20model.html#adding-a-dummy-technology
+      operating_reserve:
+        online_headroom:
+          value: dev
+          source:
+            # ReserveMargin is a planning capacity margin, not a reserve held on running assets.
+            - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#reserve-margin-constraints
+            # Reserve capacity dispatch is only described in a community extension, with no
+            # published code.
+            - https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#short-term-operational-constraints-of-power-plants
+        standby_capability:
+          value: n
+          source: []
+        inertia:
+          value: n
+          source: []
+      contingency_constrained:
+        value: n
+        source: []
+      probabilistic_reliability_limit:
+        loss_of_load:
+          value: n
+          source: []
+        unserved_energy:
+          value: dev
+          source:
+            # Energy-security extension (external Matlab disturbance model) described in a thesis.
+            - https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#stochastic-modelling-of-energy-security-assessment
+    soft_constraints:
       value: n
-  asset__cost__operation:
-    linear:
-      source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#technology-costs
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#operating-costs
-      value: y
-    piecewise:
-      source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#short-term-operational-constraints-of-power-plants
-      value: dev
-    subsidy/penalty:
-      source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#short-term-planning
-      value: dev
-    unit:
       source: []
+  cost:
+    scope:
+      temporal:
+        sequential:
+          investment:
+            value: n
+            source: []
+          operation:
+            ramping:
+              value: dev
+              source:
+                # Wear-and-tear costs per ramping cycle are only described in a community extension
+                # (thesis code offered in the issue but not published).
+                - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/issues/72
+                - https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#short-term-operational-constraints-of-power-plants
+            start_up:
+              value: n
+              source:
+                - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/issues/72
+            shut_down:
+              value: n
+              source: []
+            start_state_dependent:
+              value: n
+              source: []
+        cumulative:
+          investment:
+            value: n
+            source: []
+          operation:
+            value: n
+            source: []
+      spatial:
+        investment:
+          value: n
+          source: []
+        operation:
+          value: n
+          source: []
+      assets:
+        investment:
+          value: n
+          source: []
+        operation:
+          value: n
+          source:
+            # EmissionsPenalty is per unit of emission but is charged per technology
+            # (AnnualTechnologyEmissionsPenalty), i.e. linear per asset.
+            - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#emissions-accounting
+    functional_form:
+      fixed_charge:
+        investment:
+          # Capital cost is always per unit of capacity; with CapacityOfOneTechnologyUnit it is only
+          # a fixed price per fixed-size unit.
+          value: n
+          source: []
+        operation:
+          value: n
+          source: []
+      nonlinear:
+        investment:
+          value: n
+          source: []
+        operation:
+          value: dev
+          source:
+            # VariableCost is linear per mode; increased fuel use at part load is only described in
+            # a community extension, with equations pasted in an issue that rely on non-core
+            # online-capacity variables.
+            - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#technology-costs
+            - https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#short-term-operational-constraints-of-power-plants
+            - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/issues/103
+      threshold_deviation:
+        investment:
+          value: n
+          source: []
+        operation:
+          value: n
+          source: []
+    time_value:
+      annuitisation:
+        value: y
+        source:
+          # CapitalRecoveryFactor (technology-specific DiscountRateIdv) and PvAnnuity convert
+          # overnight CapitalCost into its present value over OperationalLife at the technology's
+          # own rate.
+          - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/blob/v1.0.1/src/osemosys.txt#L72-L75
+          - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/blob/v1.0.1/src/osemosys.txt#L631
+          - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/blob/v1.0.1/docs/changelog.md#reintroduced-technology-specific-discount-rate
+          - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#capital-costs
+          # The financing period always equals OperationalLife (a separate financing period is
+          # requested).
+          - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/issues/108
+      fiscal_treatment:
+        # Tenuous: DepreciationMethod (sinking fund / straight line) only sets the salvage value
+        # credited at the horizon end; there is no tax treatment.
+        value: n
+        source:
+          - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#global-parameters
+          - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#salvage-value
+      period_discounting:
+        value: y
+        source:
+          - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#global-parameters
+          - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#total-discounted-costs
+          - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#objective-function
+  objective:
+    quadratic:
       value: n
-  asset__operating_characteristics:
-    iterative:
       source: []
+    multi_objective_weighted:
+      # Emission penalties enter the cost objective as monetised terms, not as weighted separate
+      # objectives.
       value: n
-    linear:
-      source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#performance
-      value: y
-    piecewise:
       source: []
+    multi_objective_pareto:
       value: n
-    static non_dimensional:
-      source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#performance
-      value: y
-    static_dimensional:
-      source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#performance
-      value: y
-  asset__operating_constraints:
-    inter_spatial:
       source: []
+    tie_breaking:
       value: n
-    inter_temporal:
-      source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#short-term-operational-constraints-of-power-plants
-        - https://doi.org/10.1016/j.apenergy.2014.08.072
-      value: dev
-    operating:
       source: []
-      value: n
-    total:
-      source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#activity-constraints
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#annual-activity-constraints
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#total-activity-constraints
-      value: y
-  asset__operating_representation:
-    ed:
-      source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#activity-variables
-      value: y
-    uced:
-      source: []
-      value: n
-  competition:
-    distributed_objectives:
-      source: []
-      value: n
-    portfolio:
-      source: []
-      value: n
   edge_effects:
-    energy_balance:
-      source: []
-      value: n
-    spatial:
-      source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#activity-variables
+    time_operational:
+      # Tenuous: only in companion model files. MUIO's and OSeMOSYS Global's copies force storage
+      # to net zero within each day (or year), so storage ends each cycle where it started.
       value: y
+      source:
+        - https://github.com/OSeMOSYS/MUIO/blob/v5.6/WebAPP/SOLVERs/model.v.5.4.txt#L299-L301
+        - https://github.com/OSeMOSYS/osemosys_global/blob/v2.0.0a/resources/osemosys_fast_preprocessed.txt#L450-L452
+        # In the reference model storage starts at StorageLevelStart; no cyclic or terminal-value
+        # condition at the end of the horizon.
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#storage-equations
+        # Requested: storage balance constraints (issue) and new storage equations balanced over
+        # user-defined timeslice groups (enhancement proposal).
+        - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/issues/51
+        - https://github.com/OSeMOSYS/OSeMOSYS/issues/118
     time_financial:
+      value: y
       source:
         - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#salvage-value
-      value: y
-    time_operational:
-      source: []
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#storage-investments
+    energy_balance:
       value: n
-  interface__input:
-    cli:
-      source:
-        - https://otoole.readthedocs.io/en/latest/functionality.html#
-      value: y
-    gui:
-      source:
-        - https://github.com/OSeMOSYS/MUIO/blob/master/README.md
-      value: y
-    no_code:
-      source:
-        - https://github.com/OSeMOSYS/MUIO/blob/master/README.md
-      value: y
-    scripting:
       source: []
+  actors:
+    portfolio:
       value: n
-    standardised:
       source: []
+    heuristic_markup:
       value: n
-  interface__output:
-    gui:
-      source:
-      - https://github.com/OSeMOSYS/MUIO/blob/master/README.md
-      value: y
-    logs:
-      source:
-        - https://en.wikibooks.org/wiki/GLPK/Using_GLPSOL
-      value: y
-    reports:
       source: []
+    distributed_objectives:
       value: n
-    standardised:
       source: []
+    equilibrium:
       value: n
-    tables:
-      source:
-        - https://otoole.readthedocs.io/en/latest/functionality.html#result-processing
-      value: y
-  optimisation_problem:
-    configuration:
       source: []
+  uncertainty:
+    two_stage_stochastic:
+      # No stochastic programming. The separate OSeMOSYS_PuLP implementation adds Monte Carlo runs
+      # of the deterministic model, not stochastic optimisation.
       value: n
-    decomposition:
       source: []
+    multi_stage_stochastic:
       value: n
+      source: []
+    risk_aversion:
+      value: n
+      source: []
+    robust_optimisation:
+      value: n
+      source: []
     near_optimal:
-      source: []
       value: n
-    sim + opt:
       source: []
+  model_definition:
+    configurable_dimensions:
       value: n
-    user_defined_constraints:
       source:
-        - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/pull/75
-      value: dev
-    user_defined_variables:
-      source: []
+        # Each parameter's index sets are fixed in the model file (e.g. CapitalCost[r,t,y]).
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#parameters
+    extensible_dimensions:
       value: n
-  postprocessing:
-    aggregation:
-      source:
-        - https://github.com/OSeMOSYS/osemosys2iamc/blob/main/README.md
+      source: []
+    dimension_groups:
+      # Tenuous: the model has only fixed-purpose tags (ReserveMarginTag*, RETag*); MUIO technology
+      # groups (a technology may join several) label results for analysis but not constraints.
       value: y
-    curtailment:
-      source: []
-      value: n
-    financial:
-      source: []
-      value: n
-    future_cost_function:
-      source: []
-      value: n
-    gtc:
-      source: []
-      value: n
-    impact_assessment:
-      source: []
-      value: n
-    lcoe:
-      source: []
-      value: n
-    lodf:
-      source: []
-      value: n
-    ptdf:
-      source: []
-      value: n
-    shadow_prices:
       source:
-        - https://github.com/KTH-dESA/dual_values/blob/main/README.md
+        - https://github.com/OSeMOSYS/MUIO/blob/v5.6/docs/source/user-guide/overview.rst
+        - https://github.com/OSeMOSYS/MUIO/blob/v5.6/WebAPP/Classes/DataModelResult.Class.js#L584-L600
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#reserve-margin
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#re-generation-target
+    component_templating:
+      # Tenuous: data-building scripts, not a template mechanism in the model. GEOSeMOSYS clones
+      # each technology per GIS location with its parameters; clewsy generates CLEWs land
+      # technologies from a fixed pattern.
       value: y
+      source:
+        - https://github.com/KTH-dESA/GEOSeMOSYS/blob/206f2efc5667b18443bfc11385819220739cd3d3/build_data_file.py#L157-L184
+        - https://github.com/KTH-dESA/GEOSeMOSYS/blob/206f2efc5667b18443bfc11385819220739cd3d3/README.md
+        - https://github.com/OSeMOSYS/clewsy/blob/v0.2.3a/src/clewsy/model_building/model_building.py#L514-L560
+  math:
+    formulation_transparency:
+      value: y
+      source:
+        # The documentation reproduces the MathProg equations, which are themselves the model.
+        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#equations
+        - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/blob/v1.0.1/src/osemosys.txt
+        - https://osemosys.readthedocs.io/en/latest/manual/Code%20versions.html
+    problem_file_export:
+      value: y
+      source:
+        # `glpsol ... --wlp file.lp` writes the LP problem file.
+        - https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#using-osemosys-with-the-solver-cplex
+        - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/blob/v1.0.1/scripts/README.md
+    dual_extraction:
+      value: y
+      source:
+        # Duals are in the solver's solution report (e.g. `glpsol -o`; otoole drops the dual
+        # column). MUIO reports duals of its annual balance, emission-limit and UDC constraints.
+        - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/blob/v1.0.1/README.md
+        - https://en.wikibooks.org/wiki/GLPK/Solution_information
+        - https://github.com/OSeMOSYS/MUIO/blob/v5.6/API/Classes/Case/DataFileClass.py#L2593-L2611
+    piecewise_formulation:
+      value: n
+      source: []
+    user_defined_math:
+      # Tenuous: no plug-in mechanism; the model is a plain MathProg file that users edit directly,
+      # which the docs present as the way to test modifications and extensions.
+      value: y
+      source:
+        - https://osemosys.readthedocs.io/en/latest/manual/Code%20versions.html
+        - https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#modifications-enhancements-and-extensions-of-the-main-code
+        - https://osemosys.readthedocs.io/en/latest/manual/Debugging%20a%20model.html#upperlimit-and-maxlimit-increase
+  tractability:
+    dimension_reduction:
+      adjacency_aggregation:
+        temporal:
+          # Timeslices and years are defined in the data and never merged chronologically;
+          # OSeMOSYS Global's timeslices average hour blocks across days (similarity aggregation).
+          value: n
+          source:
+            # Requested: flexible (multi-year) period length; the YEAR set must be consecutive
+            # years.
+            - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/issues/86
+        spatial:
+          value: n
+          source: []
+      similarity_aggregation:
+        temporal:
+          value: y
+          source:
+            # The year is represented by non-contiguous representative timeslices weighted by
+            # YearSplit (grouped by season / day type / daily time bracket).
+            - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#sets
+            - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#global-parameters
+            # OSeMOSYS Global derives season x daypart timeslices from hourly demand and capacity
+            # factors; GEOSeMOSYS averages hourly capacity factors into timeslices.
+            - https://github.com/OSeMOSYS/osemosys_global/blob/v2.0.0a/workflow/scripts/osemosys_global/TS_data.py#L153-L203
+            - https://osemosys-global.readthedocs.io/en/latest/getting-started.html#temporal-options
+            - https://github.com/KTH-dESA/GEOSeMOSYS/blob/206f2efc5667b18443bfc11385819220739cd3d3/build_data_file.py#L332-L820
+        spatial:
+          value: n
+          source: []
+        assets:
+          value: y
+          source:
+            # OSeMOSYS Global aggregates individual power plants into one technology per node and
+            # type (summed capacity, mean efficiency).
+            - https://github.com/OSeMOSYS/osemosys_global/blob/v2.0.0a/workflow/scripts/osemosys_global/powerplant/residual_capacity.py#L11-L70
+            - https://github.com/OSeMOSYS/osemosys_global/blob/v2.0.0a/workflow/scripts/osemosys_global/powerplant/data.py#L159-L194
+            - https://osemosys-global.readthedocs.io/en/latest/getting-started.html#generator-options
+        scenarios:
+          value: n
+          source: []
+      non_contiguity_handling:
+        temporal:
+          value: y
+          source:
+            # Storage levels are chained across seasons, day types and daily time brackets
+            # (StorageLevelSeasonStart / DayTypeStart / DayTypeFinish) using DaysInDayType.
+            - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#storage-equations
+            - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#storage-constraints
+            - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/blob/v1.0.1/src/osemosys.txt#L571-L600
+        spatial:
+          value: n
+          source: []
+      equivalencing:
+        spatial:
+          value: n
+          source: []
+        assets:
+          value: n
+          source: []
+      filtering:
+        temporal:
+          value: y
+          source:
+            # OSeMOSYS Global builds the model for a user-set startYear-endYear window.
+            - https://github.com/OSeMOSYS/osemosys_global/blob/v2.0.0a/config/config.yaml#L4-L17
+            - https://osemosys-global.readthedocs.io/en/latest/getting-started.html#temporal-options
+        spatial:
+          value: y
+          source:
+            # OSeMOSYS Global filters its global dataset to selected countries and can drop nodes.
+            - https://github.com/OSeMOSYS/osemosys_global/blob/v2.0.0a/workflow/scripts/osemosys_global/geographic_filter.py#L13-L150
+            - https://osemosys-global.readthedocs.io/en/latest/getting-started.html#spatial-options
+        assets:
+          # Tenuous: OSeMOSYS Global drops technologies with the filtered nodes and can exclude
+          # existing / planned transmission and storage datasets.
+          value: y
+          source:
+            - https://github.com/OSeMOSYS/osemosys_global/blob/v2.0.0a/workflow/scripts/osemosys_global/geographic_filter.py#L13-L150
+            - https://github.com/OSeMOSYS/osemosys_global/blob/v2.0.0a/config/config.yaml#L23-L46
+        scenarios:
+          value: n
+          source: []
+    variable_fidelity:
+      formulation:
+        value: n
+        source: []
+      resolution:
+        temporal:
+          # The TIMESLICE set is common to all years and regions.
+          value: n
+          source: []
+        spatial:
+          value: n
+          source: []
+        assets:
+          value: n
+          source: []
+        scenarios:
+          value: n
+          source: []
+    reformulation:
+      linearised_unit_commitment:
+        value: n
+        source: []
+      nonlinear_handling:
+        convex_relaxation:
+          value: n
+          source: []
+        function_conversion:
+          value: n
+          source: []
+      constraint_screening:
+        value: n
+        source:
+          # Constraints are skipped only where the defining parameter is unset or zero (sparsity),
+          # not by screening for binding; further pruning is an open PR.
+          - https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#reduction-of-the-translation-time
+          - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/blob/v1.0.1/docs/changelog.md#numerous-smaller-performance-improvements
+          - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/pull/84
+      decomposition:
+        value: n
+        source: []
+      numeric_scaling:
+        value: n
+        source:
+          # Open issue on scaling problems.
+          - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/issues/22
+  orchestration:
+    scenario_runs:
+      value: y
+      source:
+        # MUIO batch-runs several named cases (each a set of scenario layers) and collates results
+        # per case.
+        - https://github.com/OSeMOSYS/MUIO/blob/v5.6/API/Classes/Case/DataFileClass.py#L2026-L2043
+        - https://github.com/OSeMOSYS/MUIO/blob/v5.6/docs/source/user-guide/overview.rst#running-a-model
+        # osemosys-rdm solves every scenario data file and collates results by strategy.
+        - https://osemosys-rdm.readthedocs.io/en/latest/user-guide/interface-configuration.html#execution-control
+        - https://github.com/clg-admin/osemosys-rdm/blob/fbf91844756ec7d2c0592ec9865fecde8292f531/src/workflow/1_Experiment/1_output_dataset_creator.py#L60-L83
+        # OSeMOSYS_step solves every combination of per-step options in one call.
+        - https://github.com/KTH-dESA/OSeMOSYS_step/blob/v0.2.0/README.md#6-view-results
+        # The MathProg release ships batch/HPC scripts that solve several data files in turn.
+        - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/blob/v1.0.1/scripts/README.md
+    sampled_runs:
+      value: y
+      source:
+        # OSeMOSYS_PuLP re-solves the model for Monte Carlo samples of parameters set in an MCS
+        # sheet and collates the runs.
+        - https://github.com/OSeMOSYS/OSeMOSYS_PuLP/blob/60cf0aaaa6020d7e9a735bd2310b4d4cb19717c6/OSeMOSYS_PuLP.py#L1279-L1319
+        - https://github.com/OSeMOSYS/OSeMOSYS_PuLP/blob/60cf0aaaa6020d7e9a735bd2310b4d4cb19717c6/README.md
+        # esom_gsa runs Method of Morris sample ensembles and collates chosen results.
+        - https://github.com/KTH-dESA/esom_gsa/blob/c311704f800afbd932c53e5938ccfb8668a76234/README.md#parameters-file-parameterscsv
+        - https://github.com/KTH-dESA/esom_gsa/blob/c311704f800afbd932c53e5938ccfb8668a76234/workflow/scripts/create_sample.py#L39-L46
+        # osemosys-rdm solves Latin Hypercube ensembles of futures for MUIO-format models.
+        - https://osemosys-rdm.readthedocs.io/en/latest/user-guide/rdm-pipeline.html#uncertainty-sampling
+        - https://github.com/clg-admin/osemosys-rdm/blob/fbf91844756ec7d2c0592ec9865fecde8292f531/src/workflow/1_Experiment/0_experiment_manager.py#L1486
+    coupled_models:
+      limited_foresight:
+        investment:
+          value: y
+          source:
+            # OSeMOSYS_step solves the horizon in steps (optional foresight years), passing each
+            # step's new capacity on as ResidualCapacity (storage capacity is not carried over).
+            - https://github.com/KTH-dESA/OSeMOSYS_step/blob/v0.2.0/README.md#running-instructions
+            - https://github.com/KTH-dESA/OSeMOSYS_step/blob/v0.2.0/src/osemosys_step/main_utils.py#L610-L624
+        operation:
+          value: n
+          source: []
+      fidelity_sequence:
+        value: y
+        source:
+          # The OSeMOSYS-FlexTool workflow passes OSeMOSYS capacities into an hourly IRENA FlexTool
+          # dispatch model (one-way).
+          - https://github.com/OSeMOSYS-FlexTool-integration/OSeMOSYS-FlexTool/blob/0.2.10/README.md#use
+          - https://github.com/OSeMOSYS-FlexTool-integration/OSeMOSYS-FlexTool/blob/0.2.10/Osemosys_results_to_flextool.py#L32-L111
+      market_sequence:
+        value: n
+        source: []
+      convergence_iteration:
+        value: n
+        source: []
+  io:
+    plain_text:
+      input:
+        value: y
+        source:
+          # GNU MathProg text data file; otoole also reads a folder of CSV files.
+          - https://osemosys.readthedocs.io/en/latest/manual/Create%20a%20model%20in%20OSeMOSYS.html#creating-an-input-file
+          - https://otoole.readthedocs.io/en/stable/data.html#csv
+          - https://otoole.readthedocs.io/en/stable/data.html#datafile
+      output:
+        value: y
+        source:
+          # The model file writes result tables and a summary as CSV files (`table ... OUT "CSV"`);
+          # otoole results also writes CSV.
+          - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/blob/v1.0.1/src/osemosys.txt#L816-L831
+          - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/blob/v1.0.1/src/osemosys.txt#L1136-L1146
+          - https://otoole.readthedocs.io/en/stable/functionality.html#otoole-results
+    binary:
+      input:
+        value: y
+        source:
+          # Excel input via otoole (also used by MUIO's Excel import), OSeMOSYS_PuLP and clicSAND.
+          - https://otoole.readthedocs.io/en/stable/data.html#excel
+          - https://otoole.readthedocs.io/en/stable/functionality.html#data-conversion
+          - https://github.com/OSeMOSYS/MUIO/blob/v5.6/docs/source/user-guide/overview.rst
+          - https://github.com/OSeMOSYS/OSeMOSYS_PuLP/blob/60cf0aaaa6020d7e9a735bd2310b4d4cb19717c6/OSeMOSYS_PuLP.py#L84-L160
+          - https://github.com/OSeMOSYS/clicSAND/blob/v3.0/Templates/CCG-SAND%20Interface%20v.12.xlsm
+      output:
+        value: y
+        source:
+          # `otoole results` / convert_results accept `excel` as the result format (the CLI help
+          # text on the functionality page is out of date); OSeMOSYS_PuLP and osemosys2iamc also
+          # write Excel.
+          - https://otoole.readthedocs.io/en/stable/api/otoole.html#otoole.convert.convert_results
+          - https://github.com/OSeMOSYS/OSeMOSYS_PuLP/blob/60cf0aaaa6020d7e9a735bd2310b4d4cb19717c6/OSeMOSYS_PuLP.py#L397-L419
+          - https://github.com/OSeMOSYS/osemosys2iamc/blob/v0.2.2/src/osemosys2iamc/resultify.py#L603
+    database:
+      input:
+        value: n
+        source: []
+      output:
+        value: n
+        source: []
+    remote_storage:
+      input:
+        value: n
+        source: []
+      output:
+        value: n
+        source: []
+    lazy_loading:
+      input:
+        value: n
+        source: []
+      output:
+        value: n
+        source: []
+    standardised:
+      input:
+        value: n
+        source: []
+      output:
+        value: y
+        source:
+          # osemosys2iamc maps results onto IAMC-format variables (pyam).
+          - https://github.com/OSeMOSYS/osemosys2iamc/blob/v0.2.2/README.md#the-iamc-format
+          - https://github.com/OSeMOSYS/osemosys2iamc/blob/v0.2.2/src/osemosys2iamc/resultify.py#L519-L533
   preprocessing:
     download:
-      source: []
+      value: y
+      source:
+        # OSeMOSYS Global fetches PLEXOS-World, Ember, Global Transmission Database and World Bank
+        # data.
+        - https://github.com/OSeMOSYS/osemosys_global/blob/v2.0.0a/workflow/rules/retrieve.smk#L1-L48
+        - https://github.com/OSeMOSYS/osemosys_global/blob/v2.0.0a/workflow/scripts/osemosys_global/external_files.py
+    model_catalogue:
       value: n
+      source:
+        # Only individual example models (UTOPIA, SIMPLICITY, Atlantis) are distributed; OSeMOSYS
+        # Global generates new models rather than retrieving pre-built ones.
+        - https://osemosys.readthedocs.io/en/latest/manual/Create%20a%20model%20in%20OSeMOSYS.html#downloading-model-files-and-running-the-model
+    resource_conversion:
+      # OSeMOSYS Global ships pre-computed capacity-factor series and only aggregates them to
+      # timeslices.
+      value: n
+      source: []
     forecasting:
-      source: []
-      value: n
+      value: y
+      source:
+        # OSeMOSYS Global projects annual demand from SSP data and scales an hourly profile to it.
+        - https://github.com/OSeMOSYS/osemosys_global/blob/v2.0.0a/workflow/scripts/osemosys_global/demand/projection.py#L17-L88
+        - https://osemosys-global.readthedocs.io/en/latest/getting-started.html#data-sources
     spatial_distribution:
-      source: []
-      value: n
-  resource_adequacy:
-    eens:
-      source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#stochastic-modelling-of-energy-security-assessment
-      value: dev
-    lolp:
-      source: []
-      value: n
-    maintenance_scheduling:
-      source: []
-      value: n
-    monte_carlo:
-      source:
-        - https://github.com/KTH-dESA/esom_gsa
-        - https://open-research-europe.ec.europa.eu/articles/3-30/v1
-      value: dev
-    sampling:
-      source:
-        - https://github.com/KTH-dESA/esom_gsa
-        - https://open-research-europe.ec.europa.eu/articles/3-30/v1
-      value: dev
-  robustness:
-    asset_outages:
-      source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Debugging%20a%20model.html#capacity-factors
+      demand:
+        value: y
+        source:
+          # OSeMOSYS Global downscales country demand to nodes by PLEXOS-World nodal shares.
+          - https://github.com/OSeMOSYS/osemosys_global/blob/v2.0.0a/workflow/scripts/osemosys_global/demand/projection.py#L246-L279
+      network_geometry:
+        value: y
+        source:
+          # OSeMOSYS Global derives line lengths from node centre points for losses and costs.
+          - https://github.com/OSeMOSYS/osemosys_global/blob/v2.0.0a/workflow/scripts/osemosys_global/transmission/data.py#L121-L142
+          - https://osemosys-global.readthedocs.io/en/latest/getting-started.html#custom-nodes
+    scenario_generation:
       value: y
-    eens_limit:
-      source: []
-      value: n
-    lolp_limit:
-      source: []
-      value: n
-    multi_stage_stochastic:
-      source: []
-      value: n
-    ram:
-      source: []
-      value: n
-    reserve_limit:
       source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#reserve-margin
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#reserve-margin-constraints
+        # OSeMOSYS_PuLP samples parameters from per-parameter distributions; esom_gsa samples
+        # parameter ranges; OSeMOSYS_step builds all combinations of per-step options.
+        - https://github.com/OSeMOSYS/OSeMOSYS_PuLP/blob/60cf0aaaa6020d7e9a735bd2310b4d4cb19717c6/OSeMOSYS_PuLP.py#L163-L202
+        - https://github.com/KTH-dESA/esom_gsa/blob/c311704f800afbd932c53e5938ccfb8668a76234/workflow/rules/sample.smk
+        - https://github.com/KTH-dESA/OSeMOSYS_step/blob/v0.2.0/README.md#datascenarios
+        # The MathProg release's RunHPCNodes.py writes one data file per combination of scenario
+        # parameter lists.
+        - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/blob/v1.0.1/scripts/README.md#runhpcnodespy
+    input_validation:
       value: y
-    two_stage_stochastic:
-      source: []
-      value: n
-    voll:
-      source: []
-      value: n
-  spatial__resolution__simplification:
-    network:
-      source: []
-      value: n
-    resampling:
       source:
-        - https://github.com/KTH-dESA/GSA_Spatial_temporal
-        - https://doi.org/10.1016/j.isci.2025.111792
-      value: dev
-  system__carriers:
-    coupled:
-      source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#sets
+        # `check` statements in the model file stop the run on inconsistent bounds or YearSplit not
+        # summing to 1; otoole validate checks names and unconnected technologies/fuels.
+        - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/blob/v1.0.1/docs/changelog.md#osemosys-checks-for-basic-errors-in-input-data
+        - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/blob/v1.0.1/src/osemosys.txt#L168-L208
+        - https://otoole.readthedocs.io/en/stable/functionality.html#validation
+  postprocessing:
+    metrics:
+      operational:
+        capacity_factor:
+          # Results report production and capacity, but no derived capacity factor.
+          value: n
+          source: []
+        operating_hours:
+          value: n
+          source: []
+        binding_hours:
+          value: n
+          source: []
+        curtailment:
+          value: dev
+          source:
+            # Curtailment accounting is only described in the community short-term planning
+            # extension, with no published code.
+            - https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#short-term-planning
+      financial:
+        marginal_price:
+          # Tenuous: MUIO reports duals of the annual commodity balance per region, commodity and
+          # year; no timeslice prices.
+          value: y
+          source:
+            - https://github.com/OSeMOSYS/MUIO/blob/v5.6/API/Classes/Case/DataFileClass.py#L2593-L2611
+            - https://github.com/OSeMOSYS/MUIO/releases/tag/v5.3
+        price_formation:
+          value: n
+          source: []
+        water_value:
+          value: n
+          source: []
+        asset_accounts:
+          # Tenuous: cost accounts only; there are no revenues.
+          value: y
+          source:
+            # Per-technology CapitalInvestment, operating costs, emission penalties, salvage value
+            # and TotalDiscountedCostByTechnology are reported.
+            - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#costing-variables
+        contract_settlement:
+          value: n
+          source: []
+        levelised_cost:
+          # Tenuous: OSeMOSYS Global reports discounted system cost per MWh of demand; OSeMOSYS
+          # Cloud estimates electricity cost with fixed annuity assumptions.
+          value: y
+          source:
+            - https://github.com/OSeMOSYS/osemosys_global/blob/v2.0.0a/workflow/scripts/osemosys_global/summary/costs.py#L107-L111
+            - https://github.com/OSeMOSYS/osemosys-cloud-visualization/blob/e28f8dde198240c3430c6b7a42d699209aa632c0/app/figures/cost_electricity_generation.py
+        net_present_value:
+          value: y
+          source:
+            # TotalDiscountedCost and ModelPeriodCostByRegion give the discounted system cost.
+            - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#costing-variables
+            - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#total-discounted-costs
+      impact_assessment:
+        emissions:
+          value: y
+          source:
+            - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#id5
+            - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#emissions-accounting
+        resource_use:
+          # Tenuous: via the generic EMISSION set, which CLEWs-type models use to account water,
+          # land etc.
+          value: y
+          source:
+            - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#sets
+            - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#id5
+        socioeconomic:
+          value: n
+          source: []
+      network_transfer_metrics:
+        transfer_capacity:
+          # Tenuous: OSeMOSYS Global sums built line capacities between node and country pairs.
+          value: y
+          source:
+            - https://github.com/OSeMOSYS/osemosys_global/blob/v2.0.0a/workflow/scripts/osemosys_global/summary/capacity.py#L6-L31
+            - https://osemosys-global.readthedocs.io/en/latest/examples.html#example-1
+        flow_sensitivity:
+          value: n
+          source: []
+      probabilistic_reliability_assessment:
+        loss_of_load:
+          value: n
+          source: []
+        unserved_energy:
+          value: dev
+          source:
+            # Energy-security extension (external Matlab disturbance model) described in a thesis.
+            - https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#stochastic-modelling-of-energy-security-assessment
+        capacity_credit:
+          value: n
+          source: []
+    transformation:
+      aggregation:
+        value: y
+        source:
+          # osemosys2iamc sums results matching user regexes on TECHNOLOGY / FUEL / EMISSION.
+          - https://github.com/OSeMOSYS/osemosys2iamc/blob/v0.2.2/README.md#writing-a-configuration-file
+          - https://github.com/OSeMOSYS/osemosys2iamc/blob/v0.2.2/src/osemosys2iamc/resultify.py#L241-L258
+          # SelectedResults.csv summarises costs, emissions and production by region and year.
+          - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/blob/v1.0.1/src/osemosys.txt#L816-L850
+      disaggregation:
+        value: n
+        source: []
+      scenario_comparison:
+        value: y
+        source:
+          # MUIO's results pivot shows executed cases side by side; esom_gsa and osemosys-rdm
+          # collate results across all runs; OSeMOSYS Cloud plots a "compare to" run beside the
+          # selected one.
+          - https://osemosys-rdm.readthedocs.io/en/latest/user-guide/rdm-pipeline.html#aggregated-outputs
+          - https://github.com/OSeMOSYS/MUIO/blob/v5.6/WebAPP/AppResults/Controller/Pivot.js#L249
+          - https://github.com/KTH-dESA/esom_gsa/blob/c311704f800afbd932c53e5938ccfb8668a76234/workflow/scripts/extract_results.py#L52-L100
+          - https://github.com/OSeMOSYS/osemosys-cloud-visualization/blob/e28f8dde198240c3430c6b7a42d699209aa632c0/main.py#L60-L90
+  interface:
+    gui:
+      build:
+        value: y
+        source:
+          # MUIO (the OSeMOSYS organisation's GUI); clicSAND's Excel workbook.
+          - https://github.com/OSeMOSYS/MUIO/blob/v5.6/docs/source/user-guide/overview.rst
+          - https://github.com/OSeMOSYS/MUIO/blob/v5.6/README.md
+          - https://github.com/OSeMOSYS/clicSAND/blob/v3.0/README.md
+      run:
+        value: y
+        source:
+          # MUIO; clicSAND runs data extraction, solve and results conversion from one button;
+          # OSeMOSYS Cloud queues and tracks runs in a web UI.
+          - https://github.com/OSeMOSYS/MUIO/blob/v5.6/docs/source/user-guide/overview.rst
+          - https://github.com/OSeMOSYS/clicSAND/blob/v3.0/FormModelRunner.cs#L26-L90
+          - https://github.com/OSeMOSYS/osemosys-cloud/blob/84527effa7b216bf7183d2a105fabcb074945c6b/README.md
+      analyse:
+        value: y
+        source:
+          # MUIO results views; OSeMOSYS Cloud results dashboard.
+          - https://github.com/OSeMOSYS/MUIO/blob/v5.6/docs/source/user-guide/overview.rst
+          - https://github.com/OSeMOSYS/osemosys-cloud-visualization/blob/e28f8dde198240c3430c6b7a42d699209aa632c0/main.py#L60-L90
+    api:
+      build:
+        # Tenuous: otoole's Python API reads/writes/converts model data; there is no API to the
+        # model formulation itself.
+        value: y
+        source:
+          - https://otoole.readthedocs.io/en/stable/convert.html
+          - https://otoole.readthedocs.io/en/stable/api/otoole.html#otoole.convert.convert
+      run:
+        # Runs are launched by calling the solver on the model and data files; OSeMOSYS_PuLP
+        # scripts must be edited to run. A callable OSeMOSYS_PuLP model is an open PR.
+        value: dev
+        source:
+          - https://github.com/OSeMOSYS/OSeMOSYS_PuLP/pull/20
+      analyse:
+        # otoole's Python API reads solver results into pandas DataFrames.
+        value: y
+        source:
+          - https://otoole.readthedocs.io/en/stable/convert.html
+          - https://otoole.readthedocs.io/en/stable/api/otoole.html#otoole.convert.read_results
+    cli:
+      build:
+        # otoole converts and sets up model data; clewsy builds CLEWs structures.
+        value: y
+        source:
+          - https://otoole.readthedocs.io/en/stable/functionality.html#otoole-convert
+          - https://github.com/OSeMOSYS/clewsy/blob/v0.2.3a/src/clewsy/cli.py#L53-L58
+          - https://otoole.readthedocs.io/en/stable/functionality.html#otoole-setup
+          - https://osemosys.readthedocs.io/en/latest/manual/Create%20a%20model%20in%20OSeMOSYS.html#supporting-programmes-and-documentation
+      run:
+        value: y
+        source:
+          # `glpsol -m osemosys.txt -d data.txt -o results.txt`.
+          - https://osemosys.readthedocs.io/en/latest/manual/Create%20a%20model%20in%20OSeMOSYS.html#downloading-model-files-and-running-the-model
+          - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/blob/v1.0.1/README.md
+          # OSeMOSYS Global and OSeMOSYS_step run full workflows from the command line.
+          - https://osemosys-global.readthedocs.io/en/latest/examples.html#example-1
+          - https://github.com/KTH-dESA/OSeMOSYS_step/blob/v0.2.0/README.md#4-run-the-workflow
+      analyse:
+        # otoole results / viz; osemosys2iamc writes an IAMC report.
+        value: y
+        source:
+          - https://otoole.readthedocs.io/en/stable/functionality.html#otoole-results
+          - https://otoole.readthedocs.io/en/stable/functionality.html#otoole-viz
+          - https://github.com/OSeMOSYS/osemosys2iamc/blob/v0.2.2/README.md#run-the-package
+    solver_configuration:
+      # Tenuous: OSeMOSYS has no solver-options layer; the model is solved by glpsol or exported as
+      # LP to other solvers, whose options are then set natively.
       value: y
-    decoupled:
       source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#sets
+        - https://osemosys.readthedocs.io/en/latest/manual/Advanced%20functionalities.html#using-osemosys-with-the-solver-cplex
+        - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/blob/v1.0.1/scripts/README.md
+    remote_execution:
       value: y
-  system__limits:
-    capacity:
       source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#new-capacity-constraints
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#total-capacity-constraints
+        # OSeMOSYS Cloud solves uploaded runs on AWS EC2 instances, with stop and status controls.
+        - https://github.com/OSeMOSYS/osemosys-cloud/blob/84527effa7b216bf7183d2a105fabcb074945c6b/README.md
+        - https://github.com/OSeMOSYS/osemosys-cloud/blob/84527effa7b216bf7183d2a105fabcb074945c6b/app/models/ec2/create_instance.rb
+        # SLURM batch scripts (kth_hpc_cplex_batchrun.sh, RunHPCNodes.py) are shipped in the
+        # release.
+        - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/blob/v1.0.1/scripts/README.md
+    visualisation:
+      charts:
+        value: y
+        source:
+          # MUIO results charts; OSeMOSYS Global plotly capacity and generation charts.
+          - https://github.com/OSeMOSYS/MUIO/blob/v5.6/docs/source/user-guide/overview.rst
+          - https://github.com/OSeMOSYS/osemosys_global/blob/v2.0.0a/workflow/scripts/osemosys_global/visualisation/visualise.py#L102-L260
+      network_maps:
+        value: y
+        source:
+          # Schematic RES diagrams (technology / fuel graph) via otoole viz res and MUIO.
+          - https://otoole.readthedocs.io/en/stable/functionality.html#otoole-viz
+          - https://github.com/OSeMOSYS/MUIO/blob/v5.6/docs/source/user-guide/overview.rst
+          # OSeMOSYS Global maps transmission capacity and flows between nodes.
+          - https://github.com/OSeMOSYS/osemosys_global/blob/v2.0.0a/workflow/scripts/osemosys_global/visualisation/visualise.py#L265-L512
+          - https://osemosys-global.readthedocs.io/en/latest/examples.html#example-7
+      report_templates:
+        value: y
+        source:
+          # clicSAND ships Excel dashboards filled from each run's results; OSeMOSYS Cloud builds
+          # a fixed figure dashboard per run.
+          - https://github.com/OSeMOSYS/clicSAND/blob/v3.0/Templates/Visualization%20dashboard%20Template%20V.3.xlsm
+          - https://github.com/OSeMOSYS/clicSAND/blob/v3.0/converter/python_converter.py
+          - https://github.com/OSeMOSYS/osemosys-cloud-visualization/blob/e28f8dde198240c3430c6b7a42d699209aa632c0/app/generate_figure_sets.py
+  traceability:
+    metadata:
+      provenance:
+        value: n
+        source: []
+      units:
+        value: n
+        source:
+          # Units are the user's responsibility (only consistency guidance is given).
+          - https://osemosys.readthedocs.io/en/latest/manual/Create%20a%20model%20in%20OSeMOSYS.html#data-and-choices-of-units
+      propagation:
+        # Tenuous: OSeMOSYS Cloud keeps each run's model file, data file, log and results together.
+        value: y
+        source:
+          - https://github.com/OSeMOSYS/osemosys-cloud/blob/84527effa7b216bf7183d2a105fabcb074945c6b/app/models/run.rb
+    run_logs:
       value: y
-    operation:
       source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#annual-activity-constraints
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#total-activity-constraints
+        # glpsol logs translation/solve progress; the model prints each input check it performs.
+        - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/blob/v1.0.1/src/osemosys.txt#L168-L208
+        - https://osemosys.readthedocs.io/en/latest/manual/Create%20a%20model%20in%20OSeMOSYS.html#downloading-model-files-and-running-the-model
+    intermediate_access:
+      value: n
+      source: []
+    infeasibility_diagnosis:
       value: y
-  time__foresight:
-    myopic:
       source:
-        - https://github.com/KTH-dESA/OSeMOSYS_step
-        - https://doi.org/10.1186/s13705-024-00469-w
-      value: dev
-    perfect:
-      source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#objective-function
-      value: y
-  time__horizon:
-    multi_year:
-      source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#sets
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#global-parameters
-      value: y
-    single_year:
-      source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#sets
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#global-parameters
-      value: y
-    sub_day:
-      source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#sets
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#global-parameters
-      value: y
-    sub_year:
-      source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#sets
-        - https://osemosys.readthedocs.io/en/latest/manual/Structure%20of%20OSeMOSYS.html#global-parameters
-      value: y
-  time__resolution__simplification:
-    distortion_mitigation:
-      source: []
-      value: n
-    load_duration_curves:
-      source: []
-      value: n
-    resampling:
-      source: []
-      value: n
-    typical_periods:
-      source: []
-      value: n
-  transmission__limits:
-    gtc:
-      source: []
-      value: y
-    phase_angle:
-      source: []
-      value: n
-    ptdf:
-      source: []
-      value: n
-    thermal:
-      source: []
-      value: n
-  transmission__opf:
-    ac_opf:
-      source: []
-      value: n
-    dc_opf:
-      source: []
-      value: n
-    sec_opf:
-      source: []
-      value: n
-    transport:
-      source:
-        - https://osemosys.readthedocs.io/en/latest/manual/Introduction.html
-      value: y
+        # Documented manual procedure (dummy technologies, relaxing limits) and pre-solve data
+        # checks; with Gurobi, OSeMOSYS Global requests an IIS file.
+        - https://github.com/OSeMOSYS/osemosys_global/blob/v2.0.0a/workflow/rules/model.smk#L86-L110
+        - https://osemosys.readthedocs.io/en/latest/manual/Debugging%20a%20model.html#adding-a-dummy-technology
+        - https://osemosys.readthedocs.io/en/latest/manual/Debugging%20a%20model.html#upperlimit-and-maxlimit-increase
+        - https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg/blob/v1.0.1/docs/changelog.md#osemosys-checks-for-basic-errors-in-input-data
