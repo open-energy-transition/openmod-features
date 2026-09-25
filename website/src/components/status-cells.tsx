@@ -151,7 +151,12 @@ function EvidenceStatus({
               </Drawer.Close>
             </div>
 
-            <div className="grid gap-4 overflow-y-auto px-5 py-4">
+            <div
+              className="atlas-drawer-scroll grid gap-4 overflow-y-auto px-5 py-4"
+              onScroll={(event) => event.stopPropagation()}
+              onTouchMove={(event) => event.stopPropagation()}
+              onWheel={(event) => event.stopPropagation()}
+            >
               <div className="grid grid-cols-2 gap-3">
                 <div className="atlas-subtle-card px-3 py-2">
                   <p className="atlas-caption text-xs">Category</p>

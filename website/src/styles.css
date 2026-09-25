@@ -678,6 +678,10 @@ a:active {
     box-shadow: var(--atlas-shadow-float);
   }
 
+  .atlas-drawer-scroll {
+    overscroll-behavior: contain;
+  }
+
   @media (min-width: 768px) {
     .atlas-usecase-drawer,
     .atlas-evidence-drawer {
