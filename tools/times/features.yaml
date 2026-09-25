@@ -159,8 +159,9 @@ features:
       value: n
   edge_effects:
     energy_balance:
-      source: []
-      value: n
+      source: 
+      - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES_Grid-modelling-features.pdf
+      value: y
     spatial:
       source:
       - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf #2.4
@@ -233,8 +234,9 @@ features:
       - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-III.pdf #3.2.2
       value: y
     near_optimal:
-      source: []
-      value: n
+      source: 
+       - https://iea-etsap.org/wp-content/uploads/2025/12/TIMES-Stochastic-Final2016.pdf
+      value: y
     sim + opt:
       source: []
       value: n
@@ -277,8 +279,9 @@ features:
       source: []
       value: n
     ptdf:
-      source: []
-      value: n
+      source: 
+       - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES-Grid-Features-Report.pdf
+      value: y
     shadow_prices:
       source:
       - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf #3.3, #6.3.20, #6.3.32
@@ -293,8 +296,9 @@ features:
       - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf #Appendix D
       value: y
     spatial_distribution:
-      source: []
-      value: n
+      source: 
+      - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES-Grid-Features-Report.pdf
+      value: y
   resource_adequacy:
     eens:
       source: []
@@ -345,8 +349,9 @@ features:
       value: y
   spatial__resolution__simplification:
     network:
-      source: []
-      value: n
+      source: 
+      - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES-Grid-Features-Report.pdf
+      value: y
     resampling:
       source: []
       value: n
@@ -401,16 +406,18 @@ features:
       value: y
   time__resolution__simplification:
     distortion_mitigation:
-      source: []
-      value: n
+      source: 
+      - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES_Objective-function-variants.pdf
+      value: y
     load_duration_curves:
       source:
       - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf #2.2
       - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf #2.2.2
       value: y
     resampling:
-      source: []
-      value: n
+      source: 
+       - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf #3.1.2
+      value: y
     typical_periods:
       source:
       - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-I.pdf #2.2
@@ -422,11 +429,13 @@ features:
       - https://github.com/etsap-TIMES/TIMES_Documentation/blob/master/Documentation_for_the_TIMES_Model-Part-II.pdf #3.1, #6
       value: y
     phase_angle:
-      source: []
-      value: n
+      source: 
+      - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES-Grid-Features.pdf
+      value: y
     ptdf:
-      source: []
-      value: n
+      source: 
+     - https://iea-etsap.org/wp-content/uploads/2025/10/TIMES-Grid-Features-Report.pdf
+      value: y
     thermal:
       source: []
       value: n
