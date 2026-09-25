@@ -123,7 +123,7 @@ function EvidenceStatus({
   return (
     <Drawer.Root modal={false}>
       <Drawer.Trigger
-        aria-label={`View validation evidence for ${tool.shortname} ${taxonomyFeature.label}`}
+        aria-label={`View validation evidence for ${tool.shortname} ${taxonomyFeature.displayName}`}
         className="atlas-evidence-trigger atlas-focus inline-flex h-8 min-w-8 items-center justify-center gap-1 rounded-[6px] outline-none"
       >
         <StatusIcon value={value} sourced={sourced} muted={muted} />
@@ -136,7 +136,7 @@ function EvidenceStatus({
               <div className="min-w-0">
                 <p className="atlas-eyebrow">Validation Evidence</p>
                 <Drawer.Title className="mt-1 text-lg font-semibold leading-6 text-[var(--atlas-ink)]">
-                  {taxonomyFeature.label}
+                  {taxonomyFeature.displayName}
                 </Drawer.Title>
                 <Drawer.Description className="atlas-copy mt-2 text-sm leading-6">
                   {tool.name}
@@ -156,7 +156,7 @@ function EvidenceStatus({
                 <div className="atlas-subtle-card px-3 py-2">
                   <p className="atlas-caption text-xs">Category</p>
                   <p className="mt-1 text-sm font-semibold text-[var(--atlas-ink)]">
-                    {category.label}
+                    {taxonomyFeature.pathLabels.slice(0, -1).join(' / ') || category.label}
                   </p>
                 </div>
                 <div className="atlas-subtle-card px-3 py-2">

@@ -15,16 +15,31 @@ import {
 } from '../src/data/custom-use-case'
 import type { DashboardData, TaxonomyCategory, ToolRecord, UseCaseRecord } from '../src/data/types'
 
+function feature(id: string, label: string) {
+  return {
+    id,
+    key: id,
+    categoryId: 'category',
+    label,
+    displayName: label,
+    description: '',
+    baseline: 'n' as const,
+    pathIds: ['category', id],
+    pathLabels: ['Category', label],
+    depth: 2,
+  }
+}
+
 const taxonomy: TaxonomyCategory[] = [
   {
     id: 'category',
     label: 'Category',
     description: '',
     members: [
-      { id: 'sourced', label: 'Sourced', description: '', baseline: 'n' },
-      { id: 'unsourced', label: 'Unsourced', description: '', baseline: 'n' },
-      { id: 'dev', label: 'Dev', description: '', baseline: 'n' },
-      { id: 'missing', label: 'Missing', description: '', baseline: 'n' },
+      feature('sourced', 'Sourced'),
+      feature('unsourced', 'Unsourced'),
+      feature('dev', 'Dev'),
+      feature('missing', 'Missing'),
     ],
   },
 ]

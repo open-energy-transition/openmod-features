@@ -15,16 +15,34 @@ export function filterTaxonomy(taxonomy: TaxonomyCategory[], query: string) {
     .map((category) => {
       const categoryMatches =
         category.label.toLowerCase().includes(normalized) ||
-        category.id.toLowerCase().includes(normalized)
+        category.id.toLowerCase().includes(normalized) ||
+        category.description.toLowerCase().includes(normalized)
       const members = categoryMatches
         ? category.members
         : category.members.filter(
             (feature) =>
               feature.label.toLowerCase().includes(normalized) ||
-              feature.id.toLowerCase().includes(normalized),
+              feature.displayName.toLowerCase().includes(normalized) ||
+              feature.description.toLowerCase().includes(normalized) ||
+              feature.id.toLowerCase().includes(normalized) ||
+              feature.pathLabels.some((label) => label.toLowerCase().includes(normalized)),
           )
+      const memberIds = new Set(members.map((feature) => feature.id))
+      const groups = category.groups
+        ?.map((group) => ({
+          ...group,
+          memberIds: group.memberIds.filter((memberId) => memberIds.has(memberId)),
+        }))
+        .filter(
+          (group) =>
+            categoryMatches ||
+            group.memberIds.length > 0 ||
+            group.label.toLowerCase().includes(normalized) ||
+            group.displayName.toLowerCase().includes(normalized) ||
+            group.description.toLowerCase().includes(normalized),
+        )
 
-      return { ...category, members }
+      return { ...category, members, groups }
     })
     .filter((category) => category.members.length > 0)
 }
@@ -49,8 +67,15 @@ export function filterTaxonomyByUseCases(
           (useCase) => useCase.features[category.id]?.[feature.id]?.value === 'y',
         ),
       )
+      const memberIds = new Set(members.map((feature) => feature.id))
+      const groups = category.groups
+        ?.map((group) => ({
+          ...group,
+          memberIds: group.memberIds.filter((memberId) => memberIds.has(memberId)),
+        }))
+        .filter((group) => group.memberIds.length > 0)
 
-      return { ...category, members }
+      return { ...category, members, groups }
     })
     .filter((category) => category.members.length > 0)
 }
@@ -61,8 +86,13 @@ export function sortTaxonomyAlphabetically(taxonomy: TaxonomyCategory[]) {
     .map((category) => ({
       ...category,
       members: [...category.members].sort((left, right) =>
-        left.label.localeCompare(right.label),
+        left.displayName.localeCompare(right.displayName),
       ),
+      groups: category.groups
+        ? [...category.groups].sort((left, right) =>
+            left.displayName.localeCompare(right.displayName),
+          )
+        : undefined,
     }))
 }
 

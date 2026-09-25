@@ -1175,6 +1175,12 @@ a:active {
       var(--atlas-category-background);
   }
 
+  .atlas-group-row {
+    background:
+      linear-gradient(90deg, rgb(183 78 0 / 0.045), transparent 30%),
+      var(--atlas-surface-tint);
+  }
+
   .atlas-tool-section-row {
     background:
       linear-gradient(90deg, rgb(13 118 111 / 0.075), transparent 46%),
@@ -1269,6 +1275,7 @@ a:active {
   :root[data-theme='dark'] .atlas-table-head,
   :root[data-theme='dark'] .atlas-sticky-head,
   :root[data-theme='dark'] .atlas-category-row,
+  :root[data-theme='dark'] .atlas-group-row,
   :root[data-theme='dark'] .atlas-tool-section-row,
   :root[data-theme='dark'] .atlas-feature-row:hover,
   :root[data-theme='dark'] .atlas-metric {
@@ -1361,6 +1368,10 @@ a:active {
 
   :root[data-theme='dark'] .atlas-category-row {
     background-color: #172b27;
+  }
+
+  :root[data-theme='dark'] .atlas-group-row {
+    background-color: #13241f;
   }
 
   :root[data-theme='dark'] .atlas-tool-section-row {

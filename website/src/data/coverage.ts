@@ -8,6 +8,8 @@ import type {
   DashboardData,
   FeatureValue,
   TaxonomyCategory,
+  TaxonomyFeature,
+  TaxonomyGroup,
   ToolFeature,
   ToolRecord,
   UseCaseRecord,
@@ -35,7 +37,10 @@ export function getToolFeature(
   categoryId: string,
   featureId: string,
 ): ToolFeature | undefined {
-  return tool.features[categoryId]?.[featureId]
+  return (
+    tool.features[categoryId]?.[featureId] ??
+    tool.features[categoryId]?.[featureId.split('/').at(-1) ?? featureId]
+  )
 }
 
 export function getUseCaseValue(
@@ -43,7 +48,11 @@ export function getUseCaseValue(
   categoryId: string,
   featureId: string,
 ): FeatureValue {
-  return useCase.features[categoryId]?.[featureId]?.value ?? 'n'
+  return (
+    useCase.features[categoryId]?.[featureId]?.value ??
+    useCase.features[categoryId]?.[featureId.split('/').at(-1) ?? featureId]?.value ??
+    'n'
+  )
 }
 
 export function calculateToolCoverage(
@@ -107,6 +116,32 @@ export function calculateCategoryCoverage(
   return toCoverage(met, category.members.length)
 }
 
+export function calculateFeatureSetCoverage(
+  features: TaxonomyFeature[],
+  tool: ToolRecord,
+  options: CoverageOptions,
+): CoverageResult {
+  let met = 0
+
+  for (const feature of features) {
+    if (isImplemented(getToolFeature(tool, feature.categoryId, feature.id), options)) {
+      met += 1
+    }
+  }
+
+  return toCoverage(met, features.length)
+}
+
+export function calculateGroupCoverage(
+  group: TaxonomyGroup,
+  category: TaxonomyCategory,
+  tool: ToolRecord,
+  options: CoverageOptions,
+): CoverageResult {
+  const features = category.members.filter((feature) => group.memberIds.includes(feature.id))
+  return calculateFeatureSetCoverage(features, tool, options)
+}
+
 export function calculateCategoryUseCaseCoverage(
   category: TaxonomyCategory,
   tool: ToolRecord,
@@ -128,6 +163,40 @@ export function calculateCategoryUseCaseCoverage(
   }
 
   return toCoverage(met, total)
+}
+
+export function calculateFeatureSetUseCaseCoverage(
+  features: TaxonomyFeature[],
+  tool: ToolRecord,
+  useCase: UseCaseRecord,
+  options: CoverageOptions,
+): CoverageResult {
+  let met = 0
+  let total = 0
+
+  for (const feature of features) {
+    if (getUseCaseValue(useCase, feature.categoryId, feature.id) !== 'y') {
+      continue
+    }
+
+    total += 1
+    if (isImplemented(getToolFeature(tool, feature.categoryId, feature.id), options)) {
+      met += 1
+    }
+  }
+
+  return toCoverage(met, total)
+}
+
+export function calculateGroupUseCaseCoverage(
+  group: TaxonomyGroup,
+  category: TaxonomyCategory,
+  tool: ToolRecord,
+  useCase: UseCaseRecord,
+  options: CoverageOptions,
+): CoverageResult {
+  const features = category.members.filter((feature) => group.memberIds.includes(feature.id))
+  return calculateFeatureSetUseCaseCoverage(features, tool, useCase, options)
 }
 
 export function countFeatures(data: DashboardData) {

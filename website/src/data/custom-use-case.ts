@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import type { TaxonomyCategory, UseCaseRecord } from './types'
+import type { FeatureValue, TaxonomyCategory, UseCaseRecord } from './types'
 
 export const CUSTOM_USE_CASE_PARAM = 'custom_features'
 export const CUSTOM_USE_CASE_ID = 'custom-use-case'
@@ -76,15 +76,15 @@ export function countSelectedCategories(selectedFeatureKeys: Set<string>) {
 
 export function serializeUseCaseYaml(useCase: UseCaseRecord) {
   const lines = ['assumptions: []', 'features:']
+  const tree: Record<string, unknown> = {}
 
-  for (const [categoryId, features] of Object.entries(useCase.features)) {
-    lines.push(`  ${formatYamlKey(categoryId)}:`)
+  for (const features of Object.values(useCase.features)) {
     for (const featureId of Object.keys(features)) {
-      lines.push(`    ${formatYamlKey(featureId)}:`)
-      lines.push('      value: y')
+      assignNestedFeature(tree, featureId.split('/'), 'y')
     }
   }
 
+  writeYamlObject(lines, tree, 1)
   return `${lines.join('\n')}\n`
 }
 
@@ -106,22 +106,7 @@ export async function createSelectionFromUseCaseYaml(
   )
   const selected = new Set<string>()
 
-  for (const [categoryId, categoryFeatures] of Object.entries(features)) {
-    if (!isRecord(categoryFeatures)) {
-      continue
-    }
-
-    for (const [featureId, feature] of Object.entries(categoryFeatures)) {
-      if (!isRecord(feature) || feature.value !== 'y') {
-        continue
-      }
-
-      const key = featureSelectionKey(categoryId, featureId)
-      if (validFeatureKeys.has(key)) {
-        selected.add(key)
-      }
-    }
-  }
+  collectSelectedYamlFeatures(features, [], validFeatureKeys, selected)
 
   return selected
 }
@@ -132,6 +117,86 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function formatYamlKey(key: string) {
   return /^[A-Za-z0-9_-]+$/.test(key) ? key : JSON.stringify(key)
+}
+
+function assignNestedFeature(
+  target: Record<string, unknown>,
+  pathIds: string[],
+  value: FeatureValue,
+) {
+  const [currentId, ...remainingIds] = pathIds
+  if (!currentId) {
+    return
+  }
+
+  if (remainingIds.length === 0) {
+    target[currentId] = { value }
+    return
+  }
+
+  if (!isRecord(target[currentId])) {
+    target[currentId] = {}
+  }
+
+  assignNestedFeature(target[currentId] as Record<string, unknown>, remainingIds, value)
+}
+
+function writeYamlObject(lines: string[], value: unknown, depth: number) {
+  if (!isRecord(value)) {
+    return
+  }
+
+  const indent = '  '.repeat(depth)
+  const childIndent = '  '.repeat(depth + 1)
+  for (const [key, child] of Object.entries(value)) {
+    if (isRecord(child) && 'value' in child) {
+      lines.push(`${indent}${formatYamlKey(key)}:`)
+      lines.push(`${childIndent}value: ${String(child.value)}`)
+      continue
+    }
+
+    lines.push(`${indent}${formatYamlKey(key)}:`)
+    writeYamlObject(lines, child, depth + 1)
+  }
+}
+
+function collectSelectedYamlFeatures(
+  node: unknown,
+  pathIds: string[],
+  validFeatureKeys: Set<string>,
+  selected: Set<string>,
+) {
+  if (!isRecord(node)) {
+    return
+  }
+
+  if ('value' in node) {
+    if (node.value !== 'y') {
+      return
+    }
+
+    const [categoryId] = pathIds
+    const featureId = pathIds.join('/')
+    const key = categoryId ? featureSelectionKey(categoryId, featureId) : ''
+    if (validFeatureKeys.has(key)) {
+      selected.add(key)
+      return
+    }
+
+    const legacyFeatureId = pathIds.at(-1)
+    const legacyKey =
+      categoryId && legacyFeatureId
+        ? featureSelectionKey(categoryId, legacyFeatureId)
+        : ''
+    if (validFeatureKeys.has(legacyKey)) {
+      selected.add(legacyKey)
+    }
+    return
+  }
+
+  for (const [childId, child] of Object.entries(node)) {
+    collectSelectedYamlFeatures(child, [...pathIds, childId], validFeatureKeys, selected)
+  }
 }
 
 export function encodeCustomUseCase(useCase: UseCaseRecord) {

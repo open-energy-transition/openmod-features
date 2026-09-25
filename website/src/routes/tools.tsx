@@ -16,6 +16,7 @@ import { CheckPill, CoverageBadge, Hint, StatusLegend, ToolName } from '../compo
 import { StatusCell } from '../components/status-cells'
 import {
   calculateCategoryCoverage,
+  calculateGroupCoverage,
   calculateToolCoverage,
   getToolFeature,
 } from '../data/coverage'
@@ -185,6 +186,23 @@ function ToolMatrixPage() {
                     )}
                   />
                 )}
+                renderGroupCell={(tool, group) => {
+                  const activeCategory = activeCategoryById.get(category.id)
+                  const activeGroup = activeCategory?.groups?.find(
+                    (candidate) => candidate.id === group.id,
+                  ) ?? { ...group, memberIds: [] }
+
+                  return (
+                    <CoverageBadge
+                      coverage={calculateGroupCoverage(
+                        activeGroup,
+                        activeCategory ?? category,
+                        tool,
+                        coverageOptions,
+                      )}
+                    />
+                  )
+                }}
                 renderFeatureCell={(tool, feature) => (
                   <StatusCell
                     feature={getToolFeature(tool, category.id, feature.id)}

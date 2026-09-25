@@ -617,7 +617,7 @@ function BuilderCategoryRows({
                   </Checkbox.Root>
                 </td>
                 <td className="atlas-cell-border px-3 py-2 text-sm font-medium text-[var(--atlas-ink)]">
-                  <Hint label={feature.description}>{feature.label}</Hint>
+                  <Hint label={feature.description}>{feature.displayName}</Hint>
                 </td>
                 <td className="atlas-cell-border atlas-caption w-40 px-3 py-2 text-xs">
                   {checked ? 'Required' : 'Not required'}

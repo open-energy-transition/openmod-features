@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import { Combobox } from '@base-ui/react/combobox'
-import type { ReactNode } from 'react'
+import { Fragment, type ReactNode } from 'react'
 import {
   FaCheck,
   FaChevronDown,
@@ -14,6 +14,7 @@ import { CUSTOM_USE_CASE_ID } from '../data/custom-use-case'
 import type {
   TaxonomyCategory,
   TaxonomyFeature,
+  TaxonomyGroup,
   ToolRecord,
   UseCaseRecord,
 } from '../data/types'
@@ -299,6 +300,7 @@ export function CategoryRows<T extends { id: string }>({
   onToggle,
   columns,
   renderCategoryCell,
+  renderGroupCell,
   renderFeatureCell,
   muted = false,
   isFeatureMuted = () => false,
@@ -308,10 +310,18 @@ export function CategoryRows<T extends { id: string }>({
   onToggle: () => void
   columns: T[]
   renderCategoryCell: (column: T) => ReactNode
+  renderGroupCell?: (column: T, group: TaxonomyGroup) => ReactNode
   renderFeatureCell: (column: T, feature: TaxonomyFeature) => ReactNode
   muted?: boolean
   isFeatureMuted?: (featureId: string) => boolean
 }) {
+  const groupedFeatureIds = new Set(
+    category.groups?.flatMap((group) => group.memberIds) ?? [],
+  )
+  const directFeatures = category.members.filter(
+    (feature) => !groupedFeatureIds.has(feature.id),
+  )
+
   return (
     <>
       <tr className={`atlas-category-row ${muted ? 'atlas-filter-muted' : ''}`}>
@@ -339,29 +349,88 @@ export function CategoryRows<T extends { id: string }>({
           </td>
         ))}
       </tr>
-      {expanded
-        ? category.members.map((feature) => (
-            <tr
+      {expanded ? (
+        <>
+          {category.groups?.map((group) => {
+            const groupFeatures = category.members.filter((feature) =>
+              group.memberIds.includes(feature.id),
+            )
+
+            return (
+              <Fragment key={group.id}>
+                <tr className="atlas-group-row">
+                  <StickyCell>
+                    <span className="block pl-7 text-sm font-semibold text-[var(--atlas-ink)]">
+                      <Hint label={group.description}>{group.displayName}</Hint>
+                    </span>
+                  </StickyCell>
+                  {columns.map((column) => (
+                    <td
+                      key={column.id}
+                      className="atlas-cell-border px-3 py-2 text-center"
+                    >
+                      {renderGroupCell ? renderGroupCell(column, group) : null}
+                    </td>
+                  ))}
+                </tr>
+                {groupFeatures.map((feature) => (
+                  <FeatureRow
+                    key={feature.id}
+                    feature={feature}
+                    columns={columns}
+                    renderFeatureCell={renderFeatureCell}
+                    muted={isFeatureMuted(feature.id)}
+                    indentClassName="pl-10"
+                  />
+                ))}
+              </Fragment>
+            )
+          })}
+          {directFeatures.map((feature) => (
+            <FeatureRow
               key={feature.id}
-              className={`atlas-feature-row ${isFeatureMuted(feature.id) ? 'atlas-filter-muted' : ''}`}
-            >
-              <StickyCell>
-                <span className="block pl-7 text-[var(--atlas-ink-soft)]">
-                  <Hint label={feature.description}>{feature.label}</Hint>
-                </span>
-              </StickyCell>
-              {columns.map((column) => (
-                <td
-                  key={column.id}
-                  className="atlas-cell-border px-3 py-2 text-center"
-                >
-                  {renderFeatureCell(column, feature)}
-                </td>
-              ))}
-            </tr>
-          ))
-        : null}
+              feature={feature}
+              columns={columns}
+              renderFeatureCell={renderFeatureCell}
+              muted={isFeatureMuted(feature.id)}
+              indentClassName="pl-7"
+            />
+          ))}
+        </>
+      ) : null}
     </>
+  )
+}
+
+function FeatureRow<T extends { id: string }>({
+  feature,
+  columns,
+  renderFeatureCell,
+  muted,
+  indentClassName,
+}: {
+  feature: TaxonomyFeature
+  columns: T[]
+  renderFeatureCell: (column: T, feature: TaxonomyFeature) => ReactNode
+  muted: boolean
+  indentClassName: string
+}) {
+  return (
+    <tr className={`atlas-feature-row ${muted ? 'atlas-filter-muted' : ''}`}>
+      <StickyCell>
+        <span className={`block ${indentClassName} text-[var(--atlas-ink-soft)]`}>
+          <Hint label={feature.description}>{feature.displayName}</Hint>
+        </span>
+      </StickyCell>
+      {columns.map((column) => (
+        <td
+          key={column.id}
+          className="atlas-cell-border px-3 py-2 text-center"
+        >
+          {renderFeatureCell(column, feature)}
+        </td>
+      ))}
+    </tr>
   )
 }
 

@@ -28,6 +28,7 @@ import {
 } from '../components/status-cells'
 import {
   calculateCategoryUseCaseCoverage,
+  calculateGroupUseCaseCoverage,
   calculateUseCaseCoverage,
   getToolFeature,
   getUseCaseValue,
@@ -264,6 +265,17 @@ function UseCaseFitPage() {
                       renderCategoryCell={(useCase) => (
                         <CoverageBadge
                           coverage={calculateCategoryUseCaseCoverage(
+                            category,
+                            tool,
+                            useCase,
+                            coverageOptions,
+                          )}
+                        />
+                      )}
+                      renderGroupCell={(useCase, group) => (
+                        <CoverageBadge
+                          coverage={calculateGroupUseCaseCoverage(
+                            group,
                             category,
                             tool,
                             useCase,
