@@ -15,5 +15,6 @@ docs: https://genxproject.github.io/GenX.jl/
 list_type: tool
 maintainers: virio-andreyana
 name: GenX.jl
+open_source: true
 shortname: GenX
 source: https://github.com/GenXProject/GenX.jl

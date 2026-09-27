@@ -48,6 +48,14 @@ docs:
     {% endif %}
   when: "{{ list_type == 'tool' }}"
 
+open_source:
+  type: bool
+  default: true
+  help: >-
+    Is the {{ list_type }} source code published under an open-source license?
+    Answer `false` for proprietary tools included as reference points.
+  when: "{{ list_type == 'tool' }}"
+
 maintainers:
   type: str
   help: >-

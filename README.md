@@ -74,7 +74,7 @@ pixi run add-tool <tool-shortname>
 >[!NOTE]
 >We cannot accept dashes (`-`) in tool shortnames.
 
-You will be prompted to add in your tool name, source code URL, and _feature list_ maintainers.
+You will be prompted to add in your tool name, source code URL, whether it is open-source, and _feature list_ maintainers.
 You can also optionally provide a documentation site URL and a longer description.
 
 >[!NOTE]
@@ -82,6 +82,7 @@ You can also optionally provide a documentation site URL and a longer descriptio
 
 >[!NOTE]
 >Proprietary, closed-source tools can be added as reference points against which open-source tools are compared.
+>Answer `false` to the `open_source` question for these tools so the dashboard can distinguish them.
 >As there is no public source code, use the tool's product page as its source URL and reference publicly available documentation in each feature's `source` key.
 
 ## Updating your tool

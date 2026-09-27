@@ -27,6 +27,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- `open_source` tool metadata question, flagging whether a tool is open-source or a proprietary reference point.
+
 ### Changed
 
 - PyPSA feature list re-assessed against PyPSA v1.3.0 (#145): `constraints.scope.temporal.cumulative.operation.event_count` and `orchestration.scenario_runs` are now `y` (tenuous), with sources added or corrected for `constraints.functional_form.quadratic.investment` and `model_definition.extensible_dimensions`.

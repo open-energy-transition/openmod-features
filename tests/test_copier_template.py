@@ -27,6 +27,7 @@ def default_data():
         "shortname": "testtool",
         "name": "Test Tool",
         "description": "A test tool for testing",
+        "open_source": True,
         "maintainers": "testuser",
     }
 
@@ -80,6 +81,7 @@ class TestToolTemplate:
             "description": "A test tool for testing",
             "source": "https://github.com/test/testtool",
             "docs": "none",
+            "open_source": True,
             "maintainers": "testuser",
         }
         assert metadata_without_copier == expected
@@ -135,6 +137,27 @@ class TestToolTemplate:
         )
         assert metadata["maintainers"] == "testuser1, testuser2, testuser3"
 
+    @pytest.fixture(scope="class")
+    def tool_proprietary_dst(self, run_copier, tmp_path_factory):
+        """Generate a proprietary tool template and return the destination path."""
+        dst = tmp_path_factory.mktemp("tool_proprietary") / "test-tool-proprietary"
+
+        run_copier(
+            str(dst),
+            data={
+                "list_type": "tool",
+                "source": "https://example.com/testtool",
+                "docs": "none",
+                "open_source": False,
+            },
+        )
+        return dst
+
+    def test_tool_proprietary_metadata(self, tool_proprietary_dst):
+        """Test that a proprietary tool is flagged in metadata."""
+        metadata = yaml.safe_load((tool_proprietary_dst / ".metadata.yml").read_text())
+        assert metadata["open_source"] is False
+
 
 class TestUseCaseTemplate:
     """Test the use-case template generation."""
@@ -175,9 +198,10 @@ class TestUseCaseTemplate:
             "maintainers": "testuser",
         }
         assert metadata_without_copier == expected
-        # Use cases should not have source/docs fields
+        # Use cases should not have source/docs/open_source fields
         assert "source" not in metadata
         assert "docs" not in metadata
+        assert "open_source" not in metadata
 
     def test_use_case_minimal_features_structure(self, use_case_minimal_dst):
         """Test features.yaml structure for use-case template."""

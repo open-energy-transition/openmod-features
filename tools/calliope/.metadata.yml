@@ -13,5 +13,6 @@ docs: https://calliope.readthedocs.io
 list_type: tool
 maintainers: brynpickering
 name: Calliope
+open_source: true
 shortname: Calliope
 source: https://github.com/calliope-project/calliope
