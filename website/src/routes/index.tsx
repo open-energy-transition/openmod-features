@@ -16,14 +16,10 @@ import {
   calculateToolCoverage,
   calculateUseCaseCoverage,
   countFeatures,
+  createUnifiedUseCase,
 } from '../data/coverage'
 import { CUSTOM_USE_CASE_ID } from '../data/custom-use-case'
-import type {
-  CoverageResult,
-  FeatureValue,
-  ToolRecord,
-  UseCaseRecord,
-} from '../data/types'
+import type { CoverageResult, ToolRecord } from '../data/types'
 import { compareCoverage } from '../lib/dashboard-utils'
 
 export const Route = createFileRoute('/')({
@@ -188,34 +184,4 @@ function HeroLink({
       <FaArrowRight aria-hidden="true" />
     </Link>
   )
-}
-
-function createUnifiedUseCase(useCases: UseCaseRecord[]): UseCaseRecord | null {
-  if (useCases.length === 0) {
-    return null
-  }
-
-  const features: UseCaseRecord['features'] = {}
-
-  for (const useCase of useCases) {
-    for (const [categoryId, categoryFeatures] of Object.entries(useCase.features)) {
-      features[categoryId] ??= {}
-
-      for (const [featureId, feature] of Object.entries(categoryFeatures)) {
-        if (feature.value === 'y') {
-          features[categoryId][featureId] = { value: 'y' satisfies FeatureValue }
-        }
-      }
-    }
-  }
-
-  return {
-    id: 'unified-default-use-cases',
-    name: 'Unified default use cases',
-    shortname: 'Unified',
-    description: 'Combined required features from all built-in use cases.',
-    maintainers: [],
-    assumptions: [],
-    features,
-  }
 }

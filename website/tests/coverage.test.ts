@@ -4,8 +4,11 @@
 
 import { describe, expect, it } from 'vitest'
 import {
+  calculateEvidenceRate,
+  calculateStatusBreakdown,
   calculateToolCoverage,
   calculateUseCaseCoverage,
+  createUnifiedUseCase,
   isImplemented,
 } from '../src/data/coverage'
 import {
@@ -49,6 +52,7 @@ const tool: ToolRecord = {
   id: 'tool',
   name: 'Tool',
   shortname: 'tool',
+  openSource: true,
   maintainers: [],
   features: {
     category: {
@@ -105,6 +109,54 @@ describe('coverage calculations', () => {
       countUnsourced: true,
       countDev: true,
     })).toMatchObject({ met: 3, total: 3, percentage: 100 })
+  })
+})
+
+describe('status breakdown', () => {
+  it('counts raw statuses independent of coverage options', () => {
+    expect(calculateStatusBreakdown(taxonomy, tool)).toEqual({
+      sourced: 1,
+      unsourced: 1,
+      dev: 1,
+      missing: 1,
+      unknown: 0,
+      total: 4,
+    })
+  })
+
+  it('treats absent features as unknown', () => {
+    const empty = { ...tool, features: {} }
+    expect(calculateStatusBreakdown(taxonomy, empty)).toMatchObject({ unknown: 4, total: 4 })
+  })
+
+  it('reports the sourced share of implemented features', () => {
+    expect(calculateEvidenceRate(taxonomy, tool)).toMatchObject({
+      met: 1,
+      total: 2,
+      percentage: 50,
+    })
+  })
+})
+
+describe('unified use case', () => {
+  it('requires every feature any use case requires', () => {
+    const other: UseCaseRecord = {
+      ...useCase,
+      id: 'other',
+      features: { category: { missing: { value: 'y' } } },
+    }
+    const unified = createUnifiedUseCase([useCase, other])
+
+    expect(Object.keys(unified?.features.category ?? {}).sort()).toEqual([
+      'dev',
+      'missing',
+      'sourced',
+      'unsourced',
+    ])
+  })
+
+  it('is absent without use cases', () => {
+    expect(createUnifiedUseCase([])).toBeNull()
   })
 })
 
