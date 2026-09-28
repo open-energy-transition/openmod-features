@@ -14,8 +14,6 @@ export type ChartLinkTarget = {
   search?: Record<string, string>
 }
 
-export type ChartDirection = 'higher' | 'lower'
-
 export type CsvTable = {
   filename: string
   rows: Array<Array<string | number>>
@@ -24,7 +22,6 @@ export type CsvTable = {
 export function ChartCard({
   title,
   subtitle,
-  direction,
   info,
   link,
   csv,
@@ -35,7 +32,6 @@ export function ChartCard({
 }: {
   title: ReactNode
   subtitle?: ReactNode
-  direction?: ChartDirection
   info?: ReactNode
   link?: ChartLinkTarget & { label: string }
   csv?: CsvTable
@@ -52,17 +48,7 @@ export function ChartCard({
             <span className="min-w-0">{title}</span>
             {info ? <ChartInfo label={info} /> : null}
           </h3>
-          {subtitle || direction ? (
-            <p className="atlas-chart-subtitle">
-              {subtitle}
-              {subtitle && direction ? ' · ' : null}
-              {direction ? (
-                <span className="whitespace-nowrap">
-                  {direction === 'higher' ? 'Higher is better' : 'Lower is better'}
-                </span>
-              ) : null}
-            </p>
-          ) : null}
+          {subtitle ? <p className="atlas-chart-subtitle">{subtitle}</p> : null}
         </div>
         {csv || link ? (
           <div className="flex shrink-0 items-center gap-1">
