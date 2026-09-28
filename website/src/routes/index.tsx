@@ -5,15 +5,18 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Link } from '@tanstack/react-router'
 import { useMemo } from 'react'
-import type { CSSProperties, ReactNode } from 'react'
-import {
-  FaArrowRight,
-  FaChartColumn,
-  FaClipboardCheck,
-  FaWandMagicSparkles,
-} from 'react-icons/fa6'
+import type { ReactNode } from 'react'
+import { FaArrowRight } from 'react-icons/fa6'
+import { ChartCard, TooltipBody } from '../components/charts/chart-card'
+import type { ChartLinkTarget } from '../components/charts/chart-card'
+import { ColumnChart } from '../components/charts/column-chart'
+import type { ColumnDatum } from '../components/charts/column-chart'
 import { useDashboardContext } from '../components/dashboard-layout'
-import { calculateToolCoverage, calculateUseCaseCoverage } from '../data/coverage'
+import {
+  calculateToolCoverage,
+  calculateUseCaseCoverage,
+  countFeatures,
+} from '../data/coverage'
 import { CUSTOM_USE_CASE_ID } from '../data/custom-use-case'
 import type {
   CoverageResult,
@@ -27,183 +30,162 @@ export const Route = createFileRoute('/')({
   component: HomePage,
 })
 
+type ToolScore = { tool: ToolRecord; coverage: CoverageResult }
+
 function HomePage() {
   const { data, coverageOptions } = useDashboardContext()
+  const featureCount = countFeatures(data)
   const builtInUseCases = useMemo(
     () => data.useCases.filter((useCase) => useCase.id !== CUSTOM_USE_CASE_ID),
     [data.useCases],
   )
-  const unifiedUseCase = useMemo(
-    () => createUnifiedUseCase(builtInUseCases),
-    [builtInUseCases],
-  )
   const toolBenchmarks = useMemo(
     () =>
-      data.tools
-        .map((tool) => ({
-          tool,
-          coverage: calculateToolCoverage(data.taxonomy, tool, coverageOptions),
-        }))
-        .sort((left, right) => compareCoverage(right.coverage, left.coverage)),
+      rankTools(data.tools, (tool) =>
+        calculateToolCoverage(data.taxonomy, tool, coverageOptions),
+      ),
     [coverageOptions, data.taxonomy, data.tools],
   )
-  const unifiedBenchmarks = useMemo(
-    () =>
-      unifiedUseCase
-        ? data.tools
-            .map((tool) => ({
-              tool,
-              coverage: calculateUseCaseCoverage(
-                data.taxonomy,
-                tool,
-                unifiedUseCase,
-                coverageOptions,
-              ),
-            }))
-            .sort((left, right) => compareCoverage(right.coverage, left.coverage))
-        : [],
-    [coverageOptions, data.taxonomy, data.tools, unifiedUseCase],
-  )
-  const useCaseBenchmarks = useMemo(
-    () =>
-      builtInUseCases.map((useCase) => ({
-        useCase,
-        tools: data.tools
-          .map((tool) => ({
-            tool,
-            coverage: calculateUseCaseCoverage(
-              data.taxonomy,
-              tool,
-              useCase,
-              coverageOptions,
-            ),
-          }))
-          .sort((left, right) => compareCoverage(right.coverage, left.coverage)),
-      })),
-    [builtInUseCases, coverageOptions, data.taxonomy, data.tools],
-  )
+  const useCaseBenchmarks = useMemo(() => {
+    const unifiedUseCase = createUnifiedUseCase(builtInUseCases)
+    const scored = builtInUseCases.map((useCase) => ({ useCase, search: useCase.id }))
+    if (unifiedUseCase) {
+      scored.push({ useCase: unifiedUseCase, search: 'default' })
+    }
+
+    return scored.map(({ useCase, search }) => ({
+      useCase,
+      search: { use_cases: search },
+      tools: rankTools(data.tools, (tool) =>
+        calculateUseCaseCoverage(data.taxonomy, tool, useCase, coverageOptions),
+      ),
+    }))
+  }, [builtInUseCases, coverageOptions, data.taxonomy, data.tools])
+
   return (
-    <div className="grid gap-5">
-      <section className="atlas-home-hero grid gap-5 p-4 lg:grid-cols-[minmax(0,1.1fr)_minmax(260px,0.45fr)] lg:items-end">
-        <div className="max-w-4xl">
-          <p className="atlas-eyebrow">Energy Model Benchmarks</p>
-          <h2 className="atlas-home-title mt-2 text-3xl font-semibold sm:text-4xl lg:text-5xl">
+    <div className="grid gap-6">
+      <section className="atlas-hero grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+        <div className="max-w-3xl">
+          <p className="atlas-eyebrow">Energy system modelling tools</p>
+          <h1 className="atlas-hero-title mt-2 text-3xl font-semibold sm:text-4xl">
             How well does each tool fit your modelling workflow?
-          </h2>
-          <p className="atlas-copy mt-3 max-w-3xl text-sm leading-6 sm:text-base">
-            Each chart scores tools by the share of a use case&apos;s required
-            features they support, starting with coverage of the entire feature
-            taxonomy. Select a chart to see the features and evidence behind
-            each score.
+          </h1>
+          <p className="atlas-copy mt-3 text-sm leading-6 sm:text-base">
+            A community-maintained feature inventory for energy system modelling
+            tools and common planning use cases. Each chart scores tools by the
+            share of features they support; select a column to see the evidence
+            behind it. PLEXOS® is included as a proprietary reference point.
           </p>
         </div>
-
-        <div className="atlas-home-action-stack grid gap-2">
-          <HomeAction
-            to="/use-cases"
-            icon={<FaClipboardCheck aria-hidden="true" />}
-            description="Review workflow fit scores."
-            variant="primary"
-          >
-            Compare
-          </HomeAction>
-          <HomeAction
-            to="/builder"
-            icon={<FaWandMagicSparkles aria-hidden="true" />}
-            description="Create a custom benchmark."
-          >
-            Assemble
-          </HomeAction>
-          <HomeAction
-            to="/tools"
-            icon={<FaChartColumn aria-hidden="true" />}
-            description="Inspect feature evidence."
-          >
-            Open
-          </HomeAction>
+        <div className="flex flex-wrap gap-2">
+          <HeroLink to="/use-cases" variant="primary">
+            Compare use-case fit
+          </HeroLink>
+          <HeroLink to="/builder">Build a custom use case</HeroLink>
         </div>
       </section>
 
-      <BenchmarkPanel
-        title="Feature inventory"
-        description="Scored against the entire taxonomy. Use this as the broad capability inventory before narrowing to workflow-specific requirements."
-        cta="Inspect tool matrix"
-        to="/tools"
-        icon={<FaChartColumn aria-hidden="true" />}
+      <ChartCard
+        title="Feature coverage"
+        subtitle={`Share of all ${featureCount} taxonomy features implemented`}
+        direction="higher"
+        link={{ to: '/tools', label: 'Tool matrix' }}
+        csv={coverageCsv('feature-coverage', toolBenchmarks)}
       >
-        <BenchmarkBars
-          items={toolBenchmarks}
-          variant="wide"
-          to="/tools"
+        <ColumnChart
+          label="Feature coverage by tool"
+          data={toColumns(toolBenchmarks, { to: '/tools' })}
         />
-      </BenchmarkPanel>
+      </ChartCard>
 
-      <section className="grid gap-4 xl:grid-cols-2">
-        {useCaseBenchmarks.map(({ useCase, tools }) => (
-          <BenchmarkPanel
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {useCaseBenchmarks.map(({ useCase, search, tools }) => (
+          <ChartCard
             key={useCase.id}
-            title={useCase.name}
-            description={useCase.description || 'Use-case fit score by model.'}
-            cta="Inspect tool matrix"
-            to="/tools"
-            search={{ use_cases: useCase.id }}
-            icon={<FaClipboardCheck aria-hidden="true" />}
-          >
-            <BenchmarkBars
-              items={tools}
-              compact
-              to="/tools"
-              search={{ use_cases: useCase.id }}
-            />
-          </BenchmarkPanel>
-        ))}
-        <BenchmarkPanel
-          title="Unified default use cases"
-          description={`A broad benchmark across the combined required features from ${builtInUseCases.length} built-in use cases. Open the matrix to inspect the scoped rows.`}
-          cta="Inspect tool matrix"
-          to="/tools"
-          search={{ use_cases: 'default' }}
-          icon={<FaClipboardCheck aria-hidden="true" />}
-        >
-          <BenchmarkBars
-            items={unifiedBenchmarks}
             compact
-            to="/tools"
-            search={{ use_cases: 'default' }}
-          />
-        </BenchmarkPanel>
+            title={useCase.name}
+            subtitle="Share of required features met"
+            direction="higher"
+            info={useCase.description || undefined}
+            link={{ to: '/tools', search, label: 'Matrix' }}
+            csv={coverageCsv(`${useCase.id}-fit`, tools)}
+          >
+            <ColumnChart
+              size="sm"
+              label={`${useCase.name} fit by tool`}
+              data={toColumns(tools, { to: '/tools', search })}
+            />
+          </ChartCard>
+        ))}
       </section>
     </div>
   )
 }
 
-function HomeAction({
+function rankTools(
+  tools: ToolRecord[],
+  score: (tool: ToolRecord) => CoverageResult,
+): ToolScore[] {
+  return tools
+    .map((tool) => ({ tool, coverage: score(tool) }))
+    .sort((left, right) => compareCoverage(right.coverage, left.coverage))
+}
+
+function toColumns(items: ToolScore[], link: ChartLinkTarget): ColumnDatum[] {
+  return items.map(({ tool, coverage }) => ({
+    id: tool.id,
+    label: tool.shortname,
+    value: coverage.percentage ?? 0,
+    valueLabel: formatPercent(coverage),
+    color: 'var(--chart-series-1)',
+    link,
+    tooltip: (
+      <TooltipBody
+        title={tool.name}
+        rows={[
+          ['Score', formatPercent(coverage)],
+          ['Features met', `${coverage.met} of ${coverage.total}`],
+        ]}
+      />
+    ),
+  }))
+}
+
+function coverageCsv(filename: string, items: ToolScore[]) {
+  return {
+    filename,
+    rows: [
+      ['tool', 'score_percent', 'features_met', 'features_total'],
+      ...items.map(({ tool, coverage }) => [
+        tool.shortname,
+        coverage.percentage === null ? '' : coverage.percentage.toFixed(1),
+        coverage.met,
+        coverage.total,
+      ]),
+    ],
+  }
+}
+
+function formatPercent(coverage: CoverageResult) {
+  return coverage.percentage === null ? 'N/A' : `${Math.round(coverage.percentage)}%`
+}
+
+function HeroLink({
   to,
-  icon,
-  description,
   variant = 'secondary',
   children,
 }: {
   to: string
-  icon: ReactNode
-  description: string
   variant?: 'primary' | 'secondary'
   children: ReactNode
 }) {
   return (
     <Link
       to={to}
-      data-variant={variant}
-      className="atlas-home-action atlas-focus grid w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-3 py-3 text-left outline-none"
+      className={`${variant === 'primary' ? 'atlas-primary-button' : 'atlas-secondary-button'} atlas-focus inline-flex h-10 items-center gap-2 px-4 text-sm font-semibold outline-none`}
     >
-      <span className="atlas-home-action-icon">{icon}</span>
-      <span className="min-w-0">
-        <span className="block text-sm font-semibold">{children}</span>
-        <span className="atlas-caption mt-0.5 block truncate text-xs font-normal">
-          {description}
-        </span>
-      </span>
-      <FaArrowRight className="atlas-home-action-arrow" aria-hidden="true" />
+      {children}
+      <FaArrowRight aria-hidden="true" />
     </Link>
   )
 }
@@ -236,120 +218,4 @@ function createUnifiedUseCase(useCases: UseCaseRecord[]): UseCaseRecord | null {
     assumptions: [],
     features,
   }
-}
-
-function BenchmarkPanel({
-  title,
-  description,
-  cta,
-  to,
-  search,
-  icon,
-  children,
-}: {
-  title: string
-  description: string
-  cta: string
-  to: string
-  search?: Record<string, string>
-  icon: ReactNode
-  children: ReactNode
-}) {
-  return (
-    <article className="atlas-benchmark-panel">
-      <div className="grid gap-3 border-b border-[var(--atlas-line-soft)] p-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-start">
-        <div className="min-w-0">
-          <h3 className="flex min-w-0 items-center gap-2 text-base font-semibold text-[var(--atlas-ink)]">
-            <span className="atlas-benchmark-icon">{icon}</span>
-            <span className="truncate">{title}</span>
-          </h3>
-          <p className="atlas-caption mt-1 line-clamp-2 text-xs leading-5">
-            {description}
-          </p>
-        </div>
-        <Link
-          to={to}
-          search={search as never}
-          className="atlas-benchmark-link atlas-focus inline-flex items-center gap-2 justify-self-start px-2.5 py-1.5 text-xs font-semibold outline-none md:justify-self-end"
-        >
-          {cta}
-          <FaArrowRight aria-hidden="true" />
-        </Link>
-      </div>
-      <div className="p-4">{children}</div>
-    </article>
-  )
-}
-
-function BenchmarkBars({
-  items,
-  compact = false,
-  variant = 'normal',
-  to = '/tools',
-  search,
-}: {
-  items: Array<{ tool: ToolRecord; coverage: CoverageResult }>
-  compact?: boolean
-  variant?: 'normal' | 'wide'
-  to?: string
-  search?: Record<string, string>
-}) {
-  const maxRows = compact ? 8 : items.length
-  const visibleItems = items.slice(0, maxRows)
-
-  return (
-    <div
-      className="atlas-benchmark-bars"
-      data-variant={variant}
-      aria-label="Sorted benchmark scores"
-    >
-      {visibleItems.map(({ tool, coverage }, index) => (
-        <BenchmarkBar
-          key={tool.id}
-          tool={tool}
-          coverage={coverage}
-          rank={index + 1}
-          to={to}
-          search={search}
-        />
-      ))}
-    </div>
-  )
-}
-
-function BenchmarkBar({
-  tool,
-  coverage,
-  rank,
-  to,
-  search,
-}: {
-  tool: ToolRecord
-  coverage: CoverageResult
-  rank: number
-  to: string
-  search?: Record<string, string>
-}) {
-  const percentage = coverage.percentage ?? 0
-
-  return (
-    <Link
-      to={to}
-      search={search as never}
-      className="atlas-benchmark-bar atlas-focus group outline-none"
-      aria-label={`${tool.name}: ${Math.round(percentage)} percent score`}
-      style={{ '--score': `${Math.max(0, Math.min(100, percentage))}%` } as CSSProperties}
-    >
-      <span className="atlas-benchmark-rank">{rank}</span>
-      <span className="atlas-benchmark-name min-w-0 truncate font-medium text-[var(--atlas-ink)]">
-        {tool.shortname}
-      </span>
-      <span className="atlas-benchmark-track" aria-hidden="true">
-        <span className="atlas-benchmark-fill" />
-      </span>
-      <span className="atlas-benchmark-score justify-self-end font-semibold tabular-nums text-[var(--atlas-ink)]">
-        {Math.round(percentage)}%
-      </span>
-    </Link>
-  )
 }

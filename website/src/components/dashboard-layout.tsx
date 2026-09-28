@@ -3,17 +3,9 @@
 // SPDX-License-Identifier: MIT
 
 import { Tooltip } from '@base-ui/react/tooltip'
-import { Switch } from '@base-ui/react/switch'
-import { Link, Outlet, useLocation } from '@tanstack/react-router'
+import { Link, Outlet } from '@tanstack/react-router'
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
-import {
-  FaFileCircleCheck,
-  FaGithub,
-  FaMoon,
-  FaListCheck,
-  FaScrewdriverWrench,
-  FaSun,
-} from 'react-icons/fa6'
+import { FaChartColumn, FaGithub, FaMoon, FaSun } from 'react-icons/fa6'
 import { defaultCoverageOptions } from '../data/coverage'
 import {
   CUSTOM_USE_CASE_PARAM,
@@ -23,7 +15,7 @@ import {
 import type { CoverageOptions, DashboardData } from '../data/types'
 import type { UseCaseRecord } from '../data/types'
 import { useDashboardData } from '../data/useDashboardData'
-import { CoverageControls } from './ui'
+import { ScoringMenu } from './ui'
 
 type Theme = 'light' | 'dark'
 
@@ -37,6 +29,7 @@ export type DashboardOutletContext = {
 
 const DashboardContext = createContext<DashboardOutletContext | null>(null)
 const CURRENT_TAXONOMY_VERSION = 'v0.3.0'
+const REPOSITORY_URL = 'https://github.com/open-energy-transition/openmod-features'
 
 export function useDashboardContext() {
   const context = useContext(DashboardContext)
@@ -47,7 +40,6 @@ export function useDashboardContext() {
 }
 
 export function DashboardLayout() {
-  const location = useLocation()
   const state = useDashboardData()
   const [coverageOptions, setCoverageOptions] = useState(defaultCoverageOptions)
   const [customUseCase, setCustomUseCaseState] = useState<UseCaseRecord | null>(null)
@@ -131,20 +123,15 @@ export function DashboardLayout() {
 
   return (
     <Tooltip.Provider delay={0} closeDelay={80}>
-      <main className="atlas-canvas">
-        <DashboardHeader
-          data={dashboardData}
+      <main className="atlas-canvas flex min-h-screen flex-col">
+        <TopBar
+          customUseCase={customUseCase}
+          coverageOptions={coverageOptions}
+          onCoverageOptionsChange={setCoverageOptions}
           theme={theme}
           onThemeChange={setTheme}
         />
-        <div className="mx-auto grid max-w-[1800px] gap-5 px-4 py-6 sm:px-6 lg:px-8">
-          <div className="atlas-sticky-toolbar sticky top-0 z-40 -mx-4 min-w-0 px-4 py-2 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-            <div className="flex w-full min-w-0 flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-              <DashboardNav customUseCase={customUseCase} />
-              <CoverageControls options={coverageOptions} onChange={setCoverageOptions} />
-            </div>
-          </div>
-          {location.pathname === '/' ? <HomeIntro data={dashboardData} /> : null}
+        <div className="mx-auto grid w-full max-w-[1600px] flex-1 content-start gap-5 px-4 py-6 sm:px-6 lg:px-8">
           <DashboardContext.Provider
             value={{
               data: dashboardData,
@@ -157,131 +144,118 @@ export function DashboardLayout() {
             <Outlet />
           </DashboardContext.Provider>
         </div>
+        <SiteFooter data={dashboardData} />
       </main>
     </Tooltip.Provider>
   )
 }
 
-function HomeIntro({ data }: { data: DashboardData }) {
-  return (
-    <section className="atlas-preamble grid gap-4 p-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
-      <div className="max-w-4xl">
-        <p className="atlas-eyebrow">Inventory Snapshot</p>
-        <p className="atlas-copy mt-1 max-w-3xl text-sm leading-6">
-          openmod-features is a community-maintained feature inventory for
-          energy system modelling tools and common planning use cases. It
-          focuses on open-source tools, with one proprietary, closed-source
-          tool (PLEXOS®) included as a commercial reference point. Matching
-          tool feature lists to use-case requirements helps identify which
-          tools fit a workflow and where feature gaps remain.
-        </p>
-        <div className="mt-3 flex flex-wrap gap-2">
-          <PreambleLink
-            href="https://github.com/open-energy-transition/openmod-features"
-            icon={<FaScrewdriverWrench aria-hidden="true" />}
-            text="Repository"
-          />
-          <PreambleLink
-            href="https://github.com/open-energy-transition/openmod-features/blob/main/CONTRIBUTING.md"
-            icon={<FaFileCircleCheck aria-hidden="true" />}
-            text="Contributing"
-          />
-          <PreambleLink
-            href="https://github.com/open-energy-transition/openmod-features/blob/main/GOVERNANCE.md"
-            icon={<FaGithub aria-hidden="true" />}
-            text="Governance"
-          />
-        </div>
-      </div>
-
-      <dl className="grid gap-y-4 text-sm sm:grid-cols-2 sm:gap-x-8 lg:gap-x-10">
-        <ProvenanceItem
-          label="Generated"
-          value={new Date(data.generatedAt).toLocaleString()}
-        />
-        <ProvenanceItem
-          label="Taxonomy"
-          value={data.taxonomyVersion || CURRENT_TAXONOMY_VERSION}
-        />
-      </dl>
-    </section>
-  )
-}
-
-function PreambleLink({
-  href,
-  icon,
-  text,
-}: {
-  href: string
-  icon: React.ReactNode
-  text: string
-}) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noreferrer"
-      className="atlas-preamble-point atlas-focus inline-flex items-center gap-2 px-2.5 py-1.5 text-xs font-medium outline-none"
-    >
-      <span className="atlas-muted">{icon}</span>
-      <span>{text}</span>
-    </a>
-  )
-}
-
-function ProvenanceItem({
-  label,
-  value,
-  detail,
-}: {
-  label: string
-  value: string
-  detail?: string
-}) {
-  return (
-    <div>
-      <dt className="atlas-caption text-xs font-semibold uppercase tracking-[0.12em]">
-        {label}
-      </dt>
-      <dd className="mt-1 font-medium text-[var(--atlas-ink)]">{value}</dd>
-      {detail ? <p className="atlas-caption mt-1 text-xs leading-5">{detail}</p> : null}
-    </div>
-  )
-}
-
-function DashboardHeader({
-  data,
+function TopBar({
+  customUseCase,
+  coverageOptions,
+  onCoverageOptionsChange,
   theme,
   onThemeChange,
 }: {
-  data: DashboardData
+  customUseCase: UseCaseRecord | null
+  coverageOptions: CoverageOptions
+  onCoverageOptionsChange: (options: CoverageOptions) => void
   theme: Theme
   onThemeChange: (theme: Theme) => void
 }) {
   return (
-    <header className="atlas-header">
-      <div className="atlas-header-inner mx-auto grid max-w-[1800px] gap-4 px-4 py-6 sm:px-6 lg:px-8">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <div className="atlas-header-copy">
-            <p className="atlas-eyebrow">
-              Energy System Modelling
-            </p>
-            <h1 className="atlas-title mt-2 text-3xl font-semibold sm:text-4xl">
-              Tool Feature Dashboard
-            </h1>
-            <p className="atlas-copy mt-2 max-w-3xl text-sm leading-6">
-              Compare modelling capabilities, source validation, and use-case
-              fit from the repository feature inventory.
-            </p>
-          </div>
-          <div className="atlas-header-controls flex flex-col gap-3 sm:flex-row sm:items-center lg:flex-col lg:items-end">
-            <ThemeSwitch theme={theme} onThemeChange={onThemeChange} />
-            <HeaderLinks data={data} />
-          </div>
+    <header className="atlas-topbar sticky top-0 z-50">
+      <div className="mx-auto grid w-full max-w-[1600px] grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1 px-4 py-2 sm:px-6 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:px-8">
+        <Link to="/" className="atlas-wordmark atlas-focus inline-flex items-center gap-2 rounded-[6px] outline-none">
+          <span className="atlas-wordmark-mark" aria-hidden="true">
+            <FaChartColumn />
+          </span>
+          <span className="whitespace-nowrap text-sm font-semibold tracking-[-0.01em]">
+            openmod<span className="atlas-caption font-medium">-features</span>
+          </span>
+        </Link>
+        <div className="flex items-center justify-end gap-2 lg:order-3">
+          <ScoringMenu options={coverageOptions} onChange={onCoverageOptionsChange} />
+          <ThemeSwitch theme={theme} onThemeChange={onThemeChange} />
+          <GithubLink />
         </div>
+        <DashboardNav customUseCase={customUseCase} />
       </div>
     </header>
+  )
+}
+
+function SiteFooter({ data }: { data: DashboardData }) {
+  return (
+    <footer className="atlas-footer">
+      <div className="mx-auto grid w-full max-w-[1600px] gap-8 px-4 py-8 sm:px-6 md:grid-cols-[minmax(0,1.4fr)_repeat(3,minmax(0,1fr))] lg:px-8">
+        <div className="max-w-sm">
+          <p className="text-sm font-semibold text-[var(--atlas-ink)]">openmod-features</p>
+          <p className="atlas-caption mt-2 text-xs leading-5">
+            A community-maintained feature inventory for energy system modelling
+            tools and planning use cases. Feature lists are maintained by tool
+            developers and users; every value links to its evidence.
+          </p>
+        </div>
+        <FooterColumn title="Explore">
+          <FooterLink to="/" customUseCase={null}>Home</FooterLink>
+          <FooterLink to="/tools" customUseCase={null}>Tool Matrix</FooterLink>
+          <FooterLink to="/use-cases" customUseCase={null}>Use-Case Fit</FooterLink>
+          <FooterLink to="/builder" customUseCase={null}>Use Case Builder</FooterLink>
+        </FooterColumn>
+        <FooterColumn title="Project">
+          <FooterLink to="/about" customUseCase={null}>About &amp; methodology</FooterLink>
+          <FooterExternalLink href={`${REPOSITORY_URL}/blob/main/CONTRIBUTING.md`}>
+            Contributing
+          </FooterExternalLink>
+          <FooterExternalLink href={`${REPOSITORY_URL}/blob/main/GOVERNANCE.md`}>
+            Governance
+          </FooterExternalLink>
+          <FooterExternalLink href={`${REPOSITORY_URL}/issues/new/choose`}>
+            Report an issue
+          </FooterExternalLink>
+        </FooterColumn>
+        <FooterColumn title="Data">
+          <p>Taxonomy {data.taxonomyVersion || CURRENT_TAXONOMY_VERSION}</p>
+          <p>Generated {new Date(data.generatedAt).toLocaleDateString()}</p>
+          <p>Feature lists CC-BY-4.0 · Code MIT</p>
+          <FooterExternalLink href={REPOSITORY_URL}>GitHub repository</FooterExternalLink>
+        </FooterColumn>
+      </div>
+    </footer>
+  )
+}
+
+function FooterColumn({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <p className="atlas-caption text-xs font-semibold uppercase tracking-[0.12em]">{title}</p>
+      <div className="atlas-footer-links mt-3 grid gap-2 text-sm">{children}</div>
+    </div>
+  )
+}
+
+function FooterLink({
+  to,
+  customUseCase,
+  children,
+}: {
+  to: string
+  customUseCase: UseCaseRecord | null
+  children: React.ReactNode
+}) {
+  return (
+    <NavLink to={to} customUseCase={customUseCase} className="atlas-footer-link w-fit">
+      {children}
+    </NavLink>
+  )
+}
+
+function FooterExternalLink({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <a href={href} target="_blank" rel="noreferrer" className="atlas-footer-link w-fit">
+      {children}
+    </a>
   )
 }
 
@@ -293,28 +267,18 @@ function ThemeSwitch({
   onThemeChange: (theme: Theme) => void
 }) {
   const dark = theme === 'dark'
+  const label = dark ? 'Switch to light theme' : 'Switch to dark theme'
 
   return (
-    <label
-      className="atlas-theme-switch"
-      data-theme-state={theme}
-      title={dark ? 'Switch to light theme' : 'Switch to dark theme'}
+    <button
+      type="button"
+      onClick={() => onThemeChange(dark ? 'light' : 'dark')}
+      aria-label={label}
+      title={label}
+      className="atlas-topbar-button atlas-focus grid h-9 w-9 place-items-center outline-none"
     >
-      <span className="atlas-theme-icon atlas-theme-sun" aria-hidden="true">
-        <FaSun />
-      </span>
-      <Switch.Root
-        checked={dark}
-        onCheckedChange={(checked) => onThemeChange(checked ? 'dark' : 'light')}
-        aria-label={dark ? 'Switch to light theme' : 'Switch to dark theme'}
-        className="atlas-theme-track atlas-focus"
-      >
-        <Switch.Thumb className="atlas-theme-thumb" />
-      </Switch.Root>
-      <span className="atlas-theme-icon atlas-theme-moon" aria-hidden="true">
-        <FaMoon />
-      </span>
-    </label>
+      {dark ? <FaSun aria-hidden="true" /> : <FaMoon aria-hidden="true" />}
+    </button>
   )
 }
 
@@ -322,21 +286,21 @@ function DashboardNav({ customUseCase }: { customUseCase: UseCaseRecord | null }
   return (
     <nav
       aria-label="Dashboard sections"
-      className="atlas-nav flex min-w-0 gap-1 p-1"
+      className="atlas-topbar-nav col-span-2 -mx-1 flex min-w-0 gap-0.5 overflow-x-auto px-1 lg:col-span-1"
     >
-      <NavLink to="/" customUseCase={customUseCase}>
+      <NavLink to="/" customUseCase={customUseCase} className="atlas-topbar-link">
         Home
       </NavLink>
-      <NavLink to="/tools" customUseCase={customUseCase}>
+      <NavLink to="/tools" customUseCase={customUseCase} className="atlas-topbar-link">
         Tool Matrix
       </NavLink>
-      <NavLink to="/use-cases" customUseCase={customUseCase}>
+      <NavLink to="/use-cases" customUseCase={customUseCase} className="atlas-topbar-link">
         Use-Case Fit
       </NavLink>
-      <NavLink to="/builder" customUseCase={customUseCase}>
+      <NavLink to="/builder" customUseCase={customUseCase} className="atlas-topbar-link">
         Use Case Builder
       </NavLink>
-      <NavLink to="/about" customUseCase={customUseCase}>
+      <NavLink to="/about" customUseCase={customUseCase} className="atlas-topbar-link">
         About
       </NavLink>
     </nav>
@@ -346,10 +310,12 @@ function DashboardNav({ customUseCase }: { customUseCase: UseCaseRecord | null }
 function NavLink({
   to,
   customUseCase,
+  className,
   children,
 }: {
   to: string
   customUseCase: UseCaseRecord | null
+  className: string
   children: React.ReactNode
 }) {
   const customFeatures = customUseCase ? encodeCustomUseCase(customUseCase) : null
@@ -362,7 +328,7 @@ function NavLink({
           ? ({ [CUSTOM_USE_CASE_PARAM]: customFeatures } as never)
           : undefined
       }
-      className="atlas-nav-link atlas-focus h-9 whitespace-nowrap rounded-[6px] px-3 text-sm font-medium leading-9 outline-none"
+      className={`${className} atlas-focus outline-none`}
       activeOptions={{ exact: to === '/' }}
     >
       {children}
@@ -382,53 +348,15 @@ function updateCustomUseCaseUrl(encoded: string | null) {
   window.history.replaceState(null, '', url)
 }
 
-function HeaderLinks({ data }: { data: DashboardData }) {
-  return (
-    <div className="grid grid-cols-2 gap-2 text-xs text-[var(--atlas-ink-soft)] sm:flex sm:flex-wrap sm:items-center sm:justify-end">
-      <DataItem
-        icon={<FaScrewdriverWrench aria-hidden="true" />}
-        label="Tools"
-        value={data.tools.length.toString()}
-      />
-      <DataItem
-        icon={<FaListCheck aria-hidden="true" />}
-        label="Use cases"
-        value={data.useCases.length.toString()}
-      />
-      <GithubLink />
-    </div>
-  )
-}
-
-function DataItem({
-  icon,
-  label,
-  value,
-}: {
-  icon: React.ReactNode
-  label: string
-  value: string
-}) {
-  return (
-    <div className="flex min-w-0 items-center gap-2 border-l border-[var(--atlas-line-strong)] py-1 pl-2.5">
-      <dt className="atlas-muted">{icon}</dt>
-      <dd className="flex min-w-0 items-baseline gap-1.5 whitespace-nowrap">
-        <span className="truncate font-semibold tabular-nums text-[var(--atlas-ink)]">{value}</span>
-        <span className="atlas-caption shrink-0">{label}</span>
-      </dd>
-    </div>
-  )
-}
-
 function GithubLink() {
   return (
     <a
-      href="https://github.com/open-energy-transition/openmod-features"
+      href={REPOSITORY_URL}
       target="_blank"
       rel="noreferrer"
       aria-label="Open the openmod-features repository on GitHub"
       title="Open GitHub repository"
-      className="atlas-github-button atlas-focus inline-flex h-10 w-10 items-center justify-center rounded-[6px] text-lg outline-none"
+      className="atlas-topbar-button atlas-focus grid h-9 w-9 place-items-center outline-none"
     >
       <FaGithub aria-hidden="true" />
     </a>

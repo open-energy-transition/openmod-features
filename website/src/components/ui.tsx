@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import { Checkbox } from '@base-ui/react/checkbox'
+import { Popover } from '@base-ui/react/popover'
 import { Switch } from '@base-ui/react/switch'
 import { Tooltip } from '@base-ui/react/tooltip'
 import type { ReactNode } from 'react'
@@ -11,8 +12,8 @@ import {
   FaCheck,
   FaCircleQuestion,
   FaCodeBranch,
-  FaCircleInfo,
   FaMinus,
+  FaSliders,
   FaXmark,
 } from 'react-icons/fa6'
 import type {
@@ -21,6 +22,7 @@ import type {
   FeatureValue,
   ToolRecord,
 } from '../data/types'
+import { defaultCoverageOptions } from '../data/coverage'
 import { coverageColor } from '../lib/dashboard-utils'
 
 export function Toggle({
@@ -266,86 +268,53 @@ export function ToolName({
   )
 }
 
-export function CoverageControls({
+export function ScoringMenu({
   options,
   onChange,
 }: {
   options: CoverageOptions
   onChange: (options: CoverageOptions) => void
 }) {
-  return (
-    <section
-      aria-labelledby="coverage-options"
-      className="atlas-rule-switcher flex min-w-0 max-w-full flex-wrap items-center gap-2 p-1.5"
-    >
-      <h2
-        id="coverage-options"
-        className="atlas-rule-label whitespace-nowrap px-1.5 text-xs font-semibold uppercase tracking-[0.12em]"
-      >
-        Coverage Rules
-      </h2>
-      <CoverageRuleSwitch
-        label="Unvalidated"
-        checked={options.countUnsourced}
-        onCheckedChange={(checked) => onChange({ ...options, countUnsourced: checked })}
-        description="Include implemented values without source links."
-      />
-      <CoverageRuleSwitch
-        label="In development"
-        checked={options.countDev}
-        onCheckedChange={(checked) => onChange({ ...options, countDev: checked })}
-        description="Treat development status as meeting a requirement."
-      />
-    </section>
-  )
-}
-
-function CoverageRuleSwitch({
-  label,
-  checked,
-  onCheckedChange,
-  description,
-}: {
-  label: string
-  checked: boolean
-  onCheckedChange: (checked: boolean) => void
-  description: string
-}) {
-  const descriptionId = `coverage-rule-${label.toLowerCase().replace(/\s+/g, '-')}`
+  const customised =
+    options.countUnsourced !== defaultCoverageOptions.countUnsourced ||
+    options.countDev !== defaultCoverageOptions.countDev
 
   return (
-    <div className="flex items-center gap-1">
-      <Switch.Root
-        checked={checked}
-        onCheckedChange={onCheckedChange}
-        aria-describedby={descriptionId}
-        className="atlas-rule-switch atlas-focus inline-flex h-9 items-center gap-2 whitespace-nowrap rounded-[6px] px-2.5 text-sm font-medium outline-none"
-      >
-        <span className="atlas-rule-track">
-          <Switch.Thumb className="atlas-rule-thumb" />
-        </span>
-        <span>{label}</span>
-        <span id={descriptionId} className="sr-only">
-          {description}
-        </span>
-      </Switch.Root>
-      <Tooltip.Root>
-        <Tooltip.Trigger
-          render={<button type="button" />}
-          aria-label={`${label} coverage rule detail`}
-          className="atlas-rule-info atlas-focus grid h-8 w-8 place-items-center rounded-[6px] outline-none"
-        >
-          <FaCircleInfo aria-hidden="true" />
-        </Tooltip.Trigger>
-        <Tooltip.Portal>
-          <Tooltip.Positioner sideOffset={8}>
-            <Tooltip.Popup className="atlas-popup max-w-xs px-3 py-2 text-xs leading-5">
-              {description}
-            </Tooltip.Popup>
-          </Tooltip.Positioner>
-        </Tooltip.Portal>
-      </Tooltip.Root>
-    </div>
+    <Popover.Root>
+      <Popover.Trigger className="atlas-topbar-button atlas-focus inline-flex h-9 items-center gap-2 px-3 outline-none">
+        <FaSliders className="text-sm" aria-hidden="true" />
+        <span className="text-sm font-medium">Scoring</span>
+        {customised ? (
+          <span className="atlas-topbar-dot" aria-label="Custom scoring rules active" />
+        ) : null}
+      </Popover.Trigger>
+      <Popover.Portal>
+        <Popover.Positioner sideOffset={8} align="end" className="z-[60]">
+          <Popover.Popup className="atlas-popup grid w-[min(20rem,calc(100vw-2rem))] gap-2 p-3 outline-none">
+            <div className="px-2">
+              <Popover.Title className="text-sm font-semibold text-[var(--atlas-ink)]">
+                Scoring rules
+              </Popover.Title>
+              <Popover.Description className="atlas-caption mt-0.5 text-xs leading-5">
+                Decide which feature statuses count towards every score on the dashboard.
+              </Popover.Description>
+            </div>
+            <Toggle
+              checked={options.countUnsourced}
+              onCheckedChange={(checked) => onChange({ ...options, countUnsourced: checked })}
+              label="Count unvalidated"
+              description="Include implemented values without source links."
+            />
+            <Toggle
+              checked={options.countDev}
+              onCheckedChange={(checked) => onChange({ ...options, countDev: checked })}
+              label="Count in development"
+              description="Treat development status as meeting a requirement."
+            />
+          </Popover.Popup>
+        </Popover.Positioner>
+      </Popover.Portal>
+    </Popover.Root>
   )
 }
 
