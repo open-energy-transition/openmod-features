@@ -49,6 +49,7 @@ export type ToolRecord = {
   docs?: string
   source?: string
   version?: string
+  openSource: boolean
   maintainers: string[]
   features: Record<string, Record<string, ToolFeature>>
 }
@@ -74,6 +75,15 @@ export type DashboardData = {
 export type CoverageOptions = {
   countUnsourced: boolean
   countDev: boolean
+}
+
+export type StatusBreakdown = {
+  sourced: number
+  unsourced: number
+  dev: number
+  missing: number
+  unknown: number
+  total: number
 }
 
 export type CoverageResult = {

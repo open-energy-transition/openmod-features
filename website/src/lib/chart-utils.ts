@@ -89,3 +89,16 @@ export function toCsv(rows: Array<Array<string | number>>) {
     )
     .join('\n')
 }
+
+export const toolTypeLegend = [
+  { label: 'Open source', color: 'var(--chart-open-source)' },
+  { label: 'Proprietary reference', color: 'var(--chart-proprietary)' },
+]
+
+export function toolTypeColor(tool: { openSource: boolean }) {
+  return tool.openSource ? 'var(--chart-open-source)' : 'var(--chart-proprietary)'
+}
+
+export function toolTypeLabel(tool: { openSource: boolean }) {
+  return tool.openSource ? 'Open source' : 'Proprietary reference'
+}

@@ -137,6 +137,7 @@ async function loadTools() {
         docs: metadata.docs ? String(metadata.docs) : undefined,
         source: metadata.source ? String(metadata.source) : undefined,
         version: data.version ? String(data.version) : undefined,
+        openSource: metadata.open_source !== false,
         maintainers: asList(metadata.maintainers),
         features: normalizeToolFeatures(data.features),
       }

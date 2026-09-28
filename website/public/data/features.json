@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-25T19:38:15.917Z",
+  "generatedAt": "2026-09-28T20:58:23.641Z",
   "taxonomyVersion": "v0.3.0",
   "taxonomy": [
     {
@@ -5454,6 +5454,7 @@
       "docs": "https://calliope.readthedocs.io",
       "source": "https://github.com/calliope-project/calliope",
       "version": "v0.7.0",
+      "openSource": true,
       "maintainers": [
         "brynpickering"
       ],
@@ -6755,6 +6756,7 @@
       "docs": "https://genxproject.github.io/GenX.jl/",
       "source": "https://github.com/GenXProject/GenX.jl",
       "version": "v0.4.5",
+      "openSource": true,
       "maintainers": [
         "virio-andreyana"
       ],
@@ -7989,6 +7991,7 @@
       "docs": "https://osemosys.readthedocs.io/en/latest/?badge=latest",
       "source": "https://github.com/OSeMOSYS/OSeMOSYS_GNU_MathProg",
       "version": "v1.0.1",
+      "openSource": true,
       "maintainers": [
         "willu47"
       ],
@@ -9305,6 +9308,7 @@
       "docs": "https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/index.htm",
       "source": "https://www.energyexemplar.com/plexos",
       "version": "11.0",
+      "openSource": false,
       "maintainers": [
         "brynpickering"
       ],
@@ -10862,6 +10866,7 @@
       "docs": "https://docs.pypsa.org/latest/",
       "source": "https://github.com/PyPSA/pypsa",
       "version": "v1.3.0",
+      "openSource": true,
       "maintainers": [
         "euronion",
         "SermishaNarayana"
@@ -11254,8 +11259,10 @@
             ]
           },
           "constraints/scope/temporal/cumulative/operation/event_count": {
-            "value": "n",
-            "sources": []
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/v1.3.0/user-guide/optimization/maintenance-scheduling/#event-count"
+            ]
           },
           "constraints/scope/temporal/cumulative/operation/state_duration": {
             "value": "n",
@@ -11333,7 +11340,9 @@
           },
           "constraints/functional_form/quadratic/investment": {
             "value": "n",
-            "sources": []
+            "sources": [
+              "https://docs.pypsa.org/v1.3.0/user-guide/optimization/stochastic/#risk-preferences-with-conditional-value-at-risk-cvar"
+            ]
           },
           "constraints/functional_form/quadratic/operation": {
             "value": "n",
@@ -11646,9 +11655,7 @@
           },
           "model_definition/extensible_dimensions": {
             "value": "n",
-            "sources": [
-              "https://github.com/PyPSA/PyPSA/issues/856"
-            ]
+            "sources": []
           },
           "model_definition/dimension_groups": {
             "value": "y",
@@ -11858,9 +11865,10 @@
         },
         "orchestration": {
           "orchestration/scenario_runs": {
-            "value": "n",
+            "value": "y",
             "sources": [
-              "https://docs.pypsa.org/v1.3.0/user-guide/collection/"
+              "https://docs.pypsa.org/v1.3.0/user-guide/collection/",
+              "https://docs.pypsa.org/v1.3.0/examples/periodic-operational-limits/"
             ]
           },
           "orchestration/sampled_runs": {
@@ -12317,6 +12325,7 @@
       "docs": "https://iea-etsap.org/index.php/documentation",
       "source": "https://github.com/etsap-TIMES/TIMES_model",
       "version": "v4.9.7",
+      "openSource": true,
       "maintainers": [
         "gianvicolux",
         "willu47"

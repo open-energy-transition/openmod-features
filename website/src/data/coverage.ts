@@ -7,6 +7,7 @@ import type {
   CoverageResult,
   DashboardData,
   FeatureValue,
+  StatusBreakdown,
   TaxonomyCategory,
   TaxonomyFeature,
   TaxonomyGroup,
@@ -197,6 +198,82 @@ export function calculateGroupUseCaseCoverage(
 ): CoverageResult {
   const features = category.members.filter((feature) => group.memberIds.includes(feature.id))
   return calculateFeatureSetUseCaseCoverage(features, tool, useCase, options)
+}
+
+/** Count every taxonomy feature of a tool by its raw status, ignoring coverage options. */
+export function calculateStatusBreakdown(
+  taxonomy: TaxonomyCategory[],
+  tool: ToolRecord,
+): StatusBreakdown {
+  const breakdown: StatusBreakdown = {
+    sourced: 0,
+    unsourced: 0,
+    dev: 0,
+    missing: 0,
+    unknown: 0,
+    total: 0,
+  }
+
+  for (const category of taxonomy) {
+    for (const feature of category.members) {
+      breakdown.total += 1
+      const value = getToolFeature(tool, category.id, feature.id)
+
+      if (value?.value === 'y') {
+        breakdown[value.sources.length > 0 ? 'sourced' : 'unsourced'] += 1
+      } else if (value?.value === 'dev') {
+        breakdown.dev += 1
+      } else if (value?.value === 'n') {
+        breakdown.missing += 1
+      } else {
+        breakdown.unknown += 1
+      }
+    }
+  }
+
+  return breakdown
+}
+
+/** Share of a tool's implemented features that cite at least one source. */
+export function calculateEvidenceRate(
+  taxonomy: TaxonomyCategory[],
+  tool: ToolRecord,
+): CoverageResult {
+  const { sourced, unsourced } = calculateStatusBreakdown(taxonomy, tool)
+  return toCoverage(sourced, sourced + unsourced)
+}
+
+export const UNIFIED_USE_CASE_ID = 'all-use-cases'
+
+/** A use case requiring every feature that any of the given use cases requires. */
+export function createUnifiedUseCase(useCases: UseCaseRecord[]): UseCaseRecord | null {
+  if (useCases.length === 0) {
+    return null
+  }
+
+  const features: UseCaseRecord['features'] = {}
+
+  for (const useCase of useCases) {
+    for (const [categoryId, categoryFeatures] of Object.entries(useCase.features)) {
+      features[categoryId] ??= {}
+
+      for (const [featureId, feature] of Object.entries(categoryFeatures)) {
+        if (feature.value === 'y') {
+          features[categoryId][featureId] = { value: 'y' satisfies FeatureValue }
+        }
+      }
+    }
+  }
+
+  return {
+    id: UNIFIED_USE_CASE_ID,
+    name: 'All use cases',
+    shortname: 'All use cases',
+    description: 'Combined required features from all built-in use cases.',
+    maintainers: [],
+    assumptions: [],
+    features,
+  }
 }
 
 export function countFeatures(data: DashboardData) {
