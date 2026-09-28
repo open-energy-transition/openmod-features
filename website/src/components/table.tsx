@@ -331,7 +331,10 @@ export function CategoryRows<T extends { id: string }>({
 
   return (
     <>
-      <tr className={`atlas-category-row ${muted ? 'atlas-filter-muted' : ''}`}>
+      <tr
+        data-category-id={category.id}
+        className={`atlas-category-row ${muted ? 'atlas-filter-muted' : ''}`}
+      >
         <StickyCell>
           <button
             type="button"

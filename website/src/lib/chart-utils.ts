@@ -102,3 +102,49 @@ export function toolTypeColor(tool: { openSource: boolean }) {
 export function toolTypeLabel(tool: { openSource: boolean }) {
   return tool.openSource ? 'Open source' : 'Proprietary reference'
 }
+
+export type LabelSide = 'right' | 'left' | 'above' | 'below'
+
+type Box = { left: number; top: number; right: number; bottom: number }
+
+/**
+ * Greedy label placement for scatter points in pixel space: each label takes the first side
+ * that stays inside the plot and clears every dot and every label already placed.
+ */
+export function placeScatterLabels(
+  points: Array<{ x: number; y: number; text: string }>,
+  width: number,
+  height: number,
+  { charWidth = 6.4, labelHeight = 12, dotRadius = 7, gap = 4 } = {},
+): LabelSide[] {
+  const dots: Box[] = points.map(({ x, y }) => ({
+    left: x - dotRadius,
+    right: x + dotRadius,
+    top: y - dotRadius,
+    bottom: y + dotRadius,
+  }))
+  const placed: Box[] = []
+
+  return points.map(({ x, y, text }) => {
+    const labelWidth = text.length * charWidth
+    const candidates: Array<[LabelSide, Box]> = [
+      ['right', { left: x + dotRadius + gap, right: x + dotRadius + gap + labelWidth, top: y - labelHeight / 2, bottom: y + labelHeight / 2 }],
+      ['left', { left: x - dotRadius - gap - labelWidth, right: x - dotRadius - gap, top: y - labelHeight / 2, bottom: y + labelHeight / 2 }],
+      ['above', { left: x - labelWidth / 2, right: x + labelWidth / 2, top: y - dotRadius - gap - labelHeight, bottom: y - dotRadius - gap }],
+      ['below', { left: x - labelWidth / 2, right: x + labelWidth / 2, top: y + dotRadius + gap, bottom: y + dotRadius + gap + labelHeight }],
+    ]
+    const fits = ([, box]: [LabelSide, Box]) =>
+      box.left >= 0 &&
+      box.right <= width &&
+      box.top >= 0 &&
+      box.bottom <= height &&
+      ![...dots, ...placed].some((other) => overlaps(box, other))
+    const [side, box] = candidates.find(fits) ?? candidates[0]
+    placed.push(box)
+    return side
+  })
+}
+
+function overlaps(a: Box, b: Box) {
+  return a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom
+}

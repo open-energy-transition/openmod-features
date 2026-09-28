@@ -112,6 +112,35 @@ export function ChartLegend({
   )
 }
 
+/** A legend whose entries are grouped under a heading, e.g. statuses per tool type. */
+export function ChartLegendGroups({
+  groups,
+}: {
+  groups: Array<{ label: string; items: Array<{ label: string; color: string }> }>
+}) {
+  return (
+    <ul className="atlas-chart-legend" aria-label="Legend">
+      {groups.map((group) => (
+        <li key={group.label} className="atlas-chart-legend-group">
+          <span className="atlas-chart-legend-group-label">{group.label}</span>
+          <ul className="contents">
+            {group.items.map((item) => (
+              <li key={item.label} className="inline-flex items-center gap-1.5">
+                <span
+                  className="atlas-chart-swatch"
+                  style={{ backgroundColor: item.color }}
+                  aria-hidden="true"
+                />
+                {item.label}
+              </li>
+            ))}
+          </ul>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
 export function ChartTabs({
   label,
   tabs,

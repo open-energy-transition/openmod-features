@@ -23,6 +23,8 @@ export type StackedColumnDatum = {
   id: string
   label: string
   segments: Record<string, number>
+  /** Per-column colour overrides by series key, e.g. to colour a segment by entity. */
+  colors?: Partial<Record<string, string>>
   valueLabel: string
   tooltip: ReactNode
   link?: ChartLinkTarget
@@ -95,7 +97,7 @@ export function StackedColumnChart({
                   <span
                     key={item.key}
                     className="atlas-column-segment"
-                    style={{ flexGrow: value, backgroundColor: item.color }}
+                    style={{ flexGrow: value, backgroundColor: datum.colors?.[item.key] ?? item.color }}
                   />
                 ) : null
               })}

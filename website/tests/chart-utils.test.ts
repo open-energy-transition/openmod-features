@@ -9,6 +9,7 @@ import {
   median,
   paretoFrontier,
   percentDomain,
+  placeScatterLabels,
   toCsv,
 } from '../src/lib/chart-utils'
 
@@ -75,5 +76,27 @@ describe('toCsv', () => {
     expect(toCsv([['tool', 'note'], ['PLEXOS®', 'a, "b"']])).toBe(
       'tool,note\nPLEXOS®,"a, ""b"""',
     )
+  })
+})
+
+describe('placeScatterLabels', () => {
+  it('labels to the right when there is room', () => {
+    expect(placeScatterLabels([{ x: 50, y: 50, text: 'PyPSA' }], 400, 200)).toEqual(['right'])
+  })
+
+  it('flips to the left at the right edge', () => {
+    expect(placeScatterLabels([{ x: 390, y: 50, text: 'PLEXOS' }], 400, 200)).toEqual(['left'])
+  })
+
+  it('moves a label away from a neighbour it would overlap', () => {
+    const sides = placeScatterLabels(
+      [
+        { x: 100, y: 100, text: 'Calliope' },
+        { x: 130, y: 100, text: 'TIMES' },
+      ],
+      400,
+      200,
+    )
+    expect(sides[0]).not.toBe('right')
   })
 })

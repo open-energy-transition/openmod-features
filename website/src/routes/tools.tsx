@@ -34,6 +34,7 @@ export const Route = createFileRoute('/tools')({
 })
 
 const USE_CASES_PARAM = 'use_cases'
+const CATEGORY_PARAM = 'category'
 
 function ToolMatrixPage() {
   const { data, coverageOptions } = useDashboardContext()
@@ -60,6 +61,21 @@ function ToolMatrixPage() {
       urlSelection ?? pruneSelectedIds(current, data.useCases),
     )
   }, [data.useCases, location.search])
+
+  useEffect(() => {
+    const categoryId = categoryFromUrl(data.taxonomy)
+    if (!categoryId) {
+      return
+    }
+
+    setExpanded((current) => new Set(current).add(categoryId))
+    const frame = window.requestAnimationFrame(() =>
+      document
+        .querySelector(`[data-category-id="${CSS.escape(categoryId)}"]`)
+        ?.scrollIntoView({ block: 'start' }),
+    )
+    return () => window.cancelAnimationFrame(frame)
+  }, [data.taxonomy, location.search])
 
   // Rank columns by entire-taxonomy coverage so the order is stable under use-case filtering.
   const rankedTools = useMemo(
@@ -289,6 +305,15 @@ function selectedUseCasesFromUrl(useCases: { id: string }[]) {
     .filter((id) => validIds.has(id))
 
   return selectedIds.length > 0 ? new Set(selectedIds) : null
+}
+
+function categoryFromUrl(taxonomy: { id: string }[]) {
+  if (typeof window === 'undefined') {
+    return null
+  }
+
+  const value = new URLSearchParams(window.location.search).get(CATEGORY_PARAM)
+  return taxonomy.some((category) => category.id === value) ? value : null
 }
 
 function updateSelectedUseCasesUrl(useCaseIds: string[], totalUseCases: number) {

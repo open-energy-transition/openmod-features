@@ -3,10 +3,12 @@
 // SPDX-License-Identifier: MIT
 
 import { Link } from '@tanstack/react-router'
+import { useEffect, useRef, useState } from 'react'
 import type { ReactElement, ReactNode } from 'react'
 import { ChartTooltip } from './chart-card'
 import type { ChartLinkTarget } from './chart-card'
-import { domainTicks, paretoFrontier } from '../../lib/chart-utils'
+import { domainTicks, paretoFrontier, placeScatterLabels } from '../../lib/chart-utils'
+import type { LabelSide } from '../../lib/chart-utils'
 
 export type ScatterDatum = {
   id: string
@@ -45,6 +47,16 @@ export function ScatterChart({
   const toY = (value: number) => toPercent(value, yDomain)
   const groups = groupCoincident(data)
   const frontierPoints = frontier ? paretoFrontier(groups) : []
+  const [plotRef, plotSize] = useElementSize<HTMLDivElement>()
+  const labelSides = placeScatterLabels(
+    groups.map((group) => ({
+      x: (toX(group.x) / 100) * plotSize.width,
+      y: (1 - toY(group.y) / 100) * plotSize.height,
+      text: group.members.map((member) => member.label).join(', '),
+    })),
+    plotSize.width,
+    plotSize.height,
+  )
 
   return (
     <figure className="atlas-scatter" aria-label={label}>
@@ -58,7 +70,7 @@ export function ScatterChart({
           </span>
         ))}
       </div>
-      <div className="atlas-scatter-plot">
+      <div ref={plotRef} className="atlas-scatter-plot">
         {domainTicks(yDomain).map((tick) => (
           <span
             key={`y-${tick}`}
@@ -103,13 +115,13 @@ export function ScatterChart({
             />
           </svg>
         ) : null}
-        {groups.map((group) => (
+        {groups.map((group, index) => (
           <ScatterPoint
             key={group.id}
             group={group}
             left={toX(group.x)}
             bottom={toY(group.y)}
-            labelSide={labelSide(group, groups, toX, toY)}
+            labelSide={labelSides[index]}
           />
         ))}
       </div>
@@ -147,7 +159,7 @@ function ScatterPoint({
   group: PointGroup
   left: number
   bottom: number
-  labelSide: 'left' | 'right'
+  labelSide: LabelSide
 }) {
   const [first] = group.members
   const text = group.members.map((member) => member.label).join(', ')
@@ -208,25 +220,27 @@ function groupCoincident(data: ScatterDatum[]): PointGroup[] {
   return [...groups.values()]
 }
 
-// Put the label on the side away from the plot edge and away from any close neighbour.
-function labelSide(
-  group: PointGroup,
-  groups: PointGroup[],
-  toX: (value: number) => number,
-  toY: (value: number) => number,
-): 'left' | 'right' {
-  const x = toX(group.x)
-  if (x > 80) {
-    return 'left'
-  }
-  const crowdedRight = groups.some(
-    (other) =>
-      other !== group &&
-      toX(other.x) > x &&
-      toX(other.x) - x < 18 &&
-      Math.abs(toY(other.y) - toY(group.y)) < 7,
-  )
-  return crowdedRight && x > 15 ? 'left' : 'right'
+function useElementSize<T extends HTMLElement>() {
+  const ref = useRef<T>(null)
+  // A typical desktop plot size keeps the server render close to the client one.
+  const [size, setSize] = useState({ width: 800, height: 320 })
+
+  useEffect(() => {
+    const element = ref.current
+    if (!element) {
+      return
+    }
+    const observer = new ResizeObserver(([entry]) => {
+      const { width, height } = entry.contentRect
+      setSize((current) =>
+        current.width === width && current.height === height ? current : { width, height },
+      )
+    })
+    observer.observe(element)
+    return () => observer.disconnect()
+  }, [])
+
+  return [ref, size] as const
 }
 
 function toPercent(value: number, [low, high]: Domain) {
