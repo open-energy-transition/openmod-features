@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import { Combobox } from '@base-ui/react/combobox'
+import { Select } from '@base-ui/react/select'
 import {
   Fragment,
   useRef,
@@ -37,6 +38,7 @@ export function TableToolbar({
   onUseCaseChange,
   useCases,
   resultCount,
+  singleTool = false,
 }: {
   query: string
   onQueryChange: (query: string) => void
@@ -47,6 +49,7 @@ export function TableToolbar({
   onUseCaseChange: (useCaseIds: string[]) => void
   useCases: UseCaseRecord[]
   resultCount?: number
+  singleTool?: boolean
 }) {
   return (
     <section className="atlas-toolbar grid gap-3 p-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,2fr)]">
@@ -75,11 +78,19 @@ export function TableToolbar({
         </span>
       </label>
 
-      <ToolCombobox
-        selectedToolIds={selectedToolIds}
-        onToolChange={onToolChange}
-        tools={tools}
-      />
+      {singleTool ? (
+        <ToolSelect
+          selectedToolIds={selectedToolIds}
+          onToolChange={onToolChange}
+          tools={tools}
+        />
+      ) : (
+        <ToolCombobox
+          selectedToolIds={selectedToolIds}
+          onToolChange={onToolChange}
+          tools={tools}
+        />
+      )}
 
       <UseCaseCombobox
         useCases={useCases}
@@ -168,6 +179,66 @@ function ToolCombobox({
         </Combobox.Positioner>
       </Combobox.Portal>
     </Combobox.Root>
+  )
+}
+
+function ToolSelect({
+  selectedToolIds,
+  onToolChange,
+  tools,
+}: {
+  selectedToolIds: Set<string>
+  onToolChange: (toolIds: string[]) => void
+  tools: ToolRecord[]
+}) {
+  const items = tools.map((tool) => ({ value: tool.id, label: tool.name }))
+  const value = tools.find((tool) => selectedToolIds.has(tool.id))?.id ?? null
+
+  return (
+    <Select.Root
+      items={items}
+      value={value}
+      onValueChange={(nextValue) => onToolChange(nextValue ? [nextValue] : [])}
+      modal={false}
+    >
+      <div className="atlas-label grid gap-1 text-sm font-medium">
+        <Select.Label>Tool</Select.Label>
+        <Select.Trigger className="atlas-control flex h-10 min-w-0 items-center justify-between gap-3 px-3 text-left text-sm font-normal">
+          <Select.Value
+            placeholder="Select a tool"
+            className="min-w-0 flex-1 truncate data-[placeholder]:text-[var(--atlas-ink-muted)]"
+          />
+          <Select.Icon className="atlas-caption shrink-0">
+            <FaChevronDown aria-hidden="true" />
+          </Select.Icon>
+        </Select.Trigger>
+      </div>
+      <Select.Portal>
+        <Select.Positioner sideOffset={6} alignItemWithTrigger={false} className="z-50">
+          <Select.Popup className="atlas-popup max-h-72 min-w-[var(--anchor-width)] max-w-[calc(100vw-2rem)] overflow-hidden outline-none">
+            <Select.List className="max-h-72 overflow-y-auto py-1">
+              {items.map((item) => (
+                <Select.Item
+                  key={item.value}
+                  value={item.value}
+                  className="atlas-option grid cursor-default grid-cols-[1rem_minmax(0,1fr)] items-center gap-2 px-3 py-2 text-sm outline-none"
+                >
+                  <Select.ItemIndicator
+                    keepMounted
+                    className="invisible col-start-1 text-[var(--atlas-hydro)] data-[selected]:visible"
+                  >
+                    <FaCheck className="text-xs" aria-hidden="true" />
+                  </Select.ItemIndicator>
+                  <Select.ItemText className="col-start-2 truncate">
+                    {item.label}
+                  </Select.ItemText>
+                </Select.Item>
+              ))}
+            </Select.List>
+          </Select.Popup>
+        </Select.Positioner>
+      </Select.Portal>
+    </Select.Root>
   )
 }
 

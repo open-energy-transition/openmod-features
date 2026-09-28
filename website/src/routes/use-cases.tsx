@@ -165,12 +165,13 @@ function UseCaseFitPage() {
         query={query}
         onQueryChange={setQuery}
         selectedToolIds={selectedToolIds}
-        onToolChange={(ids) => setSelectedToolIds(new Set(ids))}
+        onToolChange={(ids) => setSelectedToolIds(new Set(ids.slice(0, 1)))}
         tools={data.tools}
         selectedUseCaseIds={selectedUseCaseIds}
         onUseCaseChange={(ids) => setSelectedUseCaseIds(new Set(ids))}
         useCases={data.useCases}
         resultCount={filteredTaxonomy.length}
+        singleTool
       />
       <LegendActions
         legend={<StatusLegend />}
@@ -193,8 +194,8 @@ function UseCaseFitPage() {
         />
       ) : displayedTools.length === 0 ? (
         <EmptyState
-          title="No tools selected"
-          detail="Select at least one tool to rank against the selected workflows."
+          title="No tool selected"
+          detail="Select a tool to check its fit against the selected workflows."
         />
       ) : filteredTaxonomy.length === 0 ? (
         <EmptyState
