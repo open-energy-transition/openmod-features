@@ -243,7 +243,7 @@ export function calculateEvidenceRate(
   return toCoverage(sourced, sourced + unsourced)
 }
 
-export const UNIFIED_USE_CASE_ID = 'unified-default-use-cases'
+export const UNIFIED_USE_CASE_ID = 'all-use-cases'
 
 /** A use case requiring every feature that any of the given use cases requires. */
 export function createUnifiedUseCase(useCases: UseCaseRecord[]): UseCaseRecord | null {
@@ -267,8 +267,8 @@ export function createUnifiedUseCase(useCases: UseCaseRecord[]): UseCaseRecord |
 
   return {
     id: UNIFIED_USE_CASE_ID,
-    name: 'All default use cases',
-    shortname: 'All default',
+    name: 'All use cases',
+    shortname: 'All use cases',
     description: 'Combined required features from all built-in use cases.',
     maintainers: [],
     assumptions: [],
