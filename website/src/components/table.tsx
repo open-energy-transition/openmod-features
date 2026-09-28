@@ -37,6 +37,7 @@ export function TableToolbar({
   onUseCaseChange,
   useCases,
   resultCount,
+  singleTool = false,
 }: {
   query: string
   onQueryChange: (query: string) => void
@@ -47,6 +48,7 @@ export function TableToolbar({
   onUseCaseChange: (useCaseIds: string[]) => void
   useCases: UseCaseRecord[]
   resultCount?: number
+  singleTool?: boolean
 }) {
   return (
     <section className="atlas-toolbar grid gap-3 p-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,2fr)]">
@@ -79,6 +81,7 @@ export function TableToolbar({
         selectedToolIds={selectedToolIds}
         onToolChange={onToolChange}
         tools={tools}
+        multiple={!singleTool}
       />
 
       <UseCaseCombobox
@@ -94,27 +97,32 @@ function ToolCombobox({
   selectedToolIds,
   onToolChange,
   tools,
+  multiple,
 }: {
   selectedToolIds: Set<string>
   onToolChange: (toolIds: string[]) => void
   tools: ToolRecord[]
+  multiple: boolean
 }) {
   const selectedToolList = tools.filter((tool) => selectedToolIds.has(tool.id))
+  const labels = new Map(tools.map((tool) => [tool.id, tool.name]))
+  const items = tools.map((tool) => ({
+    value: tool.id,
+    label: tool.name,
+  }))
   const inputId = 'tool-combobox'
+  const placeholder = !multiple
+    ? 'Select a tool'
+    : selectedToolList.length === 0
+      ? 'Search tools'
+      : selectedToolList.length === tools.length
+        ? 'All tools selected'
+        : `${selectedToolList.length} selected`
 
-  return (
-    <Combobox.Root
-      multiple
-      items={tools.map((tool) => ({
-        value: tool.id,
-        label: tool.name,
-      }))}
-      value={[...selectedToolIds]}
-      onValueChange={(value) => onToolChange(value)}
-      modal={false}
-    >
+  const content = (
+    <>
       <div className="atlas-label grid gap-1 text-sm font-medium">
-        <label htmlFor={inputId}>Tools</label>
+        <label htmlFor={inputId}>{multiple ? 'Tools' : 'Tool'}</label>
         <Combobox.InputGroup className="atlas-control flex min-h-10 items-center gap-2 px-3 py-1.5 focus-within:border-[var(--atlas-hydro)] focus-within:shadow-[0_0_0_3px_rgb(13_118_111_/_0.14),inset_0_1px_1px_rgb(15_23_21_/_0.03)]">
           <FaMagnifyingGlass
             className="atlas-muted shrink-0"
@@ -122,13 +130,7 @@ function ToolCombobox({
           />
           <Combobox.Input
             id={inputId}
-            placeholder={
-              selectedToolList.length === 0
-                ? 'Search tools'
-                : selectedToolList.length === tools.length
-                  ? 'All tools selected'
-                  : `${selectedToolList.length} selected`
-            }
+            placeholder={placeholder}
             className="min-w-32 flex-1 border-0 bg-transparent text-sm text-[var(--atlas-ink)] outline-none placeholder:text-[var(--atlas-ink-muted)]"
           />
           <Combobox.Trigger className="atlas-focus inline-flex h-7 w-7 shrink-0 items-center justify-center rounded text-[var(--atlas-ink-muted)] outline-none hover:bg-[var(--atlas-hydro-wash)]">
@@ -152,12 +154,18 @@ function ToolCombobox({
                   index={index}
                   className="atlas-option group grid cursor-default grid-cols-[1rem_minmax(0,1fr)] items-start gap-2 px-3 py-2 text-sm outline-none"
                 >
-                  <span className="col-start-1 mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded border border-[var(--atlas-line-strong)] text-white group-data-[selected]:border-[var(--atlas-hydro)] group-data-[selected]:bg-[var(--atlas-hydro)]">
+                  <span
+                    className={`col-start-1 mt-0.5 grid h-4 w-4 shrink-0 place-items-center border border-[var(--atlas-line-strong)] text-white group-data-[selected]:border-[var(--atlas-hydro)] group-data-[selected]:bg-[var(--atlas-hydro)] ${multiple ? 'rounded' : 'rounded-full'}`}
+                  >
                     <Combobox.ItemIndicator
                       keepMounted
                       className="invisible data-[selected]:visible"
                     >
-                      <FaCheck className="text-[10px]" aria-hidden="true" />
+                      {multiple ? (
+                        <FaCheck className="text-[10px]" aria-hidden="true" />
+                      ) : (
+                        <span className="block h-1.5 w-1.5 rounded-full bg-white" aria-hidden="true" />
+                      )}
                     </Combobox.ItemIndicator>
                   </span>
                   <span className="col-start-2 min-w-0 truncate">{item.label}</span>
@@ -167,6 +175,28 @@ function ToolCombobox({
           </Combobox.Popup>
         </Combobox.Positioner>
       </Combobox.Portal>
+    </>
+  )
+
+  return multiple ? (
+    <Combobox.Root
+      multiple
+      items={items}
+      value={[...selectedToolIds]}
+      onValueChange={(value) => onToolChange(value)}
+      modal={false}
+    >
+      {content}
+    </Combobox.Root>
+  ) : (
+    <Combobox.Root
+      items={items}
+      value={selectedToolList[0]?.id ?? null}
+      onValueChange={(value) => onToolChange(value ? [value] : [])}
+      itemToStringLabel={(value) => labels.get(value) ?? value}
+      modal={false}
+    >
+      {content}
     </Combobox.Root>
   )
 }
