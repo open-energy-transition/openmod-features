@@ -58,16 +58,16 @@ export function HomeHero({ home }: { home: HomeData }) {
 export function HomeHighlights({ home }: { home: HomeData }) {
   const tools = home.tools.map(({ tool }) => tool)
   const coverage = new Map(home.tools.map((item) => [item.tool.id, item.coverage]))
-  const [allDefault] = home.useCases
+  const [allUseCases] = home.useCases
   const byDev = [...home.tools].sort(
     (left, right) => right.breakdown.dev - left.breakdown.dev,
   )
   const maxDev = Math.max(1, ...byDev.map((item) => item.breakdown.dev))
-  const fitTools = allDefault
+  const fitTools = allUseCases
     ? [...tools].sort(
         (left, right) =>
-          (allDefault.scores.get(right.id)?.percentage ?? -1) -
-          (allDefault.scores.get(left.id)?.percentage ?? -1),
+          (allUseCases.scores.get(right.id)?.percentage ?? -1) -
+          (allUseCases.scores.get(left.id)?.percentage ?? -1),
       )
     : []
 
@@ -92,23 +92,23 @@ export function HomeHighlights({ home }: { home: HomeData }) {
               data={toolScoreColumns(tools, (tool) => coverage.get(tool.id), { to: '/tools' })}
             />
           </ChartCard>
-          {allDefault ? (
+          {allUseCases ? (
             <ChartCard
               compact
               title={<a href="#use-case-fit" className="atlas-chart-title-link">Use-case fit</a>}
-              subtitle={`${home.builtInUseCaseCount} default use cases combined`}
+              subtitle={`All ${home.builtInUseCaseCount} use cases combined`}
               direction="higher"
-              csv={scoreCsv('all-default-use-case-fit', fitTools, (tool) =>
-                allDefault.scores.get(tool.id),
+              csv={scoreCsv('all-use-cases-fit', fitTools, (tool) =>
+                allUseCases.scores.get(tool.id),
               )}
             >
               <ColumnChart
                 size="sm"
-                label="Fit for all default use cases by tool"
+                label="Fit for all use cases by tool"
                 data={toolScoreColumns(
                   fitTools,
-                  (tool) => allDefault.scores.get(tool.id),
-                  { to: '/tools', search: allDefault.search },
+                  (tool) => allUseCases.scores.get(tool.id),
+                  { to: '/tools', search: allUseCases.search },
                   'Required features met',
                 )}
               />

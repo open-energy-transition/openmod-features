@@ -72,9 +72,8 @@
   --chart-series-1: #00897b;
   --chart-open-source: #2a78d6;
   --chart-proprietary: #a14aa6;
-  --chart-status-sourced: #047857;
   --chart-status-unsourced: #d97706;
-  --chart-status-dev: #1d4ed8;
+  --chart-status-dev: #0f9d7a;
   --chart-sequential: #00897b;
   --atlas-topbar-background: rgb(251 253 252 / 0.9);
   --section-highlights: #18211f;
@@ -148,9 +147,8 @@
   --chart-series-1: #22a698;
   --chart-open-source: #3987e5;
   --chart-proprietary: #a2489f;
-  --chart-status-sourced: #1b9e6e;
   --chart-status-unsourced: #c98500;
-  --chart-status-dev: #5a86e6;
+  --chart-status-dev: #1b9e6e;
   --chart-sequential: #22a698;
   --atlas-topbar-background: rgb(8 18 16 / 0.88);
   --section-highlights: #e9f2ef;
@@ -1558,7 +1556,14 @@ a:active {
   .atlas-home-section {
     border-top: 1px solid var(--atlas-line);
     padding-top: 1.25rem;
-    scroll-margin-top: 4.5rem;
+    /* Clear the top bar plus the docked section strip on narrow screens. */
+    scroll-margin-top: calc(var(--atlas-topbar-height, 5.75rem) + 3rem);
+  }
+
+  @media (min-width: 1024px) {
+    .atlas-home-section {
+      scroll-margin-top: 4.5rem;
+    }
   }
 
   .atlas-section-title {
@@ -1621,11 +1626,25 @@ a:active {
   }
 
   .atlas-section-nav {
+    position: sticky;
+    top: var(--atlas-topbar-height, 5.75rem);
+    z-index: 40;
     display: flex;
     gap: 0.25rem;
+    margin-inline: -1rem;
     overflow-x: auto;
     border-block: 1px solid var(--atlas-line);
+    background: var(--atlas-topbar-background);
+    padding-inline: 0.75rem;
+    backdrop-filter: blur(12px);
     scrollbar-width: none;
+  }
+
+  @media (min-width: 640px) {
+    .atlas-section-nav {
+      margin-inline: -1.5rem;
+      padding-inline: 1.25rem;
+    }
   }
 
   .atlas-section-nav-link {
@@ -1638,6 +1657,12 @@ a:active {
     font-size: 0.8rem;
     font-weight: 500;
     white-space: nowrap;
+  }
+
+  .atlas-section-nav-link[aria-current] {
+    box-shadow: inset 0 -2px 0 var(--atlas-ink);
+    color: var(--atlas-ink);
+    font-weight: 600;
   }
 
   .atlas-promo-card {

@@ -56,7 +56,7 @@ export type HomeData = {
   builtInUseCaseCount: number
   /** Tools ranked by coverage of the entire taxonomy; every chart without its own ranking uses this order. */
   tools: ToolSummary[]
-  /** The unified default use case first, then built-in use cases, then any custom use case. */
+  /** All use cases combined first, then each built-in use case, then any custom use case. */
   useCases: UseCaseSummary[]
   categories: CategorySummary[]
 }
@@ -101,7 +101,7 @@ function buildHomeData(data: DashboardData, options: CoverageOptions): HomeData 
   }
 
   const useCases = [
-    ...(unified ? [summarise(unified, { use_cases: 'default' }, 'All default')] : []),
+    ...(unified ? [summarise(unified, { use_cases: 'default' }, 'All use cases')] : []),
     ...builtIn.map((useCase) => summarise(useCase, { use_cases: useCase.id })),
     ...(custom
       ? [
@@ -151,8 +151,8 @@ export function sentenceCase(text: string) {
 }
 
 export function scoringNote(options: CoverageOptions) {
-  const sourced = options.countUnsourced
-    ? 'Implemented features count as met, with or without a source link'
-    : 'Implemented features count as met only when they cite a source'
-  return `${sourced}${options.countDev ? '; in-development features also count' : ''}. Change this under Scoring.`
+  const validation = options.countUnsourced
+    ? 'Implemented features count as met whether or not they are validated'
+    : 'Implemented features count as met only when validated by a source'
+  return `${validation}${options.countDev ? '; in-development features also count' : ''}. Change this under Scoring.`
 }

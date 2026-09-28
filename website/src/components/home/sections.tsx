@@ -22,16 +22,27 @@ import { formatPercent, scoringNote, sentenceCase } from './home-data'
 import type { HomeData, UseCaseSummary } from './home-data'
 import { HomeSection, scoreCsv, toolScoreColumns } from './shared'
 
-const statusSeries = [
-  { key: 'sourced', label: 'Implemented, with source', color: 'var(--chart-status-sourced)' },
-  { key: 'unsourced', label: 'Implemented, no source', color: 'var(--chart-status-unsourced)' },
-  { key: 'dev', label: 'In development', color: 'var(--chart-status-dev)' },
-] as const
+const unvalidatedSeries = {
+  key: 'unvalidated',
+  label: 'Implemented, unvalidated',
+  color: 'var(--chart-status-unsourced)',
+}
+const devSeries = { key: 'dev', label: 'In development', color: 'var(--chart-status-dev)' }
 
 export function CoverageSection({ home }: { home: HomeData }) {
-  const tools = home.tools.map(({ tool }) => tool)
-  const coverage = new Map(home.tools.map((item) => [item.tool.id, item.coverage]))
-  const subtitle = `Share of all ${home.featureCount} taxonomy features implemented`
+  const anyUnvalidated = home.tools.some(({ breakdown }) => breakdown.unsourced > 0)
+  const anyDev = home.tools.some(({ breakdown }) => breakdown.dev > 0)
+  // The validated segment takes each tool's type colour; the legend lists only statuses present.
+  const series = [
+    { key: 'validated', label: 'Implemented, validated', color: 'var(--chart-open-source)' },
+    unvalidatedSeries,
+    devSeries,
+  ]
+  const legend = [
+    ...toolTypeLegend,
+    ...(anyUnvalidated ? [unvalidatedSeries] : []),
+    ...(anyDev ? [devSeries] : []),
+  ]
 
   return (
     <HomeSection
@@ -39,81 +50,50 @@ export function CoverageSection({ home }: { home: HomeData }) {
       title="Feature coverage"
       description={`How much of the ${home.data.taxonomyVersion} feature taxonomy each tool implements, across ${home.data.taxonomy.length} categories.`}
     >
-      <ChartTabs
-        label="Coverage views"
-        tabs={[
-          {
-            value: 'score',
-            label: 'Coverage',
-            content: (
-              <ChartCard
-                title="Feature coverage"
-                subtitle={subtitle}
-                direction="higher"
-                info="A tool's coverage is the share of all taxonomy features its feature list marks as implemented, under the active scoring rules."
-                link={{ to: '/tools', label: 'Tool matrix' }}
-                csv={scoreCsv('feature-coverage', tools, (tool) => coverage.get(tool.id))}
-                legend={<ChartLegend items={toolTypeLegend} />}
-                footnote={scoringNote(home.options)}
-              >
-                <ColumnChart
-                  label="Feature coverage by tool"
-                  data={toolScoreColumns(tools, (tool) => coverage.get(tool.id), { to: '/tools' })}
-                />
-              </ChartCard>
-            ),
-          },
-          {
-            value: 'status',
-            label: 'By status',
-            content: (
-              <ChartCard
-                title="Feature coverage by status"
-                subtitle={`Share of all ${home.featureCount} taxonomy features, split by feature status`}
-                direction="higher"
-                info="Raw statuses from each feature list. Unlike the scores, this view is not affected by the scoring rules."
-                link={{ to: '/tools', label: 'Tool matrix' }}
-                csv={{
-                  filename: 'feature-status',
-                  rows: [
-                    ['tool', 'implemented_sourced', 'implemented_unsourced', 'in_development', 'missing', 'unknown', 'total'],
-                    ...home.tools.map(({ tool, breakdown }) => [
-                      tool.shortname,
-                      breakdown.sourced,
-                      breakdown.unsourced,
-                      breakdown.dev,
-                      breakdown.missing,
-                      breakdown.unknown,
-                      breakdown.total,
-                    ]),
-                  ],
-                }}
-                legend={<ChartLegend items={[...statusSeries]} />}
-                footnote="Missing and unknown features make up the rest of each column."
-              >
-                <StackedColumnChart
-                  label="Feature status by tool"
-                  series={[...statusSeries]}
-                  data={home.tools.map(({ tool, breakdown }) => ({
-                    id: tool.id,
-                    label: tool.shortname,
-                    segments: {
-                      sourced: share(breakdown.sourced, breakdown),
-                      unsourced: share(breakdown.unsourced, breakdown),
-                      dev: share(breakdown.dev, breakdown),
-                    },
-                    valueLabel: `${Math.round(
-                      share(breakdown.sourced + breakdown.unsourced + breakdown.dev, breakdown),
-                    )}%`,
-                    link: { to: '/tools' },
-                    tooltip: <StatusTooltip tool={tool} breakdown={breakdown} />,
-                  }))}
-                />
-              </ChartCard>
-            ),
-          },
-        ]}
-      />
+      <ChartCard
+        title="Feature coverage"
+        subtitle={`Share of all ${home.featureCount} taxonomy features, by status`}
+        direction="higher"
+        info="Each column stacks a tool's validated features (coloured by tool type), then any unvalidated or in-development features. The label is the tool's coverage score under the active scoring rules."
+        link={{ to: '/tools', label: 'Tool matrix' }}
+        csv={{
+          filename: 'feature-coverage',
+          rows: [
+            ['tool', 'open_source', 'score_percent', 'implemented_validated', 'implemented_unvalidated', 'in_development', 'missing', 'unknown', 'total'],
+            ...home.tools.map(({ tool, coverage, breakdown }) => [
+              tool.shortname,
+              String(tool.openSource),
+              coverage.percentage?.toFixed(1) ?? '',
+              breakdown.sourced,
+              breakdown.unsourced,
+              breakdown.dev,
+              breakdown.missing,
+              breakdown.unknown,
+              breakdown.total,
+            ]),
+          ],
+        }}
+        legend={<ChartLegend items={legend} />}
+        footnote={`${scoringNote(home.options)} Missing and unknown features make up the rest of each column.`}
+      >
+        <StackedColumnChart
+          label="Feature coverage by tool and status"
+          series={series}
+          data={home.tools.map(({ tool, coverage, breakdown }) => ({
+            id: tool.id,
+            label: tool.shortname,
+            segments: {
+              validated: share(breakdown.sourced, breakdown),
+              unvalidated: share(breakdown.unsourced, breakdown),
+              dev: share(breakdown.dev, breakdown),
+            },
+            colors: { validated: toolTypeColor(tool) },
+            valueLabel: formatPercent(coverage),
+            link: { to: '/tools' },
+            tooltip: <StatusTooltip tool={tool} breakdown={breakdown} score={formatPercent(coverage)} />,
+          }))}
+        />
+      </ChartCard>
     </HomeSection>
   )
 }
@@ -369,7 +349,7 @@ export function CategorySection({ home }: { home: HomeData }) {
 }
 
 export function ToolsSection({ home }: { home: HomeData }) {
-  const [allDefault] = home.useCases
+  const [allUseCases] = home.useCases
   const proprietary = home.tools.some(({ tool }) => !tool.openSource)
 
   return (
@@ -387,8 +367,8 @@ export function ToolsSection({ home }: { home: HomeData }) {
                 <th scope="col">Type</th>
                 <th scope="col">Version</th>
                 <th scope="col" className="text-right">Coverage</th>
-                {allDefault ? <th scope="col" className="text-right">Default fit</th> : null}
-                <th scope="col" className="text-right">Sourced</th>
+                {allUseCases ? <th scope="col" className="text-right">Use-case fit</th> : null}
+                <th scope="col" className="text-right">Validated</th>
                 <th scope="col" className="text-right">In dev.</th>
                 <th scope="col">List maintainers</th>
                 <th scope="col">Links</th>
@@ -417,9 +397,9 @@ export function ToolsSection({ home }: { home: HomeData }) {
                   </td>
                   <td className="tabular-nums">{tool.version ?? '—'}</td>
                   <td className="text-right tabular-nums">{formatPercent(coverage)}</td>
-                  {allDefault ? (
+                  {allUseCases ? (
                     <td className="text-right tabular-nums">
-                      {formatPercent(allDefault.scores.get(tool.id))}
+                      {formatPercent(allUseCases.scores.get(tool.id))}
                     </td>
                   ) : null}
                   <td className="text-right tabular-nums">{formatPercent(evidence)}</td>
@@ -452,8 +432,8 @@ export function ToolsSection({ home }: { home: HomeData }) {
         </div>
         <footer className="atlas-chart-card-footer">
           <p className="atlas-chart-footnote">
-            Sourced is the share of implemented features that cite documentation,
-            code or a study. {scoringNote(home.options)}
+            Validated is the share of implemented features that cite documentation,
+            code or a study as a source. {scoringNote(home.options)}
             {proprietary
               ? ' PLEXOS® is a registered trademark of Energy Exemplar; its list is compiled by contributors from public documentation and is not reviewed or endorsed by Energy Exemplar.'
               : null}
@@ -493,14 +473,23 @@ function UseCaseSelect({
   )
 }
 
-function StatusTooltip({ tool, breakdown }: { tool: ToolRecord; breakdown: StatusBreakdown }) {
+function StatusTooltip({
+  tool,
+  breakdown,
+  score,
+}: {
+  tool: ToolRecord
+  breakdown: StatusBreakdown
+  score: string
+}) {
   return (
     <TooltipBody
       title={tool.name}
       swatch={toolTypeColor(tool)}
       rows={[
-        ['Implemented, with source', String(breakdown.sourced)],
-        ['Implemented, no source', String(breakdown.unsourced)],
+        ['Coverage score', score],
+        ['Implemented, validated', String(breakdown.sourced)],
+        ['Implemented, unvalidated', String(breakdown.unsourced)],
         ['In development', String(breakdown.dev)],
         ['Missing', String(breakdown.missing)],
         ['Unknown', String(breakdown.unknown)],

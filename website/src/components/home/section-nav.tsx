@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export const HOME_SECTIONS = [
   { id: 'highlights', label: 'Highlights', color: 'var(--section-highlights)' },
@@ -47,14 +47,33 @@ export function SectionSidebar() {
   )
 }
 
-/** Horizontal section links for narrow screens, where the sidebar is hidden. */
+/** Horizontal section links for narrow screens, docked under the top bar as the page scrolls. */
 export function SectionNav() {
+  const active = useActiveSection()
+  const navRef = useRef<HTMLElement>(null)
+
+  useTopBarHeight()
+
+  useEffect(() => {
+    const nav = navRef.current
+    const link = nav?.querySelector<HTMLElement>('[aria-current]')
+    if (!nav || !link || nav.scrollWidth <= nav.clientWidth) {
+      return
+    }
+    // Scroll only the strip, never the page, to keep the active link visible.
+    nav.scrollTo({
+      left: link.offsetLeft - (nav.clientWidth - link.offsetWidth) / 2,
+      behavior: 'smooth',
+    })
+  }, [active])
+
   return (
-    <nav aria-label="Page sections" className="atlas-section-nav lg:hidden">
+    <nav ref={navRef} aria-label="Page sections" className="atlas-section-nav lg:hidden">
       {HOME_SECTIONS.map((section) => (
         <a
           key={section.id}
           href={`#${section.id}`}
+          aria-current={active === section.id ? 'location' : undefined}
           className="atlas-section-nav-link atlas-focus outline-none"
         >
           <span
@@ -68,6 +87,25 @@ export function SectionNav() {
       ))}
     </nav>
   )
+}
+
+// Publish the top bar height, which changes when its nav wraps, so the section strip can dock under it.
+function useTopBarHeight() {
+  useEffect(() => {
+    const bar = document.querySelector<HTMLElement>('.atlas-topbar')
+    if (!bar) {
+      return
+    }
+    const root = document.documentElement
+    const observer = new ResizeObserver(() =>
+      root.style.setProperty('--atlas-topbar-height', `${bar.offsetHeight}px`),
+    )
+    observer.observe(bar)
+    return () => {
+      observer.disconnect()
+      root.style.removeProperty('--atlas-topbar-height')
+    }
+  }, [])
 }
 
 // The section whose top has scrolled past the sticky top bar; the last one once the page bottom is reached.
@@ -84,7 +122,7 @@ function useActiveSection() {
 
       for (const section of HOME_SECTIONS) {
         const element = document.getElementById(section.id)
-        if (element && element.getBoundingClientRect().top <= 140) {
+        if (element && element.getBoundingClientRect().top <= 160) {
           current = section.id
         }
       }
