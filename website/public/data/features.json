@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-27T16:14:34.556Z",
+  "generatedAt": "2026-09-28T20:58:23.641Z",
   "taxonomyVersion": "v0.3.0",
   "taxonomy": [
     {
@@ -9308,7 +9308,7 @@
       "docs": "https://web.archive.org/web/20260305004434/https://portal.energyexemplar.com/unified-help/plexos-desktop/index.htm",
       "source": "https://www.energyexemplar.com/plexos",
       "version": "11.0",
-      "openSource": true,
+      "openSource": false,
       "maintainers": [
         "brynpickering"
       ],
@@ -11259,8 +11259,10 @@
             ]
           },
           "constraints/scope/temporal/cumulative/operation/event_count": {
-            "value": "n",
-            "sources": []
+            "value": "y",
+            "sources": [
+              "https://docs.pypsa.org/v1.3.0/user-guide/optimization/maintenance-scheduling/#event-count"
+            ]
           },
           "constraints/scope/temporal/cumulative/operation/state_duration": {
             "value": "n",
@@ -11338,7 +11340,9 @@
           },
           "constraints/functional_form/quadratic/investment": {
             "value": "n",
-            "sources": []
+            "sources": [
+              "https://docs.pypsa.org/v1.3.0/user-guide/optimization/stochastic/#risk-preferences-with-conditional-value-at-risk-cvar"
+            ]
           },
           "constraints/functional_form/quadratic/operation": {
             "value": "n",
@@ -11651,9 +11655,7 @@
           },
           "model_definition/extensible_dimensions": {
             "value": "n",
-            "sources": [
-              "https://github.com/PyPSA/PyPSA/issues/856"
-            ]
+            "sources": []
           },
           "model_definition/dimension_groups": {
             "value": "y",
@@ -11863,9 +11865,10 @@
         },
         "orchestration": {
           "orchestration/scenario_runs": {
-            "value": "n",
+            "value": "y",
             "sources": [
-              "https://docs.pypsa.org/v1.3.0/user-guide/collection/"
+              "https://docs.pypsa.org/v1.3.0/user-guide/collection/",
+              "https://docs.pypsa.org/v1.3.0/examples/periodic-operational-limits/"
             ]
           },
           "orchestration/sampled_runs": {
