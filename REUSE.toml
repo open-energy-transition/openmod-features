@@ -21,3 +21,8 @@ path = [
 ]
 SPDX-FileCopyrightText = "openmod-features contributors"
 SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = ["website/public/favicon-32.png", "website/public/apple-touch-icon.png"]
+SPDX-FileCopyrightText = ["2026 openmod-features contributors", "Fonticons, Inc. (Font Awesome Free \"chart-column\" glyph)"]
+SPDX-License-Identifier = "CC-BY-4.0"
