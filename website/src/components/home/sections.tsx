@@ -32,13 +32,13 @@ const toolTypes = [
   {
     openSource: true,
     label: 'Open source',
-    available: 'var(--chart-open-source)',
+    implemented: 'var(--chart-open-source)',
     dev: 'var(--chart-open-source-dev)',
   },
   {
     openSource: false,
     label: 'Proprietary reference',
-    available: 'var(--chart-proprietary)',
+    implemented: 'var(--chart-proprietary)',
     dev: 'var(--chart-proprietary-dev)',
   },
 ]
@@ -48,10 +48,10 @@ function toolTypeShades(tool: ToolRecord) {
 }
 
 export function CoverageSection({ home }: { home: HomeData }) {
-  // Available and in-development features take shades of each tool's type colour; the legend
+  // Implemented and in-development features take shades of each tool's type colour; the legend
   // lists a tool type only if a tool has it, and in-development or unvalidated only where present.
   const series = [
-    { key: 'validated', label: 'Available', color: 'var(--chart-open-source)' },
+    { key: 'validated', label: 'Implemented', color: 'var(--chart-open-source)' },
     unvalidatedSeries,
     { key: 'dev', label: 'In development', color: 'var(--chart-open-source-dev)' },
   ]
@@ -62,7 +62,7 @@ export function CoverageSection({ home }: { home: HomeData }) {
         label: type.label,
         present: tools.length > 0,
         items: [
-          { label: 'Available', color: type.available },
+          { label: 'Implemented', color: type.implemented },
           ...(tools.some(({ breakdown }) => breakdown.dev > 0)
             ? [{ label: 'In development', color: type.dev }]
             : []),
@@ -74,6 +74,10 @@ export function CoverageSection({ home }: { home: HomeData }) {
   if (anyUnvalidated) {
     legendGroups.push({ label: 'Any tool', present: true, items: [unvalidatedSeries] })
   }
+  // The label tops the whole column, so it counts every stacked status whatever the Scoring toggles.
+  const columns = home.tools
+    .map((item) => ({ ...item, stacked: stackedShare(item.breakdown) }))
+    .sort((left, right) => right.stacked - left.stacked)
 
   return (
     <HomeSection
@@ -84,16 +88,16 @@ export function CoverageSection({ home }: { home: HomeData }) {
       <ChartCard
         title="Feature coverage"
         subtitle={`Share of all ${home.featureCount} taxonomy features, by status`}
-        info="Each column stacks a tool's available (implemented and validated) features, then any unvalidated and in-development features, in shades of its tool-type colour. The label is the tool's coverage score under the active scoring rules."
+        info="Each column stacks a tool's implemented and validated features, then any unvalidated and in-development features, in shades of its tool-type colour. The label is the share of all features in the column."
         link={{ to: '/tools', label: 'Tool matrix' }}
         csv={{
           filename: 'feature-coverage',
           rows: [
-            ['tool', 'open_source', 'score_percent', 'implemented_validated', 'implemented_unvalidated', 'in_development', 'missing', 'unknown', 'total'],
-            ...home.tools.map(({ tool, coverage, breakdown }) => [
+            ['tool', 'open_source', 'implemented_or_in_development_percent', 'implemented_validated', 'implemented_unvalidated', 'in_development', 'missing', 'unknown', 'total'],
+            ...columns.map(({ tool, breakdown, stacked }) => [
               tool.shortname,
               String(tool.openSource),
-              coverage.percentage?.toFixed(1) ?? '',
+              stacked.toFixed(1),
               breakdown.sourced,
               breakdown.unsourced,
               breakdown.dev,
@@ -104,12 +108,12 @@ export function CoverageSection({ home }: { home: HomeData }) {
           ],
         }}
         legend={<ChartLegendGroups groups={legendGroups} />}
-        footnote={`${scoringNote(home.options)} Missing and unknown features make up the rest of each column.`}
+        footnote="Counts implemented features whether or not they are validated, and in-development features, whatever the Scoring settings. Missing and unknown features make up the rest of each column."
       >
         <StackedColumnChart
           label="Feature coverage by tool and status"
           series={series}
-          data={home.tools.map(({ tool, coverage, breakdown }) => ({
+          data={columns.map(({ tool, breakdown, stacked }) => ({
             id: tool.id,
             label: tool.shortname,
             segments: {
@@ -117,10 +121,10 @@ export function CoverageSection({ home }: { home: HomeData }) {
               unvalidated: share(breakdown.unsourced, breakdown),
               dev: share(breakdown.dev, breakdown),
             },
-            colors: { validated: toolTypeShades(tool).available, dev: toolTypeShades(tool).dev },
-            valueLabel: formatPercent(coverage),
+            colors: { validated: toolTypeShades(tool).implemented, dev: toolTypeShades(tool).dev },
+            valueLabel: `${Math.round(stacked)}%`,
             link: { to: '/tools' },
-            tooltip: <StatusTooltip tool={tool} breakdown={breakdown} score={formatPercent(coverage)} />,
+            tooltip: <StatusTooltip tool={tool} breakdown={breakdown} share={`${Math.round(stacked)}%`} />,
           }))}
         />
       </ChartCard>
@@ -504,18 +508,18 @@ function UseCaseSelect({
 function StatusTooltip({
   tool,
   breakdown,
-  score,
+  share,
 }: {
   tool: ToolRecord
   breakdown: StatusBreakdown
-  score: string
+  share: string
 }) {
   return (
     <TooltipBody
       title={tool.name}
       swatch={toolTypeColor(tool)}
       rows={[
-        ['Coverage score', score],
+        ['Implemented or in development', share],
         ['Implemented, validated', String(breakdown.sourced)],
         ['Implemented, unvalidated', String(breakdown.unsourced)],
         ['In development', String(breakdown.dev)],
@@ -537,6 +541,10 @@ function defaultAxis(options: UseCaseSummary[], preferredId: string, fallbackInd
 
 function share(count: number, breakdown: StatusBreakdown) {
   return breakdown.total > 0 ? (count / breakdown.total) * 100 : 0
+}
+
+function stackedShare(breakdown: StatusBreakdown) {
+  return share(breakdown.sourced + breakdown.unsourced + breakdown.dev, breakdown)
 }
 
 function rankBy(tools: ToolRecord[], useCase: UseCaseSummary) {
