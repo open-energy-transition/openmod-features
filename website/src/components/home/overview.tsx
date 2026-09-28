@@ -15,15 +15,7 @@ import { ChartCard, TooltipBody } from '../charts/chart-card'
 import { ColumnChart } from '../charts/column-chart'
 import { countScale, toolTypeColor } from '../../lib/chart-utils'
 import type { HomeData } from './home-data'
-import { scoreCsv, toolScoreColumns } from './shared'
-
-export const HOME_SECTIONS = [
-  { id: 'coverage', label: 'Coverage' },
-  { id: 'use-case-fit', label: 'Use-case fit' },
-  { id: 'trade-offs', label: 'Trade-offs' },
-  { id: 'categories', label: 'Categories' },
-  { id: 'tools', label: 'Tools' },
-] as const
+import { HomeSection, scoreCsv, toolScoreColumns } from './shared'
 
 export function HomeHero({ home }: { home: HomeData }) {
   const { data, featureCount, builtInUseCaseCount } = home
@@ -80,11 +72,12 @@ export function HomeHighlights({ home }: { home: HomeData }) {
     : []
 
   return (
-    <section aria-labelledby="highlights-title" className="grid gap-3">
-      <h2 id="highlights-title" className="atlas-kicker">
-        Highlights
-      </h2>
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_18rem]">
+    <HomeSection
+      id="highlights"
+      title="Highlights"
+      description="Headline scores at a glance. Select a chart title to jump to the full section."
+    >
+      <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_17rem]">
         <div className="grid gap-4 md:grid-cols-3">
           <ChartCard
             compact
@@ -176,19 +169,7 @@ export function HomeHighlights({ home }: { home: HomeData }) {
           </div>
         </aside>
       </div>
-    </section>
-  )
-}
-
-export function SectionNav() {
-  return (
-    <nav aria-label="Page sections" className="atlas-section-nav">
-      {HOME_SECTIONS.map((section) => (
-        <a key={section.id} href={`#${section.id}`} className="atlas-section-nav-link atlas-focus outline-none">
-          {section.label}
-        </a>
-      ))}
-    </nav>
+    </HomeSection>
   )
 }
 

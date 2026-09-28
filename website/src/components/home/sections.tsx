@@ -136,7 +136,7 @@ export function UseCaseFitSection({ home }: { home: HomeData }) {
       title="Use-case fit"
       description="Share of each planning use case's required features that a tool supports. Use cases describe typical studies; build your own to score a specific one."
     >
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
+      <div className="grid gap-4 2xl:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
         <ChartTabs
           label="Use cases"
           value={selected.useCase.id}
@@ -170,7 +170,7 @@ export function UseCaseFitSection({ home }: { home: HomeData }) {
             ),
           }))}
         />
-        <div className="grid content-start gap-3 xl:pt-[2.85rem]">
+        <div className="grid content-start gap-3 2xl:pt-[2.85rem]">
           <ChartCard
             title="Fit matrix"
             subtitle="Every tool against every use case"

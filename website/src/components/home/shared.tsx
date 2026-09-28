@@ -9,6 +9,8 @@ import type { ColumnDatum } from '../charts/column-chart'
 import type { CoverageResult, ToolRecord } from '../../data/types'
 import { toolTypeColor, toolTypeLabel } from '../../lib/chart-utils'
 import { formatPercent } from './home-data'
+import { sectionColor } from './section-nav'
+import type { HomeSectionId } from './section-nav'
 
 export function HomeSection({
   id,
@@ -17,7 +19,7 @@ export function HomeSection({
   controls,
   children,
 }: {
-  id: string
+  id: HomeSectionId
   title: string
   description: ReactNode
   controls?: ReactNode
@@ -27,7 +29,12 @@ export function HomeSection({
     <section id={id} aria-labelledby={`${id}-title`} className="atlas-home-section grid gap-4">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <div className="max-w-3xl">
-          <h2 id={`${id}-title`} className="atlas-section-title">
+          <h2 id={`${id}-title`} className="atlas-section-title flex items-center gap-3">
+            <span
+              className="atlas-section-square"
+              style={{ backgroundColor: sectionColor(id) }}
+              aria-hidden="true"
+            />
             {title}
           </h2>
           <p className="atlas-caption mt-1 text-sm leading-6">{description}</p>
