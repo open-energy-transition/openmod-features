@@ -70,8 +70,8 @@
   --chart-grid: rgb(22 37 32 / 0.08);
   --chart-axis: rgb(22 37 32 / 0.24);
   --chart-series-1: #00897b;
-  --chart-open-source: #00897b;
-  --chart-proprietary: #b21c2d;
+  --chart-open-source: #2a78d6;
+  --chart-proprietary: #a14aa6;
   --chart-status-sourced: #047857;
   --chart-status-unsourced: #d97706;
   --chart-status-dev: #1d4ed8;
@@ -140,8 +140,8 @@
   --chart-grid: rgb(220 245 237 / 0.08);
   --chart-axis: rgb(220 245 237 / 0.22);
   --chart-series-1: #22a698;
-  --chart-open-source: #22a698;
-  --chart-proprietary: #e8566a;
+  --chart-open-source: #3987e5;
+  --chart-proprietary: #a2489f;
   --chart-status-sourced: #1b9e6e;
   --chart-status-unsourced: #c98500;
   --chart-status-dev: #5a86e6;
