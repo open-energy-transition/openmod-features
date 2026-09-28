@@ -25,6 +25,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Changed
+
+- PyPSA feature list re-assessed against PyPSA v1.3.0 (#145): `constraints.scope.temporal.cumulative.operation.event_count` and `orchestration.scenario_runs` are now `y` (tenuous), with sources added or corrected for `constraints.functional_form.quadratic.investment` and `model_definition.extensible_dimensions`.
+
 ## 0.3.0 (2026-09-24)
 
 A ground-up overhaul of the feature taxonomy and of the schema that expresses it.

@@ -93,7 +93,7 @@ features:
           - https://docs.pypsa.org/v1.3.0/examples/demand-supply-bids/
           - https://docs.pypsa.org/v1.3.0/user-guide/faq/#how-is-demand-modelled
       mobile_storage:
-        # No dedicated mobile-storage component.
+        # Tenuous: no dedicated mobile-storage component.
         # The documented pattern is a `Store` on a dedicated vehicle bus with charging `Link`s whose time-varying `p_max_pu` encodes when the vehicle is connected;
         # linking that bus to several location buses, each with its own availability profile, varies the attachment in space.
         value: y
@@ -369,10 +369,12 @@ features:
                 - https://docs.pypsa.org/v1.3.0/user-guide/optimization/global-constraints/#primary-energy
                 - https://docs.pypsa.org/v1.3.0/user-guide/optimization/pathway-planning/#emission-budgets
             event_count:
-              # No limit on the number of start-ups (or other discrete events) per period.
+              # Tenuous: only maintenance events, whose count is fixed exactly by `maintenance_events` on `maintainable` components (`*-maint-event-count`).
+              # There is no limit on the number of start-ups per period.
               # The storage `cycles_max` budget in PR #1915 counts equivalent full cycles of throughput, which is a volume limit rather than an event count.
-              value: n
-              source: []
+              value: y
+              source:
+                - https://docs.pypsa.org/v1.3.0/user-guide/optimization/maintenance-scheduling/#event-count
             state_duration:
               value: n
               source: []
@@ -444,7 +446,9 @@ features:
       quadratic:
         investment:
           value: n
-          source: []
+          source:
+            # Quadratic terms are only supported in the objective; linopy does not support quadratic constraints.
+            - https://docs.pypsa.org/v1.3.0/user-guide/optimization/stochastic/#risk-preferences-with-conditional-value-at-risk-cvar
         operation:
           value: n
           source:
@@ -710,8 +714,7 @@ features:
         - https://docs.pypsa.org/v1.3.0/user-guide/design/#scenarios
     extensible_dimensions:
       value: n
-      source:
-        - https://github.com/PyPSA/PyPSA/issues/856
+      source: []
     dimension_groups:
       # Tenuous: `carrier` is the built-in grouping used by global constraints,
       # and arbitrary extra attributes passed to `n.add()` persist as component columns which custom groupers and custom constraints can then filter on.
@@ -894,10 +897,12 @@ features:
           - https://pypsa.org/roadmap
   orchestration:
     scenario_runs:
-      # Tenuous: `NetworkCollection` collates and compares solved networks, but the runs themselves have to be launched by the user.
-      value: n
+      # Tenuous: the runs themselves have to be launched by the user;
+      # `NetworkCollection` indexes the solved networks by scenario name and collates their statistics and plots.
+      value: y
       source:
         - https://docs.pypsa.org/v1.3.0/user-guide/collection/
+        - https://docs.pypsa.org/v1.3.0/examples/periodic-operational-limits/
     sampled_runs:
       value: n
       source:

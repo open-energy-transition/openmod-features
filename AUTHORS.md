@@ -13,3 +13,4 @@ For a full contributor list, see <https://github.com/open-energy-transition/open
 
 - Bryn Pickering, Open Energy Transition <bryn.pickering@openenergytransition.org>
 - Markus Groissbock, Open Energy Transition <markus.groissbock@energytransition.org>
+- Fabian Hofmann, Open Energy Transition <fabian.hofmann@openenergytransition.org>
