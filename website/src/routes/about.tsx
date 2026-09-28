@@ -117,12 +117,12 @@ function AboutPage() {
             <InfoItem
               icon={<FaRotate aria-hidden="true" />}
               title="Quarterly release rhythm"
-              detail="The contribution guide describes approximately quarterly releases with pre-release windows for taxonomy updates."
+              detail="We follow an approximately quarterly release rhythm for the taxonomy, with a pre-release window to enable tool and use-case lists to be updated to the new version before the dashboard taxonomy version is updated. Updates to the tool and use-case lists for the latest taxonomy release will then be reflected immediately in the dashboard on merge into the main branch."
             />
             <InfoItem
               icon={<FaBookOpen aria-hidden="true" />}
-              title="v0.3.0 taxonomy overhaul"
-              detail="The current changelog notes a ground-up recursive taxonomy and schema overhaul in the unreleased v0.3.0 work."
+              title="Track Changes"
+              detail="Check out the project changelog for changes made to the taxonomy."
               href="https://github.com/open-energy-transition/openmod-features/blob/main/CHANGELOG.md"
             />
             <InfoItem
