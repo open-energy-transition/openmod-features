@@ -1176,13 +1176,13 @@ features:
         source:
           - https://docs.pypsa.org/v1.3.0/user-guide/faq/#does-pypsa-have-a-gui
       analyse:
-        # No GUI ships with PyPSA.
-        # The separate `pypsa-app` web application for analysing networks is an early alpha companion project (#1479).
-        value: n
+        # Via ecosystem GUI: PyPSA Explorer v0.1.2 (Dash web app, `pypsa>=1.0.3`).
+        # It cannot edit or solve networks, only view results, so `gui.build` and `gui.run` stay `n`.
+        value: y
         source:
-          - https://docs.pypsa.org/v1.3.0/user-guide/faq/#does-pypsa-have-a-gui
-          - https://github.com/PyPSA/PyPSA/issues/1479
-          - https://pypsa.org/roadmap
+          - https://github.com/open-energy-transition/PyPSA-Explorer/blob/v0.1.2/README.md
+          - https://github.com/open-energy-transition/PyPSA-Explorer/blob/v0.1.2/src/pypsa_explorer/layouts/tabs.py
+          - https://github.com/open-energy-transition/PyPSA-Explorer/blob/v0.1.2/src/pypsa_explorer/layouts/components.py
     api:
       build:
         value: y

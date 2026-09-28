@@ -71,6 +71,16 @@ Ultimately, this can be used to identify tool **feature gaps**.
 >A feature value states that a capability *exists*, not that it performs well at real-world scale.
 >Computational performance / tractability at scale cannot be validated against documentation links and is therefore out of scope for feature values; benchmarking of tools at scale is tracked as a separate initiative.
 
+>[!NOTE]
+>A capability provided by a **companion tool** (a separate project for use with the tool, e.g. a GUI, dashboard or data pipeline) can count towards the tool's feature values if:
+>
+>- the companion tool is open-source, when the tool itself is open-source; and
+>- there is a clear link for its use with the tool, e.g. it is referenced in the tool's documentation, or its own documentation shows it working with the tool's models, data or results.
+>
+>Name the companion tool and the version it was assessed at in a comment on each leaf it supports, and cite sources pinned to that version.
+>Capabilities available only in an unreleased companion tool are `dev`.
+>Capabilities available only in a companion tool that does not meet these conditions are `n`, with a comment describing why.
+
 ### Updating an Existing Entry
 
 If you are the entry maintainer:
@@ -162,7 +172,7 @@ To set up your environment, perform the following actions:
 ## Best practices
 
 Our project uses [PEP 8 style guide](https://peps.python.org/pep-0008/) as our guide for best practice for all Python scripts.
-We use the [Google Markdown style guide](https://chromium.googlesource.com/external/github.com/google/styleguide) for our documentation pages.
+We use the [Google Markdown style guide](https://github.com/google/styleguide/blob/gh-pages/pyguide.md) for our documentation pages.
 Reference the guides to familiarize yourself with the best practices we want contributors to follow.
 We have embedded PEP 8 style adherence, and a number of other best practices in our [pre-commit configuration file](./.pre-commit-config.yaml).
 

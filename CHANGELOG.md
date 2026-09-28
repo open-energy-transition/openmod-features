@@ -30,10 +30,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `open_source` tool metadata question, flagging whether a tool is open-source or a proprietary reference point.
+- Contributing guidelines on when capabilities of companion tools can count towards a tool's feature values: the companion must be open-source if the tool is, and clearly linked for use with the tool.
 
 ### Changed
 
 - PyPSA feature list re-assessed against PyPSA v1.3.0 (#145): `constraints.scope.temporal.cumulative.operation.event_count` and `orchestration.scenario_runs` are now `y` (tenuous), with sources added or corrected for `constraints.functional_form.quadratic.investment` and `model_definition.extensible_dimensions`.
+- PyPSA `interface.gui.analyse` is now `y` via the PyPSA Explorer ecosystem dashboard (v0.1.2).
 
 ## 0.3.0 (2026-09-24)
 
