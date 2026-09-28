@@ -73,7 +73,8 @@
   --chart-open-source: #2a78d6;
   --chart-proprietary: #a14aa6;
   --chart-status-unsourced: #d97706;
-  --chart-status-dev: #0f9d7a;
+  --chart-open-source-dev: #86b6ef;
+  --chart-proprietary-dev: #d49bd6;
   --chart-sequential: #00897b;
   --atlas-topbar-background: rgb(251 253 252 / 0.9);
   --section-highlights: #18211f;
@@ -148,7 +149,8 @@
   --chart-open-source: #3987e5;
   --chart-proprietary: #a2489f;
   --chart-status-unsourced: #c98500;
-  --chart-status-dev: #1b9e6e;
+  --chart-open-source-dev: #1f5aa6;
+  --chart-proprietary-dev: #7d3a7b;
   --chart-sequential: #22a698;
   --atlas-topbar-background: rgb(8 18 16 / 0.88);
   --section-highlights: #e9f2ef;
@@ -1102,6 +1104,19 @@ a:active {
     font-size: 0.75rem;
   }
 
+  .atlas-chart-legend-group {
+    display: inline-flex;
+    margin-right: 0.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem 0.75rem;
+  }
+
+  .atlas-chart-legend-group-label {
+    color: var(--atlas-ink);
+    font-weight: 600;
+  }
+
   .atlas-chart-swatch {
     display: inline-block;
     height: 0.6rem;
@@ -1473,7 +1488,7 @@ a:active {
   }
 
   .atlas-heatmap-col {
-    min-width: 4.5rem;
+    min-width: 3.4rem;
     padding: 0 0.25rem 0.4rem;
     color: var(--atlas-ink-soft);
     font-weight: 500;

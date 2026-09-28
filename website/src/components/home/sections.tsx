@@ -4,7 +4,7 @@
 
 import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
-import { ChartCard, ChartLegend, ChartTabs, TooltipBody } from '../charts/chart-card'
+import { ChartCard, ChartLegend, ChartLegendGroups, ChartTabs, TooltipBody } from '../charts/chart-card'
 import { ColumnChart, StackedColumnChart } from '../charts/column-chart'
 import { Heatmap, HeatmapScale } from '../charts/heatmap'
 import { ScatterChart } from '../charts/scatter-chart'
@@ -27,22 +27,53 @@ const unvalidatedSeries = {
   label: 'Implemented, unvalidated',
   color: 'var(--chart-status-unsourced)',
 }
-const devSeries = { key: 'dev', label: 'In development', color: 'var(--chart-status-dev)' }
+
+const toolTypes = [
+  {
+    openSource: true,
+    label: 'Open source',
+    available: 'var(--chart-open-source)',
+    dev: 'var(--chart-open-source-dev)',
+  },
+  {
+    openSource: false,
+    label: 'Proprietary reference',
+    available: 'var(--chart-proprietary)',
+    dev: 'var(--chart-proprietary-dev)',
+  },
+]
+
+function toolTypeShades(tool: ToolRecord) {
+  return toolTypes.find((type) => type.openSource === tool.openSource) ?? toolTypes[0]
+}
 
 export function CoverageSection({ home }: { home: HomeData }) {
-  const anyUnvalidated = home.tools.some(({ breakdown }) => breakdown.unsourced > 0)
-  const anyDev = home.tools.some(({ breakdown }) => breakdown.dev > 0)
-  // The validated segment takes each tool's type colour; the legend lists only statuses present.
+  // Available and in-development features take shades of each tool's type colour; the legend
+  // lists a tool type only if a tool has it, and in-development or unvalidated only where present.
   const series = [
-    { key: 'validated', label: 'Implemented, validated', color: 'var(--chart-open-source)' },
+    { key: 'validated', label: 'Available', color: 'var(--chart-open-source)' },
     unvalidatedSeries,
-    devSeries,
+    { key: 'dev', label: 'In development', color: 'var(--chart-open-source-dev)' },
   ]
-  const legend = [
-    ...toolTypeLegend,
-    ...(anyUnvalidated ? [unvalidatedSeries] : []),
-    ...(anyDev ? [devSeries] : []),
-  ]
+  const legendGroups = toolTypes
+    .map((type) => {
+      const tools = home.tools.filter(({ tool }) => tool.openSource === type.openSource)
+      return {
+        label: type.label,
+        present: tools.length > 0,
+        items: [
+          { label: 'Available', color: type.available },
+          ...(tools.some(({ breakdown }) => breakdown.dev > 0)
+            ? [{ label: 'In development', color: type.dev }]
+            : []),
+        ],
+      }
+    })
+    .filter((group) => group.present)
+  const anyUnvalidated = home.tools.some(({ breakdown }) => breakdown.unsourced > 0)
+  if (anyUnvalidated) {
+    legendGroups.push({ label: 'Any tool', present: true, items: [unvalidatedSeries] })
+  }
 
   return (
     <HomeSection
@@ -54,7 +85,7 @@ export function CoverageSection({ home }: { home: HomeData }) {
         title="Feature coverage"
         subtitle={`Share of all ${home.featureCount} taxonomy features, by status`}
         direction="higher"
-        info="Each column stacks a tool's validated features (coloured by tool type), then any unvalidated or in-development features. The label is the tool's coverage score under the active scoring rules."
+        info="Each column stacks a tool's available (implemented and validated) features, then any unvalidated and in-development features, in shades of its tool-type colour. The label is the tool's coverage score under the active scoring rules."
         link={{ to: '/tools', label: 'Tool matrix' }}
         csv={{
           filename: 'feature-coverage',
@@ -73,7 +104,7 @@ export function CoverageSection({ home }: { home: HomeData }) {
             ]),
           ],
         }}
-        legend={<ChartLegend items={legend} />}
+        legend={<ChartLegendGroups groups={legendGroups} />}
         footnote={`${scoringNote(home.options)} Missing and unknown features make up the rest of each column.`}
       >
         <StackedColumnChart
@@ -87,7 +118,7 @@ export function CoverageSection({ home }: { home: HomeData }) {
               unvalidated: share(breakdown.unsourced, breakdown),
               dev: share(breakdown.dev, breakdown),
             },
-            colors: { validated: toolTypeColor(tool) },
+            colors: { validated: toolTypeShades(tool).available, dev: toolTypeShades(tool).dev },
             valueLabel: formatPercent(coverage),
             link: { to: '/tools' },
             tooltip: <StatusTooltip tool={tool} breakdown={breakdown} score={formatPercent(coverage)} />,
@@ -109,6 +140,62 @@ export function UseCaseFitSection({ home }: { home: HomeData }) {
   }
 
   const rankedTools = rankBy(matrixTools, selected)
+  const fitMatrix = (
+    <ChartCard
+      title="Fit matrix"
+      subtitle="Every tool against every use case"
+      direction="higher"
+      info="Each cell is the share of that use case's required features the tool supports. Select a cell to open the matching rows in the tool matrix."
+      legend={
+        <span className="atlas-chart-legend">
+          <HeatmapScale />
+        </span>
+      }
+      csv={{
+        filename: 'use-case-fit-matrix',
+        rows: [
+          ['tool', ...home.useCases.map((item) => item.useCase.id)],
+          ...matrixTools.map((tool) => [
+            tool.shortname,
+            ...home.useCases.map((item) => item.scores.get(tool.id)?.percentage?.toFixed(1) ?? ''),
+          ]),
+        ],
+      }}
+    >
+      <Heatmap
+        label="Use-case fit by tool"
+        rows={matrixTools.map((tool) => ({
+          id: tool.id,
+          label: tool.shortname,
+          swatch: toolTypeColor(tool),
+        }))}
+        columns={home.useCases.map((item) => ({
+          id: item.useCase.id,
+          label: item.label,
+          title: item.useCase.name,
+        }))}
+        cell={(row, column) => {
+          const item = home.useCases.find((candidate) => candidate.useCase.id === column.id)
+          const coverage = item?.scores.get(row.id)
+          const tool = matrixTools.find((candidate) => candidate.id === row.id)
+          return {
+            value: coverage?.percentage ?? null,
+            valueLabel: formatPercent(coverage),
+            link: item ? { to: '/tools', search: item.search } : undefined,
+            tooltip: (
+              <TooltipBody
+                title={`${tool?.name ?? row.label} · ${item?.useCase.name ?? column.label}`}
+                rows={[
+                  ['Fit', formatPercent(coverage)],
+                  ['Required features met', coverage ? `${coverage.met} of ${coverage.total}` : 'N/A'],
+                ]}
+              />
+            ),
+          }
+        }}
+      />
+    </ChartCard>
+  )
 
   return (
     <HomeSection
@@ -116,15 +203,15 @@ export function UseCaseFitSection({ home }: { home: HomeData }) {
       title="Use-case fit"
       description="Share of each planning use case's required features that a tool supports. Use cases describe typical studies; build your own to score a specific one."
     >
-      <div className="grid gap-4 2xl:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
-        <ChartTabs
-          label="Use cases"
-          value={selected.useCase.id}
-          onValueChange={setSelectedId}
-          tabs={home.useCases.map((item) => ({
-            value: item.useCase.id,
-            label: item.label,
-            content: (
+      <ChartTabs
+        label="Use cases"
+        value={selected.useCase.id}
+        onValueChange={setSelectedId}
+        tabs={home.useCases.map((item) => ({
+          value: item.useCase.id,
+          label: item.label,
+          content: (
+            <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
               <ChartCard
                 title={item.useCase.name}
                 subtitle={`Share of ${item.required} required features met`}
@@ -147,66 +234,11 @@ export function UseCaseFitSection({ home }: { home: HomeData }) {
                   )}
                 />
               </ChartCard>
-            ),
-          }))}
-        />
-        <div className="grid content-start gap-3 2xl:pt-[2.85rem]">
-          <ChartCard
-            title="Fit matrix"
-            subtitle="Every tool against every use case"
-            direction="higher"
-            info="Each cell is the share of that use case's required features the tool supports. Select a cell to open the matching rows in the tool matrix."
-            legend={
-              <span className="atlas-chart-legend">
-                <HeatmapScale />
-              </span>
-            }
-            csv={{
-              filename: 'use-case-fit-matrix',
-              rows: [
-                ['tool', ...home.useCases.map((item) => item.useCase.id)],
-                ...matrixTools.map((tool) => [
-                  tool.shortname,
-                  ...home.useCases.map((item) => item.scores.get(tool.id)?.percentage?.toFixed(1) ?? ''),
-                ]),
-              ],
-            }}
-          >
-            <Heatmap
-              label="Use-case fit by tool"
-              rows={matrixTools.map((tool) => ({
-                id: tool.id,
-                label: tool.shortname,
-                swatch: toolTypeColor(tool),
-              }))}
-              columns={home.useCases.map((item) => ({
-                id: item.useCase.id,
-                label: item.label,
-                title: item.useCase.name,
-              }))}
-              cell={(row, column) => {
-                const item = home.useCases.find((candidate) => candidate.useCase.id === column.id)
-                const coverage = item?.scores.get(row.id)
-                const tool = matrixTools.find((candidate) => candidate.id === row.id)
-                return {
-                  value: coverage?.percentage ?? null,
-                  valueLabel: formatPercent(coverage),
-                  link: item ? { to: '/tools', search: item.search } : undefined,
-                  tooltip: (
-                    <TooltipBody
-                      title={`${tool?.name ?? row.label} · ${item?.useCase.name ?? column.label}`}
-                      rows={[
-                        ['Fit', formatPercent(coverage)],
-                        ['Required features met', coverage ? `${coverage.met} of ${coverage.total}` : 'N/A'],
-                      ]}
-                    />
-                  ),
-                }
-              }}
-            />
-          </ChartCard>
-        </div>
-      </div>
+              {fitMatrix}
+            </div>
+          ),
+        }))}
+      />
     </HomeSection>
   )
 }
