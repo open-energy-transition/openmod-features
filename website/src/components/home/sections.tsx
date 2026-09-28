@@ -84,7 +84,6 @@ export function CoverageSection({ home }: { home: HomeData }) {
       <ChartCard
         title="Feature coverage"
         subtitle={`Share of all ${home.featureCount} taxonomy features, by status`}
-        direction="higher"
         info="Each column stacks a tool's available (implemented and validated) features, then any unvalidated and in-development features, in shades of its tool-type colour. The label is the tool's coverage score under the active scoring rules."
         link={{ to: '/tools', label: 'Tool matrix' }}
         csv={{
@@ -144,7 +143,6 @@ export function UseCaseFitSection({ home }: { home: HomeData }) {
     <ChartCard
       title="Fit matrix"
       subtitle="Every tool against every use case"
-      direction="higher"
       info="Each cell is the share of that use case's required features the tool supports. Select a cell to open the matching rows in the tool matrix."
       legend={
         <span className="atlas-chart-legend">
@@ -215,7 +213,6 @@ export function UseCaseFitSection({ home }: { home: HomeData }) {
               <ChartCard
                 title={item.useCase.name}
                 subtitle={`Share of ${item.required} required features met`}
-                direction="higher"
                 info={item.useCase.description || undefined}
                 link={{ to: '/tools', search: item.search, label: 'Matrix' }}
                 csv={scoreCsv(`${item.useCase.id}-fit`, rankBy(matrixTools, item), (tool) =>
@@ -290,7 +287,6 @@ export function TradeOffSection({ home }: { home: HomeData }) {
         <ChartCard
           title={`${x.useCase.name} vs. ${y.useCase.name}`}
           subtitle="Share of required features met on each axis"
-          direction="higher"
           csv={{
             filename: `${x.useCase.id}-vs-${y.useCase.id}`,
             rows: [

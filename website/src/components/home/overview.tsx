@@ -83,7 +83,6 @@ export function HomeHighlights({ home }: { home: HomeData }) {
             compact
             title={<a href="#coverage" className="atlas-chart-title-link">Feature coverage</a>}
             subtitle={`Share of all ${home.featureCount} features`}
-            direction="higher"
             csv={scoreCsv('feature-coverage', tools, (tool) => coverage.get(tool.id))}
           >
             <ColumnChart
@@ -97,7 +96,6 @@ export function HomeHighlights({ home }: { home: HomeData }) {
               compact
               title={<a href="#use-case-fit" className="atlas-chart-title-link">Use-case fit</a>}
               subtitle={`All ${home.builtInUseCaseCount} use cases combined`}
-              direction="higher"
               csv={scoreCsv('all-use-cases-fit', fitTools, (tool) =>
                 allUseCases.scores.get(tool.id),
               )}
