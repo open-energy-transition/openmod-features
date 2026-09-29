@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: tools/assume/features.yaml CODEOWNERS
+# SPDX-FileCopyrightText: openmod-features contributors
+#
+# SPDX-License-Identifier: CC-BY-4.0
+
+# Changes here will be overwritten by Copier
+# DO NOT MANUALLY MODIFY THIS FILE
+_commit: v0.3.0
+_src_path: gh:open-energy-transition/openmod-features
+description: ASSUME is an open-source agent-based electricity market simulation toolbox.
+docs: https://assume.readthedocs.io
+list_type: tool
+maintainers: maurerle,nick-harder,kim-mskw,Manish-Khanra
+name: ASSUME
+open_source: true
+shortname: assume
+source: https://github.com/assume-framework/assume
