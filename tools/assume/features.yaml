@@ -1,0 +1,911 @@
+
+# SPDX-FileCopyrightText: tools/assume/features.yaml CODEOWNERS
+# SPDX-FileCopyrightText: openmod-features contributors
+#
+# SPDX-License-Identifier: CC-BY-4.0
+
+# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/v0.3.0/schema/tool-schema.yaml
+
+# Assessed against ASSUME v0.6.0 (released 18th March 2026). Source links are pinned to the `v0.6.0` git tag,
+# as the ASSUME documentation on Read the Docs is not versioned by release; documentation pages are cited as their
+# `.rst` source at that tag. `n` entries have no corresponding implementation in v0.6.0; where one has a comment or source, it explains why.
+# Grafana OSS is used as a companion tool (open-source, shipped in the repository via `compose.yml` and `docker_configs`);
+# ASSUME pins no Grafana release (`compose.yml` uses the `latest` image), so leaves that rely on it say so in a comment.
+
+version: 'v0.6.0'
+features:
+  processes:
+    boundary_exchange:
+      # `Exchange` unit for import/export with a price and volume time series; fuel and CO2 supply enter unit costs via the forecaster's price series.
+      value: y
+      source:
+        - https://github.com/assume-framework/assume/blob/v0.6.0/assume/units/exchange.py
+        - https://github.com/assume-framework/assume/blob/v0.6.0/assume/common/forecaster.py
+    conversion:
+      one_to_one:
+        # `PowerPlant`: fuel converted to electricity at an efficiency (optionally part-load dependent); DSM components (electrolyser, boiler, heat pump) do the same in a Pyomo model.
+        value: y
+        source:
+          - https://github.com/assume-framework/assume/blob/v0.6.0/assume/units/powerplant.py#L210-L224
+          - https://github.com/assume-framework/assume/blob/v0.6.0/assume/units/dst_components.py
+      multi_carrier_io:
+        # `DRIPlant` DSM component converts electricity, iron-ore and hydrogen and/or natural gas to DRI at fixed specific consumptions.
+        value: y
+        source:
+          - https://github.com/assume-framework/assume/blob/v0.6.0/assume/units/dst_components.py#L1116-L1132
+          - https://github.com/assume-framework/assume/blob/v0.6.0/docs/source/demand_side_agent.rst
+      flexible_ratio:
+        # `DRIPlant` with `fuel_type: both` has natural gas and hydrogen inputs as decision variables that jointly meet the DRI output.
+        value: y
+        source:
+          - https://github.com/assume-framework/assume/blob/v0.6.0/assume/units/dst_components.py#L1116-L1132
+    temporal_transfer:
+      # `Storage` unit with state of charge, and `GenericStorage`/`ThermalStorage` DSM components with a state-of-charge balance.
+      value: y
+      source:
+        - https://github.com/assume-framework/assume/blob/v0.6.0/assume/units/storage.py
+        - https://github.com/assume-framework/assume/blob/v0.6.0/assume/units/dst_components.py
+    spatial_transfer:
+      # `ComplexClearingRole` limits flows between nodes/zones by net transfer capacity (`s_nom` * `s_max_pu`) without network physics.
+      value: y
+      source:
+        - https://github.com/assume-framework/assume/blob/v0.6.0/assume/markets/clearing_algorithms/complex_clearing.py#L180-L191
+        - https://github.com/assume-framework/assume/blob/v0.6.0/docs/source/market_mechanism.rst
+    delayed_transfer:
+      value: n
+      source: []
+    buffered_transfer:
+      value: n
+      source: []
+    discrete_transport:
+      value: n
+      source: []
+    state_changing_transfer:
+      value: n
+      source: []
+    explicit_demand:
+      inelastic:
+        # `Demand` unit consumes a fixed exogenous profile; demand is 'most often modelled inelastic'.
+        value: y
+        source:
+          - https://github.com/assume-framework/assume/blob/v0.6.0/docs/source/units.rst
+          - https://github.com/assume-framework/assume/blob/v0.6.0/assume/units/demand.py
+      price_responsive:
+        # `Demand` supports linear and isoelastic demand curves submitted as several bid steps (`elasticity_model`, `num_bids`).
+        value: y
+        source:
+          - https://github.com/assume-framework/assume/blob/v0.6.0/assume/units/demand.py#L85-L112
+      mobile_storage:
+        # `Building` unit can include an `electric_vehicle` component (a `GenericStorage`) that charges/discharges within its availability profile (`ev_load_profile`). Availability varies in time only; attachment to the network does not vary in space.
+        value: y
+        source:
+          - https://github.com/assume-framework/assume/blob/v0.6.0/assume/units/dst_components.py#L1391
+          - https://github.com/assume-framework/assume/blob/v0.6.0/assume/units/building.py#L54-L61
+          - https://github.com/assume-framework/assume/blob/v0.6.0/docs/source/demand_side_agent.rst
+  network:
+    power_flow:
+      optimal_power_flow:
+        dc_opf:
+          # `NodalClearingRole` clears the market with a linear optimal power flow solved by PyPSA over the supplied grid (buses, lines).
+          value: y
+          source:
+            - https://github.com/assume-framework/assume/blob/v0.6.0/assume/markets/clearing_algorithms/nodal_clearing.py#L55-L60
+            - https://github.com/assume-framework/assume/blob/v0.6.0/docs/source/market_mechanism.rst
+        ac_opf:
+          value: n
+          source: []
+        unbalanced_flows:
+          value: n
+          source: []
+      sensitivity_limits:
+        ptdf:
+          value: n
+          source: []
+        outage_factors:
+          value: n
+          source: []
+        generic_constraints:
+          value: n
+          source: []
+      network_limits:
+        thermal:
+          # Line flows are limited to `s_nom` * `s_max_pu` in nodal clearing, redispatch and NTC-based complex clearing.
+          value: y
+          source:
+            - https://github.com/assume-framework/assume/blob/v0.6.0/docs/source/redispatch_modeling.rst
+            - https://github.com/assume-framework/assume/blob/v0.6.0/assume/markets/clearing_algorithms/complex_clearing.py#L180-L191
+        phase_angle:
+          value: n
+          source: []
+      losses:
+        value: n
+        source: []
+      network_devices:
+        transformers:
+          value: n
+          source: []
+        facts_devices:
+          value: n
+          source: []
+        hvdc_converters:
+          value: n
+          source: []
+    hydraulic_flow:
+      linearised_flow:
+        value: n
+        source: []
+      composition_tracking:
+        value: n
+        source: []
+  decisions:
+    investment:
+      exogenous_capacity:
+        # All unit capacities are fixed in the input data; ASSUME simulates market operation and has no capacity-expansion decision.
+        value: y
+        source:
+          - https://github.com/assume-framework/assume/blob/v0.6.0/docs/source/units.rst
+      continuous_capacity:
+        value: n
+        source: []
+      integer_investment_exogenous_capacity:
+        value: n
+        source: []
+      integer_investment_continuous_capacity:
+        value: n
+        source: []
+      multi_period:
+        value: n
+        source: []
+      retrofit:
+        value: n
+        source: []
+      endogenous_retirement:
+        value: n
+        source: []
+    operation:
+      unit_commitment:
+        # Power plants track operational status with minimum operating/down times and start-up costs inside rule-based bidding strategies; DSM components (e.g. `HeatPump`, `Electrolyser`, `DRIPlant`) commit units with binary variables in a Pyomo model.
+        value: y
+        source:
+          - https://github.com/assume-framework/assume/blob/v0.6.0/assume/units/powerplant.py#L38-L44
+          - https://github.com/assume-framework/assume/blob/v0.6.0/assume/units/dst_components.py#L138
+      maintenance_scheduling:
+        value: n
+        source: []
+  constraints:
+    scope:
+      temporal:
+        pointwise:
+          investment:
+            value: n
+            source: []
+          operation:
+            availability_derating:
+              # Time-varying `availability` fraction on every forecaster; storage state-of-charge limits via `min_soc`/`max_soc`.
+              value: y
+              source:
+                - https://github.com/assume-framework/assume/blob/v0.6.0/assume/common/forecaster.py#L22-L39
+                - https://github.com/assume-framework/assume/blob/v0.6.0/assume/units/storage.py#L33-L36
+            minimum_stable_level:
+              # `min_power` on power plants and `min_power_charge`/`min_power_discharge` on storage.
+              value: y
+              source:
+                - https://github.com/assume-framework/assume/blob/v0.6.0/assume/units/powerplant.py
+                - https://github.com/assume-framework/assume/blob/v0.6.0/assume/units/storage.py#L28-L31
+            forced_offline:
+              # Setting the `availability` series to 0 forces a unit off in given timesteps.
+              value: y
+              source:
+                - https://github.com/assume-framework/assume/blob/v0.6.0/assume/common/forecaster.py#L22-L39
+            forced_online:
+              value: n
+              source: []
+        sequential:
+          investment:
+            availability_window:
+              value: n
+              source: []
+            relative_build_rate:
+              value: n
+              source: []
+            technical_lifetime:
+              value: n
+              source: []
+          operation:
+            ramping:
+              # `ramp_up`/`ramp_down` on power plants and storage; ramp rates on DSM components.
+              value: y
+              source:
+                - https://github.com/assume-framework/assume/blob/v0.6.0/assume/units/powerplant.py#L36-L37
+                - https://github.com/assume-framework/assume/blob/v0.6.0/assume/units/storage.py#L40-L43
+            start_shut_trajectory:
+              value: n
+              source: []
+            commitment_duration:
+              # `min_operating_time` and `min_down_time` on power plants and storage; minimum up/down-time constraints in DSM components.
+              value: y
+              source:
+                - https://github.com/assume-framework/assume/blob/v0.6.0/assume/units/powerplant.py#L41-L42
+                - https://github.com/assume-framework/assume/blob/v0.6.0/assume/units/dst_components.py#L91
+            start_consumption:
+              value: n
+              source: []
+        cumulative:
+          investment:
+            capacity_target:
+              value: n
+              source: []
+            expansion_budget:
+              value: n
+              source: []
+            event_count:
+              value: n
+              source: []
+            path_dependent:
+              value: n
+              source: []
+          operation:
+            flow_volume:
+              value: n
+              source: []
+            impact_budget:
+              value: n
+              source: []
+            event_count:
+              value: n
+              source: []
+            state_duration:
+              value: n
+              source: []
+            path_dependent:
+              value: n
+              source: []
+        boundary_conditions:
+          investment:
+            value: n
+            source: []
+          operation:
+            # `initial_soc` sets the starting storage level; `initial_operational_status` sets the starting state of DSM components. No end-state targets.
+            value: y
+            source:
+              - https://github.com/assume-framework/assume/blob/v0.6.0/assume/units/storage.py#L33-L36
+              - https://github.com/assume-framework/assume/blob/v0.6.0/assume/units/dst_components.py#L1005-L1030
+      spatial:
+        investment:
+          value: n
+          source: []
+        operation:
+          value: n
+          source: []
+      assets:
+        spanning:
+          investment:
+            value: n
+            source: []
+          operation:
+            value: n
+            source: []
+        dedicated_flow_routing:
+          value: n
+          source: []
+    functional_form:
+      linear_multi_variable:
+        investment:
+          value: n
+          source: []
+        operation:
+          # DSM components couple several operating variables linearly, e.g. `steel_output_dri_relation_constraint` and heat-pump COP constraints.
+          value: y
+          source:
+            - https://github.com/assume-framework/assume/blob/v0.6.0/assume/units/dst_components.py#L124-L128
+            - https://github.com/assume-framework/assume/blob/v0.6.0/assume/units/dst_components.py#L1341-L1346
+      quadratic:
+        investment:
+          value: n
+          source: []
+        operation:
+          value: n
+          source: []
+      nonlinear:
+        investment:
+          value: n
+          source: []
+        operation:
+          value: n
+          source: []
+    reliability:
+      unserved_demand:
+        # Demand that is not cleared is unserved; the demand bid price (default 3000 EUR/MWh) acts as the value of lost load.
+        value: y
+        source:
+          - https://github.com/assume-framework/assume/blob/v0.6.0/assume/units/demand.py#L28-L43
+      operating_reserve:
+        online_headroom:
+          # Power plants and storage offer spare capability as positive/negative capacity reserve on a capacity reserve market (CRM). It is cleared separately from the energy market, not co-optimised with dispatch.
+          value: y
+          source:
+            - https://github.com/assume-framework/assume/blob/v0.6.0/assume/strategies/flexable.py#L247-L330 # codespell:ignore flexable
+            - https://github.com/assume-framework/assume/blob/v0.6.0/assume/strategies/flexable_storage.py#L225
+            - https://github.com/assume-framework/assume/blob/v0.6.0/docs/source/market_config.rst
+        standby_capability:
+          value: n
+          source: []
+        inertia:
+          value: n
+          source: []
+      contingency_constrained:
+        value: n
+        source: []
+      probabilistic_reliability_limit:
+        loss_of_load:
+          value: n
+          source: []
+        unserved_energy:
+          value: n
+          source: []
+    soft_constraints:
+      value: n
+      source: []
+  cost:
+    scope:
+      temporal:
+        sequential:
+          investment:
+            value: n
+            source: []
+          operation:
+            ramping:
+              value: n
+              source: []
+            start_up:
+              # `hot_start_cost`, `warm_start_cost`, `cold_start_cost` on power plants.
+              value: y
+              source:
+                - https://github.com/assume-framework/assume/blob/v0.6.0/assume/units/powerplant.py#L38-L40
+            shut_down:
+              value: n
+              source: []
+            start_state_dependent:
+              # Hot/warm/cold start costs depend on downtime (`downtime_hot_start`, `downtime_warm_start`).
+              value: y
+              source:
+                - https://github.com/assume-framework/assume/blob/v0.6.0/assume/units/powerplant.py#L38-L44
+        cumulative:
+          investment:
+            value: n
+            source: []
+          operation:
+            value: n
+            source: []
+      spatial:
+        investment:
+          value: n
+          source: []
+        operation:
+          value: n
+          source: []
+      assets:
+        investment:
+          value: n
+          source: []
+        operation:
+          value: n
+          source: []
+    functional_form:
+      fixed_charge:
+        investment:
+          value: n
+          source: []
+        operation:
+          value: n
+          source: []
+      nonlinear:
+        investment:
+          value: n
+          source: []
+        operation:
+          # Part-load efficiency curves for coal/lignite/CCGT/OCGT (`partial_load_eff`) and stepwise bid curves in markets.
+          value: y
+          source:
+            - https://github.com/assume-framework/assume/blob/v0.6.0/assume/units/powerplant.py#L230-L290
+      threshold_deviation:
+        investment:
+          value: n
+          source: []
+        operation:
+          # Redispatch market prices upward/downward adjustments around the EOM schedule.
+          value: y
+          source:
+            - https://github.com/assume-framework/assume/blob/v0.6.0/docs/source/redispatch_modeling.rst
+            - https://github.com/assume-framework/assume/blob/v0.6.0/assume/markets/clearing_algorithms/redispatch.py#L163-L176
+    time_value:
+      annuitisation:
+        value: n
+        source: []
+      fiscal_treatment:
+        value: n
+        source: []
+      period_discounting:
+        value: n
+        source: []
+  objective:
+    quadratic:
+      value: n
+      source: []
+    multi_objective_weighted:
+      value: n
+      source: []
+    multi_objective_pareto:
+      value: n
+      source: []
+    tie_breaking:
+      value: n
+      source: []
+  edge_effects:
+    time_operational:
+      value: n
+      source: []
+    time_financial:
+      value: n
+      source: []
+    energy_balance:
+      # `Storage` dispatch is a single signed power value per timestep (charge negative, discharge positive), so simultaneous in- and out-flow cannot occur. The DSM `GenericStorage` component has separate charge and discharge variables and does not prevent it.
+      value: y
+      source:
+        - https://github.com/assume-framework/assume/blob/v0.6.0/assume/units/storage.py#L28-L31
+        - https://github.com/assume-framework/assume/blob/v0.6.0/assume/units/storage.py#L277-L304
+  actors:
+    portfolio:
+      # `UnitsOperator` bids for several units and applies a portfolio strategy per market: direct pass-through, a Cournot-style markup scaled by portfolio capacity, or a reinforcement-learning portfolio strategy. Portfolio-level constraints or costs (e.g. capital limits) are not modelled.
+      value: y
+      source:
+        - https://github.com/assume-framework/assume/blob/v0.6.0/assume/common/units_operator.py#L37-L68
+        - https://github.com/assume-framework/assume/blob/v0.6.0/assume/strategies/portfolio_strategies.py
+        - https://github.com/assume-framework/assume/blob/v0.6.0/docs/source/unit_operator.rst
+    heuristic_markup:
+      # `UnitsOperatorEnergyHeuristicCournotStrategy` applies a Cournot-style markup scaled by portfolio capacity.
+      value: y
+      source:
+        - https://github.com/assume-framework/assume/blob/v0.6.0/docs/source/unit_operator.rst
+    distributed_objectives:
+      # Each unit operator or unit has its own objective: profit-maximising (learning) bidding agents, and `Building`/`SteelPlant` units with their own `objective` (default `min_variable_cost`) and flexibility measure.
+      value: y
+      source:
+        - https://github.com/assume-framework/assume/blob/v0.6.0/assume/units/building.py#L72-L73
+        - https://github.com/assume-framework/assume/blob/v0.6.0/docs/source/demand_side_agent.rst
+        - https://github.com/assume-framework/assume/blob/v0.6.0/docs/source/learning.rst
+    equilibrium:
+      # Strategic behaviour emerges from multi-agent reinforcement learning (MATD3) in simulation; no complementarity or bi-level equilibrium formulation is solved.
+      value: n
+      source:
+        - https://github.com/assume-framework/assume/blob/v0.6.0/docs/source/learning.rst
+  uncertainty:
+    two_stage_stochastic:
+      value: n
+      source: []
+    multi_stage_stochastic:
+      value: n
+      source: []
+    risk_aversion:
+      value: n
+      source: []
+    robust_optimisation:
+      value: n
+      source: []
+    near_optimal:
+      value: n
+      source: []
+  model_definition:
+    configurable_dimensions:
+      value: n
+      source: []
+    extensible_dimensions:
+      value: n
+      source: []
+    dimension_groups:
+      value: n
+      source: []
+    component_templating:
+      value: n
+      source: []
+  math:
+    formulation_transparency:
+      value: n
+      source: []
+    problem_file_export:
+      value: n
+      source: []
+    dual_extraction:
+      # Market clearing prices are extracted from the dual of the energy balance constraint in `ComplexClearingRole`; not exposed for other constraints.
+      value: y
+      source:
+        - https://github.com/assume-framework/assume/blob/v0.6.0/assume/markets/clearing_algorithms/complex_clearing.py#L527
+        - https://github.com/assume-framework/assume/blob/v0.6.0/docs/source/market_mechanism.rst
+    piecewise_formulation:
+      value: n
+      source: []
+    user_defined_math:
+      value: n
+      source: []
+  tractability:
+    dimension_reduction:
+      adjacency_aggregation:
+        temporal:
+          value: n
+          source: []
+        spatial:
+          value: n
+          source: []
+      similarity_aggregation:
+        temporal:
+          value: n
+          source: []
+        spatial:
+          value: n
+          source: []
+        assets:
+          value: n
+          source: []
+        scenarios:
+          value: n
+          source: []
+      non_contiguity_handling:
+        temporal:
+          value: n
+          source: []
+        spatial:
+          value: n
+          source: []
+      equivalencing:
+        spatial:
+          value: n
+          source: []
+        assets:
+          value: n
+          source: []
+      filtering:
+        temporal:
+          value: n
+          source: []
+        spatial:
+          value: n
+          source: []
+        assets:
+          value: n
+          source: []
+        scenarios:
+          value: n
+          source: []
+    variable_fidelity:
+      formulation:
+        value: n
+        source: []
+      resolution:
+        temporal:
+          value: n
+          source: []
+        spatial:
+          value: n
+          source: []
+        assets:
+          value: n
+          source: []
+        scenarios:
+          value: n
+          source: []
+    reformulation:
+      linearised_unit_commitment:
+        value: n
+        source: []
+      nonlinear_handling:
+        convex_relaxation:
+          value: n
+          source: []
+        function_conversion:
+          value: n
+          source: []
+      constraint_screening:
+        value: n
+        source: []
+      decomposition:
+        value: n
+        source: []
+      numeric_scaling:
+        value: n
+        source: []
+  orchestration:
+    scenario_runs:
+      value: n
+      source: []
+    sampled_runs:
+      value: n
+      source: []
+    coupled_models:
+      limited_foresight:
+        investment:
+          value: n
+          source: []
+        operation:
+          value: n
+          source: []
+      fidelity_sequence:
+        value: n
+        source: []
+      market_sequence:
+        # Several markets (e.g. capacity reserve then energy-only market, followed by redispatch) run in one simulation with dispatch results passed between stages.
+        value: y
+        source:
+          - https://github.com/assume-framework/assume/blob/v0.6.0/docs/source/market_config.rst
+          - https://github.com/assume-framework/assume/blob/v0.6.0/docs/source/redispatch_modeling.rst
+      convergence_iteration:
+        value: n
+        source: []
+  io:
+    plain_text:
+      input:
+        # Scenarios are defined by a `config.yaml` plus CSV files for units and time series.
+        value: y
+        source:
+          - https://github.com/assume-framework/assume/blob/v0.6.0/docs/source/scenario_loader.rst
+          - https://github.com/assume-framework/assume/blob/v0.6.0/assume/scenario/loader_csv.py
+      output:
+        # Results can be exported as CSV files (`-csv` / `csv_export_path`).
+        value: y
+        source:
+          - https://github.com/assume-framework/assume/blob/v0.6.0/docs/source/outputs.rst
+          - https://github.com/assume-framework/assume/blob/v0.6.0/assume/common/outputs.py
+    binary:
+      input:
+        # The PyPSA loader accepts netCDF and HDF5 PyPSA datasets.
+        value: y
+        source:
+          - https://github.com/assume-framework/assume/blob/v0.6.0/assume/scenario/loader_pypsa.py#L35
+      output:
+        value: n
+        source: []
+    database:
+      input:
+        # The OEDS loader reads infrastructure and time series from a PostgreSQL Open-Energy-Data-Server.
+        value: y
+        source:
+          - https://github.com/assume-framework/assume/blob/v0.6.0/docs/source/scenario_loader.rst
+          - https://github.com/assume-framework/assume/blob/v0.6.0/assume/scenario/loader_oeds.py
+      output:
+        # Results are written to SQLite or PostgreSQL/TimescaleDB.
+        value: y
+        source:
+          - https://github.com/assume-framework/assume/blob/v0.6.0/docs/source/outputs.rst
+    remote_storage:
+      input:
+        value: n
+        source: []
+      output:
+        value: n
+        source: []
+    lazy_loading:
+      input:
+        value: n
+        source: []
+      output:
+        # Outputs are buffered and flushed to storage at a size or time threshold (`outputs_buffer_size_mb`, `save_frequency_hours`) rather than held fully in memory.
+        value: y
+        source:
+          - https://github.com/assume-framework/assume/blob/v0.6.0/docs/source/outputs.rst
+    standardised:
+      input:
+        value: n
+        source: []
+      output:
+        value: n
+        source: []
+  preprocessing:
+    download:
+      value: n
+      source: []
+    model_catalogue:
+      value: n
+      source: []
+    resource_conversion:
+      # OEDS loader (optional `oeds` extra) derives PV and wind profiles with pvlib/windpowerlib and demand profiles with demandlib.
+      value: y
+      source:
+        - https://github.com/assume-framework/assume/blob/v0.6.0/assume/scenario/oeds/infrastructure.py#L12-L18
+    forecasting:
+      value: n
+      source: []
+    spatial_distribution:
+      demand:
+        value: n
+        source: []
+      network_geometry:
+        value: n
+        source: []
+    scenario_generation:
+      value: n
+      source: []
+    input_validation:
+      # Unit constructors validate parameters (ranges, signs) and raise `ValidationError` before a run.
+      value: y
+      source:
+        - https://github.com/assume-framework/assume/blob/v0.6.0/assume/common/exceptions.py
+        - https://github.com/assume-framework/assume/blob/v0.6.0/assume/units/powerplant.py#L115-L125
+  postprocessing:
+    metrics:
+      operational:
+        capacity_factor:
+          # Built-in KPI `capacity_factor` computed from market dispatch and power plant metadata.
+          value: y
+          source:
+            - https://github.com/assume-framework/assume/blob/v0.6.0/assume/common/outputs.py#L105-L125
+        operating_hours:
+          value: n
+          source: []
+        binding_hours:
+          value: n
+          source: []
+        curtailment:
+          value: n
+          source: []
+      financial:
+        marginal_price:
+          # Clearing prices per market (and per node in nodal clearing) are stored in `market_meta` and `market_orders`.
+          value: y
+          source:
+            - https://github.com/assume-framework/assume/blob/v0.6.0/docs/source/outputs.rst
+        price_formation:
+          # Pay-as-clear, pay-as-bid and complex clearing (uniform price from a relaxed re-solve with fixed binaries) are documented pricing rules.
+          value: y
+          source:
+            - https://github.com/assume-framework/assume/blob/v0.6.0/docs/source/market_mechanism.rst
+        water_value:
+          value: n
+          source: []
+        asset_accounts:
+          # `unit_dispatch` stores energy generation costs, energy cashflow and total costs per unit; RL profit is stored per unit.
+          value: y
+          source:
+            - https://github.com/assume-framework/assume/blob/v0.6.0/docs/source/outputs.rst
+        contract_settlement:
+          # Support policies (FIT, market premia, capacity premium, CfD) are settled on realised output and market prices.
+          value: y
+          source:
+            - https://github.com/assume-framework/assume/blob/v0.6.0/docs/source/support_policies.rst
+        levelised_cost:
+          value: n
+          source: []
+        net_present_value:
+          value: n
+          source: []
+      impact_assessment:
+        emissions:
+          value: n
+          source: []
+        resource_use:
+          value: n
+          source: []
+        socioeconomic:
+          value: n
+          source: []
+      network_transfer_metrics:
+        transfer_capacity:
+          value: n
+          source: []
+        flow_sensitivity:
+          value: n
+          source: []
+      probabilistic_reliability_assessment:
+        loss_of_load:
+          value: n
+          source: []
+        unserved_energy:
+          value: n
+          source: []
+        capacity_credit:
+          value: n
+          source: []
+    transformation:
+      aggregation:
+        value: n
+        source: []
+      disaggregation:
+        value: n
+        source: []
+      scenario_comparison:
+        # Companion tool Grafana OSS (open-source; ASSUME ships it via `compose.yml` with image `grafana/grafana-oss:latest`, so no release is pinned; the dashboards were exported from Grafana 11.x): the `ASSUME Comparison` dashboard compares scenarios stored in the same database.
+        value: y
+        source:
+          - https://github.com/assume-framework/assume/blob/v0.6.0/docker_configs/dashboard-definitions/ASSUME%20Comparison.json
+  interface:
+    gui:
+      build:
+        value: n
+        source: []
+      run:
+        value: n
+        source: []
+      analyse:
+        # Companion tool Grafana OSS (open-source; ASSUME ships it via `compose.yml` with image `grafana/grafana-oss:latest`, so no release is pinned; the dashboards were exported from Grafana 11.x), with dashboards for results, nodal results and RL training (`ASSUME_Learning` exported from Grafana 12.2.1).
+        value: y
+        source:
+          - https://github.com/assume-framework/assume/blob/v0.6.0/docker_configs/dashboard-definitions/ASSUME.json
+          - https://github.com/assume-framework/assume/blob/v0.6.0/compose.yml
+    api:
+      build:
+        # The `World` class is built up in Python (markets, unit operators, units).
+        value: y
+        source:
+          - https://github.com/assume-framework/assume/blob/v0.6.0/assume/world.py
+      run:
+        # `World.run()`; simulations are started from Python or notebooks.
+        value: y
+        source:
+          - https://github.com/assume-framework/assume/blob/v0.6.0/assume/world.py
+      analyse:
+        # Results are written to a database/CSV and analysed in Python, as in the shipped notebooks.
+        value: y
+        source:
+          - https://github.com/assume-framework/assume/blob/v0.6.0/docs/source/outputs.rst
+          - https://github.com/assume-framework/assume/blob/v0.6.0/examples/notebooks/02_automated_run_example.ipynb
+    cli:
+      build:
+        value: n
+        source: []
+      run:
+        # `assume -s <scenario> -c <case>` runs a scenario, with database, CSV export, log level and parallel options.
+        value: y
+        source:
+          - https://github.com/assume-framework/assume/blob/v0.6.0/docs/source/command_line_interface.rst
+          - https://github.com/assume-framework/assume/blob/v0.6.0/assume_cli/cli.py
+      analyse:
+        value: n
+        source: []
+    solver_configuration:
+      # The solver is selected per market with the `solver` entry of `param_dict` in complex, nodal (PyPSA/linopy) and redispatch clearing.
+      value: y
+      source:
+        - https://github.com/assume-framework/assume/blob/v0.6.0/assume/markets/clearing_algorithms/complex_clearing.py#L340-L346
+        - https://github.com/assume-framework/assume/blob/v0.6.0/assume/markets/clearing_algorithms/nodal_clearing.py#L164
+        - https://github.com/assume-framework/assume/blob/v0.6.0/assume/markets/clearing_algorithms/redispatch.py#L72
+    remote_execution:
+      value: n
+      source: []
+    visualisation:
+      charts:
+        # Companion tool Grafana OSS (open-source; ASSUME ships it via `compose.yml` with image `grafana/grafana-oss:latest`, so no release is pinned; the dashboards were exported from Grafana 11.x): dispatch, merit order, price duration curve and storage state of charge.
+        value: y
+        source:
+          - https://github.com/assume-framework/assume/blob/v0.6.0/docker_configs/dashboard-definitions/ASSUME.json
+      network_maps:
+        # Companion tool Grafana OSS (open-source; ASSUME ships it via `compose.yml` with image `grafana/grafana-oss:latest`, so no release is pinned; the dashboards were exported from Grafana 11.x) with the `orchestracities-map-panel` plugin (1.4.4): the nodal dashboard's 'Grid Information' panel draws line geometries on a map coloured by line loading (flow relative to `s_nom` * `s_max_pu`).
+        value: y
+        source:
+          - https://github.com/assume-framework/assume/blob/v0.6.0/docker_configs/dashboard-definitions/ASSUME_nodal.json
+          - https://github.com/assume-framework/assume/blob/v0.6.0/compose.yml
+      report_templates:
+        # Companion tool Grafana OSS (open-source; ASSUME ships it via `compose.yml` with image `grafana/grafana-oss:latest`, so no release is pinned; the dashboards were exported from Grafana 11.x): provisioned dashboard definitions for general, comparison, nodal and learning views.
+        value: y
+        source:
+          - https://github.com/assume-framework/assume/blob/v0.6.0/docker_configs/dashboard-definitions/ASSUME.json
+          - https://github.com/assume-framework/assume/blob/v0.6.0/docker_configs/dashboard-definitions/ASSUME_nodal.json
+  traceability:
+    metadata:
+      provenance:
+        value: n
+        source: []
+      units:
+        value: n
+        source: []
+      propagation:
+        value: n
+        source: []
+    run_logs:
+      # Logging to console and file, level set with `-l`/`--loglevel`.
+      value: y
+      source:
+        - https://github.com/assume-framework/assume/blob/v0.6.0/assume_cli/cli.py#L95-L104
+    intermediate_access:
+      value: n
+      source: []
+    infeasibility_diagnosis:
+      value: n
+      source: []
