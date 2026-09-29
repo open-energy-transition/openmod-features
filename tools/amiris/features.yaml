@@ -1,0 +1,909 @@
+# SPDX-FileCopyrightText: tools/amiris/features.yaml CODEOWNERS
+# SPDX-FileCopyrightText: openmod-features contributors
+#
+# SPDX-License-Identifier: CC-BY-4.0
+
+# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/v0.3.0/schema/tool-schema.yaml
+
+# Assessed against AMIRIS v5.0.0 (released 10th September 2026). Documentation and source links are pinned to the `v5.0.0` git tag
+# of https://gitlab.com/dlr-ve/esy/amiris/amiris. `n` entries have no corresponding implementation in v5.0.0, or one that depends on a non-open external service; where one has a comment or source, it explains why.
+# AMIRIS is an agent-based simulation, not an optimisation model: there is no system-wide objective, solver, network or investment model,
+# so most optimisation-oriented leaves are `n`. Flexibility agents optimise their own dispatch by dynamic programming against price forecasts.
+# Companion tools (all open-source, referenced in the AMIRIS documentation) are cited with the version they were assessed at:
+# FAME-Io v4.0.2 (compiles scenarios, extracts results; AMIRIS 5.0.0 requires FAME-Io >= 4.0), AMIRIS-Py v4.0.1 (CLI wrapper) and
+# the AMIRIS-Examples v8.0.0 scenarios (built for AMIRIS 5.0.0).
+
+version: 'v5.0.0'
+features:
+  processes:
+    boundary_exchange:
+      # `ImportTrader` offers exogenous imports as supply from a time series; `FuelsMarket` and `CarbonMarket` supply fuels and CO2 allowances at exogenous price time series.
+      value: y
+      source:
+        - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/ImportTrader.md
+        - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/FuelsMarket.md
+        - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/CarbonMarket.md
+    conversion:
+      one_to_one:
+        # Conventional `PowerPlant`s convert a fuel into electricity at an efficiency; the electrolyser converts electricity into hydrogen and the heat pump electricity into heat (via a COP).
+        value: y
+        source:
+          - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Modules/PowerPlant.md
+          - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Modules/Electrolyzer.md
+          - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/HeatPumpTrader.md
+      multi_carrier_io:
+        value: n
+        source: []
+      flexible_ratio:
+        value: n
+        source: []
+    temporal_transfer:
+      # Storage `Device` with a state of charge, charging/discharging efficiencies and self-discharge, operated by `StorageTrader`; load shifting and heat pump thermal storage also move energy in time.
+      value: y
+      source:
+        - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Modules/Device.md
+        - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/StorageTrader.md
+    spatial_transfer:
+      # `MarketCoupling` transfers demand between `DayAheadMarketMultiZone` market zones within transmission capacity limits, without network physics.
+      value: y
+      source:
+        - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/MarketCoupling.md
+        - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/DayAheadMarketMultiZone.md
+    delayed_transfer:
+      value: n
+      source: []
+    buffered_transfer:
+      value: n
+      source: []
+    discrete_transport:
+      value: n
+      source: []
+    state_changing_transfer:
+      value: n
+      source: []
+    explicit_demand:
+      inelastic:
+        # `DemandTrader` buys demand time series; the non-sheddable baseline demand is bid at the technical price maximum.
+        value: y
+        source:
+          - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/DemandTrader.md
+      price_responsive:
+        # `DemandTrader` takes several load time series, each with its own `ValueOfLostLoad` as bid price, forming a stepwise willingness-to-pay curve; `LoadShiftingTrader` shifts demand against prices.
+        value: y
+        source:
+          - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/DemandTrader.md
+          - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/LoadShiftingTrader.md
+      mobile_storage:
+        # `EvTraderExternal` models EV fleets, but delegates the charging prediction to an external machine-learning service (`ServiceUrl`) for which no open-source implementation is referenced.
+        value: n
+        source:
+          - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/EvTraderExternal.md
+  network:
+    power_flow:
+      optimal_power_flow:
+        dc_opf:
+          value: n
+          source: []
+        ac_opf:
+          value: n
+          source: []
+        unbalanced_flows:
+          value: n
+          source: []
+      sensitivity_limits:
+        ptdf:
+          value: n
+          source: []
+        outage_factors:
+          value: n
+          source: []
+        generic_constraints:
+          value: n
+          source: []
+      network_limits:
+        thermal:
+          value: n
+          source: []
+        phase_angle:
+          value: n
+          source: []
+      losses:
+        value: n
+        source: []
+      network_devices:
+        transformers:
+          value: n
+          source: []
+        facts_devices:
+          value: n
+          source: []
+        hvdc_converters:
+          value: n
+          source: []
+    hydraulic_flow:
+      linearised_flow:
+        value: n
+        source: []
+      composition_tracking:
+        value: n
+        source: []
+  decisions:
+    investment:
+      exogenous_capacity:
+        # Installed capacities are inputs: `InstalledPowerInMW` time series (`PredefinedPlantBuilder`) or a list of plants with activation/deactivation times (`IndividualPlantBuilder`). AMIRIS has no investment decisions.
+        value: y
+        source:
+          - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/PredefinedPlantBuilder.md
+          - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/IndividualPlantBuilder.md
+      continuous_capacity:
+        value: n
+        source: []
+      integer_investment_exogenous_capacity:
+        value: n
+        source: []
+      integer_investment_continuous_capacity:
+        value: n
+        source: []
+      multi_period:
+        value: n
+        source: []
+      retrofit:
+        value: n
+        source: []
+      endogenous_retirement:
+        value: n
+        source: []
+    operation:
+      unit_commitment:
+        value: n
+        source: []
+      maintenance_scheduling:
+        value: n
+        source: []
+  constraints:
+    scope:
+      temporal:
+        pointwise:
+          investment:
+            value: n
+            source: []
+          operation:
+            availability_derating:
+              # Conventional plants have an `OutageFactor` time series; variable renewables follow a relative `YieldProfile` time series.
+              value: y
+              source:
+                - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Modules/PowerplantPrototype.md
+                - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/VariableRenewableOperator.md
+            minimum_stable_level:
+              value: n
+              source: []
+            forced_offline:
+              # `OutageFactor` is a time series, so a value of 1 takes a plant out of service in the given time steps.
+              value: y
+              source:
+                - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Modules/PowerplantPrototype.md
+            forced_online:
+              # `MustRunFactor` time series sets a share of capacity that must run (e.g. heat contracts); it is bid at the minimal market price and served first in dispatch.
+              value: y
+              source:
+                - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Modules/PowerplantPrototype.md
+                - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/ConventionalPlantOperator.md
+        sequential:
+          investment:
+            availability_window:
+              value: n
+              source: []
+            relative_build_rate:
+              value: n
+              source: []
+            technical_lifetime:
+              value: n
+              source: []
+          operation:
+            ramping:
+              value: n
+              source: []
+            start_shut_trajectory:
+              value: n
+              source: []
+            commitment_duration:
+              value: n
+              source: []
+            start_consumption:
+              value: n
+              source: []
+        cumulative:
+          investment:
+            capacity_target:
+              value: n
+              source: []
+            expansion_budget:
+              value: n
+              source: []
+            event_count:
+              value: n
+              source: []
+            path_dependent:
+              value: n
+              source: []
+          operation:
+            flow_volume:
+              # With `GREEN_HYDROGEN_MONTHLY`, monthly electrolyser demand may not exceed the renewable generation of the contracted PPA plants (monthly equivalence); `SINGLE_AGENT_SIMPLE` only aims at, and may miss, periodical hydrogen production targets.
+              value: y
+              source:
+                - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Modules/MonthlyEquivalence.md
+                - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Modules/SingleAgentSimple(Electrolysis).md
+                - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/ElectrolysisTrader.md
+            impact_budget:
+              # AMIRIS does not enforce system-wide constraints such as a carbon emission cap; CO2 prices are exogenous.
+              value: n
+              source:
+                - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/README.md
+            event_count:
+              value: n
+              source: []
+            state_duration:
+              value: n
+              source: []
+            path_dependent:
+              value: n
+              source: []
+        boundary_conditions:
+          investment:
+            value: n
+            source: []
+          operation:
+            # Initial storage content is set with `InitialEnergyLevelInMWH`.
+            value: y
+            source:
+              - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Modules/Device.md
+      spatial:
+        investment:
+          value: n
+          source: []
+        operation:
+          value: n
+          source: []
+      assets:
+        spanning:
+          investment:
+            value: n
+            source: []
+          operation:
+            value: n
+            source: []
+        dedicated_flow_routing:
+          # A `VariableRenewableOperatorPpa` reserves its generation for a contracted `GreenHydrogenTrader` (power purchase agreement) rather than pooling it at the market.
+          value: y
+          source:
+            - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/VariableRenewableOperatorPpa.md
+            - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/GreenHydrogenTrader.md
+    functional_form:
+      linear_multi_variable:
+        investment:
+          value: n
+          source: []
+        operation:
+          value: n
+          source: []
+      quadratic:
+        investment:
+          value: n
+          source: []
+        operation:
+          value: n
+          source: []
+      nonlinear:
+        investment:
+          value: n
+          source: []
+        operation:
+          value: n
+          source: []
+    reliability:
+      unserved_demand:
+        # Demand is shed when supply is short; `ValueOfLostLoad` bounds demand bid prices and the `ShortagePrice` rule sets the price under scarcity.
+        value: y
+        source:
+          - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/DemandTrader.md
+          - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Modules/MarketClearing.md
+      operating_reserve:
+        online_headroom:
+          value: n
+          source: []
+        standby_capability:
+          value: n
+          source: []
+        inertia:
+          value: n
+          source: []
+      contingency_constrained:
+        value: n
+        source: []
+      probabilistic_reliability_limit:
+        loss_of_load:
+          value: n
+          source: []
+        unserved_energy:
+          value: n
+          source: []
+    soft_constraints:
+      value: n
+      source: []
+  cost:
+    scope:
+      temporal:
+        sequential:
+          investment:
+            value: n
+            source: []
+          operation:
+            ramping:
+              value: n
+              source: []
+            start_up:
+              # `CyclingCostInEURperMW` is charged when a conventional plant goes from no output to positive output.
+              value: y
+              source:
+                - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Modules/PowerplantPrototype.md
+                - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/src/main/java/agents/conventionals/PowerPlant.java#L189-L197
+            shut_down:
+              value: n
+              source: []
+            start_state_dependent:
+              value: n
+              source: []
+        cumulative:
+          investment:
+            value: n
+            source: []
+          operation:
+            value: n
+            source: []
+      spatial:
+        investment:
+          value: n
+          source: []
+        operation:
+          value: n
+          source: []
+      assets:
+        investment:
+          value: n
+          source: []
+        operation:
+          value: n
+          source: []
+    functional_form:
+      fixed_charge:
+        investment:
+          value: n
+          source: []
+        operation:
+          value: n
+          source: []
+      nonlinear:
+        investment:
+          value: n
+          source: []
+        operation:
+          value: n
+          source: []
+      threshold_deviation:
+        investment:
+          value: n
+          source: []
+        operation:
+          value: n
+          source: []
+    time_value:
+      annuitisation:
+        # `AnnualCostCalculator` multiplies investment expenses by a user-supplied `AnnuityFactor`; no discount rate or asset life is used.
+        value: n
+        source:
+          - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Modules/AnnualCostCalculator.md
+      fiscal_treatment:
+        value: n
+        source: []
+      period_discounting:
+        value: n
+        source: []
+  objective:
+    quadratic:
+      value: n
+      source: []
+    multi_objective_weighted:
+      value: n
+      source: []
+    multi_objective_pareto:
+      value: n
+      source: []
+    tie_breaking:
+      # Equal-priced price-setting bids are assigned energy by a documented `DistributionMethod` (`SAME_SHARES`, `RANDOMIZE`, `FIRST_COME_FIRST_SERVE`).
+      value: y
+      source:
+        - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Modules/OrderBook.md
+        - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Modules/MarketClearing.md
+  edge_effects:
+    time_operational:
+      # `WaterValues` give the value of stored energy beyond the optimisation horizon of the dynamic-programming flexibility strategists.
+      value: y
+      source:
+        - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Modules/WaterValues.md
+        - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/GenericFlexibilityTrader.md
+    time_financial:
+      value: n
+      source: []
+    energy_balance:
+      # A storage `Device` charges or discharges by one signed amount per time step, so simultaneous charging and discharging cannot occur.
+      value: y
+      source:
+        - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Modules/Device.md
+  actors:
+    portfolio:
+      # Plant operators hold portfolios of plants (`Portfolio`, `LoadShiftingPortfolio`); traders market them and aggregators pass support payments to their clients.
+      value: y
+      source:
+        - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Modules/Portfolio.md
+        - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/ConventionalPlantOperator.md
+        - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/AggregatorTrader.md
+    heuristic_markup:
+      # `ConventionalTrader` adds a mark-up interpolated linearly between `MinimumMarkup` and `MaximumMarkup` over the marginal cost order of its plants.
+      value: y
+      source:
+        - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/ConventionalTrader.md
+    distributed_objectives:
+      # Each flexibility trader optimises its own objective (e.g. `ProfitMaximiser`, `SystemCostMinimiser`, `MultiAgentMedian`) against forecasts; AMIRIS does not optimise the system as a whole.
+      value: y
+      source:
+        - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/StorageTrader.md
+        - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/GenericFlexibilityTrader.md
+        - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/README.md
+    equilibrium:
+      value: n
+      source: []
+  uncertainty:
+    two_stage_stochastic:
+      value: n
+      source: []
+    multi_stage_stochastic:
+      value: n
+      source: []
+    risk_aversion:
+      value: n
+      source: []
+    robust_optimisation:
+      value: n
+      source: []
+    near_optimal:
+      value: n
+      source: []
+  model_definition:
+    configurable_dimensions:
+      value: n
+      source: []
+    extensible_dimensions:
+      value: n
+      source: []
+    dimension_groups:
+      value: n
+      source: []
+    component_templating:
+      # `PowerplantPrototype` defines shared technical parameters; `PredefinedPlantBuilder` generates plants from a total capacity and block size, and `IndividualPlantBuilder` can override prototype parameters per plant.
+      value: y
+      source:
+        - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Modules/PowerplantPrototype.md
+        - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/PredefinedPlantBuilder.md
+        - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/IndividualPlantBuilder.md
+  math:
+    formulation_transparency:
+      value: n
+      source: []
+    problem_file_export:
+      value: n
+      source: []
+    dual_extraction:
+      value: n
+      source: []
+    piecewise_formulation:
+      value: n
+      source: []
+    user_defined_math:
+      value: n
+      source: []
+  tractability:
+    dimension_reduction:
+      adjacency_aggregation:
+        temporal:
+          value: n
+          source: []
+        spatial:
+          value: n
+          source: []
+      similarity_aggregation:
+        temporal:
+          value: n
+          source: []
+        spatial:
+          value: n
+          source: []
+        assets:
+          value: n
+          source: []
+        scenarios:
+          value: n
+          source: []
+      non_contiguity_handling:
+        temporal:
+          value: n
+          source: []
+        spatial:
+          value: n
+          source: []
+      equivalencing:
+        spatial:
+          value: n
+          source: []
+        assets:
+          value: n
+          source: []
+      filtering:
+        temporal:
+          value: n
+          source: []
+        spatial:
+          value: n
+          source: []
+        assets:
+          value: n
+          source: []
+        scenarios:
+          value: n
+          source: []
+    variable_fidelity:
+      formulation:
+        value: n
+        source: []
+      resolution:
+        temporal:
+          value: n
+          source: []
+        spatial:
+          value: n
+          source: []
+        assets:
+          value: n
+          source: []
+        scenarios:
+          value: n
+          source: []
+    reformulation:
+      linearised_unit_commitment:
+        value: n
+        source: []
+      nonlinear_handling:
+        convex_relaxation:
+          value: n
+          source: []
+        function_conversion:
+          value: n
+          source: []
+      constraint_screening:
+        value: n
+        source: []
+      decomposition:
+        value: n
+        source: []
+      numeric_scaling:
+        value: n
+        source: []
+  orchestration:
+    scenario_runs:
+      # Companion tool AMIRIS-Py v4.0.1 (open-source, Apache-2.0, the recommended launcher in the AMIRIS docs): `amiris batch` compiles, runs and extracts several scenarios.
+      value: y
+      source:
+        - https://gitlab.com/dlr-ve/esy/amiris/amiris-py/-/blob/v4.0.1/README.md
+        - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Get-Started/QuickStart.md
+    sampled_runs:
+      value: n
+      source: []
+    coupled_models:
+      limited_foresight:
+        investment:
+          value: n
+          source: []
+        operation:
+          # Storage, load-shifting and heat pump strategists optimise dispatch over a `ForecastPeriodInHours` and re-plan every `ScheduleDurationInHours`.
+          value: y
+          source:
+            - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/StorageTrader.md
+            - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/LoadShiftingTrader.md
+      fidelity_sequence:
+        value: n
+        source: []
+      market_sequence:
+        value: n
+        source: []
+      convergence_iteration:
+        value: n
+        source: []
+  io:
+    plain_text:
+      input:
+        # Scenarios are YAML files with CSV time series, compiled by companion tool FAME-Io v4.0.2 (open-source, required by AMIRIS 5.0.0).
+        value: y
+        source:
+          - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Get-Started/FameioSetup.md
+          - https://gitlab.com/fame-framework/fame-io/-/blob/v4.0.2/README.md
+      output:
+        # Results are extracted to CSV by FAME-Io, one file per agent type (optionally one file per complex column).
+        value: y
+        source:
+          - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Get-Started/Results.md
+          - https://gitlab.com/fame-framework/fame-io/-/blob/v4.0.2/docs/source/output/csv_files.md
+    binary:
+      input:
+        # Machine-level format, not user-authored: FAME-Io compiles the scenario into a protobuf input file that AMIRIS reads.
+        value: y
+        source:
+          - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Get-Started/FameioSetup.md
+          - https://gitlab.com/fame-framework/fame-io/-/blob/v4.0.2/docs/source/usage/compile.md
+      output:
+        # Machine-level format: AMIRIS writes results as a protobuf file, which FAME-Io extracts to CSV.
+        value: y
+        source:
+          - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Get-Started/FameioSetup.md
+          - https://gitlab.com/fame-framework/fame-io/-/blob/v4.0.2/docs/source/usage/extract.md
+    database:
+      input:
+        value: n
+        source: []
+      output:
+        value: n
+        source: []
+    remote_storage:
+      input:
+        value: n
+        source: []
+      output:
+        value: n
+        source: []
+    lazy_loading:
+      input:
+        value: n
+        source: []
+      output:
+        # `fameio extract --memory-saving` reduces the memory needed to convert large result files at the cost of runtime.
+        value: y
+        source:
+          - https://gitlab.com/fame-framework/fame-io/-/blob/v4.0.2/docs/source/usage/extract.md
+    standardised:
+      input:
+        value: n
+        source: []
+      output:
+        # Metadata sidecar only (the CSV results are not OEO-formatted): FAME-Io writes a `metadata.json` next to the results, by default following the Open Energy Ontology (OEO) metadata template.
+        value: y
+        source:
+          - https://gitlab.com/fame-framework/fame-io/-/blob/v4.0.2/docs/source/output/metadata_json.md
+  preprocessing:
+    download:
+      # `amiris download` retrieves the AMIRIS jar and the example scenarios, not input data; the example repository has scripts to extract public price data but they are not part of the tool.
+      value: n
+      source:
+        - https://gitlab.com/dlr-ve/esy/amiris/amiris-py/-/blob/v4.0.1/README.md
+        - https://gitlab.com/dlr-ve/esy/amiris/examples/-/blob/v8.0.0/backtest/scripts/README.md
+    model_catalogue:
+      # The AMIRIS-Examples repository (v8.0.0, built for AMIRIS 5.0.0) provides demo and backtest scenarios (Germany 2015-2019, Austria 2019); AMIRIS-Py v4.0.1 `amiris download -m examples` retrieves them.
+      value: y
+      source:
+        - https://gitlab.com/dlr-ve/esy/amiris/examples/-/blob/v8.0.0/README.md
+        - https://gitlab.com/dlr-ve/esy/amiris/amiris-py/-/blob/v4.0.1/README.md
+    resource_conversion:
+      value: n
+      source: []
+    forecasting:
+      value: n
+      source: []
+    spatial_distribution:
+      demand:
+        value: n
+        source: []
+      network_geometry:
+        value: n
+        source: []
+    scenario_generation:
+      value: n
+      source: []
+    input_validation:
+      # FAME-Io validates the scenario against the model `schema.yaml` (attribute types, mandatory attributes, contracts) when compiling.
+      value: y
+      source:
+        - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Get-Started/FameioSetup.md
+        - https://gitlab.com/fame-framework/fame-io/-/blob/v4.0.2/docs/source/input/schema.rst
+  postprocessing:
+    metrics:
+      operational:
+        capacity_factor:
+          value: n
+          source: []
+        operating_hours:
+          value: n
+          source: []
+        binding_hours:
+          value: n
+          source: []
+        curtailment:
+          value: n
+          source: []
+      financial:
+        marginal_price:
+          # `DayAheadMarket` writes the clearing price (`ElectricityPriceInEURperMWH`) per market zone and time step; there is no nodal or component split.
+          value: y
+          source:
+            - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/DayAheadMarket.md
+        price_formation:
+          # Uniform-price merit-order clearing (`MeritOrderKernel`) with a documented scarcity rule (`ShortagePrice`: `ScarcityPrice` or `LastSupplyPrice`).
+          value: y
+          source:
+            - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Modules/MarketClearing.md
+            - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Modules/MeritOrderKernel.md
+        water_value:
+          value: n
+          source: []
+        asset_accounts:
+          # Plant operators report received money, variable costs, fixed costs and investment annuity, optionally per plant.
+          value: y
+          source:
+            - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/PowerPlantOperator.md
+            - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/ConventionalPlantOperator.md
+        contract_settlement:
+          # `SupportPolicy` settles feed-in tariffs, market premia, capacity premia and (financial) contracts for difference against realised market values and generation.
+          value: y
+          source:
+            - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/SupportPolicy.md
+            - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/HydrogenSupportPolicy.md
+        levelised_cost:
+          value: n
+          source: []
+        net_present_value:
+          value: n
+          source: []
+      impact_assessment:
+        emissions:
+          # `ConventionalPlantOperator` reports CO2 emissions (`Co2EmissionsInT`) and `CarbonMarket` totals them (its documentation page still uses the pre-5.0.0 column name `Co2EmissionsInTons`).
+          value: y
+          source:
+            - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/ConventionalPlantOperator.md
+            - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/CarbonMarket.md
+            - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/src/main/java/agents/markets/CarbonMarket.java
+        resource_use:
+          value: n
+          source: []
+        socioeconomic:
+          value: n
+          source: []
+      network_transfer_metrics:
+        transfer_capacity:
+          # `MarketCoupling` reports the available and the used transfer capacity between market zones.
+          value: y
+          source:
+            - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Classes/Agents/MarketCoupling.md
+        flow_sensitivity:
+          value: n
+          source: []
+      probabilistic_reliability_assessment:
+        loss_of_load:
+          value: n
+          source: []
+        unserved_energy:
+          value: n
+          source: []
+        capacity_credit:
+          value: n
+          source: []
+    transformation:
+      aggregation:
+        value: n
+        source: []
+      disaggregation:
+        value: n
+        source: []
+      scenario_comparison:
+        # `amiris batch` writes each scenario's results to a separate folder and `amiris compare` only checks two result sets for equivalence; results are not collated or compared.
+        value: n
+        source:
+          - https://gitlab.com/dlr-ve/esy/amiris/amiris-py/-/blob/v4.0.1/README.md
+  interface:
+    gui:
+      build:
+        value: n
+        source: []
+      run:
+        value: n
+        source: []
+      analyse:
+        value: n
+        source: []
+    api:
+      build:
+        # FAME-Io v4.0.2 compiles a scenario from Python (`fameio.scripts.compile.run`).
+        value: y
+        source:
+          - https://gitlab.com/fame-framework/fame-io/-/blob/v4.0.2/docs/source/usage/compile.md
+      run:
+        # AMIRIS-Py v4.0.1 exposes the CLI as a Python function (`amirispy.scripts.amiris_cli`) to run scenarios from scripts.
+        value: y
+        source:
+          - https://gitlab.com/dlr-ve/esy/amiris/amiris-py/-/blob/v4.0.1/README.md
+      analyse:
+        # FAME-Io only converts results to CSV/JSON (callable from Python); AMIRIS ships no analysis API.
+        value: n
+        source:
+          - https://gitlab.com/fame-framework/fame-io/-/blob/v4.0.2/docs/source/usage/extract.md
+    cli:
+      build:
+        # `fameio compile` builds the input file from the scenario YAML.
+        value: y
+        source:
+          - https://gitlab.com/fame-framework/fame-io/-/blob/v4.0.2/docs/source/usage/compile.md
+      run:
+        # `amiris run` compiles, executes and extracts results in one command.
+        value: y
+        source:
+          - https://gitlab.com/dlr-ve/esy/amiris/amiris-py/-/blob/v4.0.1/README.md
+          - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/docs/Get-Started/QuickStart.md
+      analyse:
+        value: n
+        source: []
+    solver_configuration:
+      value: n
+      source: []
+    remote_execution:
+      value: n
+      source: []
+    visualisation:
+      charts:
+        value: n
+        source: []
+      network_maps:
+        value: n
+        source: []
+      report_templates:
+        value: n
+        source: []
+  traceability:
+    metadata:
+      provenance:
+        # Scenarios carry a free-form `Metadata` section (the examples give run id, version, AMIRIS version, licences, publication date); FAME-Io writes run id, publication date, embargo period and licences to `metadata.json` next to the results.
+        value: y
+        source:
+          - https://gitlab.com/dlr-ve/esy/amiris/examples/-/blob/v8.0.0/demo/Simple/scenario.yaml
+          - https://gitlab.com/fame-framework/fame-io/-/blob/v4.0.2/docs/source/input/scenario_metadata.md
+          - https://gitlab.com/fame-framework/fame-io/-/blob/v4.0.2/docs/source/output/metadata_json.md
+      units:
+        # The schema declares a unit and an OEO `isAbout` term per attribute and FAME-Io copies them to the metadata, but units are neither validated nor converted in the pipeline.
+        value: n
+        source:
+          - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/input/schema.yaml
+          - https://gitlab.com/fame-framework/fame-io/-/blob/v4.0.2/docs/source/input/scenario_schema_metadata.md
+      propagation:
+        # `fameio extract --input-recovery` writes the inputs that produced a result alongside it, and `metadata.json` links results to the scenario.
+        value: y
+        source:
+          - https://gitlab.com/fame-framework/fame-io/-/blob/v4.0.2/docs/source/usage/extract.md
+          - https://gitlab.com/fame-framework/fame-io/-/blob/v4.0.2/docs/source/output/metadata_json.md
+    run_logs:
+      # AMIRIS logs via logback (console); FAME-Io (`--logfile`) and AMIRIS-Py (`--logfile`) can write log files.
+      value: y
+      source:
+        - https://gitlab.com/dlr-ve/esy/amiris/amiris/-/blob/v5.0.0/src/main/resources/logback.xml
+        - https://gitlab.com/fame-framework/fame-io/-/blob/v4.0.2/docs/source/usage/compile.md
+        - https://gitlab.com/fame-framework/fame-io/-/blob/v4.0.2/docs/source/usage/extract.md
+        - https://gitlab.com/dlr-ve/esy/amiris/amiris-py/-/blob/v4.0.1/README.md
+    intermediate_access:
+      value: n
+      source: []
+    infeasibility_diagnosis:
+      value: n
+      source: []

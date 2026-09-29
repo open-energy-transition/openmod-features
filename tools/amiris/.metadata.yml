@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: tools/amiris/features.yaml CODEOWNERS
+# SPDX-FileCopyrightText: openmod-features contributors
+#
+# SPDX-License-Identifier: CC-BY-4.0
+
+# Changes here will be overwritten by Copier
+# DO NOT MANUALLY MODIFY THIS FILE
+_commit: v0.3.0
+_src_path: gh:open-energy-transition/openmod-features
+description: AMIRIS is the open Agent-based Market model for the Investigation of Renewable and Integrated energy Systems.
+docs: https://dlr-ve.gitlab.io/esy/amiris/home/
+list_type: tool
+maintainers: dlr-cjs,fxnitsch,jokochems
+name: AMIRIS
+open_source: true
+shortname: amiris
+source: https://gitlab.com/dlr-ve/esy/amiris/amiris
