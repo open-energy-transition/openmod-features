@@ -23,7 +23,7 @@ repos:
           "--skip=user_analysis/config/*.yaml",
           "--skip=inventory/*.yaml",
           "--skip=*.csv",
-          "--ignore-words-list=FOM"
+          "--ignore-words-list=FOM,esy"
         ]
 
   - repo: https://github.com/fsfe/reuse-tool
