@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-28T20:58:23.641Z",
+  "generatedAt": "2026-10-06T13:06:41.514Z",
   "taxonomyVersion": "v0.3.0",
   "taxonomy": [
     {
@@ -12199,11 +12199,11 @@
             ]
           },
           "interface/gui/analyse": {
-            "value": "n",
+            "value": "y",
             "sources": [
-              "https://docs.pypsa.org/v1.3.0/user-guide/faq/#does-pypsa-have-a-gui",
-              "https://github.com/PyPSA/PyPSA/issues/1479",
-              "https://pypsa.org/roadmap"
+              "https://github.com/open-energy-transition/PyPSA-Explorer/blob/v0.1.2/README.md",
+              "https://github.com/open-energy-transition/PyPSA-Explorer/blob/v0.1.2/src/pypsa_explorer/layouts/tabs.py",
+              "https://github.com/open-energy-transition/PyPSA-Explorer/blob/v0.1.2/src/pypsa_explorer/layouts/components.py"
             ]
           },
           "interface/api/build": {
