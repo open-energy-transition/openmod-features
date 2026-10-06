@@ -222,6 +222,17 @@ function SiteFooter({ data }: { data: DashboardData }) {
           <FooterExternalLink href={REPOSITORY_URL}>GitHub repository</FooterExternalLink>
         </FooterColumn>
       </div>
+      <div className="mx-auto grid w-full max-w-[1600px] gap-2 px-4 pb-8 sm:px-6 lg:px-8">
+        <p className="atlas-caption text-xs leading-5">
+          Built by <a href="https://openenergytransition.org/" target="_blank" rel="noreferrer" className="underline">Open Energy Transition</a>, with support by <a href="https://www.breakthroughenergy.org/" target="_blank" rel="noreferrer" className="underline">Breakthrough Energy</a> GRIDS. The
+          information provided in this dashboard is for informational purposes only and does
+          not constitute professional advice.
+        </p>
+        <p className="atlas-caption text-xs leading-5">
+          openmod-features is not officially affiliated with and has not been endorsed by the
+          Open Energy Modelling (openmod) Initiative community.
+        </p>
+      </div>
     </footer>
   )
 }
