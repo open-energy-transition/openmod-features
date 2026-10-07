@@ -85,6 +85,9 @@ You can also optionally provide a documentation site URL and a longer descriptio
 >Answer `false` to the `open_source` question for these tools so the dashboard can distinguish them.
 >As there is no public source code, use the tool's product page as its source URL and reference publicly available documentation in each feature's `source` key.
 
+>[!TIP]
+>To draft your tool's feature list with an AI coding agent, use the prompt and review checklist in [AGENT_PROMPTING.md](AGENT_PROMPTING.md).
+
 ## Updating your tool
 
 ### Updating features
@@ -163,6 +166,10 @@ pixi run add-use-case <use-case-shortname>
 
 You will be prompted to add in your use-case name, description, and _feature list_ maintainers.
 You can also optionally provide a documentation site URL.
+
+>[!TIP]
+>[AGENT_PROMPTING.md](AGENT_PROMPTING.md) is written for tool feature lists.
+>To draft a use-case feature list with an AI coding agent, point the agent to the use-case section of [AGENTS.md](AGENTS.md#preparing-a-use-case-feature-list).
 
 ### Updating your use-case
 
