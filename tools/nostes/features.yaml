@@ -1,0 +1,833 @@
+# SPDX-FileCopyrightText: tools/nostes/features.yaml CODEOWNERS
+# SPDX-FileCopyrightText: openmod-features contributors
+#
+# SPDX-License-Identifier: CC-BY-4.0
+
+# yaml-language-server: $schema=https://raw.githubusercontent.com/open-energy-transition/openmod-features/v0.3.0/schema/tool-schema.yaml
+
+# Assessed against NOSTES commit 3534b8b (19th July 2025), the tip of the default branch (`main`); the repository has no tagged releases.
+# All source links are pinned to that commit.
+# NOSTES is a single-site research toolbox, so many network, market and uncertainty features are `n` by design.
+# Leaves left as `?` were not assessable from the code or documentation.
+
+version: '3534b8b'
+features:
+  processes:
+    boundary_exchange:
+      # Electricity can be bought from / sold to the grid at fixed prices (`P_Grid_buy`, `P_Grid_sell`); PV and wind enter as exogenous profiles.
+      value: y
+      source:
+        - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/systemmodels/systemModel.py#L96-105
+        - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/systemmodels/stratstoragemodel.py#L88-96
+    conversion:
+      one_to_one:
+        # Heat pump converts electric power to heat with a temperature-dependent COP.
+        value: y
+        source:
+          - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/systemmodels/systemModel.py#L84-88
+      multi_carrier_io:
+        value: n
+        source: []
+      flexible_ratio:
+        value: n
+        source: []
+    temporal_transfer:
+      # Battery (state of charge) and stratified seasonal thermal storage.
+      value: y
+      source:
+        - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/systemmodels/systemModel.py#L90-94
+        - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/systemmodels/stratstoragemodel.py#L239-293
+    spatial_transfer:
+      # Single-site model: no spatial dimension.
+      value: n
+      source: []
+    delayed_transfer:
+      value: n
+      source: []
+    buffered_transfer:
+      value: n
+      source: []
+    discrete_transport:
+      value: n
+      source: []
+    state_changing_transfer:
+      value: n
+      source: []
+    explicit_demand:
+      inelastic:
+        # Fixed electric (`P_load`) and heat (`Qdot_load`) demand profiles enter the balances.
+        value: y
+        source:
+          - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/utility.py#L267-292
+          - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/systemmodels/stratstoragemodel.py#L88-96
+      price_responsive:
+        value: n
+        source: []
+      mobile_storage:
+        value: n
+        source: []
+  network:
+    power_flow:
+      optimal_power_flow:
+        dc_opf:
+          value: n
+          source: []
+        ac_opf:
+          value: n
+          source: []
+        unbalanced_flows:
+          value: n
+          source: []
+      sensitivity_limits:
+        ptdf:
+          value: n
+          source: []
+        outage_factors:
+          value: n
+          source: []
+        generic_constraints:
+          value: n
+          source: []
+      network_limits:
+        thermal:
+          value: n
+          source: []
+        phase_angle:
+          value: n
+          source: []
+      losses:
+        value: n
+        source: []
+      network_devices:
+        transformers:
+          value: n
+          source: []
+        facts_devices:
+          value: n
+          source: []
+        hvdc_converters:
+          value: n
+          source: []
+    hydraulic_flow:
+      linearised_flow:
+        value: n
+        source: []
+      composition_tracking:
+        value: n
+        source: []
+  decisions:
+    investment:
+      exogenous_capacity:
+        value: '?'
+        source: []
+      continuous_capacity:
+        # Storage volume, heat pump, PV, wind and battery sizes are continuous decision variables `p_fix`, scaled against user-given defaults and bounded to 0.1-10x.
+        value: y
+        source:
+          - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/systemmodels/systemModel.py#L66-68
+          - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/systemmodels/stratstoragemodel.py#L46-54
+      integer_investment_exogenous_capacity:
+        value: n
+        source: []
+      integer_investment_continuous_capacity:
+        value: n
+        source: []
+      multi_period:
+        # One sizing decision for a single representative year.
+        value: n
+        source: []
+      retrofit:
+        value: n
+        source: []
+      endogenous_retirement:
+        value: n
+        source: []
+    operation:
+      unit_commitment:
+        value: n
+        source: []
+      maintenance_scheduling:
+        value: n
+        source: []
+  constraints:
+    scope:
+      temporal:
+        pointwise:
+          investment:
+            # Lower and upper bounds on each sizing variable.
+            value: y
+            source:
+              - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/systemmodels/systemModel.py#L66-68
+          operation:
+            availability_derating:
+              # PV and wind output scale the installed capacity by the input profile; battery and storage state limits and power <= C_bat/4 and Qdot_hp <= C_hp hold per timestep.
+              value: y
+              source:
+                - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/systemmodels/stratstoragemodel.py#L88-96
+                - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/systemmodels/stratstoragemodel.py#L82-96
+            minimum_stable_level:
+              value: n
+              source: []
+            forced_offline:
+              value: n
+              source: []
+            forced_online:
+              value: n
+              source: []
+        sequential:
+          investment:
+            availability_window:
+              value: n
+              source: []
+            relative_build_rate:
+              value: n
+              source: []
+            technical_lifetime:
+              # `n_years` is used only for annuitisation, not to retire capacity.
+              value: n
+              source: []
+          operation:
+            ramping:
+              value: n
+              source: []
+            start_shut_trajectory:
+              value: n
+              source: []
+            commitment_duration:
+              value: n
+              source: []
+            start_consumption:
+              value: n
+              source: []
+        cumulative:
+          investment:
+            capacity_target:
+              value: n
+              source: []
+            expansion_budget:
+              value: n
+              source: []
+            event_count:
+              value: n
+              source: []
+            path_dependent:
+              value: n
+              source: []
+          operation:
+            flow_volume:
+              value: n
+              source: []
+            impact_budget:
+              value: n
+              source: []
+            event_count:
+              value: n
+              source: []
+            state_duration:
+              value: n
+              source: []
+            path_dependent:
+              value: n
+              source: []
+        boundary_conditions:
+          investment:
+            value: n
+            source: []
+          operation:
+            # Periodicity constraint: all end-of-year states (storage temperatures, battery state of charge) equal the initial state.
+            value: y
+            source:
+              - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/nlp.py#L66-69
+      spatial:
+        investment:
+          value: n
+          source: []
+        operation:
+          value: n
+          source: []
+      assets:
+        spanning:
+          investment:
+            value: n
+            source: []
+          operation:
+            value: n
+            source: []
+        dedicated_flow_routing:
+          value: n
+          source: []
+    functional_form:
+      linear_multi_variable:
+        investment:
+          value: '?'
+          source: []
+        operation:
+          value: '?'
+          source: []
+      quadratic:
+        investment:
+          value: '?'
+          source: []
+        operation:
+          value: '?'
+          source: []
+      nonlinear:
+        investment:
+          # Storage volume enters the thermal dynamics nonlinearly (layer heat capacity, surface areas, thermal resistances).
+          value: y
+          source:
+            - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/systemmodels/stratstoragemodel.py#L239-293
+            - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/systemmodels/stratstoragemodel.py#L128-206
+        operation:
+          # Nonlinear stratified-storage and ground temperature dynamics (mass flow x temperature products) solved as an NLP with IPOPT.
+          value: y
+          source:
+            - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/systemmodels/stratstoragemodel.py#L239-293
+            - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/nlp.py#L166-169
+    reliability:
+      unserved_demand:
+        value: n
+        source: []
+      operating_reserve:
+        online_headroom:
+          value: n
+          source: []
+        standby_capability:
+          value: n
+          source: []
+        inertia:
+          value: n
+          source: []
+      contingency_constrained:
+        value: n
+        source: []
+      probabilistic_reliability_limit:
+        loss_of_load:
+          value: n
+          source: []
+        unserved_energy:
+          value: n
+          source: []
+    soft_constraints:
+      value: n
+      source: []
+  cost:
+    scope:
+      temporal:
+        sequential:
+          investment:
+            value: n
+            source: []
+          operation:
+            ramping:
+              value: n
+              source: []
+            start_up:
+              value: n
+              source: []
+            shut_down:
+              value: n
+              source: []
+            start_state_dependent:
+              value: n
+              source: []
+        cumulative:
+          investment:
+            value: n
+            source: []
+          operation:
+            value: n
+            source: []
+      spatial:
+        investment:
+          value: n
+          source: []
+        operation:
+          value: n
+          source: []
+      assets:
+        investment:
+          value: n
+          source: []
+        operation:
+          value: n
+          source: []
+    functional_form:
+      fixed_charge:
+        investment:
+          value: n
+          source: []
+        operation:
+          value: n
+          source: []
+      nonlinear:
+        investment:
+          value: n
+          source: []
+        operation:
+          value: n
+          source: []
+      threshold_deviation:
+        investment:
+          value: n
+          source: []
+        operation:
+          value: n
+          source: []
+    time_value:
+      annuitisation:
+        # CAPEX is annualised with an annuity factor from `n_years` and `annuity` (interest rate); OPEX is a fixed share of CAPEX.
+        value: y
+        source:
+          - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/systemmodels/stratstoragemodel.py#L208-227
+      fiscal_treatment:
+        value: n
+        source: []
+      period_discounting:
+        value: n
+        source: []
+  objective:
+    quadratic:
+      value: n
+      source: []
+    multi_objective_weighted:
+      value: n
+      source: []
+    multi_objective_pareto:
+      value: n
+      source: []
+    tie_breaking:
+      # A tiny quadratic regularisation of the controls (weight 1e-8) is added to the objective.
+      value: y
+      source:
+        - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/nlp.py#L102-103
+  edge_effects:
+    time_operational:
+      # Cyclic annual operation via the periodicity constraint avoids arbitrary end-of-horizon states.
+      value: y
+      source:
+        - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/nlp.py#L66-69
+    time_financial:
+      value: n
+      source: []
+    energy_balance:
+      value: '?'
+      source: []
+  actors:
+    portfolio:
+      value: n
+      source: []
+    heuristic_markup:
+      value: n
+      source: []
+    distributed_objectives:
+      value: n
+      source: []
+    equilibrium:
+      value: n
+      source: []
+  uncertainty:
+    two_stage_stochastic:
+      # Deterministic model on a single input year.
+      value: n
+      source: []
+    multi_stage_stochastic:
+      value: n
+      source: []
+    risk_aversion:
+      value: n
+      source: []
+    robust_optimisation:
+      value: n
+      source: []
+    near_optimal:
+      value: n
+      source: []
+  model_definition:
+    configurable_dimensions:
+      value: n
+      source: []
+    extensible_dimensions:
+      value: n
+      source: []
+    dimension_groups:
+      value: n
+      source: []
+    component_templating:
+      value: n
+      source: []
+  math:
+    formulation_transparency:
+      # The optimal control problem is documented in the README/paper, but not rendered from the built problem.
+      value: n
+      source: []
+    problem_file_export:
+      value: '?'
+      source: []
+    dual_extraction:
+      value: '?'
+      source: []
+    piecewise_formulation:
+      value: n
+      source: []
+    user_defined_math:
+      value: '?'
+      source: []
+  tractability:
+    dimension_reduction:
+      adjacency_aggregation:
+        temporal:
+          # Averaged discretisation: inputs of the slow storage dynamics are averaged over a day (H = 24 h) while battery and grid stay hourly.
+          value: y
+          source:
+            - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/nlpAverage.py#L15-45
+            - systemmodels/averagedstratstoragemodel.py
+            - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/README.md
+        spatial:
+          value: n
+          source: []
+      similarity_aggregation:
+        temporal:
+          value: n
+          source: []
+        spatial:
+          value: n
+          source: []
+        assets:
+          value: n
+          source: []
+        scenarios:
+          value: n
+          source: []
+      non_contiguity_handling:
+        temporal:
+          value: n
+          source: []
+        spatial:
+          value: n
+          source: []
+      equivalencing:
+        spatial:
+          value: n
+          source: []
+        assets:
+          value: n
+          source: []
+      filtering:
+        temporal:
+          value: n
+          source: []
+        spatial:
+          value: n
+          source: []
+        assets:
+          value: n
+          source: []
+        scenarios:
+          value: n
+          source: []
+    variable_fidelity:
+      formulation:
+        value: n
+        source: []
+      resolution:
+        temporal:
+          # The averaged scheme uses a coarse daily grid for storage states and an hourly grid for battery and controls, but this is a fixed scheme rather than a per-member setting.
+          value: '?'
+          source:
+            - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/nlpAverage.py#L15-45
+        spatial:
+          value: n
+          source: []
+        assets:
+          value: n
+          source: []
+        scenarios:
+          value: n
+          source: []
+    reformulation:
+      linearised_unit_commitment:
+        value: n
+        source: []
+      nonlinear_handling:
+        convex_relaxation:
+          value: n
+          source: []
+        function_conversion:
+          value: n
+          source: []
+      constraint_screening:
+        value: n
+        source: []
+      decomposition:
+        value: n
+        source: []
+      numeric_scaling:
+        # Decision variables (temperatures, powers, sizing parameters) are scaled before being passed to IPOPT.
+        value: y
+        source:
+          - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/nlp.py#L125-150
+  orchestration:
+    scenario_runs:
+      value: n
+      source: []
+    sampled_runs:
+      value: n
+      source: []
+    coupled_models:
+      limited_foresight:
+        investment:
+          value: n
+          source: []
+        operation:
+          value: n
+          source: []
+      fidelity_sequence:
+        value: n
+        source: []
+      market_sequence:
+        value: n
+        source: []
+      convergence_iteration:
+        value: n
+        source: []
+  io:
+    plain_text:
+      input:
+        # Input time series are read from a CSV file with pandas.
+        value: y
+        source:
+          - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/utility.py#L267-292
+      output:
+        # Results are printed as tables to the console (`Results.printAll`) or saved as `.npz`.
+        value: n
+        source: []
+    binary:
+      input:
+        value: n
+        source: []
+      output:
+        # `Results.save` writes and `Results.fromFile` reads NumPy `.npz` archives.
+        value: y
+        source:
+          - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/utility.py#L156-178
+    database:
+      input:
+        value: n
+        source: []
+      output:
+        value: n
+        source: []
+    remote_storage:
+      input:
+        value: n
+        source: []
+      output:
+        value: n
+        source: []
+    lazy_loading:
+      input:
+        value: n
+        source: []
+      output:
+        value: n
+        source: []
+    standardised:
+      input:
+        value: n
+        source: []
+      output:
+        value: n
+        source: []
+  preprocessing:
+    download:
+      value: n
+      source: []
+    model_catalogue:
+      value: n
+      source: []
+    resource_conversion:
+      value: n
+      source: []
+    forecasting:
+      value: n
+      source: []
+    spatial_distribution:
+      demand:
+        value: n
+        source: []
+      network_geometry:
+        value: n
+        source: []
+    scenario_generation:
+      value: n
+      source: []
+    input_validation:
+      # Assertions check that the data file has the required columns and that component-size defaults are set; value ranges are not checked.
+      value: y
+      source:
+        - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/utility.py#L267-292
+        - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/systemmodels/systemModel.py#L31-36
+  postprocessing:
+    metrics:
+      operational:
+        capacity_factor:
+          value: n
+          source: []
+        operating_hours:
+          value: n
+          source: []
+        binding_hours:
+          value: n
+          source: []
+        curtailment:
+          value: n
+          source: []
+      financial:
+        marginal_price:
+          value: n
+          source: []
+        price_formation:
+          value: n
+          source: []
+        water_value:
+          value: n
+          source: []
+        asset_accounts:
+          # Per-component CAPEX, total CAPEX/OPEX, annualised investment and grid buy/sell cost are reported as results.
+          value: y
+          source:
+            - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/systemmodels/stratstoragemodel.py#L208-227
+            - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/nlp.py#L199-206
+        contract_settlement:
+          value: n
+          source: []
+        levelised_cost:
+          value: n
+          source: []
+        net_present_value:
+          value: n
+          source: []
+      impact_assessment:
+        emissions:
+          value: n
+          source: []
+        resource_use:
+          value: n
+          source: []
+        socioeconomic:
+          value: n
+          source: []
+      network_transfer_metrics:
+        transfer_capacity:
+          value: n
+          source: []
+        flow_sensitivity:
+          value: n
+          source: []
+      probabilistic_reliability_assessment:
+        loss_of_load:
+          value: n
+          source: []
+        unserved_energy:
+          value: n
+          source: []
+        capacity_credit:
+          value: n
+          source: []
+    transformation:
+      aggregation:
+        value: n
+        source: []
+      disaggregation:
+        value: n
+        source: []
+      scenario_comparison:
+        # `printAll(comparewith=...)` tabulates two result sets side by side; `plotComparison.py` compares the full and averaged discretisations.
+        value: y
+        source:
+          - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/utility.py#L180-181
+          - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/plotComparison.py
+  interface:
+    gui:
+      build:
+        value: n
+        source: []
+      run:
+        value: n
+        source: []
+      analyse:
+        value: n
+        source: []
+    api:
+      build:
+        # System models, constants and data are Python classes.
+        value: y
+        source:
+          - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/README.md
+          - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/dietenbach.py
+      run:
+        # `STESNLP(...).solve()` / `AverageSTESNLP(...).solve()` run the optimisation.
+        value: y
+        source:
+          - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/nlp.py#L123-186
+      analyse:
+        # `Results` exposes optimal trajectories, sizes and costs as NumPy arrays.
+        value: y
+        source:
+          - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/utility.py#L84-178
+    cli:
+      build:
+        value: n
+        source: []
+      run:
+        value: n
+        source: []
+      analyse:
+        value: n
+        source: []
+    solver_configuration:
+      # `solve(additional_options)` passes options such as `ipopt.max_iter` and `ipopt.linear_solver` to IPOPT.
+      value: y
+      source:
+        - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/nlp.py#L166-169
+        - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/dietenbach_average.py#L41
+    remote_execution:
+      value: n
+      source: []
+    visualisation:
+      charts:
+        # Matplotlib plots of demand, dispatch and storage states.
+        value: y
+        source:
+          - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/plotResults.py
+      network_maps:
+        value: n
+        source: []
+      report_templates:
+        value: n
+        source: []
+  traceability:
+    metadata:
+      provenance:
+        value: n
+        source: []
+      units:
+        value: n
+        source: []
+      propagation:
+        value: n
+        source: []
+    run_logs:
+      # IPOPT progress is printed and the solver return status, iteration count and wall time are stored in the results.
+      value: y
+      source:
+        - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/nlp.py#L123-186
+    intermediate_access:
+      # The built NLP (`w`, `G`, `lbG`, `ubG`, `J`) and result structures are attributes of the NLP object.
+      value: y
+      source:
+        - https://github.com/JakobHarz/NOSTES/blob/3534b8b56a646433379ac0377850f537aeb56190/nlp.py#L108-121
+    infeasibility_diagnosis:
+      value: n
+      source: []

@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: tools/nostes/features.yaml CODEOWNERS
+# SPDX-FileCopyrightText: openmod-features contributors
+#
+# SPDX-License-Identifier: CC-BY-4.0
+
+# Changes here will be overwritten by Copier
+# DO NOT MANUALLY MODIFY THIS FILE
+_commit: v0.3.0
+_src_path: gh:open-energy-transition/openmod-features
+description: NOSTES is a mini toolbox for the simultaneous design and control optimisation
+    of seasonal thermal energy storage systems. Built in Python on CasADi, it solves
+    a nonlinear optimal control problem that sizes and operates a system of PV, wind,
+    a battery, a heat pump and stratified seasonal thermal storage over a year to
+    minimise annualised cost.
+docs: https://github.com/JakobHarz/NOSTES#readme
+list_type: tool
+maintainers: WonsunSONG
+name: NOSTES
+shortname: nostes
+source: https://github.com/JakobHarz/NOSTES
